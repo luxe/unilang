@@ -1,0 +1,78 @@
+􏶞g􏶟
+􏷲Utilities for detecting endian􏷱
+􏷰Runtime checks for endian􏷯
+􏷮Endian Utilities􏷭 􏷮Network􏷭 􏷮Utilities􏷭
+􏷬Trevor Hickey􏷫
+􏷤􏷣􏷦Defs􏷥􏷢USES: BOOL, UINT16􏷡
+
+􏵮􏵯􏵬􏵭􏶀machine endian􏶋
+􏶊the different endians of a machine's memory layout􏶉
+􏶈what about middle endian? left out, and deemed unimportant􏶇
+􏶆big􏶅􏶄􏶃􏶂most significant byte in the smallest address􏶁
+􏶆little􏶅􏶄􏶃􏶂least significant byte in the smallest address􏶁
+
+
+􏷘+􏷗􏷒is machine endian􏷑
+􏷐determines whether the machine endian matches what is passed in􏷏
+􏶠returns 􏵱 if the endian matches what is passed in.  􏵰 if it does not􏶡
+􏶜􏶝􏷆MachineEndianE􏷅􏷄endian􏷃􏷀An endian type to compare against the machine's endian􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼is endian matches machine􏶻􏵜􏵝􏶺whether the machine matches the endian passed in􏶹
+􏶴
+    􏶲get the machine endian as an enum and compare it with the enum passed in􏶱
+    return 􏵲get machine endian􏵳) == 􏵶endian􏵷;
+􏶳
+
+􏷘+􏷗􏷒get opposite endian􏷑
+􏷐get the opposite endian than what is passed in􏷏
+􏶠􏶡
+􏶜􏶝􏷆MachineEndianE􏷅􏷄endian􏷃􏷀An endian type to get the opposite of􏶿
+􏶚m􏶛􏶾MachineEndianE􏶽􏶼opposite endian􏶻􏵜􏵝􏶺the opposite endian than the one passed in􏶹
+􏶴
+    􏶲return the opposite endian􏶱
+    
+    􏶲if big, return small􏶱
+    if (􏵶endian􏵷 == MACHINE_ENDIAN_BIG){
+        return MACHINE_ENDIAN_LITTLE;
+    }
+    
+    􏶲else, assume big􏶱
+    return MACHINE_ENDIAN_BIG;
+􏶳
+
+􏷘+􏷗􏷒on big endian architecture􏷑
+􏷐determines if the machine is big endian􏷏
+􏶠returns 􏵱 if it is big endian.  􏵰 if it is little endian􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is on big endian􏶻􏵜􏵝􏶺whether the machine is on big endian or not􏶹
+􏶴
+    􏶲run time endian check􏶱
+    union U { UINT16 m_u16; unsigned char m_ucC; };
+    union U u;
+    u.m_u16 = 1;
+    u.m_ucC = 0;
+    
+    􏶲results in 1 on big endian, and 0 in little endian􏶱
+    return !u.m_ucC;
+􏶳
+
+􏷘+􏷗􏷒on little endian architecture􏷑
+􏷐determines if the machine is little endian􏷏
+􏶠returns 􏵱 if it is little endian.  􏵰 if it is big endian􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is on big endian􏶻􏵜􏵝􏶺whether the machine is on big endian or not􏶹
+􏶴
+    􏶲leverage actual endian detection function􏶱
+    return !􏵲on big endian architecture􏵳);
+􏶳
+
+􏷘+􏷗􏷒get machine endian􏷑
+􏷐determines and returns the machine's endian􏷏
+􏶠run time (not compile time) determination􏶡
+􏶚m􏶛􏶾MachineEndianE􏶽􏶼the endian of the machine􏶻􏵜􏵝􏶺the endian of the machine that code is running on􏶹
+􏶴
+    􏶲determine and return the appropriate endian of the machine􏶱
+    if (􏵲on big endian architecture􏵳)){
+        return MACHINE_ENDIAN_BIG;
+    }
+    
+    􏶲we assume little endian if not big􏶱
+    return MACHINE_ENDIAN_LITTLE;
+􏶳

@@ -1,0 +1,142 @@
+class
+
+
+❪"code/utilities/linguistics/computer/types/generic/unilang_type_to_language_type_converter"❫
+❪"code/utilities/types/variant/lib"❫
+⚯
+❪"code/utilities/types/converters/lib"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/types/strings/observers/char/lib"❫
+
+⚞⚟
+
+◀public: static▶ void ☀Inject_Into_Body(std::vector<Method_Item> & methods, Struct_Manipulation_Settings const& settings)❰
+
+    for (auto & method: methods){
+        if (Return_Is_Valid_For_This_Adjustment(method)){
+            Inject_What_Is_Needed_Into_Body(method,settings);
+        }
+    }
+❱
+
+◀private: static▶ void ☀Inject_What_Is_Needed_Into_Body(Method_Item & method, Struct_Manipulation_Settings const& settings)❰
+            
+    //derive some information that we need
+    auto uni_type = Type_Name_Deriver::Derive_Name(method.return_results[0],Source_Language::CPP);
+    auto identifier = Decide_Identifier(method.return_results[0]);
+    auto lang_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(uni_type,Source_Language::CPP);
+    auto default_value = as_string(method.return_results[0].default_value.value);
+    
+    if (!Body_Is_Empty(method)){
+        Add_Instantiate_Statement(method,lang_type.name,identifier,default_value);
+        Add_Return_Statement(method,identifier);
+    }
+    else
+    {
+        Add_Immediate_Value_Return(method,default_value);
+    }
+❱
+
+◀private: static▶ bool ☀Body_Is_Empty(Method_Item const& method)❰
+    if (method.entire_body.elements.empty()){
+        return true;
+    }
+    
+    for (auto it: method.entire_body.elements){
+        bool still_empty = true;
+        std::visit(overloaded {
+        [&](Regular_Body_Comment const& a) { still_empty = false; },
+        [&](Todo_Body_Comment const& a) {still_empty = false; },
+        [&](Warning_Body_Comment const& a) {still_empty = false; },
+        [&](Regular_Statement const& a) {still_empty = false; },
+        [&](Return_Statement const& a) {still_empty = false; },
+        [&](Function_Call_Local const& a){still_empty = false; },
+        [&](Uncaught_Statement const& a) {
+            if (!Contains_Only_Whitespace_Characters(as_string(a.value.value))){
+                still_empty = false; 
+            }
+        },
+        }, it.types);
+        
+        if (!still_empty){
+            return false;
+        }
+    }
+    
+    return true;
+❱
+
+◀private: static▶ bool ☀Return_Is_Valid_For_This_Adjustment(Method_Item const& method)❰
+    if (!method.return_results.empty()){
+        if (!method.return_results[0].is_reference){
+            return true;
+        }
+    }
+    return false;
+❱
+
+◀private: static▶ void ☀Add_Instantiate_Statement(Method_Item & method, std::string const& type, std::string const& identifier, std::string const& default_value)❰
+
+    Add_To_Front(method.entire_body.elements,Create_Body_Token(Body_Token_Name::UNCAUGHT_STATEMENT,"\n\n"));
+    std::string statement = type + " " + identifier;
+    
+    if (!default_value.empty()){
+        statement += " = " + default_value;
+    }
+    
+    
+    statement += ";";
+    Add_To_Front(method.entire_body.elements,Create_Body_Token(Body_Token_Name::UNCAUGHT_STATEMENT,statement));
+❱
+
+◀private: static▶ void ☀Add_Return_Statement(Method_Item & method, std::string const& identifier)❰
+
+    Add_To_Back(method.entire_body.elements,Create_Body_Token(Body_Token_Name::UNCAUGHT_STATEMENT,"\n\n"));
+    std::string statement = "return " + identifier + ";";
+    Add_To_Back(method.entire_body.elements,Create_Body_Token(Body_Token_Name::UNCAUGHT_STATEMENT,statement));
+❱
+
+◀private: static▶ Root_Body_Element ☀Create_Body_Token(Body_Token_Name const& name, std::string const& value)❰
+    
+    Uncaught_Statement statement;
+    statement.value.name = name;
+    statement.value.value = as_wstring(value);
+    
+    Root_Body_Element t;
+    t.types = statement;
+    return t;
+❱
+
+◀private: static▶ void ☀Add_Immediate_Value_Return(Method_Item & method, std::string const& default_value)❰
+
+    Add_To_Front(method.entire_body.elements,Create_Body_Token(Body_Token_Name::UNCAUGHT_STATEMENT,"\n\n"));
+    std::string statement = "return " + default_value + ";";
+    Add_To_Back(method.entire_body.elements,Create_Body_Token(Body_Token_Name::UNCAUGHT_STATEMENT,statement));
+    
+❱
+
+◀private: static▶ std::string ☀Decide_Identifier(Function_Result const& result)❰
+
+    //HACK SO THAT IT FITS INTERFACE:
+    C_Export_Settings settings;
+    Data_Member_Item dm;
+    bool is_global = false;
+    bool is_member = false;
+    
+    settings.portion.data_member_options.casing.non_const_casing = Case_Format_Style::SNAKE_CASE;
+    settings.portion.data_member_options.notation.use_hungarian_prefix = false;
+    settings.portion.data_member_options.notation.use_unit_suffix = true;
+    settings.portion.data_member_options.notation.unit_casing.non_const_casing= Case_Format_Style::SNAKE_CASE;
+    settings.portion.data_member_options.notation.unit_casing.const_casing= Case_Format_Style::SNAKE_CASE;
+    settings.portion.data_member_options.notation.unit_casing.global_non_const_casing= Case_Format_Style::SNAKE_CASE;
+    settings.portion.data_member_options.notation.unit_casing.global_const_casing= Case_Format_Style::SNAKE_CASE;
+    
+    dm.name = result.identifier;
+    dm.type = result.type;
+    dm.units = result.units;
+    
+    auto s = Identifier_Name_Deriver::Derive_Name(dm,settings,is_global,is_member);
+    return s;
+    
+❱

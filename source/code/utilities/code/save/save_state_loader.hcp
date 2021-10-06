@@ -1,0 +1,183 @@
+class
+⚯
+⚞⚟
+
+
+◀public: static▶ Ide_Elements ☀Load(std::string const& file_name)❰
+
+    
+    //settings
+    bool allow_schema_violations = false;
+    
+    
+    
+    //turn the file into the derserialized c++ state
+    //modifications might be made to the json so the derserialization
+    //is forwards compatible with c++ data structure changes
+    auto x = Forward_Compadible_Deserialization(file_name);
+    
+    //choose the latest schema for further validation and forwards upgrading
+    for (auto & it: x.elements.types){
+        Apply_Schema_To_Elements::Apply_Schema_Only(it);
+    }
+    
+    
+    
+    //Now that the C++ object has been deserialized, we can validate some specific properties of it.
+    //For example, the object itself follows a schema.
+    //Let's check to see if there are any schema validations since this is also something that may change
+    //over time and that we want to be forward compatible with.
+    for (auto & it: x.elements.types){
+        Forward_Compatible_Element_Upgrades::Upgrade_If_Needed(it);
+    }
+    if (!allow_schema_violations) {
+        Ensure_No_Remaining_Schema_Violations(x);
+    }
+    
+    //reload structure settings (this includes new schema version for the next time we save)
+    for (auto & it: x.elements.types){
+        Apply_Schema_To_Elements::Apply(it);
+    }
+    
+    //unpack it
+    return x.elements;
+❱
+
+
+◀private: static▶ Save_State ☀Forward_Compadible_Deserialization(std::string const& file_name)❰
+
+    //load raw json first so that we understand the version it was saved at
+    auto json = Deserialize_Save_File(file_name);
+    int version = json["version"];
+    
+    //Provide forward compatibility on the json object by adjusting it to meet the needs of the current version.
+    //After this adjustment it will be safe to deserialize.
+    Upgrade_Json_For_Deserialization_Compadibility(json,version);
+    
+    //Now that the json has been modified, we can deserialize the object.
+    auto x = Json_To_Save_State(json);
+    return x;
+❱
+
+
+◀private: static▶ void ☀Ensure_No_Remaining_Schema_Violations(Save_State const& x)❰
+    for (auto & it: x.elements.types){
+        auto violations = Validate_Ide_Element::Validate_And_Get_Names(it);
+        if (!violations.empty()){
+            std::cerr << "There are " << violations.size() << " schema violations." << std::endl;
+            Sort_And_Remove_Duplicates(violations);
+            std::cerr << "The paths are: " << std::endl;
+            for (auto const& it: violations){
+                std::cerr << it << std::endl;
+            }
+            exit(-1);
+        }
+    }
+❱
+
+
+◀private: static▶ Save_State ☀Json_To_Save_State(nlohmann::json const& json)❰
+
+    Save_State x;
+    
+    try {
+        x = json.get<Save_State>();
+    }
+    catch(std::exception const& e){
+
+        std::cerr << Patch_Upgrade_Failure_Message(e) << std::endl;
+        exit(-1);
+    }
+    return x;
+
+❱
+
+◀private: static▶ nlohmann::json ☀Deserialize_Save_File(std::string const& file_name)❰
+    
+    nlohmann::json json;
+    
+    
+    //newest strategy
+    try {
+        json = Deserialize_Zlib_Compressed_Json_Save_File(file_name);
+        return json;
+    }
+    catch (std::exception const& e){
+        std::cerr << Deserialization_Failure_Message_1(e) << std::endl;
+        std::cerr << "We will try other de-serialization methods before giving up" << std::endl;
+    }
+    
+    
+    //previous strategy
+    try {
+        json = Json_File_Io::Read_Compressed_Json_From_File(file_name,Json_Compression_Format::BSON);
+        return json;
+    }
+    catch(std::exception const& e){
+        std::cerr << Deserialization_Failure_Message_2(e) << std::endl;
+        std::cerr << "We will try other de-serialization methods before giving up" << std::endl;
+    }
+    
+    std::cerr << Deserialization_Failure_Message_Final() << std::endl;
+    exit(-1);
+    return json;
+❱
+
+
+◀private: static▶ nlohmann::json ☀Deserialize_Zlib_Compressed_Json_Save_File(std::string const& file_name)❰
+
+    auto compressed_json_str = Read_Entire_File_Into_String(file_name);
+    auto json_str = Zlib_Compressor::Decompress(compressed_json_str);
+    return nlohmann::json::parse(json_str);
+❱
+
+◀private: static▶ std::string ☀Deserialization_Failure_Message_1(std::exception const& e)❰
+    std::string x;
+    Append_With_Newline(x,"We couldn't deserialize the unilang file into generic json :(");
+    Append_With_Newline(x,"We assumed the file was zlib compressed.");
+    Append_With_Newline(x,"This usually means the file is corrupt and not even valid compressed json.");
+    Append_With_Newline(x,"Here is the library exception: ");
+    Append_With_Newline(x,e.what());
+    return x;
+❱
+
+◀private: static▶ std::string ☀Deserialization_Failure_Message_2(std::exception const& e)❰
+    std::string x;
+    Append_With_Newline(x,"We couldn't deserialize the unilang file into generic json :(");
+    Append_With_Newline(x,"This usually means the file is corrupt and not even valid compressed json.");
+    Append_With_Newline(x,"Here is the library exception: ");
+    Append_With_Newline(x,e.what());
+    return x;
+❱
+
+◀private: static▶ std::string ☀Deserialization_Failure_Message_Final()❰
+    std::string x;
+    Append_With_Newline(x,"There are no other de-serialization methods to try.");
+    Append_With_Newline(x,"We must give up trying to read in the file");
+    return x;
+❱
+
+◀private: static▶ std::string ☀Patch_Upgrade_Failure_Message(std::exception const& e)❰
+    std::string x;
+    Append_With_Newline(x,"The Unilang deserializaer couldn't convert the saved json file to the c++ data type properly :(");
+    Append_With_Newline(x,"Here is the library exception: ");
+    Append_With_Newline(x,e.what());
+    Append_With_Newline(x,"What this means is that the upgrade patching mechanism for the saved format did not properly adjust your data for correct deserialization.");
+    Append_With_Newline(x,"Example: Unilang saved the file for a C++ object at v1, and now you've tried to load the object for C++ object at v2");
+    Append_With_Newline(x,"This should be possible, the save state loader failed at applying the correct upgrade patch.");
+    Append_With_Newline(x,"How to fix it?  The right patch needs added or corrected inside the editor's save state loader.");
+    
+        //this is a very big json object
+        //std::cerr << "We will now dump that object:" << std::endl;
+        //std::cerr << json.dump(2) << std::endl;
+    return x;
+❱
+
+◀private: static▶ void ☀Upgrade_Json_For_Deserialization_Compadibility(nlohmann::json & j, int version)❰
+
+
+    auto patches = Patch_Settings_Getter::Get();
+    Generic_Patcher::Apply_Any_Needed_Patches(j,patches,version);
+
+❱
+

@@ -1,0 +1,89 @@
+class
+❪cstdlib❫
+❪iostream❫
+❪"code/utilities/graphics/sdl/sdl_init_settings"❫
+❪"SDL.h"❫
+⚯
+⚞⚟
+
+◀public: static▶ SDL_Window *☀Create(Sdl_Window_Settings const& settings)❰
+    
+    // Setup window
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, settings.double_buffer_num);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, settings.depth_size);
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, settings.stencil_size);
+    //SDL_DisplayMode current;
+    //SDL_GetCurrentDisplayMode(settings.display_mode, &current);
+
+
+    //decide x/y window starting position
+    int x_pos = settings.x_pos;
+    int y_pos = settings.y_pos;
+    if (settings.x_pos_centered){
+        x_pos = SDL_WINDOWPOS_CENTERED;
+    }
+    if (settings.x_pos_undefined){
+        x_pos = SDL_WINDOWPOS_UNDEFINED;
+    }
+    if (settings.y_pos_centered){
+        y_pos = SDL_WINDOWPOS_CENTERED;
+    }
+    if (settings.y_pos_undefined){
+        y_pos = SDL_WINDOWPOS_UNDEFINED;
+    }
+    
+    //decide flags
+    int flags = 0;
+    if (settings.fullscreen){
+        flags |= SDL_WINDOW_FULLSCREEN;
+    }
+    if (settings.fullscreen_desktop){
+        flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+    }
+    if (settings.use_opengl){
+        flags |= SDL_WINDOW_OPENGL;
+    }
+    //TODO: causing CIs to fail
+    //if (settings.use_vulkan){
+    //    flags |= SDL_WINDOW_VULKAN;
+    //}
+    if (settings.hidden){
+        flags |= SDL_WINDOW_HIDDEN;
+    }
+    if (settings.borderless){
+        flags |= SDL_WINDOW_BORDERLESS;
+    }
+    if (settings.resizeable){
+        flags |= SDL_WINDOW_RESIZABLE;
+    }
+    if (settings.minimized){
+        flags |= SDL_WINDOW_MINIMIZED;
+    }
+    if (settings.maximized){
+        flags |= SDL_WINDOW_MAXIMIZED;
+    }
+    if (settings.input_grabbed){
+        flags |= SDL_WINDOW_INPUT_GRABBED;
+    }
+    if (settings.allow_high_dpi){
+        flags |= SDL_WINDOW_ALLOW_HIGHDPI;
+    }
+
+    SDL_Window *window = SDL_CreateWindow(settings.title.c_str(),
+                                          x_pos,
+                                          y_pos,
+                                          settings.width,
+                                          settings.height,
+                                          flags);
+    
+    //TODO(thickey): fails in CI
+    //SDL_SetWindowOpacity(window,
+    //                     settings.transparency);
+    
+    if (window == NULL) {
+        std::cerr << "could not create window" << std::endl;
+        exit(1);
+    }
+    
+    return window;
+❱

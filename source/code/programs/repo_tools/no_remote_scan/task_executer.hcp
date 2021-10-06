@@ -1,0 +1,129 @@
+class
+❪iostream❫
+❪fstream❫
+❪"code/programs/repo_tools/no_remote_scan/program_options/program_options"❫
+❪"code/utilities/build/build_repo_establisher/build_repo_establisher"❫
+⚯
+❪"code/utilities/program/wrappers/bazel/query/bazel_aquery_runner"❫
+❪"code/utilities/program/wrappers/bazel/query/bazel_query_runner"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
+❪"code/utilities/program/wrappers/bazel/test/bazel_test_runner"❫
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/program/wrappers/buildozer/buildozer_runner"❫
+❪"code/utilities/types/function/lib"❫
+❪"code/utilities/program/wrappers/git/update/git_updater"❫
+❪"code/utilities/types/strings/transformers/search_replace/lib"❫
+⚞⚟
+
+
+◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& options) ❰
+
+    //We establish a repo and a context for building artifacts in it.
+    //This setup tries to be agnostic to any expectations about the repo's hosting, layout, and build system.
+    //It tries to derive things like:
+    //where/how the repository is cloned from, what branch it should be on or whether the repo already exists on the system.
+    //Analyze the repository to learn how to build it
+    auto repo_context = Build_Repo_Establisher::Establish_Repo_For_Building(options.Run_Dir(),options.Url(),options.Branch());
+    
+    auto configs = options.Configs();
+    
+    //get all the no-remote tests 
+    auto targets = Bazel_Query_Runner::Get_All_Test_Targets_Tagged_No_Remote(repo_context.program_to_run_build);
+    std::cout << targets.size() << " tests marked no-remote" << std::endl;
+    
+    auto no_buildkite_targets = Bazel_Query_Runner::Get_All_Test_Targets_Tagged_No_Buildkite(repo_context.program_to_run_build);
+    std::cout << no_buildkite_targets.size() << " tests marked no-buildkite" << std::endl;
+    
+    exit(0);
+
+    
+    Attempt_To_Fix_Each_Test(repo_context, configs, targets);
+    
+❱
+
+
+
+◀private: static▶ void ☀Attempt_To_Fix_Each_Test(Build_Repo_Settings const& repo_context, std::vector<std::string> const& configs, std::vector<std::string> const& targets) ❰
+
+    Loop_With_Progress(targets,[&](size_t const& current, size_t const& end, std::string const& target){
+        std::cout << current << "/" << end << " " << target << " ";
+        std::cout.flush();
+        
+            bool passed = true;
+            bool finished = true;
+            //finished = run_lambda_with_timeout(std::chrono::seconds(100),[&](){
+                passed = Bazel_Test_Runner::Test(repo_context.program_to_run_build,configs,target);
+            //});
+            
+            
+            if (!finished){
+                std::cout << "TIMEOUT ";
+                std::cout.flush();
+            }
+            else if (passed){
+                std::cout << "PASS ";
+                std::cout.flush();
+                
+                Attempt_No_Remote_Fix(repo_context,configs,target);
+                
+            }
+            else{
+                std::cout << "FAIL";
+            }
+        
+        std::cout << std::endl;
+    });
+❱
+
+◀private: static▶ void ☀Attempt_No_Remote_Fix(Build_Repo_Settings const& repo_context, std::vector<std::string> const& configs, std::string const& target)❰
+
+
+        std::cout << ".";
+        std::cout.flush();
+        Buildozer_Runner::Remove_No_Remote_Tag(target);
+        std::cout << ".";
+        std::cout.flush();
+        
+    
+        bool passed = true;
+        bool finished = true;
+        //finished = run_lambda_with_timeout(std::chrono::seconds(100),[&](){
+            passed = Bazel_Test_Runner::Test(repo_context.program_to_run_build,configs,target);
+        //});
+        
+        if (!finished){
+            std::cout << "TIMEOUT ";
+            std::cout.flush();
+            Buildozer_Runner::Add_No_Remote_Tag(target);
+        }
+        else if (passed){
+            std::cout << "| PASSES REMOTE ";
+            std::cout.flush();
+            
+            Make_PR(target);
+        }
+        else{
+            std::cout << "| FAILS REMOTE ";
+            std::cout.flush();
+            Buildozer_Runner::Add_No_Remote_Tag(target);
+        }
+❱
+
+
+◀private: static▶ void ☀Make_PR(std::string const& target)❰
+
+    //create a branch name
+    auto branch_name = target;
+    replace_all(branch_name,'/','_');
+    replace_all(branch_name,':','_');
+    replace_all(branch_name,'\\','_');
+    replace_all(branch_name,' ','_');
+    branch_name = "luxe/nm_fix" + branch_name;
+    
+    //push up the branch
+    Git_Update_Settings settings;
+    settings.message = "remove no-remote tag from " + target;
+    Git_Updater::Push_All_Changes_To_Remote_Branch_And_Return_To_Master(settings,branch_name);
+
+❱

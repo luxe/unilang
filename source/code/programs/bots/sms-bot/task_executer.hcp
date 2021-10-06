@@ -1,0 +1,52 @@
+class
+❪iostream❫
+❪string❫
+❪vector❫
+❪"program_options"❫
+❪"utilities"❫
+⚯
+❪utility❫
+❪"member_getter"❫
+❪"email_listener_and_responder"❫
+❪"global"❫
+⚞⚟
+
+◀public: static▶ void ☀Do_Needed_Tasks(Program_Options const& program_options) ❰
+
+
+	//right now, the only flags that need to be passed are:
+	//	- the gmail username
+	//	- the gmail password
+	//	- a text file containing the list of group members
+	//	I extract these things out to hopefully make the program a little bit more generic
+	//	for different kinds of group-chat bots people decide to make.
+	//	Presumably, this program could be running on the same machine in multiple instances;
+	//	handling different people in different group chats none of which needs to be related but can be.
+	//	AS AN EXAMPLE: let's say I'm in two different group chats.  I can run this program with two different settings,
+	//	provided that there are two different gmails handling each chat individually.
+	//	
+	//	For privacy, I do not track personal data and settings in the git repository
+	//	There will be examples though(dummy versions on how to make your own).
+	
+	//get all the command line flag values
+	auto username = program_options.Username();
+	auto password = program_options.Password();
+	auto path_to_user_data = program_options.Path_To_User_Data();
+
+
+	//attempt to log-in to gmail (this is just a quick check based on the credentials we now have)
+	//this way we will know about invalid log-in data, instead of dealing with a python script that silently does not work
+	//kinda shitty because there is boost implementation to bind with python. But communicating through the shell is functional enough.
+    std::string command = "python " + global::CHECK_LOGIN_SCRIPT + " \"" + username + "\" \"" + password + "\"";
+	auto return_code = execute(command);
+	if (return_code != "0"){
+		Exit_With_Error("could not log in to gmail");
+	}
+
+	//get all the members based on the path 
+	auto members = Member_Getter::Get_Members(path_to_user_data);
+
+	//once all the data is read in and the members are established, we can listen in on the group chat, and reply when prompted
+	Email_Listener_And_Responder::Monitor(members,username,password);
+
+❱

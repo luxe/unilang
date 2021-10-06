@@ -1,0 +1,84 @@
+class
+❪vector❫
+❪string❫
+❪iostream❫
+❪sstream❫
+❪iomanip❫
+❪unordered_map❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/program/call/lib"❫
+❪"code/utilities/random/files/random_files"❫
+❪"code/utilities/random/lib"❫
+❪"src/main/protobuf/spawn.pb.h"❫
+❪"src/main/protobuf/analysis.pb.h"❫
+❪"code/utilities/formats/serialization/protobuf"❫
+❪"code/utilities/program/wrappers/bazel/run_environment"❫
+❪"code/utilities/program/inputs/flags/data/flags"❫
+❪"code/utilities/program/inputs/flags/flag_util"❫
+❪"code/utilities/program/wrappers/bazel/query/query_deps_flags"❫
+❪"code/utilities/program/wrappers/bazel/query/data/aquery_results"❫
+⚯
+❪"code/utilities/program/call/process_spawn/timed/timed_process_spawner"❫
+❪"code/utilities/time/profile/function_profiler"❫
+⚞⚟
+
+
+◀public: static▶ Aquery_Results ☀Run_Aquery(std::string const& bazel_wrapper, std::string const& dep_name)❰
+
+    //build command
+    Aquery_Results x;
+    x.command = Build_Command(bazel_wrapper,dep_name);
+    
+    //execute command and write results to a file
+    x.output_file = Random_Files::Random_Tmp_Filename();
+    x.command += " > " + x.output_file;
+    x.spawn_results = Timed_Process_Spawner::Execute_And_Get_Back_Results(x.command);
+    
+    //deserialize into memory
+    x.aquery_deserialization_time_ms = Profile_Function_Ms([&](){
+        x.aquery_result = Deserialize<analysis::ActionGraphContainer>(x.output_file);
+        x.aquery_file_size = std::filesystem::file_size(x.output_file);
+    });
+    
+    return x;
+❱
+
+
+
+◀private: static▶ std::string ☀Build_Command(std::string const& bazel_wrapper, std::string const& dep_name)❰
+
+    std::string command = bazel_wrapper;
+    command += " aquery ";
+    
+    //format
+    command += "--output=proto ";
+    //command += "--output=jsonproto ";
+    
+    //quiet
+    command += "--noshow_progress ";
+    command += "--noshow_loading_progress ";
+    command += "--noshow_task_finish ";
+    //command += "--noshow_warnings ";
+    
+    //avoid crashes
+    command += "--keep_going ";
+    
+    //note sure about this
+    command += "--infer_universe_scope ";
+    //command += "--order_output=no ";
+    
+    //data to populate
+    command += "--include_commandline "; //default: true
+    command += "--include_artifacts "; //default: true
+    command += "--include_aspects "; //default: true
+    command += "--include_param_files "; //default: false
+    //command += "--skyframe_state "; //default: false
+
+    
+    command += "'" + dep_name + "'";
+    return command;
+❱

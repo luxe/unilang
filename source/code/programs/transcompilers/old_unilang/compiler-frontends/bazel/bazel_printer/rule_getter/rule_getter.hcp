@@ -1,0 +1,40 @@
+class
+
+⚯
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/types/strings/transformers/other/lib"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/char/lib"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+⚞⚟
+
+◀public: static▶ std::string ☀Get(Structure const& structure, Build_Rule_Settings const& settings)❰
+    
+    std::string result;
+    
+    
+    //boilerplate build up
+    std::vector<Code_Graph> code_graphs;
+    Code_Graph graph;
+    graph.structure = structure;
+    code_graphs.emplace_back(graph);
+    
+    auto build_objects = Build_Info_Extractor::Get_All_Build_Objects(code_graphs);
+    
+    for (auto const& build_object: build_objects){
+        if (build_object == Bazel_Build_Object::HIDL){
+            Append(result,Hidl::Create(structure,settings));
+            
+        }
+        else if (build_object == Bazel_Build_Object::CONFIG_HIDL){
+            Append(result,Config_Hidl::Create(structure,settings));
+            
+        }
+        else if (build_object == Bazel_Build_Object::CPP_LIBRARY){
+            Append(result,Cc_Library::Create(structure,settings));
+        }
+    }
+    
+    return result;
+❱

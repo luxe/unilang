@@ -1,0 +1,36 @@
+class
+❪"systems"❫
+❪"utilities"❫
+⚯
+
+⚞⚟
+
+◀public: static▶ std::string ☀Get_Command(std::string const& file_to_check, std::vector<std::string> const& search_paths)❰
+
+    const std::string PROGRAM_NAME="splint";
+    const std::string OTHER_FLAGS="-warning-stream-stderr -preproc -booltype BOOL -I'/usr/include/linux/' -I'/usr/include/'";
+    
+    //get all the directories of our other project headers
+    //as well as all the directories of all our fake VxWorks headers
+    //hopefully the right paths get sent into the program
+    std::string look_paths_flags;
+    for (it: search_paths){
+        look_paths_flags += Recursively_Get_Flags_For_Header_Search_Directories(it) + " ";
+    }
+
+
+    std::string command = PROGRAM_NAME + " " + OTHER_FLAGS + " " + look_paths_flags + " " + file_to_check;
+    
+    return command;
+❱
+
+◀private: static▶ std::string ☀Recursively_Get_Flags_For_Header_Search_Directories(std::string const& path_to_recurse)❰
+    std::string flag_line;
+    
+    auto paths_vec = Recursively_Get_All_Directories_From_Path(path_to_recurse);
+    for (auto const& it: paths_vec){
+        flag_line +="-I'" + it + "' ";
+    }
+    
+    return flag_line;
+❱

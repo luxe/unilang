@@ -1,0 +1,112 @@
+class
+❪pybind11/embed.h❫
+❪"code/utilities/web/automate/browser/browser_settings"❫
+❪"code/utilities/web/chrome/driver/chrome_driver_selector"❫
+⚯
+❪iostream❫
+⚞⚟
+
+
+//It might be broken and you see an error like this:  
+//Fatal Python error: Py_Initialize: Unable to get the locale encoding
+//ModuleNotFoundError: No module named 'encodings'
+
+//In that case, do this:
+//export PYTHONPATH=/usr/local/python3.6
+//export PYTHONHOME=/usr/local/python3.6
+//I knew what version to use by dumping the strings of the binary.
+//This is a hermetic problem that needs fixed
+
+//then you need certain python libs installed for that python version:
+//python3.6 -m pip install selenium
+
+//then you need chrome_drivers:
+
+
+
+
+◀public: static▶ void ☀Create(Browser_Settings const& settings) ❰
+      
+    //include python imports
+    Include_Necessary_Imports(settings);
+    
+    //customize and create selenium browser with driver attached
+    Create_Browser_Object(settings);
+❱
+
+◀private: static▶ void ☀Include_Necessary_Imports(Browser_Settings const& settings) ❰
+    try {
+        pybind11::exec("from selenium import webdriver");
+        pybind11::exec("from selenium.webdriver.chrome.options import Options");
+        pybind11::exec("from selenium.webdriver.common.keys import Keys");
+        pybind11::exec("from selenium.webdriver.support.ui import Select");
+        pybind11::exec("from selenium.webdriver.common.by import By");
+        pybind11::exec("from selenium.webdriver.support.ui import WebDriverWait");
+        pybind11::exec("from selenium.webdriver.support import expected_conditions as EC");
+    }
+    catch(std::exception const& e){
+        std::cerr << "You need selenium installed for python3.\n";
+        std::cerr << "Try pip3 install selenium\n";
+        exit(EXIT_SUCCESS);
+    }
+❱
+
+◀private: static▶ void ☀Create_Browser_Object(Browser_Settings const& settings) ❰
+
+    pybind11::exec("chrome_options = Options()");
+    
+    if (settings.use_browser_profile){
+        pybind11::exec("chrome_options.add_argument('user-data-dir=" + settings.browser_profile + "')");
+    }
+    
+    if (settings.ignore_certificate_errors){
+        pybind11::exec("chrome_options.add_argument('--ignore-certificate-errors')");
+    }
+    
+    if (settings.disable_notifications){
+        pybind11::exec("chrome_options.add_argument('--disable-notifications')");
+    }
+    
+    if (settings.disable_extensions){
+        pybind11::exec("chrome_options.add_argument('--disable-extensions')");
+    }
+    
+    if (settings.start_maximized){
+        pybind11::exec("chrome_options.add_argument('--start-maximized')");
+    }
+    
+    //add a user agent so we don't get caught
+    if (settings.use_user_agent){
+        pybind11::exec("chrome_options.add_argument('user-agent=" + settings.user_agent + "')");
+    }
+    
+    if (settings.headless){
+        pybind11::exec("chrome_options.add_argument('--headless')");
+    }
+    
+    Set_Execution_Path(settings);
+    pybind11::exec(settings.browser_name + " = webdriver.Chrome(chrome_options=chrome_options,executable_path=executable_path)");
+    
+    pybind11::exec(settings.browser_name + ".set_window_size(100,100)");
+    
+    //Once set, the implicit wait is set for the life of the WebDriver object.
+    if (settings.set_implicit_wait){
+        std::string command = settings.browser_name + ".implicitly_wait(";
+        command += std::to_string(settings.implicit_wait_s);
+        command += ")";
+        pybind11::exec(command);
+    }
+❱
+
+◀private: static▶ void ☀Set_Execution_Path(Browser_Settings const& settings) ❰
+
+    //decide the path to the driver.  This can be a hard-coded or a derived value
+    std::string path_to_driver = settings.direct_driver_path;
+    if (!settings.use_direct_driver_path){
+        path_to_driver = Chrome_Driver_Selector::Get_Driver_Path(settings.chrome_driver_derive);
+    }
+    
+    //set it
+    pybind11::exec("executable_path = \"" + path_to_driver + "\"");
+
+❱

@@ -1,0 +1,165 @@
+class
+⚯
+⚞⚟
+
+
+//create a diagram showing the unilang transformation
+◀public: static▶ void ☀Create()❰
+
+
+    //concept
+    auto fitted_graph = Create_Conceptually_Fitted_Graph();
+    
+    //actual graph with concept information
+    auto drawable_fitted_graph = Fitted_Faced_Label_Graph_Creator::Create(fitted_graph);
+    
+    //recolor some nodes
+    Change_Color(drawable_fitted_graph,"file.unilang");
+    Change_Color(drawable_fitted_graph,"code.json");
+    Change_Color(drawable_fitted_graph,"c++ code");
+    Change_Color(drawable_fitted_graph,"python code");
+    Change_Color(drawable_fitted_graph,"artifact");
+    
+    //render object
+    Pc_Input_State pc_input;
+    auto unilang_font_lookup = Unilang_Character_Maps::Get();
+    Position pos;
+    auto frame_elements = Fitted_Faced_Label_Graph_Drawer::Full_Draw(unilang_font_lookup,drawable_fitted_graph.state,pos,pc_input);
+    
+    //make image
+    Convert_To_Image(frame_elements);
+
+
+❱
+
+◀private: static▶ void ☀Change_Color(Fitted_Faced_Label_Graph & drawable_fitted_graph, std::string const& name)❰
+    for (auto & it: drawable_fitted_graph.state.nodes){
+        if (Faced_Label_First_Name::Get(it) == name){
+            it = Faced_Label_Premades::Single_Plain_Light_Purple_Box(name);
+        }
+    }
+❱
+
+◀private: static▶ Conceptually_Laid_Out_Graph ☀Create_Conceptually_Fitted_Graph()❰
+    Conceptually_Laid_Out_Graph g;
+    Add_Nodes(g);
+    Add_Edges(g);
+    
+    return g;
+❱
+
+◀private: static▶ void ☀Add_Nodes(Conceptually_Laid_Out_Graph & g)❰
+
+    Conceptually_Laid_Out_Node node;
+    
+    node.name = "unilang-editor";
+    node.pos.x = 0;
+    node.pos.y = 0;
+    g.nodes.emplace_back(node);
+    
+    node.name = "file.unilang";
+    node.pos.x = 1;
+    node.pos.y = 0;
+    g.nodes.emplace_back(node);
+    
+    node.name = "unilang-to-code";
+    node.pos.x = 2;
+    node.pos.y = 0;
+    g.nodes.emplace_back(node);
+    
+    node.name = "code.json";
+    node.pos.x = 3;
+    node.pos.y = 0;
+    g.nodes.emplace_back(node);
+    
+    node.name = "code-to-cpp";
+    node.pos.x = 4;
+    node.pos.y = 0;
+    g.nodes.emplace_back(node);
+    
+    node.name = "c++ code";
+    node.pos.x = 5;
+    node.pos.y = 0;
+    g.nodes.emplace_back(node);
+    
+    node.name = "code-to-python";
+    node.pos.x = 4;
+    node.pos.y = 1;
+    g.nodes.emplace_back(node);
+    
+    node.name = "python code";
+    node.pos.x = 5;
+    node.pos.y = 1;
+    g.nodes.emplace_back(node);
+    
+    node.name = "code-to-artifact";
+    node.pos.x = 4;
+    node.pos.y = 2;
+    g.nodes.emplace_back(node);
+    
+    node.name = "artifact";
+    node.pos.x = 5;
+    node.pos.y = 2;
+    g.nodes.emplace_back(node);
+❱
+
+◀private: static▶ void ☀Add_Edges(Conceptually_Laid_Out_Graph & g)❰
+
+    Conceptually_Laid_Out_Edge edge;
+    
+    edge.from = "unilang-editor";
+    edge.to = "file.unilang";
+    g.edges.emplace_back(edge);
+    
+    edge.from = "file.unilang";
+    edge.to = "unilang-editor";
+    g.edges.emplace_back(edge);
+    
+    edge.from = "file.unilang";
+    edge.to = "unilang-to-code";
+    g.edges.emplace_back(edge);
+    
+    edge.from = "unilang-to-code";
+    edge.to = "code.json";
+    g.edges.emplace_back(edge);
+    
+    edge.from = "code.json";
+    edge.to = "code-to-cpp";
+    g.edges.emplace_back(edge);
+    
+    edge.from = "code-to-cpp";
+    edge.to = "c++ code";
+    g.edges.emplace_back(edge);
+    
+    edge.from = "code.json";
+    edge.to = "code-to-python";
+    g.edges.emplace_back(edge);
+    
+    edge.from = "code-to-python";
+    edge.to = "python code";
+    g.edges.emplace_back(edge);
+    
+    edge.from = "code.json";
+    edge.to = "code-to-artifact";
+    g.edges.emplace_back(edge);
+    
+    edge.from = "code-to-artifact";
+    edge.to = "artifact";
+    g.edges.emplace_back(edge);
+❱
+
+◀private: static▶ void ☀Convert_To_Image(Frame_Elements const& elements)❰
+
+    //draw the elements to an image
+    Cairo_Render_Settings settings;
+    
+    auto host_folder = Bazel_Derived_Root_Of_Repo();
+    settings.file_name = host_folder + ".readme/unilang_code_pipeline.png";
+    settings.bg_color.r = 1;
+    settings.bg_color.g = 1;
+    settings.bg_color.b = 1;
+    Frame_Renderer::Render(elements,settings);
+    
+    //additional cleanuo
+    Image_Transparent::Convert(settings.file_name);
+❱

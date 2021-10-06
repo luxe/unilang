@@ -1,0 +1,72 @@
+class
+❪"utilities"❫
+❪"systems"❫
+❪"program_input"❫
+❪"compass_direction"❫
+❪"compass"❫
+❪"taxi_cab_path"❫
+❪"taxi_cab_results"❫
+⚯
+⚞⚟
+
+◀public: static▶ std::pair<int,int> ☀Get_Final_Destination(Taxi_Cab_Path const& path) ❰
+
+    auto results = Run_Taxi_Cab_Simulation(path);
+    return results.final;
+❱
+
+◀public: static▶ std::pair<int,int> ☀Get_First_Revisted_Location(Taxi_Cab_Path const& path) ❰
+    auto results = Run_Taxi_Cab_Simulation(path);
+    return results.first_repeat_visit;
+❱
+
+
+◀private: static▶ Taxi_Cab_Results ☀Run_Taxi_Cab_Simulation(Taxi_Cab_Path const& path) ❰
+
+    //[north+,south-,east+,west-]
+    std::pair<int,int> location = {0,0};
+    Compass_Direction direction = Compass_Direction::NORTH;
+    
+    //all of the unique visited locations
+    std::set<std::pair<int,int>> visited;
+    
+    //locations that have been revised in the order they have been revised
+    std::vector<std::pair<int,int>> revist_steps;
+    Add_To_Set(visited,location);
+    
+    for (auto it: path.steps){
+        
+        //change direction
+        if (it.first == Handedness::LEFT){Compass::Turn_Left(direction);}
+        else{Compass::Turn_Right(direction);}
+        
+        //move in direction
+        switch (direction){
+            case Compass_Direction::NORTH: Move_To_New_Location(location,location.first,it.second,visited,revist_steps,true); break; 
+            case Compass_Direction::SOUTH: Move_To_New_Location(location,location.first,it.second,visited,revist_steps,false); break;
+            case Compass_Direction::EAST: Move_To_New_Location(location,location.second,it.second,visited,revist_steps,true); break;
+            case Compass_Direction::WEST: Move_To_New_Location(location,location.second,it.second,visited,revist_steps,false); break;
+        }
+    }
+    
+    //store results of simulation
+    Taxi_Cab_Results results;
+    results.final = location;
+    if (!revist_steps.empty()){
+        results.first_repeat_visit = revist_steps[0];
+    }
+    return results;
+❱
+
+◀private: static▶ void ☀Move_To_New_Location(std::pair<int,int> const& location, int & coord, int const& amount, std::set<std::pair<int,int>> & visited, std::vector<std::pair<int,int>> & revist_steps, bool const& add)❰
+
+    for (int i = 0; i < amount; ++i){
+            if (add){coord += 1;}
+            else{coord -= 1;}
+            
+            if(Exists_In_Set(visited,location)){
+                revist_steps.push_back(location);
+            }
+            Add_To_Set(visited,location);
+        }
+❱

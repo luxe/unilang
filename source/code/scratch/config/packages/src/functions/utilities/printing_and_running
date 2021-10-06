@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+function Exit_With_Error(){
+error_message $1; exit -1;
+}
+
+function Run_Command(){
+	eval $1 >> "setup.log" 2>&1
+}
+
+function Echo_To_Terminal_And_Log_File(){
+blue_message $1 | tee -a "setup.log"
+}
+
+function Exit_If_Command_Failed(){
+if [ "$?" -ne 0 ]; then
+Exit_With_Error "command failed"
+fi
+}
+function Warn_If_Command_Failed(){
+if [ "$?" -ne 0 ]; then
+error_message "last command failed"
+fi
+}
+
+function Run_Command_And_Exit_If_Command_Failed(){
+	Echo_To_Terminal_And_Log_File "$1..."
+	Run_Command "$2"
+	Exit_If_Command_Failed
+}
+function Run_Command_And_Warn_If_Command_Failed(){
+	Echo_To_Terminal_And_Log_File "$1..."
+	Run_Command "$2"
+	Warn_If_Command_Failed
+}

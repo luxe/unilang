@@ -1,0 +1,514 @@
+􏶞g􏶟
+􏷲generic algorithms to run unordered traversals on a graph􏷱
+􏷰Traversal routines exist separated from the graph itself
+Using the visitor pattern, you can pass in a function pointer, 
+which will be applied to each vertex/edge during a traversal.􏷯
+􏷮Algorithms􏷭􏷮Graph􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦stddef􏷥􏴓d􏴔􏴑size_t􏴒
+􏷤􏷣􏷦stdioLib􏷥􏴓d􏴔􏴑BOOL􏴒
+􏷤􏷣􏷦vector􏷥􏴓d􏴔􏴑VectorT􏴒
+􏷤􏷣􏷦graph􏷥􏴓d􏴔􏴑GraphT􏴒
+􏷤􏷣􏷦graph_vertex􏷥􏴓d􏴔􏴑GraphVertexT􏴒
+􏷤􏷣􏷦graph_edge􏷥􏴓d􏴔􏴑GraphEdgeT􏴒
+􏷤􏷣􏷦graph_traversal_control􏷥􏴓d􏴔􏴑GraphTraversalControlT􏴒
+􏷤􏷣􏷦graph_action_types􏷥􏴓d􏴔􏴑VertexActionT􏴒􏴓d􏴔􏴑EdgeActionT􏴒􏴓d􏴔􏴑ConnectionActionT􏴒
+􏷤􏷣􏷦memory_management_types􏷥􏴓d􏴔􏴑TypeInformationT􏴒
+􏶔􏶕􏶒node􏶓􏴏d􏴐􏴍NodeT􏴎
+
+
+
+VERTEX RELATED:
+􏷘+􏷗􏷒apply action to all vertices􏷑
+􏷐call custom function on each vertex in the graph􏷏
+􏶠The order is not important.  It applies a function to each vertex􏶡
+􏶜mr􏶝􏷆GraphT􏷅􏷄graph􏷃􏷀the graph to perform the action on􏶿
+􏶜mr􏶝􏷆void􏷅􏷄custom data􏷃􏷀custom data to be forwarded to each action􏶿
+􏶜􏶝􏷆VertexActionT􏷅􏷄action􏷃􏷀the action to take on each vertex􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼traversal stopped􏶻􏶺whether the user has decided stop the entire traversal􏶹
+􏶴
+    􏶲get all the vertices􏶱
+    VectorT* ptVertices = GraphGetAllVertices(􏵶graph􏵷);
+    
+    􏶲apply the function to each vertex􏶱
+    size_t uIndex = 0;
+    GraphTraversalControlT tControl = ConstructGraphTraversalControl();
+    
+    􏶲we are suspecting an action for this algorithm􏶱
+    􏶲report and error if we don't get one􏶱
+    􏵲ensure an action is given􏵳􏵶action􏵷);
+    
+    􏶲we stop traversing when we have either run out of elements to traverse, or the user has asked to bail out􏶱
+    for(;uIndex < VectorSize(ptVertices) && !tControl.m_bStopTraversal; ++uIndex){
+        􏵲take action on vertex􏵳(GraphVertexT*)VectorAt(ptVertices,uIndex),&tControl,􏵶custom data􏵷,􏵶action􏵷);
+    }
+    
+    􏶲inform the caller that the traversal has been stopped􏶱
+    return tControl.m_bStopTraversal;
+􏶳
+
+􏷘+􏷗􏷒apply transition action to all vertices􏷑
+􏷐call custom function on each vertex in the transitioned graph􏷏
+􏶠The order is not important.  It applies a function to each transitioning vertex􏶡
+􏶜mr􏶝􏷆GraphT􏷅􏷄before􏷃􏷀the graph before the transition􏶿
+􏶜mr􏶝􏷆GraphT􏷅􏷄after􏷃􏷀the graph after the transition􏶿
+􏶜mr􏶝􏷆void􏷅􏷄custom data􏷃􏷀custom data to be forwarded to each action􏶿
+􏶜􏶝􏷆VertexTransitionActionT􏷅􏷄action􏷃􏷀the action to take on each transitioning vertex􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼traversal stopped􏶻􏶺whether the user has decided stop the entire traversal􏶹
+􏶴
+    􏶲get all the vertices􏶱
+    VectorT* ptBeforeVertices = GraphGetAllVertices(􏵶before􏵷);
+    VectorT* ptAfterVertices = GraphGetAllVertices(􏵶after􏵷);
+    
+    􏶲apply the function to each vertex􏶱
+    􏶲we assume the graphs have the same number of vertices in the same order􏶱
+    size_t uIndex = 0;
+    GraphTraversalControlT tControl = ConstructGraphTraversalControl();
+    
+    􏶲we are suspecting an action for this algorithm􏶱
+    􏶲report and error if we don't get one􏶱
+    􏵲ensure an action is given􏵳􏵶action􏵷);
+    
+    􏶲we stop traversing when we have either run out of elements to traverse, or the user has asked to bail out􏶱
+    for(;uIndex < VectorSize(ptBeforeVertices) && !tControl.m_bStopTraversal; ++uIndex){
+        􏵲take action on transitioning vertex􏵳(GraphVertexT*)VectorAt(ptBeforeVertices,uIndex),(GraphVertexT*)VectorAt(ptAfterVertices,uIndex),&tControl,􏵶custom data􏵷,􏵶action􏵷);
+    }
+    
+    􏶲inform the caller that the traversal has been stopped􏶱
+    return tControl.m_bStopTraversal;
+􏶳
+
+􏷘+􏷗􏷒apply action to all leaf vertices􏷑
+􏷐call custom function on each leaf vertex in the graph􏷏
+􏶠The order is not important.  It applies a function to each vertex􏶡
+􏶜mr􏶝􏷆GraphT􏷅􏷄graph􏷃􏷀the graph to perform the action on􏶿
+􏶜mr􏶝􏷆void􏷅􏷄custom data􏷃􏷀custom data to be forwarded to each action􏶿
+􏶜􏶝􏷆VertexActionT􏷅􏷄action􏷃􏷀the action to take on each vertex􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼traversal stopped􏶻􏶺whether the user has decided stop the entire traversal􏶹
+􏶴
+    􏶲get all the vertices􏶱
+    VectorT* ptVertices = GraphGetAllVertices(􏵶graph􏵷);
+    
+    􏶲the immediate neighbors for a particular vertex􏶱
+    VectorT tNeighbors = ConstructVector(SPECIALIZE_MANAGED(GraphVertexT),0);
+    
+    􏶲the current vertex being looked at􏶱
+    GraphVertexT* ptCurrentVertex = NULL;
+    
+    􏶲the current edge being looked at􏶱
+    GraphEdgeT* ptCurrentEdge = NULL;
+    
+    􏶲apply the function to each vertex􏶱
+    size_t uIndexOuter = 0;
+    size_t uIndexInner = 0;
+    GraphTraversalControlT tControl = ConstructGraphTraversalControl();
+    
+    􏶲we are suspecting an action for this algorithm􏶱
+    􏶲report and error if we don't get one􏶱
+    􏵲ensure an action is given􏵳􏵶action􏵷);
+    
+    􏶲we stop traversing when we have either run out of elements to traverse, or the user has asked to bail out􏶱
+    for(;uIndexOuter < VectorSize(ptVertices) && !tControl.m_bStopTraversal; ++uIndexOuter){
+        
+        􏶲get current vertex􏶱
+        ptCurrentVertex = (GraphVertexT*)VectorAt(ptVertices,uIndexOuter);
+        
+        􏶲iterate over each of the edges of that vertex􏶱
+        for(;uIndexInner < VectorSize(GraphVertexEdges(ptCurrentVertex)); ++uIndexInner){
+        
+            􏶲get current edge􏶱
+            ptCurrentEdge = (GraphEdgeT*)VectorAt(GraphVertexEdges(ptCurrentVertex),uIndexInner);
+            
+            􏶲store immediate neighbor􏶱
+            VectorPushBack(&tNeighbors,GraphGetVertex(􏵶graph􏵷,GraphEdgePointsTo(ptCurrentEdge)));
+        }
+        
+        􏶲its a leaf node if the vertex does not point to neighbors􏶱
+        if (VectorIsEmpty(&tNeighbors)){
+            􏵲take action on vertex􏵳ptCurrentVertex,&tControl,􏵶custom data􏵷,􏵶action􏵷);
+        }
+        
+        􏶲reset for next iteration􏶱
+        uIndexInner = 0u;
+        VectorClear(&tNeighbors);
+    }
+    
+    􏶲destruct the temporary vector of derived neighbors􏶱
+    DestructVectorT(&tNeighbors);
+    
+    􏶲inform the caller that the traversal has been stopped􏶱
+    return tControl.m_bStopTraversal;
+􏶳
+
+VERTEX AND NEIGHBORS RELATED:
+􏷘+􏷗􏷒apply action to all vertices and immediate neighbors􏷑
+􏷐call custom function on each vertex and the vertex's immediate vertex's neighbors in the graph􏷏
+􏶠The order is not important.  It applies a function to each vertex and the vertex's immediate neighbors􏶡
+􏶜mr􏶝􏷆GraphT􏷅􏷄graph􏷃􏷀the graph to perform the action on􏶿
+􏶜mr􏶝􏷆void􏷅􏷄custom data􏷃􏷀custom data to be forwarded to each action􏶿
+􏶜􏶝􏷆VertexAndNeighborsActionT􏷅􏷄action􏷃􏷀the action to take on each vertex􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼traversal stopped􏶻􏶺whether the user has decided stop the entire traversal􏶹
+􏶴
+    􏶲get all the vertices􏶱
+    VectorT* ptVertices = GraphGetAllVertices(􏵶graph􏵷);
+    
+    􏶲the immediate neighbors for a particular vertex􏶱
+    VectorT tNeighbors = ConstructVector(SPECIALIZE_MANAGED(GraphVertexT),0);
+    
+    􏶲the current vertex being looked at􏶱
+    GraphVertexT* ptCurrentVertex = NULL;
+    
+    􏶲the current edge being looked at􏶱
+    GraphEdgeT* ptCurrentEdge = NULL;
+    
+    􏶲apply the function to each vertex􏶱
+    size_t uIndexOuter = 0;
+    size_t uIndexInner = 0;
+    GraphTraversalControlT tControl = ConstructGraphTraversalControl();
+    
+    􏶲we are suspecting an action for this algorithm􏶱
+    􏶲report and error if we don't get one􏶱
+    􏵲ensure an action is given􏵳􏵶action􏵷);
+    
+    􏶲we stop traversing when we have either run out of elements to traverse, or the user has asked to bail out􏶱
+    for(;uIndexOuter < VectorSize(ptVertices) && !tControl.m_bStopTraversal; ++uIndexOuter){
+        
+        􏶲get current vertex􏶱
+        ptCurrentVertex = (GraphVertexT*)VectorAt(ptVertices,uIndexOuter);
+        
+        􏶲iterate over each of the edges of that vertex􏶱
+        for(;uIndexInner < VectorSize(GraphVertexEdges(ptCurrentVertex)); ++uIndexInner){
+        
+            􏶲get current edge􏶱
+            ptCurrentEdge = (GraphEdgeT*)VectorAt(GraphVertexEdges(ptCurrentVertex),uIndexInner);
+            
+            􏶲store immediate neighbor􏶱
+            VectorPushBack(&tNeighbors,GraphGetVertex(􏵶graph􏵷,GraphEdgePointsTo(ptCurrentEdge)));
+        }
+        
+        􏵲take action on vertex and neighbors􏵳ptCurrentVertex,&tNeighbors,&tControl,􏵶custom data􏵷,􏵶action􏵷);
+        
+        􏶲reset for next iteration􏶱
+        uIndexInner = 0u;
+        VectorClear(&tNeighbors);
+    }
+    
+    􏶲destruct the temporary vector of derived neighbors􏶱
+    DestructVectorT(&tNeighbors);
+    
+    􏶲inform the caller that the traversal has been stopped􏶱
+    return tControl.m_bStopTraversal;
+􏶳
+􏷘+􏷗􏷒apply action to all vertices and immediate non ground neighbors􏷑
+􏷐call custom function on each vertex and the vertex's immediate vertex's neighbors(excluding ground) in the graph􏷏
+􏶠The order is not important.  It applies a function to each vertex and the vertex's immediate neighbors (excluding ground)􏶡
+􏶜mr􏶝􏷆GraphT􏷅􏷄graph􏷃􏷀the graph to perform the action on􏶿
+􏶜mr􏶝􏷆void􏷅􏷄custom data􏷃􏷀custom data to be forwarded to each action􏶿
+􏶜􏶝􏷆VertexAndNeighborsActionT􏷅􏷄action􏷃􏷀the action to take on each vertex􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼traversal stopped􏶻􏶺whether the user has decided stop the entire traversal􏶹
+􏶴
+    􏶲get all the vertices􏶱
+    VectorT* ptVertices = GraphGetAllVertices(􏵶graph􏵷);
+    
+    􏶲the immediate neighbors for a particular vertex􏶱
+    VectorT tNeighbors = ConstructVector(SPECIALIZE_MANAGED(GraphVertexT),0);
+    
+    􏶲the current vertex being looked at􏶱
+    GraphVertexT* ptCurrentVertex = NULL;
+    
+    􏶲the current neighbor vertex being looked at􏶱
+    GraphVertexT* ptCurrentNeighborVertex = NULL;
+    
+    􏶲the current edge being looked at􏶱
+    GraphEdgeT* ptCurrentEdge = NULL;
+    
+    􏶲apply the function to each vertex􏶱
+    size_t uIndexOuter = 0;
+    size_t uIndexInner = 0;
+    GraphTraversalControlT tControl = ConstructGraphTraversalControl();
+    
+    􏶲we are suspecting an action for this algorithm􏶱
+    􏶲report and error if we don't get one􏶱
+    􏵲ensure an action is given􏵳􏵶action􏵷);
+    
+    􏶲we stop traversing when we have either run out of elements to traverse, or the user has asked to bail out􏶱
+    for(;uIndexOuter < VectorSize(ptVertices) && !tControl.m_bStopTraversal; ++uIndexOuter){
+        
+        􏶲get current vertex􏶱
+        ptCurrentVertex = (GraphVertexT*)VectorAt(ptVertices,uIndexOuter);
+        
+        􏶲iterate over each of the edges of that vertex􏶱
+        for(;uIndexInner < VectorSize(GraphVertexEdges(ptCurrentVertex)); ++uIndexInner){
+        
+            􏶲get current edge􏶱
+            ptCurrentEdge = (GraphEdgeT*)VectorAt(GraphVertexEdges(ptCurrentVertex),uIndexInner);
+            
+            􏶲get current neighbor􏶱
+            ptCurrentNeighborVertex = GraphGetVertex(􏵶graph􏵷,GraphEdgePointsTo(ptCurrentEdge));
+            
+            􏶲store the immediate neighbor ONLY if it is not ground􏶱
+            if (!IsGrounding(NodeType((NodeT*)GraphVertexRawData(ptCurrentNeighborVertex)))){
+                VectorPushBack(&tNeighbors,ptCurrentNeighborVertex);
+            }
+        }
+        
+        􏵲take action on vertex and neighbors􏵳ptCurrentVertex,&tNeighbors,&tControl,􏵶custom data􏵷,􏵶action􏵷);
+        
+        􏶲reset for next iteration􏶱
+        uIndexInner = 0u;
+        VectorClear(&tNeighbors);
+    }
+    
+    􏶲destruct the temporary vector of derived neighbors􏶱
+    DestructVectorT(&tNeighbors);
+    
+    􏶲inform the caller that the traversal has been stopped􏶱
+    return tControl.m_bStopTraversal;
+􏶳
+
+EDGE RELATED:
+􏷘+􏷗􏷒apply action to all edges􏷑
+􏷐call custom function on each edge in the graph􏷏
+􏶠The order is not important.  It applies a function to each edge􏶡
+􏶜mr􏶝􏷆GraphT􏷅􏷄graph􏷃􏷀the graph to perform the action on􏶿
+􏶜mr􏶝􏷆void􏷅􏷄custom data􏷃􏷀custom data to be forwarded to each action􏶿
+􏶜􏶝􏷆EdgeActionT􏷅􏷄action􏷃􏷀the action to take on each edge􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼traversal stopped􏶻􏶺whether the user has decided stop the entire traversal􏶹
+􏶴
+    􏶲get all the vertices􏶱
+    VectorT* ptVertices = GraphGetAllVertices(􏵶graph􏵷);
+    
+    􏶲for each vertex, apply a function to each of its edges􏶱
+    size_t uIndex = 0;
+    GraphTraversalControlT tControl = ConstructGraphTraversalControl();
+    
+    􏶲we are suspecting an action for this algorithm􏶱
+    􏶲report and error if we don't get one􏶱
+    􏵲ensure an action is given􏵳􏵶action􏵷);
+    
+    􏶲we stop traversing when we have either run out of elements to traverse, or the user has asked to bail out􏶱
+    for(;uIndex < VectorSize(ptVertices)&& !tControl.m_bStopTraversal; ++uIndex){
+        tControl.m_bStopTraversal = 􏵲apply action to specific vertex edges􏵳􏵶custom data􏵷,(GraphVertexT*)VectorAt(ptVertices,uIndex),􏵶action􏵷);
+    }
+    
+    􏶲inform the caller that the traversal has been stopped􏶱
+    return tControl.m_bStopTraversal;
+􏶳
+
+􏷘-􏷗􏷒apply action to specific vertex edges􏷑
+􏷐call custom function on each edge of a vertex􏷏
+􏶠The order is not important.  It applies a function to each edge of the passed in vertex􏶡
+􏶜mr􏶝􏷆void􏷅􏷄custom data􏷃􏷀custom data to be forwarded to each action􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀the vertex to perform the action on􏶿
+􏶜􏶝􏷆EdgeActionT􏷅􏷄action􏷃􏷀the action to take on each edge􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼traversal stopped􏶻􏶺whether the user has decided stop the entire traversal􏶹
+􏶴
+    
+    􏶲get all the edges􏶱
+    VectorT* ptEdges = GraphVertexEdges(􏵶vertex􏵷);
+    
+    􏶲apply the function to each edge􏶱
+    size_t uIndex = 0;
+    GraphTraversalControlT tControl = ConstructGraphTraversalControl();
+    
+    􏶲we are suspecting an action for this algorithm􏶱
+    􏶲report and error if we don't get one􏶱
+    􏵲ensure an action is given􏵳􏵶action􏵷);
+    
+    􏶲we stop traversing when we have either run out of elements to traverse, or the user has asked to bail out􏶱
+    for(;uIndex < VectorSize(ptEdges) && !tControl.m_bStopTraversal; ++uIndex){
+        􏵲take action on edge􏵳(GraphEdgeT*)VectorAt(ptEdges,uIndex),&tControl,􏵶custom data􏵷,􏵶action􏵷);
+    }
+    
+    􏶲inform the caller that the traversal has been stopped􏶱
+    return tControl.m_bStopTraversal;
+􏶳
+
+VERTEX AND EDGE:
+􏷘+􏷗􏷒apply action to all vertices and edges􏷑
+􏷐call custom function on each vertex and edge in the graph􏷏
+􏶠The order is not important.  It applies a function to each vertex and edge􏶡
+􏶜mr􏶝􏷆GraphT􏷅􏷄graph􏷃􏷀the graph to perform the action on􏶿
+􏶜mr􏶝􏷆void􏷅􏷄custom data􏷃􏷀custom data to be forwarded to each action􏶿
+􏶜􏶝􏷆VertexActionT􏷅􏷄vertex action􏷃􏷀the action to take on each vertex􏶿
+􏶜􏶝􏷆EdgeActionT􏷅􏷄edge action􏷃􏷀the action to take on each edge􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼traversal stopped􏶻􏶺whether the user has decided stop the entire traversal􏶹
+􏶴   
+    􏶲we could have just called the two individual functions􏶱
+    􏶲That would loop over the vertices twice though.􏶱
+    􏶲I'll loop over once, and call the edge actions while iterating and performing the vertex actions􏶱
+    
+    􏶲get all the vertices􏶱
+    VectorT* ptVertices = GraphGetAllVertices(􏵶graph􏵷);
+    
+    􏶲apply the function to each vertex, and to each of the vertex's edges􏶱
+    size_t uIndex = 0;
+    GraphTraversalControlT tControl = ConstructGraphTraversalControl();
+
+    􏶲we are suspecting both actions for this algorithm􏶱
+    􏶲report and error if we don't get them􏶱
+    􏵲ensure an action is given􏵳􏵶vertex action􏵷);
+    􏵲ensure an action is given􏵳􏵶edge action􏵷);
+    
+    􏶲we stop traversing when we have either run out of elements to traverse, or the user has asked to bail out􏶱
+    for(;uIndex < VectorSize(ptVertices) && !tControl.m_bStopTraversal; ++uIndex){
+        􏵲take action on both􏵳(GraphVertexT*)VectorAt(ptVertices,uIndex),&tControl,􏵶custom data􏵷,􏵶vertex action􏵷,􏵶edge action􏵷);
+    }
+    
+    􏶲inform the caller that the traversal has been stopped􏶱
+    return tControl.m_bStopTraversal;
+􏶳
+
+CONNECTION:
+􏷘+􏷗􏷒apply action to all connections􏷑
+􏷐call custom function for each pair of vertexes separated by and edge􏷏
+􏶠a connection is a vertex/edge/vertex􏶡
+􏶜mr􏶝􏷆GraphT􏷅􏷄graph􏷃􏷀the graph to perform the action on􏶿
+􏶜mr􏶝􏷆void􏷅􏷄custom data􏷃􏷀custom data to be forwarded to each action􏶿
+􏶜􏶝􏷆ConnectionActionT􏷅􏷄action􏷃􏷀an action to take on each connection􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼traversal stopped􏶻􏶺whether the user has decided stop the entire traversal􏶹
+􏶴
+    􏶲get all the vertices􏶱
+    VectorT* ptVertices = GraphGetAllVertices(􏵶graph􏵷);
+    
+    􏶲apply the function to each vertex􏶱
+    size_t uIndex = 0;
+    GraphTraversalControlT tControl = ConstructGraphTraversalControl();
+    
+    􏶲we are suspecting an action for this algorithm􏶱
+    􏶲report and error if we don't get one􏶱
+    􏵲ensure an action is given􏵳􏵶action􏵷);
+    
+    􏶲we stop traversing when we have either run out of elements to traverse, or the user has asked to bail out􏶱
+    for(;uIndex < VectorSize(ptVertices) && !tControl.m_bStopTraversal; ++uIndex){
+        􏵲take action on vertex connection􏵳􏵶graph􏵷,(GraphVertexT*)VectorAt(ptVertices,uIndex),&tControl,􏵶custom data􏵷,􏵶action􏵷);
+    }
+    
+    􏶲inform the caller that the traversal has been stopped􏶱
+    return tControl.m_bStopTraversal;
+􏶳
+
+
+
+UTILITY
+􏷘-􏷗􏷒ensure an action is given􏷑
+􏷐ensure that an action was given to one of the specific algorithms􏷏
+􏶠some algorithms require algorithms be given􏶡
+􏶜mr􏶝􏷆void􏷅􏷄action􏷃􏷀the action passed to an algorithm􏶿
+􏶴
+    if (!􏵶action􏵷){
+        fprintf(stderr, "You must pass in a step action for the graph algorithm\n");
+    }
+􏶳
+
+DIRECT VISITATION ACTIONS
+􏷘-􏷗􏷒take action on vertex􏷑
+􏷐calls the visitation function on a vertex􏷏
+􏶠a single user-defined step in a visitation traversal􏶡
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀the graph vertex to perform the action on􏶿
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀the traversal control􏶿
+􏶜mr􏶝􏷆void􏷅􏷄custom data􏷃􏷀custom data to be forwarded to each action􏶿
+􏶜􏶝􏷆VertexActionT􏷅􏷄action􏷃􏷀the action to take on each vertex􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼traversal stopped􏶻􏶺whether the user has decided stop the entire traversal􏶹
+􏶴
+    􏶲reset the user triggers for each visitation􏶱
+    GraphTraversalControlReset(􏵶control􏵷);
+    (*􏵶action􏵷)(􏵶control􏵷,􏵶custom data􏵷,􏵶vertex􏵷);
+    return 􏵶control􏵷->m_bStopTraversal;
+􏶳
+
+􏷘-􏷗􏷒take action on transitioning vertex􏷑
+􏷐calls the visitation function on a transitioning vertex􏷏
+􏶠a single user-defined step in a visitation traversal􏶡
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄before vertex􏷃􏷀the graph vertex before the transition􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄after vertex􏷃􏷀the graph vertex after the transition􏶿
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀the traversal control􏶿
+􏶜mr􏶝􏷆void􏷅􏷄custom data􏷃􏷀custom data to be forwarded to each action􏶿
+􏶜􏶝􏷆VertexTransitionActionT􏷅􏷄action􏷃􏷀the action to take on each vertex􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼traversal stopped􏶻􏶺whether the user has decided stop the entire traversal􏶹
+􏶴
+    􏶲reset the user triggers for each visitation􏶱
+    GraphTraversalControlReset(􏵶control􏵷);
+    (*􏵶action􏵷)(􏵶control􏵷,􏵶custom data􏵷,􏵶before vertex􏵷,􏵶after vertex􏵷);
+    return 􏵶control􏵷->m_bStopTraversal;
+􏶳
+
+􏷘-􏷗􏷒take action on vertex and neighbors􏷑
+􏷐calls the visitation function on a vertex and neighbors􏷏
+􏶠a single user-defined step in a visitation traversal􏶡
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀the graph vertex to perform the action on􏶿
+􏶜mr􏶝􏷆VectorT􏷅􏷄neighbors􏷃􏷀the immediate neighbors of the vertex􏶿
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀the traversal control􏶿
+􏶜mr􏶝􏷆void􏷅􏷄custom data􏷃􏷀custom data to be forwarded to each action􏶿
+􏶜􏶝􏷆VertexAndNeighborsActionT􏷅􏷄action􏷃􏷀the action to take on each vertex and immediate neighbors􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼traversal stopped􏶻􏶺whether the user has decided stop the entire traversal􏶹
+􏶴
+    􏶲reset the user triggers for each visitation􏶱
+    GraphTraversalControlReset(􏵶control􏵷);
+    (*􏵶action􏵷)(􏵶control􏵷,􏵶custom data􏵷,􏵶vertex􏵷,􏵶neighbors􏵷);
+    return 􏵶control􏵷->m_bStopTraversal;
+􏶳
+
+􏷘-􏷗􏷒take action on edge􏷑
+􏷐call the visitation function on a particular edge􏷏
+􏶠a single user-defined step in a visitation traversal􏶡
+􏶜mr􏶝􏷆GraphEdgeT􏷅􏷄edge􏷃􏷀the graph edge to perform the action on􏶿
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀the traversal control􏶿
+􏶜mr􏶝􏷆void􏷅􏷄custom data􏷃􏷀custom data to be forwarded to each action􏶿
+􏶜􏶝􏷆EdgeActionT􏷅􏷄action􏷃􏷀the action to take on each edge􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼traversal stopped􏶻􏶺whether the user has decided stop the entire traversal􏶹
+􏶴
+    􏶲reset the user triggers for each visitation􏶱
+    GraphTraversalControlReset(􏵶control􏵷);
+    (*􏵶action􏵷)(􏵶control􏵷,􏵶custom data􏵷,􏵶edge􏵷);
+    return 􏵶control􏵷->m_bStopTraversal;
+􏶳
+
+􏷘-􏷗􏷒take action on both􏷑
+􏷐calls the visitation function on a vertex and associated edges􏷏
+􏶠a single user-defined step in a visitation traversal
+(via single vertex call, and possible edge calls)􏶡
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀the graph vertex to perform the action on􏶿
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀the traversal control􏶿
+􏶜mr􏶝􏷆void􏷅􏷄custom data􏷃􏷀custom data to be forwarded to each action􏶿
+􏶜􏶝􏷆VertexActionT􏷅􏷄vertex action􏷃􏷀the action to take on each vertex􏶿
+􏶜􏶝􏷆EdgeActionT􏷅􏷄edge action􏷃􏷀the action to take on each edge􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼traversal stopped􏶻􏶺whether the user has decided stop the entire traversal􏶹
+􏶴
+    􏶲reset the user triggers for each visitation􏶱
+    GraphTraversalControlReset(􏵶control􏵷);
+    if (!􏵲take action on vertex􏵳􏵶vertex􏵷,􏵶control􏵷,􏵶custom data􏵷,􏵶vertex action􏵷)){
+        􏵶control􏵷->m_bStopTraversal = 􏵲apply action to specific vertex edges􏵳􏵶custom data􏵷,􏵶vertex􏵷,􏵶edge action􏵷);
+    }
+    return 􏵶control􏵷->m_bStopTraversal;
+􏶳
+
+􏷘-􏷗􏷒take action on vertex connection􏷑
+􏶜mr􏶝􏷆GraphT􏷅􏷄graph􏷃􏷀the graph to perform the action on􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀the graph vertex to perform the action on􏶿
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀the traversal control􏶿
+􏶜mr􏶝􏷆void􏷅􏷄custom data􏷃􏷀custom data to be forwarded to each action􏶿
+􏶜􏶝􏷆ConnectionActionT􏷅􏷄action􏷃􏷀an action to take on each connection􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼traversal stopped􏶻􏶺whether the user has decided stop the entire traversal􏶹
+􏶴
+    􏶲get all the edges􏶱
+    VectorT* ptEdges = GraphVertexEdges(􏵶vertex􏵷);
+    
+    size_t uIndex = 0;
+    
+    􏶲we stop traversing when we have either run out of elements to traverse, or the user has asked to bail out􏶱
+    for(;uIndex < VectorSize(ptEdges) && !􏵶control􏵷->m_bStopTraversal; ++uIndex){
+        (*􏵶action􏵷)(􏵶control􏵷,􏵶custom data􏵷,􏵶vertex􏵷,(GraphEdgeT*)VectorAt(ptEdges,uIndex),(GraphVertexT*)GraphGetVertex(􏵶graph􏵷,GraphEdgePointsTo((GraphEdgeT*)VectorAt(ptEdges,uIndex))));
+    }
+    return 􏵶control􏵷->m_bStopTraversal;
+􏶳
+
+
+
+
+
+
+
+
+

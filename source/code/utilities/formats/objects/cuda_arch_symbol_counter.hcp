@@ -1,0 +1,43 @@
+class
+❪string❫
+❪vector❫
+❪utility❫
+⚯
+❪iostream❫
+❪"code/utilities/types/vectors/creators/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/strings/observers/splitting/lib"❫
+❪"code/utilities/program/wrappers/cuobjdump/cuobjdump_finder"❫
+❪"code/utilities/program/call/lib"❫
+❪"code/utilities/types/strings/observers/converting/lib"❫
+❪"code/utilities/types/strings/transformers/trimming/lib"❫
+⚞⚟
+
+◀public: static▶ std::vector<std::pair<int,std::string>> ☀Count(std::string const& filename)❰
+    
+    auto command = Get_Command(filename);
+    auto command_results = Get_Each_Line_Of_Shell_Command(command);
+    
+    return Parse_Command_Results(command_results);
+❱
+
+◀public: static▶ std::string ☀Get_Command(std::string const& filename)❰
+    std::string command;
+    command += Cuobjdump_Finder::Find_Binary();
+    command += " " + filename;
+    command += " -lelf | awk -F. '{print $3}' | grep \"sm_\" | sort | uniq -c";
+    return command;
+❱
+
+◀public: static▶ std::vector<std::pair<int,std::string>> ☀Parse_Command_Results(std::vector<std::string> const& command_results)❰
+
+    std::vector<std::pair<int,std::string>> x;
+    for (auto line: command_results){
+        trim(line);
+        auto parsed = Split_By_Spaces(line);
+        x.emplace_back(as_signed(parsed[0]),parsed[1]);
+    }
+    return x;
+❱

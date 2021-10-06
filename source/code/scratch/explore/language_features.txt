@@ -1,0 +1,2228 @@
+Various language features and code generation ideas to support:
+
+- Option to make function result cached
+this could turn a regular function into a function that holds the result as a static.
+It may also create an additional function so that there is a cached / noncached version.
+
+- Tag portions of unilang structure as "generated" or "not generated".
+Based on options an code generation, we are going to be changing the actual unilang structure pragmatically.
+adding methods to the methods section. Adding data members to objects. All kinds of things.
+All of this data needs an enum for SPECIFIED/GENERATED. in accordance to what is contained in the actual .UniLang file.
+We may also accomplish this at the graphical level with an additional label face that holds this property.
+
+- Side Effects
+The language may be purely functional, it may not be.
+If side effects are a possibility we should consider having a token that says what the side effects are?
+At least an English comment about the side effect.
+And as far as I understand contract programming, side effects are not post conditions.
+If the function does not complete successfully, the post conditions are irrelevant.
+Side effects aren't necessarily exceptions either. That's why I think a separate language tokens may be needed.
+Hopefully this something we can detect and generate automatically. Might need a token for this, but I'm hoping that we don't.
+// side effects:
+// - uses IO
+// - changes global var: foo
+
+- Higher Order Detector
+We need a function that takes a look at all the arguments and return values,
+and decides whether it is a higher order function. Not too hard.
+We need to backtrack and find function pointers. Looks at std::function.
+I guess some classes could have () overloaded..
+does that mean the function is actually higher order. More to consider here.
+
+- Idempotence Detector
+A function is idempotent if reapplying it to its result does not produce a different result.
+Not sure how difficult this come to be.
+Might have to implement other features first-- like detecting side effects, etc.
+Although having side effects doesn't mean the function isn't still idempotent.
+So than there is a whole flow analysis involved. Tricky.
+
+- [why change value] token for data members
+Often times a chunk of data is sent into some business logic.
+The data has a brief/detailed description,
+but sometimes it is useful to describe WHY a user may want to change the data.
+The can also serve as additional GUI text in say a settings panel.
+
+- [questionable] token to code elements
+sometimes you have to make a change to some code.
+Those changes may be hackish, and somewhat questionable.
+Other times, you are implementing something off of a requirement specification, and you don't agree with the requirement specification.
+Maybe the requirement specification is wrong, but you don't have time to hold off on implementation until you know.
+I think the best thing to so in these situations, is tag a particular code element as "questionable".
+That way it is self documenting (better than just a regular comment).
+The "questionable" will just be a string explaining why you find the code element questionable.
+If it doesn't exist, then the code is not questionable. Easy to implement, lots of tokens though for every code element.
+I assume this is going to be similar to the "deprecation" or "warning" or "note" attributes.
+
+- [optional why] token
+we'll be able to tag arguments, return values, identifiers as "optional".
+We will also be able to supply a list of reasons as to why the variable may be optional.
+
+- [reason] token
+pretty much every token should have a corresponding "reason" tokens
+why did you choose this type?
+why did you choose this default value?
+why did you choose these units?
+etc...
+
+- [error message] token values
+[what happened]
+[why]
+[suggest next step]
+[rate the seriousness of the issue]
+^ this can guide static analysis in deciding whether the error message has the right tone.
+
+- [context] token
+types should come with a context type; this auto populate documentation where used
+types should come with a table of "context" / description
+then when you use arguments, you use them with a context.
+The context can automatically populate the argument description.
+void function([string][storing]){}
+void function([string][printing]){}
+the context is defined alongside the type deceleration/definition.
+This also allows people to take a type and understand the contexts in which its used.
+
+[problem] & [solution] token
+we need to add a problem and solution tag to the language.
+We can verify that it exists, warn if it doesn't and print it as part of documentation
+
+[improvements] token
+tokens to show general TODOs and improvements to be made to the code.
+That way when a new diff comes up, it shows the deletion of the comment also.
+
+- TODO(message) CONSIDER(message) WORRY(message) CONFUSED(message)
+We need another specific comment tags.
+Like TODO, but these ones give additional context on what we are trying to convey
+
+- Mustache settings for different parts of the unilang structure
+we'll have to think about how wildly this can be used, and if it should be ignored by just using language features instead
+
+- time tracking, and file navigation recording
+this stupid but it would be cool if we recorded (somehow), how long a programmer has been looking at file.
+If they aren't scrolling or moving their mouse or something, we'll have some kind of timeout.
+The idea is, that we will be able to show hot spots where people spend their time looking a lot.
+And see cold spots where people pretty much trust, or have no need to look at certain code.
+It would also be cool to record the file tracing that occurs for programmers.
+For example, they might look at a child class, and then most would look at some parent class,
+and then maybe they would go to class thats composed inside the parent.
+We can trace these file jumps to determine if users are jumping to disconnected files for particular reasons.
+This can help determine cohesion and such.
+Also, allow microphone listening, to learn about a particular file.
+based on people cursing, and cursing other people's names etc.
+AI can learn about a programmer's feelings toward a particular file.
+
+- generate or not generate auto based on specified conditions
+converting between using auto and not using auto should be an algorithmic conversion.
+this is mostly a c++ concern both other languages that have similar auto concept as well.
+even java with choosing Object even thought this is different than type deduction
+
+- provide a way to duplicate const on methods
+example for c++:
+class some_class{
+    ...
+    const std::map<std::string, std::string> &get_value_items() const;
+    std::map<std::string, std::string> &      get_value_items();
+   ...
+ };
+ 
+ - static analysis refactor suggestions
+o detecting patterns and recommending templates
+o detecting patterns and recommending higher order functions
+o o help data bubble to the top
+find duplicate code and suggest function interface
+I think there is a lot of re-factoring opportunities that lead you down different roads when re-factoring.
+Sometimes it pays off, sometimes it does not. We need to do some research on what re-factoring techniques work, and which do not.
+I'd like to set up an experiment with made up types, and made up functionalists, and try different scenarios and use-cases to see how decisions pan out.
+Maybe there is some research papers on the matter that we can tap into
+
+- generate "to_tuple" free function / member function
+all types should be able to generate to tuples.
+Keep in mind, that we might want the order of the tuple arguments based on size to create the best alignment.
+We may also want them in the order that they were originally in the class.
+
+- all functions should be tagged with their "category of transform"
+every function is some kind of transform.
+We should be able to categorize these transforms.
+A function can belong to more than one group.
+Examples:
+ converters
+ accumulators
+ transformers
+ sorters
+ printers (return nothing. has side effects)
+ -validators (return bool)
+ describers (takes a structure and describes it with another type. I dunno. something like that)
+ builders
+-generators
+We'll want to come up with clear definitions for all of these.
+Hopefully we can add enough semantics to detect a function's "category of transformation"
+automatically. Also, some "transform" categories inherit. For example,
+if you call a printer internally, you are also a printer. Not so much if you call coverters/transformers etc.
+You would be a printer even if the function doesn't actually print if its blocked by a conditional or something which we wouldn't be able to figure out.
+
+
+- homoglyph substitution and zero-width fingerprinting
+It would be super sneaky and super sly to watermark generated code with unilang zero-width fingerprinting.
+This way we'll now if someone has copied code, etc.
+
+- allow inserting zero width character messages
+similar to:
+https://umpox.github.io/zero-width-detection/
+https://medium.com/@umpox/be-careful-what-you-copy-invisibly-inserting-usernames-into-text-with-zero-width-characters-18b4e6f17b66
+(for secret watermarks)
+
+- measuring technical debt
+this is stupid but lets say technical debt exists from an "interest rate"
+and "interest rate" is a function of time. Let's see if we can get a rough algorithm to compute and keep track of this on functions/classes/modules
+
+- demonstrative detector
+"Instead of using demonstratives “this” and “that” or pronouns like “it” or “they“, use the specific names of the things, even if it seems slightly redundant.
+It’s especially good for the case when you are focused on technical writing which often requires referring to many different things at once, which may confuse the reader."
+
+- comments that use terms must link to definition
+static analysis of comment. We find acronyms, concepts, and terms. These must be linked to the name that has all of the necessary contextual information.
+
+- code should have music associated with it
+music can also inspire feelings about a particular piece of code, and can help someone gain familiarity
+
+- warn about proposition-looking functions that have out prams
+if the function name looks like its asking a question, i.e.
+by analyzing the semantics/pragmatics of the function name and that it returns a bool, it is most likely a proposition of sorts.
+(Note: Unilang might have a way of directly specifying this proposition, in which case it will be literally just checking more of a property of the function).
+Wither way, if we have some kind of proposition, it would make sense for functions to not have out params.
+We can statically warn about this,.
+The reason this ticket exists is because I've been bitted by this while trying to unit test something and not understanding why I was getting different results when reusing the same arguments.
+
+- some functions are questions (allow unilang to detect this) 
+some functions return a bool, which means they are asking a question.
+We may want documentation tools to specify what that question means.
+Some bool return functions only observe and return true/false
+Others try to do something and return true/false for whether it succeeds.
+So for example:
+bool WriteToFile(string text, File & file);
+We want to generate documentation that says:
+"Did writing to the file succeed?"
+Other stuff to look into such as EitherType.
+Thinking about tagging methods as questions. Or allowing the return value to "answer a question".
+Actually this could expand to more that just boolean functions.
+Every function that returns something is capable of being asked as a question.
+What is the square root of n?
+sqrt()...
+Etc. Ponder the idea of generative question documentation.
+
+- multiple names for levels of specificity
+names can have different levels of specificity
+short v
+medium vec
+descriptive: items
+more descriptive purchasing_item_collection
+the projectional editor provides a slider on how descriptive you want the code to look
+
+- tag a function as exception smothering
+sometimes we want a function to be constexpr and not crash if an exception is thrown.
+We need a way to tag a function as catching any exception that is thrown internally.
+This might mean that the return type is automatically an optional.. something to think about and make configurable
+
+- auto dissolve / auto include comments
+circle-jerking comment debate
+code should be self-documenting and you don't need them
+gray area on what people think is an appropriate amount of comments
+no comments bad? too many comments bad?
+we automate our stance in the gray area through unilang config.
+I believe redundant comments are actually good despite self documenting code because
+we want the pragmatics of one language (english) to match the perceived pragmatics of a programming language.
+We should be able to derive that the meaning matches between the languages through something like function name and function statement +...
+or possibly use other parts of the function and see if we get a 1 to 1 mapping to the comment, or a partial but complete mapping etc....
+some linguistics discussion between english/programming languages and were they meet and what we should do about it
+
+- swot analysis / SVOR analysis
+we can add tokens for swot analysis.
+yeah, i know swot analysis has always felt like a corporate joke,
+but as part of our documentation initiative and as part of the pragmatic token set, it can help show why decisions were made.
+Then if anyone cares, they can figure out if particular implementation or design was swotted. In which case, they can also see if any ideas were left out, etc.
+easy to implement. essentially
+[conceptual programming language concept] (may or may not be multi)
+    [property about it that's under swot analysis] (multi)
+        [strengths][weaknesses][opportunities][threats] (multis)  
+per usual, we can generate any kind of artifacts out of this. most likely internal/external documentation.
+possibly images if we want to pretend to be fancy.
+There is something to say about whether things should be placed on the swot grid in correlation to importance or weight or something.
+You know, like a political affiliation board kind of thing. I didn't hear anyone mention that I'd have to google to see if people actually do that.
+I only mention it, because we may also want a unit for weight or importance, or percentage, or whatever to derive that.
+
+- some kind of trait tagging for types
+look at what is going on here:
+https://github.com/I3ck/FlaggedT
+templated tag types for other types to enforce consteaints.
+Maybe we can have something like that to go alongside things in preconditions and postconditions.
+It would seem to me that tagging the type would be more effective than a precondition or postconfdition, but I can see times when a pre/post condition are also the only option.
+
+- debug tag on methods / data
+for c and c++, you would wrap the code in debug flags, so that it is only compiled in debug mode.
+I think what I'm getting at here is that you may want to tag a function as being a "debug function", then you use it in other code
+the code generation ensures that the function is only actually called if the code was compiled in debug mode.  something like that.
+We need to think about how release / debug mode might affect the language model of unilang
+
+
+- Memory Model
+Learn about memory models and incorporate them into UniLang
+http://canonical.org/~kragen/memory-models/
+
+- unitypes and multitypes
+"Python, for example, is statically unityped and dynamically multityped; C is statically multityped and dynamically unityped; and Haskell is statically and dynamically multityped. Although it's a somewhat minor point, one can argue (with a little hand waving) that many assembly languages are both statically and dynamically unitype"
+http://tratt.net/laurie/blog/entries/another_non_argument_in_type_systems.html
+What is unilang, and how do we convert between type systems
+
+- data / codata definitions
+Work these definitions into UniLang:
+So there are actually two kinds of data types: those which must be finite and those which can be infinite.
+In computer science research, these often go by the shorter names:
+"data", for the finite
+"codata", for the infinite
+http://www.tac-tics.net/blog/data-vs-codata
+
+- be able to tag files as "interface glue"
+this could be done on files but it might also want to be done on functions / data types / etc
+
+- compare unilang gui to Stride
+
+- generate as_ (copy) functions from public transformers
+every transformer function can be turned into a copy returning alternative.
+detect and generate these functions automatically.
+Also, look at what the language Crystal does:
+The standard convention is to use exclamation marks when a method will modify the object instead of returning a new one:
+
+name = "Mr. Ferguson"
+name.gsub "Mr.", "Dr."  #=> "Dr. Ferguson"
+
+# The value of name is still "Mr. Ferguson"
+name #=> "Mr. Ferguson"
+
+# But if we use gsub! instead it gets changed
+name.gsub! "Mr.", "Dr."  #=> "Dr. Ferguson"
+name #=> "Dr. Ferguson"
+There is a GUI code system called Stride. Lets compare it to UniLang and steal any of its good ideas.
+
+here is an example, I've seen in real code:
+
+///
+/// Takes the given source string, and replaces all of the strings that match
+/// the original with the replacement. This operation is done in place.
+///
+std::string &replace_strings(std::string &source, const std::string &original, const std::string &replacement);
+
+///
+/// Takes the given source string, and replaces all of the strings that match
+/// the original with the replacement.
+///
+std::string replace_strings_copy(const std::string &source,
+                                 const std::string &original,
+                                 const std::string &replacement);
+                                 
+
+ - look for mismatch patterns
+ create an algorithm to ask whether or not things like this are a mistake:
+code code left code code right
+code code left code code right
+code code left code code right
+code code left code code right
+code code left code code right
+code code left code code left
+code code left code code right
+code code left code code right
+code code left code code right
+code code left code code right
+
+ - complexity classes
+ all functions should be able to describe their complexity class
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+- semiotic breakdown (lack of binary signifies/signified combinations) 
+if semiotics have taught me anything, its that I'm missing signifiers to particular signified objects.
+In particular, multiple signifiers when combined equate to a single signified, (which in my language, and every other language) remains unamed. The point is, take either model of a sign (saussure to pierce), and make sure we can reprsent the language recursively in this way at the level of visible signs. and ensure they can be disjoint from other signs. This is an important realiszation, because I've already noticed myself doing this on multiple occasions. On the other hand, its essentially an argument against composition for everything being associated. (Don't worry, the transcompilation process will still use composition). But what I'm saying is, we express composition in the language not through composition itself, but through association.
+We also allow for areas to bundle concepts/tokens/signs and give them their own name (signifier) to be used elsewhere.
+
+so lets take a [mr][int][val].
+This becomes its own language level concept that could be named (and in many times be implicitly named for you)
+
+[changeable_val]
+[mr][int][val]
+
+/\ example not that important.
+
+But now multiple functions can use [changeable_val] directly.
+
+We've already done the same thing with dependencies (module/header/link/etc) onto types.
+
+What does this mean for the language? It means the user (if they want to be more granular; and in customizable cases will be enforced to) specify closer to (signifiers)->signified where each signified is used as part of another level of a signifiers part to create another signified.
+
+Ideally we want the (signifiers) to only be one name or one symbol, we may relax this on more discrete cases (such type annotations for parameter passing as talked about above)
+
+Keep in mind, this is already a compositional association we did for sharing a data member between two structs, and how we build structs today. (more generally, I mean product/sum types) We give the data members their parent relations.
+I think we will also be able to pull some ideas of "Semiotics of Programming" by Kumiko
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-generate idempotent assert in unit test
+we might need to mark functions as idempotent.
+actually, we want idempotent by default and possibly the need to specify situations that are not.
+given this information we can then tell the test generator to create extra CHECK calls in the unit test to check the same result n number of times to check for idempotence
+We need to get the arrange/act/assert portions as separate tokens first
+
+-mark functions/errors as recoverable and non-recoverable
+
+
+-Darwinian Data Structures (DDSs)
+https://blog.acolyer.org/2018/12/14/darwinian-data-structure-selection/
+
+-derived function call graph
+based on inputs and outputs of function's arguments and return values,
+we can use the types/identifiers to build a call graph.
+This will help the user decide what functions to call.
+
+-programs should have a list of keywords in which "people may use when talking about"
+This is helpful for search engines
+keywords sections on wikis
+and alert keywords in slack
+
+-be able to flag unit tests as "unsound", but still notify me.
+sometimes you can predict unit tests failing in the future, and if they do, you want to be notified about it. However, if the unit tests fail, its not a blocking issue, and we don't want it to inconvenience anyone. We should be able to flag unit tests as either BLOCK_ON_FAIL, CONTINUE_ON_FAIL_BUT_NOTIFY ??
+Of course, BLOCK_ON_FAIL should also notify someone.
+We can also use the graph to derive unique function call scenarios
+
+-[mr] mutable reference specifiers should be derivable
+Like many developers, I've come to find the pain points for const qualifying.
+If all of a sudden you realize you do need to make a change, then you need to change const all the way up the call stack. Same when dealing with references and copies. Someone at lunch told me thats why they don't even use const because its too much of a chore, and the protection it provides isn't really that big of a deal.
+Also, const has no effect on the actual compiled code (the compiler strips them away)?
+
+That opinion is a bit extreme, but I know how to get the best of both worlds.
+You can leave out specifiers, and they will be derived based on how the function is used.
+I think this is a better approach for quicker development time.
+There may be some subtitles, but I'm sure I'll come across those during development.
+
+I can see the need to basically have a unilang wrapper function over any kind of library or outside unilang
+we opt for immutable reference by default (or immutable copy based on data type size/characteristics)?
+Adjust based on what we discover through the call stack
+uh oh! and what about moving? hmm?
+
+
+-simple mutation tester 
+We can eventually have this as part of the IDE, and slowly collect uncaught mutations.
+For now, it can be as simple as raw file change with direct build/run test attempts
+
+-ensure principals from "Large Scale C++ Advanced Levelization Techniques" are being done
+
+-add the option to forward declare dependencies to speed up build times
+The levelization techniques mentioned in 2016 CppCon mentioned using forward declares in the headers of files.
+The advice was, never include a header file in another header file, unles you need the: enum, typedef, covariant return type, something else...
+Otherwise, just forward declare. If you are only using the name in the function declaration as parameters and return types, there is no reason to actually include the header.
+this is relevant for my employers monorepo now. So we will need a tool to auto-detect places to forward declare.
+
+
+
+
+
+
+
+
+
+
+-struct usage warnings
+parameter attribute: [must_use_all_members]
+if you mark a struct parameter as [must_use_all_members] , then you should get a compiler warning,
+if not all the members are used in the function that it is passed to. There might be some variations of the tag. For example, you may forward the struct param to another function, where the rest of the members are then used. You may accept that as meeting the requirements, and you may not. Requires some depth function searching across modules.
+
+compiler suggestion: passing higher level struct than required
+If you have a struct that's a.b.c.d, and you pass a into a function, and only use it like:
+a.b.c.d, the compiler should warn you and say "hey, you are only using d,
+why not perform a.b.c.d at the call site instead of everywhere inside the function.
+
+compiler suggestion: suggest struct extrapolation from currently existing struct members.
+for example:
+
+struct settings{
+ A a;
+B b;
+bool c_always_do_foo = true;
+bool c_always_do_bar = false;
+bool c_label = "sdsdf";  
+}
+compiler sees c_ and says: "maybe you should make a C_Settings"
+
+compiler suggestion: suggest removing frivolous prefix/suffix identifier details.
+example:
+
+sruct Foo_Settings{
+bool FooOn;
+}
+compiler can suggest removing "foo" as its deduced from the context of the name.
+Something like that.
+
+parameter attribute: [must_use_all_members_once]
+warns if you use a particular data member 0 or >1 times
+
+
+
+
+
+
+-allow a syntax for piping functions
+many languages have this.
+unix style.
+
+1..100_000
+  |> Enum.map(&(&1 * 3)) 
+  |> Enum.filter(odd?) 
+  |> Enum.sum
+=> 7500000000
+
+
+
+
+
+
+-analyze call chains to decide if the wrong function is being called
+This would be able to detect copy and paste errors.
+For example, let's say you have the following functions:
+
+DoTask1();
+DoTask1A();
+DoTask2();
+DoTask2A();
+
+void DoTask1(){
+   DoTask1A();
+}
+void DoTask2(){
+  DoTask1A();
+}
+The static analyser should be able to determine that a possible mistake was performed in DoTask2.
+It would need to be smart enough to conceptualize function grouping based on function names.
+Also have a database of words that would normally be opposite. Copilot/Pilot for example.
+If a bunch of copilot methods eventually call a pilot method, it could be a mistake.
+
+
+
+-Allow an option to default initialize data members to something safe automatically.
+If the user creates an empty constructor, we can check to see if they missed any, and attempt to provide a default initialization based on the type. If there is at least one data member that is dynamic, we will need a constructor no matter what, and could probably the generate constructor entirely. Then it will be closer to coding like in C++ where you don't have to specify functions.
+Actually, we can probably go all the way. I'm changing this task to: generate constructors,copy constructors, and destructors if they don't exist, but should.
+Copy and Destructor should be the easiest. Those are pretty mechanical.
+Just some messiness with determining if the type is dynamic, and dealing with arrays, pointers, etc.
+
+-output serialization format as an xml schema
+should work with:
+http://www.xml-tools.net/schemaviewer.html
+
+-add why attribute when calling functions
+https://www.youtube.com/watch?v=OrQ9swvm_VA
+functions might automatically get a (char* why) argument.
+But we don't actually have to change the code. It might just occur as comments in the code
+
+
+
+-tag functions as being able to be called n times sparking code generation
+string may have a function append_char(char)
+we may also want append_char_n_times(char,size_t)
+If we tag the function as being something that can be repeatably called, we can invoke code generation to get the n times functions. It's also something we can say in documentation.
+"This function is allowed to be called multiple times in a loop".
+need to do more research on the matter. get some terminology right.
+We basically want a language for describing a method's affect on state over time.
+A "diluting function" for example always puts the object into the same state.
+I made up that term but I'm sure there is a language to describe these kinds of things. maybe need to look into category theory
+
+-state and verify how much memory is allocated in a test
+this will help avoid problems where more memory is being allocated than intended, etc.
+
+-allow restricted pointers
+There are a lot of edge cases I'm not confident about.
+We start with function scope only as in restricted parameters.
+
+Let me post some questions that I need to get answered:
+is it ok to use ristrict when the types aren't even the same?
+Is it ok to use restrict when there is only one parameter?
+Is there a way to catch the UB when a user violation restrict keyword?
+
+From UniLang's perspective we may want different terminology considering Unilang abstracts pointers away in the form of references. Independent? Unique? only access point?
+I'd like to think about this some more.
+
+-every tool or function should answer a question
+we should be able to define regex-like questions for every function and program to help aid in documentation and automatically answering questions from people
+but also, every question needs to be backed by a unit test so we can ensure that the answer is still correct
+
+-add not_null static asserts for c functions that use references
+Lots of customziation on how we want this to look. Probably guarded by a custom macro since our build is broken in debug mode anyways. Can probably just use normal cassert under the custom macro wrapper.
+
+-unit dimensionality
+// e.g., 1 -> " m"
+//       0 -> ""
+//       2 -> " m^2"
+//      -3 -> " m^(-3)"
+
+-oracle and metamorphic testing specified
+I'd like to make sure these kinds of manual tests and property based tests are mentioned inside unilang. I'm not sure how much it will span (into code generation?)
+
+-ensure unit tests meet performance requirements as part of the test
+
+-bubble for data member composition
+https://beta.observablehq.com/@mbostock/d3-zoomable-circle-packing
+
+-integrate modules into build
+starting using c++ modules in bazel
+see if hcp needs adjusted for this
+see if unilang needs adjusted for this
+http://mbostock.github.io/d3/talk/20111116/pack-hierarchy.html
+
+-function explosion via enum parameter
+lets say a function takes a 3 value enum like:
+func(e);
+be able to tag the enum parameter so that we get function generation of additional funcs:
+funcValueA(), funcValueB(), funcValueC(), which will just call func forwarding the implicit argument.
+
+-create compilation databases for better clang analysis
+https://github.com/rizsotto/Bear
+
+-C++ meta classes
+Support Herb Shutter’s C++ meta classes proposal
+
+-steal any good ideas from cucumber for testing
+
+-avoid side channel attacks in generated code
+super minor, but nice to recognize that we can add these tags, or use libraries.. or wipe memory whatever to avoid these kinds of attacks where specified
+
+-pairwise testing support
+
+-sankey diagram for functional decomposition
+https://nivo.rocks/sankey/
+http://mbostock.github.io/d3/talk/20111018/partition.html
+https://beta.observablehq.com/@mbostock/d3-sankey-diagram
+
+-difficulty naming particular concepts (definitions, terminology)
+Here is a list of particular concepts I've come across while implementing unilang that I had a hard time naming. As they say, "one of the hardest parts of computer programming is naming."
+I'll leave this as an issue where I collect these weird concepts. And we can close the issue when we have some kind of document or artifact for these things. I half-started something in the task_executer.hcp, which obviously needs to be moved to an actual document somewhere.
+I'm kind of against documentation that isn't also code, so we might just create data types for these things that aren't actually used in software.. yet!.
+
+example
+
+struct {
+std::string name;
+std::string definition;
+//etc...
+}
+what do we call a "fundamental type or an ADT"?
+-> data type type?
+-> data_abstraction_type = abstracted/non-abstracted?
+what do we call a "method that is either part of the interface or part of the implementation"?
+-> module_method_visibility? = interface/definition
+In computer science (and oddly enough, in actual programming as well), things always come in pairs. Every read has its write. Every setup has its cleanup. Every open paren has a close.
+
+In this spirit, every type in functional programming comes equipped with an introduction rule and an eliminator. The introduction rule makes objects of that type. The eliminator allows you to use objects of that type.
+Of course, as usual, "introduction rule" and "elimination rule" are the fancy-ass type theory names. In functional programming languages, we call introduction rules "constructors" and the eliminator rules... also "constructors". I'll explain.
+(from: http://www.tac-tics.net/blog/data-vs-codata)
+
+
+
+-warning about naming methodology for functions 
+fetch - going to take some time
+get - constant time
+calculate - does some arithemtic to produce value
+find - if it traverses and looks based on some predicate
+
+words to avoid (do,handle,perform,return,compute);
+
+avoid using class name in non-manager class methods
+message.save() NOT message.saveMessage()
+
+don't use param names in function name
+findUser($userId, $token) NOT findUserByUserIdAndToken($userId, $token)
+
+method called Print() (are you sure you don't want to overload << instead)
+
+int64_t account
+"what do you mean account? AccountId perhaps?"
+
+Function names should be verb-followed-by-subject
+
+Functions like:
+Handle_X
+On_X (OnEvent / OnClick / etc)
+
+Are Homonyms and synonyms both bad for identifiers/function names?
+Might cause confusion or uncertainty
+The mixture of synonyms and homonyms, which is commonly found in source codes, maximizes confusion and aggravates comprehension efforts enormously.
+
+A naming relation R is consistent if and only if the mapping is bijective, i.e. each identifier name from N is paired with only one concept from C and each concept from C is paired with only one identifier name from N.
+
+http://michalplachta.com/2017/01/22/folklore-and-science-of-naming-practices/
+has other good information too
+
+IMAGE:
+Identifier Names / Concepts
+book               to book / a book
+accountNumber      an account number
+number             an account number / a phone number
+
+TABLE:
+Naming advice from “Clean code”4    Rule from “Concise and Consistent Naming”3
+use intention-revealing names   choose correct names
+avoid disinformation    choose correct names
+make meaningful distinctions    choose consistent names
+use pronounceable names choose correct names
+use searchable names    choose correct names
+avoid encodings choose consistent names
+avoid mental mapping    choose consistent names
+don’t be cute   choose consistent names
+pick one word per concept   choose consistent names
+don’t pun   choose consistent names
+use solution domain names   choose concise names
+use problem domain names    choose concise names
+add meaningful context  choose concise names
+don’t add gratuitous context    choose concise names
+
+
+-integrate static analysis tools (if these are alive)
+http://btorpey.github.io/pages/REAME.md/index.html
+https://github.com/Ericsson/CodeChecker
+code maat
+code scene
+evolution radar
+moose platform
+
+
+
+-how do we implement function overloads for decomposed objects? and should we?
+Take the following example:
+
+struct Object{
+foo a;
+foo b;
+};
+Different implementations:
+
+void overload(foo a, foo b)
+{
+   //actual implementation uses foo
+}
+
+void overload(Object o)
+{
+    //forward
+    return default_plot_titles(o.a,o.b);
+}
+or
+
+void overload(foo a, foo b)
+{
+   //forward
+   overload(Object{a,b});
+}
+
+void overload(Object o)
+{
+   //actual implementation uses object.foo
+}
+Assuming this is a good idea to produce both, which ones do we choose?
+What is valid for an interface to the user? both? Should this be done automatically?
+(that would get out of hand very fast because as state bubbles to the top, all function interfaces would grow according to composition size of the types they take in...)
+Hmm, it would be cool to have just for the sake of looking productive. Maybe we need some kind of cut off point, because a goal of good code would be not to have too many parameters. So we'd only go as far as that limit. Although, now that I've said that I guess it would be best to only take in only the objects and avoid the multi-parmaeter ones. Hmm.. but that makes the implementation a little bit more verbose... and by that logic, every function should only take 1 parameter. Hmm, things to think about.
+
+
+
+
+-is a count a unit of measurement
+philosophical question to improve static analysis.
+is count a unit of measurement? Can we look at any number and warn about missing units of measurement? And ensure everything has a unit, where the vast majority of identifiers that dont have a measurement become a count measurement?
+
+might not be needed since we already want to analyze the identifier name and deduce based on that if it lends itself to a measurement
+
+
+-anytime a file is deleted, check to see if it is referenced anywhere in code
+^ as part of static analysis for like code review
+
+
+
+-how do we group functions? by structure/name similarity, or by the types they operate under?
+Here is a prime example:
+
+///
+/// \addtogroup plot_style utilities
+/// @{
+///
+/// @brief      Gets the plot styles according to a style selection
+///
+/// @param[in]  selection The category of plot styles to get
+///
+/// @return     A list of different plot styles to use for varying image generation
+///
+std::vector<plot_style> get_plot_styles(style_selection selection);
+
+///
+/// @brief      We need to convert the C++ enumerated type into a string that R understands
+/// R customizes the plot style using a string representation.  This can also be called by the user
+/// In order to get that abbreviation for use on file names.
+///
+/// @param[in]  style  The plot style to convert into an abbreviated R string
+///
+/// @return     An abbreviated string representation of the plot style
+///
+std::string to_r_param(plot_style style);
+///
+/// @}
+///
+
+
+///
+/// \addtogroup bar_placement utilities
+/// @{
+///
+/// @brief      Gets the bar placement styles according to a style selection
+///
+/// @param[in]  selection The category of bar placement styles to get
+///
+/// @return     A list of different bar placement styles to use for varying image generation
+///
+std::vector<bar_placement> get_bar_placement_styles(style_selection selection);
+
+///
+/// @brief      We need to convert the C++ enumerated type into a string that R understands
+/// R expects the bar placement as a boolean which we send over the cli as a string.
+/// This can also be called by the user In order to get that abbreviation for use on file names.
+///
+/// @param[in]  style  The bar placement style to convert into an abbreviated R string
+///
+/// @return     An abbreviated string representation of the bar placement style
+///
+std::string to_r_param(bar_placement style);
+///
+/// @}
+///
+
+
+///
+/// \addtogroup graph_orientation utilities
+/// @{
+///
+/// @brief      Gets the graph orientation styles according to a style selection
+///
+/// @param[in]  selection The category of graph orientation styles to get
+///
+/// @return     A list of different graph orientation styles to use for varying image generation
+///
+std::vector<graph_orientation> get_graph_orientation_styles(style_selection selection);
+
+
+///
+/// @brief      We need to convert the C++ enumerated type into a string that R understands
+/// R expects the graph orientation as a boolean which we send over the cli as a string.
+/// This can also be called by the user In order to get that abbreviation for use on file names.
+///
+/// @param[in]  style  The graph orientation style to convert into an abbreviated R string
+///
+/// @return     An abbreviated string representation of the graph orientation style
+///
+std::string to_r_param(graph_orientation style);
+///
+/// @}
+///
+Should I actually group all of the get_x_styles together?
+and group all of the to_r_param functions together?
+Whose to say. What choice has evidential proof of being better for future maintenance?
+
+-Flesch–Kincaid readability tests
+add these as apart of lint process
+
+
+
+
+-detect URLs in the values of any tokens and check their availability
+optional static analysis:
+does string have url in it?
+extract url
+test it for 200 response
+report issues
+
+
+
+
+-different types of invariants (hillelwayne.com)
+state="at least 1 server is online"
+action="we do not remove servers if below capacity"
+behavior="eventually we have enough servers"
+
+
+
+-question/answer tokens for language concepts 
+functions and classes solve problems. We want to aid in code re-use. Add tokens to allow question/answer content so searching can be done easier. And slack bots can respond with possibilities.
+Basically,
+Q: how do I traverse a filesystem?
+A: use /sdf/dfgd/sdf/tree_walker.hh
+
+-duplicate coder identifier
+tools that currently work, but need integrated:
+fdupes
+
+-flag optional statements in function to generate dispathcing functions automatically
+
+basically:
+void do_thing(Thing){
+  [optional]validate(thing)
+}
+
+
+turns into:
+enum validate{
+ yes,
+ no
+}
+
+void do_thing(Thing, validate){
+  possibly_validate(thing,validate)
+}
+
+possibly_validate(thing,validate){
+   switch(validate){
+   case: validate::yes: perform_validate_step(thing);
+   case: validate::no: perform_skipped_validation_step(thing);
+}
+
+void perform_validate_step(thing)
+{
+}
+
+void  perform_skipped_validation_step(thing)
+{
+}
+
+
+
+
+
+-preconditions and postconditions as part of arguments
+we can keep the root assertions as well, but we should also add tokens so that individual arguments can be tagged with conditions as well
+
+
+
+-check for getters and setters that could provide uniformity
+struct Foo{
+    struct Bar{
+        int x;
+    }
+}
+and
+
+struct Baz{
+        int x;
+}
+should both provide a get/set x function to support uniformity across templates
+
+
+-label branches to help the branch predictor and the reader of the code
+We might have branches in our code, but there is an expected execution order.
+We can annotate this to allow the program to possibly run faster and give an indication to the reader on what branch will likely be hit on normal program executions.
+
+Could this labeling eventually be done automatically? ye, probably, but we should still have it as a token? I think so.
+
+
+-linear/row types
+"I did my Bachelor's thesis on adding (linear) phantom (row) types to C
+There's so much potential there it's ridiculous. The semantics of Cyclone/Rust-style ownership and borrowing took about 5 lines to describe to get the complete system 'for free', iirc. It's the same with typestate."
+What are linear / row types? How can we account for them in Unilang
+
+-every func taskes 1 parameter. self reducing types
+if every func takes 1 parameter, we will sometimes have higher composedtypes,
+and want to pass in the composed types inside. We should be able to automatically convert types
+to another type automatically. We generate the implicit conversions automatically So then we can parameter pass the same as type, but get a smaller type at the function definition level and in the body.
+This will make diffs really small. And refactoring easier.
+
+-type assumptions should create splits in function implementation, when data is adjusted
+lets say a function takes an integer, and that integer cannot be negative,
+but we allow negative to be passed in...
+do we make the adjustment inside / outside the function implementation
+(there are some other things to consider here... with pre.post conditions)...
+we will ensure that three functions get created
+
+1. a function that has assumptions but does not spend computation time checking
+2. a function that has assumptions but allows anything, and performs the adjustment
+3. a function that performs the value adjustment
+(possibly another generated function and enum, that does the dispatch)
+
+
+-Cache the Loop End Value
+for (size_t i = 0, len = strlen(s); i < len; ++i)
+ if (s[i] == ' ')
+ s[i] = '*'; 
+ill be interested to see if this really speeds up impls
+
+-detect certain things in code, and create a documentation link to a webpage showing examples
+we might be able to do this at a function level, lol.
+Take the documentation, and unit tests and transform them into some kind of tutorial/examples page, and link to that on the function. Or just detect words/concepts or something and have links to pages on those.
+like anytime a particular object is used, we can link to a wiki about using the class.
+more noise lol
+
+-custom keyboard
+should we make a keyboard for special unicode tokens as keys? hot keys etc
+
+-expected container size
+very often containers are passed around functions and people often wonder how much data is in them.
+It would be nice if the author could leave a remark like:
+"This container is expected to have 10 - 20 items in it because thats the number of configs we have.
+The size of the container is likely to scale with the number of configs we have yada yada. "
+or
+"This container is expected to contain thousands of segments depending on the length of the course.
+Its probably something like 800 segments for every mile"
+
+These things could be expressed with a number range, and an explanation token
+
+
+-static analysis of mis-ordered parameters through identifier matching.
+example of param flip issue:
+```
+void func (int a, int b);  
+
+void some_func(){
+   int a; int b;
+   func(b,a); //static analysis says this is a mistake
+}
+```
+
+
+
+-Allow transformation functions to also return copies via a wrapper
+In the Jstd, I would always write:
+```
+void Lowercase(Str & s);
+Str As_Lowercased(Str s);
+```
+If we always create the transformer first, we can get the As_ functio for free.
+From Sean Parent's talk:
+The Permutation Paradox:
+"There is a duality between transformations and the corresponding actions:
+An action is definable in terms of a transformation and vice versa:
+void a(T& x){ x = f(x); } // action from transformation
+and 
+T f(T x){a(x); return x; } // transformation from action
+
+Actually they are both turring complete, so either one can be used to create the other.
+There will be some natural language processing for the new function names of course.
+
+"Despite duality, independent implementations are sometimes more efficient, in which case both actions and transformations need to be provided." - Elements of Programming (section 2.5)
+
+
+
+-Language specifiers for describing how the code achieves adopting the technology
+GOTO video: How to Break the Rules by Dan North
+talks about this book: The Goal: A Process of Ongoing Improvement
+And its really important to break down "How to adopt a technology"
+
+So here are the things we want to specify on the software we create, and they should be tokens in the language:
+
+What is the power of the technology?
+What limitation does the technology diminish?
+What rules enabled us to manage this limitation?
+What new rules will we need?
+by the way, 3 should not be !(4)
+
+-suggest enums in place of boolean parameters
+
+
+
+-generate free function that iterates over all combinations of iterable data members
+example:
+something like this:
+
+```
+struct styles{
+vector<color> colors;
+vector<sizes> sizes;
+}
+```
+should generate a function that does this:
+```
+template <Fun>
+void for_each_variation(styles v, Fun fun){
+    for (auto color: v.colors){
+        for(auto size: v.sizes){
+            fun(color,size);
+        }
+    }
+}
+```
+
+
+-high level data flow animator through function call stack
+see what kind of visualizations are out there to do this.
+It could be big an complicated showing a dictionary of custom types being manipulated though a function.
+It could also be simple something like showing the type transitions between function calls.
+Hmmm.. we would have to know that two types are related via a transformation. But I suppose this could be done by tracing parameters / return values. And seeing what goes in, and what comes out.
+
+
+-allow syntax for wrapping a function
+to avoid incorrect return types like this:
+unsigned int size(){
+return foo_set.size();
+}
+should have been a size_t, and a little redundant to type and document.
+documentation can be generated automatically if we know that its wrapping the function.
+Also, we would be able to automatically forward arguments, and automatically return from the call if we know that is wrapping
+
+
+
+
+
+-specify functions as inverses creating automatic tests
+you should be able to label functions as inverses. this will automatically generate tests
+```
+T before;
+before == serialize(deserialize(...)))
+```
+
+-check for unfinished sentence in comment
+sometimes you are writing code, get distracted, and you don't finish writing a comment.
+instead of having people catch this in review, lets try to have the compiler catch it for you.
+
+
+
+-rules on enforcing parameter order
+in what order should parameters be passed?
+There may be a lot of opinions about this, but at the very least we can codify rules and enforce them.
+
+I've noticed personally,
+
+we at least want consistency. If something is passed first most of the time, we should make sure it keeps getting passed first. And maybe the higher up the call chain that the object existed, the more priority it should get to being placed first in the paramter list.
+
+Another opnion maybe to pass the bigest objects first. Again, that just something that people may do conceptually to better understand what is being moved around. Usually because that reserves booleans and enums and flag like types to be ordered last. Again, these are just opnions.
+
+Lastly, we may want to pass things that are being transformed first, followed by things that are being copied(but mutable), followed by things that are read only.
+
+Also, if it is a tie, we might want to trump by whether it is a container or by the sizeof the object
+
+
+
+
+-detect constants found in for loops and code
+example of a warning we should be able to get:
+```
+        for (size_t i = 0; i < 4; ++i)
+        {
+            for (size_t j = 0; j < 4; ++j)
+            {
+```
+
+
+-check for duplicate brief / detailed sections across data members.
+This will hopefully catch any copy and paste errors in UniLang
+
+
+
+-documentation=tutorials+how-to-guide+explanation+reference
+https://www.divio.com/blog/documentation/
+
+
+-static analysis: if string changes; check code base for same original string
+if a string changes in one file, the same string may need changed elsewhere
+this is a static analysis we want to check during CI.
+
+
+
+-support various test methods
+unilang should support:
+Unit Testing
+Property-based Testing
+Integration Testing
+
+Fuzzing (both for crashes and value checking)
+
+comparing interface against a well-known interface
+http://www.lihaoyi.com/post/PrinciplesofAutomatedTesting.html
+
+
+-incorperate the OODA loop
+https://en.wikipedia.org/wiki/OODA_loop
+whether as an export or somehow describable in UniLang
+
+
+
+-numerical inremenet and alphabet detection static analysis
+sometimes code looks like:
+
+1. sfkjskdfsdf
+dfgdfgfgd
+
+2. sfddfgdfg
+dfgdfgdfg
+
+3. dfgdfgdfg
+dfgfdg
+
+If we can detect this, we can report any place that a number was out of place or missing.
+Assuming the numbers are in enough order already.
+
+The same analysis can be done for things in alphabetical order.
+
+Basically we want to detect these patterns, and report any info on what could make the pattern more consistent. That will help find errors (most likely)
+
+because their are some other things I can think of such as alphabetical in reverse order, counting down,
+count by even numbers, or counting by base 2...
+we'll probably want a numerical pattern database...
+
+We also might want to do some research on what kind research on existing text pattern analysis algorithms
+
+
+
+
+-when describing something, allow for a layman's and detailed explanation
+[creates a more accurate values using a well known algorithm]
+[employs the made-up-person conjecture utilizing geometric-based rounding to facilitate parallel foos in 3d space]
+
+I dunno. You get the idea. Two sentences that say the same thing but one is in laymans term and the other is a more detailed explanation. Both are important depending on the reader and the context.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-anytime a function has an outparameter we should generate a function that gives it as a return value
+its very common for a function to have an out parameter because the return value is being used for something else such as a return code or something. But after this function is written, we inevitably want to fill the variable and use it. This leads to two lines of code instead of one.
+
+So basically we want to be able to generate the function that wraps the function that uses an output parameter, but returns that out parameter as a return value.
+
+Hmmm, this could be a more philosophical question about whether we think Unilang should have out parameters at all when it supports multiple return values.
+
+Should output parameters always be cleared/emptied/re-initialized. I think yes. So you can't ague that an out parameter might need some initial configuration by the user before passing it in, and thus can't be a return value only. In fact. It probably can.
+
+I think we still need out parameters. I was hoping to avoid explicitly stating them like D does, but that analysis may be tricky. I suppose that if we explicitly state them as output parameters, we can generate the code to automatically the clear the variable.
+hmm. I change my mind. Out parameters in unilang should Ideally just be return values.
+
+In theory every return value is like an out parameter. We could transform every function to be void and take an out parameter which use to be the return value.
+but the question is, do we require that any output parameter actually be specified as a return value.
+And then maybe we can have a special unilang attribute that says the return value should be expressed as a return value?
+
+That sounds good in theory, but we might care about the placement of the output parameter in an argument list. If its a return value we can annotate where in the argument list we want the parameter to be specified.
+
+So maybe an argument is still the best approach...
+
+
+
+-create a human intuition AI to test how others will understand code and how long it will take them, and what directions they might go to lead to confusion
+
+
+
+
+-automatically generate both return function and output param function with special syntax
+every type returning function can be expressed as a void function with that type as an out parameter.
+We might want a special syntax to generate these two functions automatically.
+
+Because there is a lot of duplication in terms of:
+
+```
+TYPE get_type(...){
+    TYPE t;
+    ...
+    return t;
+}
+```
+This is boiler plate we could generate with something like this:
+```
+[TYPE][t]
+[get_type][...]
+[
+... body...
+]
+```
+and maybe and attribute saying that the function creates one locally. and returns an instance of it...
+It might be tricky, if the object does not have a default constructor
+
+
+
+
+-Is idempotence and pure the same thing, how do we annotate this?
+
+
+
+
+
+
+
+
+-find a type, by querying other types for composition relationship
+Foo is inside Bar which is inside Baz.
+We can say does Baz have a Foo?
+The result is yes,
+Foo->Bar->Baz
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-where should these parameter values come from
+sometimes you might have:
+
+void take_good_foos(Foo f);
+
+and we would like to document:
+//f comes from the good_foo_factory::give, or the foo_provide(style::good);
+
+That way someone has context on how to meet the needs of an interface.
+
+
+
+-programatically do all of wikipedia's software development philosophies
+https://en.wikipedia.org/wiki/List_of_software_development_philosophies
+
+
+
+-automatic moving when needed
+you should never need to "move" in Unilang.
+Ideally this is something that could be deduced and applied automatically.
+That might not actually be the case, but that's the dream.
+
+-add machine learning algorithm to try and sumarize what code is doing
+We can evaluate if our code is easy to understand based on the explanation that a machine learning algorithm comes up with
+
+
+-unit test depenency graph
+some unit tests depend on other tests.
+we can't test clear() without first knowing that add() works
+Make sure we can label unit tests as assuming that other tests work before they run.
+This will ensure that unit tests will only crash on problems specific to what they are testing
+
+
+
+-specify functions as "possibly" doing something. 
+a very common pattern is the following:
+```
+if (flag){
+   do_thing();
+}
+```
+this gets re-factored into:
+
+```
+possibly_do_thing(flag);
+```
+we should have a syntax of being able to customize this on a function definition.
+That we can generate a comment saying "This may be a NOP.".
+Ideally we'd want the function to support a token that lets us specify the check on whether the function is really called... this would mean we don't event have to write the possibly_x function.
+It could be generated, based on our condition token.
+
+We can add other fun customization like a function prefix:
+
+possibly_do_x
+maybe_do_x
+conditionally_do_x
+etc.
+
+
+
+
+
+
+-every function should implicitly take the world state object. 
+Good programming requires grouping configuration and settings together into one giant type.
+Then this type needs passed through all the function call stack. We should implicitly include it as part of every function if we use anything in the function or in a sub call of a function.
+We should also automatically decompose the object as far as needed.
+
+So ideally, we would change one line of code in a nested function
+to be foo.bar.x from foo.bar.
+And that will trigger a cascade of changes up the call stack to pass in a different type.
+
+Same with using a global config in a nested function that never used it before.
+It would trigger the implicit world state to be the first parameter of all those parent functions.
+^ Not thrilled with the idea.  Yes, dependency injection is a thing that frameworks do...
+there's some kind of more underlying issue here.  It would be easier for the writer, but perhaps harder for the reader
+but maybe not, that's why we generate it this way for the reader...
+
+
+
+
+
+-abbreviation dictionary (allow automatic function abbreviating)
+Some static analyzers are dumb, and complain if your function name is more than 21 characters.
+I don't think to affect the way I actually write code. Instead Unilang will automatically abbreviate if it was customized to do so. In order to abbreviate effectively, we will want to include an "abbreviation dictionary".
+
+Things like:
+program -> prog
+variable -> var
+derive -> get (hmm.. might need some discussion about verb usage)
+arguments -> args
+
+also, if the the name of the function has the type name or the argument name in it...
+we can probably throw that out.. or warn about it. Abbreviating it by throwing it out, MIGHT cause overload issues... but I think that may be somewhat rare and the benefits out weigh that negative.
+
+
+
+
+
+
+
+
+
+
+
+-static analyzer should check the following "good code" principals
+https://cdiggins.github.io/blog/programming-tips.html
+Follow the Single Responsibility Principle
+Minimize Shared State
+Localize Side Effects
+Prefer Immutable Objects
+Interfaces over Classes(Functions that accept an interface (or a template argument or concept in the case of C++) are more reusable than functions that operate on a class.)
+*maybe.. but also not having a type is tricky in understanding as well
+Apply Good Principles to Modules
+Minmize dependencies
+Each project should have a single well defined responsibility
+Don't repeat yourself
+Avoid Inheritance
+Test as you Design and Develop
+Prefer Standard Libraries to Hand-Rolled Ones
+Avoid Writing New Code
+
+
+
+-test that unit tests give the right errors when they fail
+There should be a way to dump unit test failure messages so that we can observe if its clear why the problem occurred
+
+
+-cout/cin are prohibited. You should call a unilang print
+unilang needs its own abastraction for printing.
+That way it can be generated into a cout or a cin or a log call.
+You might think that you can just write this abstraction in one place, and call that function.
+That's true, and we should probably do that as well.
+Nonetheless, we get more control if we enforce this, and it brings us closer to a true universal language.
+
+
+-force an implementation based on whiley ensure statements
+generate counter-examples,
+and force the correct implementation by providing ensure statements
+see the language whiley for examples
+
+
+-cleaner syntax for range based for loops
+has special syntax for traversing forward or backwards
+backwards would generate something like:
+
+for (auto it : boost::adaptors::reverse(container))
+also we need better verbs to generate:
+
+for (auto it:
+for (const auto it:
+for (const auto & it:
+for (auto & it:
+
+
+
+-all boolean expressions should be a function call
+Strict RULE! Might be helpful for clean code.
+The only boolean expressions that are allowed to exist are in return statements. wow
+
+
+
+
+
+-static analysis on container interface matching through typedefs
+containers are always collections of things.
+So we will always make a typedef from thing
+to `using things = vector<thing>`.
+
+We can then brute force compiler things as different things:
+
+```
+list<thing>
+doubly_list<thing>
+```
+If we are using a container agnostic interface, these changes should compile.
+At the unilang level, we may inject slightly different code, or rely on other included header code that allows for similar interface calling
+
+
+
+
+
+
+
+
+
+-Sentence Style For Naming Unit Tests
+http://wiki.c2.com/?SentenceStyleForNamingUnitTests
+
+
+
+-be able to mark a line of code as something to "remove in the future"
+maybe just a coment token
+[we want to remove this line in the future because ...]
+
+
+
+
+-unilang should only accept some form of if/else pattern matching
+unilang should only accept some form of if/else pattern matching
+it can generate the switch statement stuff from that for enums..
+
+
+
+-pipeline and cascade operator functionality
+https://www.dartlang.org/guides/language/language-tour#cascade-notation-
+https://github.com/tc39/proposal-pipeline-operator
+
+
+
+
+-eye tracking on source code read
+we need to track the eye sight of people using Unilang.
+It should be intuitively, left to right. We may find that using the pipe operator will better facilitate this
+
+
+
+-generate KLEE LLVM unit tests
+fuzzy test using the KLEE symbolic virtual machine
+http://klee.github.io/tutorials/testing-function/
+
+
+
+-every tool should have alias names
+we'll only create one binary, but it would be nice to also add a bunch of aliases for alternative names of the binary..
+that way I never have to look them up, and I can type print_* or dump_* or show_*, and usually get the right commands
+
+
+
+
+-derive specification from tests
+a programs correctness is relative to whether it behaves according to the specification
+we should be able to generate the specification from tests
+
+
+
+
+
+
+
+
+-support different types of documentation
+https://www.divio.com/en/blog/documentation/
+four different functions: tutorials, how-to guides, explanation and technical reference. Each of them requires a distinct mode of writing. 
+table:
+  | Most useful when we’re studying | Most useful when we’re coding
+-- | -- | --
+Tutorials | How-to guides
+Explanation | Reference
+
+
+
+-every type can have a picture representation
+This way we could show a nested set of types through nested pictures
+
+
+
+
+-2 functions body for defensive and contract
+create two function implementations. one for a defensive approach. The other for a contract-based approach
+
+
+
+
+
+
+
+
+-add generator combinanator attributes
+say you have a struct of
+struct settings{
+int a, b, c;
+};
+
+You might find that you need to figure what values work best for a,b,c.
+You can specify ranges, values possibilities, that generators, ehatev
+
+which will allow you generate the struct in all of those combinations so you can brute force solutions.
+
+
+
+
+-auto generate regression tests
+we should be able to specify sets of inputs/outputs which will automatically generate regression tests.
+The tests will have things like.. we are happy with the new results, so reset the output.
+
+
+-function contracts should automatically generate unit tests
+"So, assertions are declarative while UnitTests are imperative. Assertions are for static reasoning about code while UnitTests are for dynamically testing a few examples. You need both. They complement each other. Put it this way: could you generate the UnitTests from the assertions? Or vice versa? I think mostly not. To the extent you can, I'd prefer to write the assertions first and then have a tool generate some UnitTests from them."
+-- DaveHarris
+
+
+
+
+
+-akka stream syntac for In, Out, Mat
+take a look at akka streams.
+I think they allow you to specify the flow of data at the api level:
+Flow[In,Out,Mat]
+
+
+
+-generate images showing Deliberate Architecture properties / emergences
+https://www.youtube.com/watch?v=9e3lflYhNd8
+great video about emergences. dimensions of software quality.
+stakeholders, software boundaries
+properties of software. light equations on factors that affect software.
+A lot of these properties could be turned into tokens where the author describes their feelings about each, and rates them by percentage. stuff like that.
+
+
+-document salient attributes
+salient attributes were invented by John Lakos to describe the "value" of an object.
+when talking about vector, size() is salient, but capacity is not.
+Find a way for Unilang to support and document this.
+
+
+
+
+-flag function as using internet
+allow functions to be tagged as "using internet"
+or "using disk" or "displaying to graphics"
+This will be helpful in terms of how unit tests should be run.
+
+
+
+-embed polls / surveys inside source code
+embed polls / surveys inside source code
+so that people with a special UniLang IDE can give feedback / data back to a maintainer.
+Things like, "should the interface look like x, y or z?"
+"Would you know how to do x with this API?" Things like that.
+Every interface can have a "what were you trying to solve with this API?" "Did the API help you solve it?"
+"what were the good things / bad things?"
+
+This is a really good way to help maintain code with minimal effort and the group collective can be shared with all other developers.
+
+We'll have to think about how to handle the survey data as the code changes, because the results may no longer be applicable from code changes.
+
+
+
+-every function / api / program has an ROI value derived from use cases
+We can imagine all the possible ways something can be used. We list all of these ways in tokens.
+The number of use cases may be able to create some kind of "return on investment" rating.
+Maybe ROI isn't the best term.. because some things can be easy to learn and others can be hard.. and thats uncorrelated with how useful the effort to learn things is.
+
+ROI is more like a graph where x is investment time and y is return on investment (however we choose to measure returned investment).
+
+Basically what I'm thinking is simple functions like "add" have a single use case.
+More complicated functions/tools like "calculator" have more use cases... more functionality I should say.
+So if we can tag functions based on how much functionality they allow, we may be able to derive the overall functionality / use cases available for a tool.
+
+something to think about/
+
+oh:
+```
+The Return on Investment Formula
+According to Investopedia, the return on an investment is the gain minus the cost, divided by the cost.
+```
+there's still different investments ^
+financial, joy, etc
+
+
+
+
+
+-provide answers for counterpoints expressed in post
+some person argues about making a meta lanaguage.
+He goes about it the wrong way, and everyone responds misses the mark.
+
+
+
+
+-special notation for functions that answer a boolean question
+something like this, is confusing:
+
+bool& On(bool & b);
+It could be misused as:
+
+if (On(var)){}
+instead of setting something to true.
+
+This could be fixed by specifying functions as return bool types, or by "answering questions".. which also return bool types
+
+https://www.reddit.com/r/ProgrammingLanguages/comments/7oo0gu/polymorphic_programming/?submit_url=https%3A%2F%2Fbrianmckenna.org%2Fblog%2Fpolymorphic_programming&already_submitted=true&submit_title=
+
+Unilang is a practical meta language, and we ought to answer these questions now, as people will make the same dumb arguments about Unilang in the future.
+
+
+
+
+
+-be able to taint identifiers or types. add tainting checker
+note about "tainting" intersection types
+https://checkerframework.org/manual/#tainting-checker
+
+
+-add support for immer containers and library features
+https://sinusoid.es/immer/containers.html
+
+
+-add the concept of a "bubble-up gimmie"
+I invented this.
+Basically we just want data. When we compose data inside data however,
+we still want to be able to access the composed data easily and consistently. So we could generate functions like this:
+```
+Baz get_baz(Foo foo){
+   return foo.bar.baz;
+}
+Baz get_baz(Bar foo){
+   return bar.baz;
+}
+Baz get_baz(Baz foo){
+   return baz;
+}
+```
+We should be able to "tag" data members as having "bubble-up gimmie behaviour"
+Then if anybody composes the data inside data, we can generate methods for them.
+
+Also keep in mind, we could access them as if these methods existed in Unilang but still transcompile them into the a.b.c.d format.
+
+What about conflicts? We can make that a static guarantee, not generate methods at all, force the user to unspecify one of them.
+
+The parent composing "bubble-up gimmes" as members (wither directly or indirectly), should be able to turn them on/off.
+This also could be done with one massive template function that uses
+constexpr if to branch the type and return the appropriate a.b.c.d format.
+
+
+
+
+
+
+
+
+
+
+
+-add support for different types of property tests
+Property Test
+Random Property Test
+Exhaustive Property Test
+Specialized Exhaustive Property Test
+Specialized Random Property Test
+(Fuzzing)
+Generators for values that should all pass
+Generators for values that should all fail
+
+
+
+
+
+-support SLA agreements and metrics
+basically support everything on this wikipedia page:
+https://en.wikipedia.org/wiki/Service-level_agreement
+
+
+
+
+-Mass nouns decector
+https://en.wikipedia.org/wiki/Mass_noun
+
+
+
+
+
+
+
+
+-deriving ownership tags for data
+[derived from]
+[populated by]
+
+both can take types:
+
+example:
+struct person
+{
+string first,middle,last;
+
+string initials [first,middle,last]
+}
+
+
+
+
+
+
+-unit tests need lorem mipseum generated test data
+Inside unit tests, I basically want:
+[unique_key_pair]
+which turns into:
+```
+{'foo': 'abc'}
+```
+or something like that
+
+[unique_string]
+turns into "foo",
+
+you can also append number sso that they can be re-used:
+
+[unique_string_1][unique_string_2]
+which will always be:
+"foo", "bar"
+
+without the _# suffix, it basically counts up implicitly, and skips any explicitly stated ones
+
+
+
+
+
+
+
+-support pair-wise testing
+
+
+
+
+
+
+
+
+
+
+
+
+-all error messages should tell the user to go manually do something
+nothing is worse than seeing an error message that just says something failed.
+Even if it explains why it failed, it rarely explains how to fix it.
+
+All error messages should give an instruction to the user on how they could get it to work.
+Sometimes the instructions could be as simple as "talk to infra team #channel".
+Or it could be: "check your internet connection, and try again."
+^ not a great one, but it does give instruction.
+
+Also explain all the reasons why this error could have happened.
+
+
+
+
+
+-"abstraction level" inlining or auto-inling on small functions
+Some developers are inexperienced and inept at writing software. they prefer to write large functions. We've all heard the argument again and again throughout the decades. There is truth in terms of context switching. But this is of course a limitation of code's linear structure which will be solved by unilang anyway, Despite the projectional shortcomings from traditional software processes inling functions to avoid indirection its far out-wighted by all the benefits that functions provide. The problem with developing software an industry, is that some developers don't just prefer to write large functons, they actual require it from others. Although small functions are clearly the correct choice, it becomes a classic circle-jerking bike-shedding philosophy that is not worth my time.
+Since I'm incapable of stooping down to that level of incompetence, we must automate it.
+
+So wait, will unilang put the war to rest? Yes. I can get the best of both worlds.
+Functional decomposition (the way software ought to be) with an inlined view and transcompilation will inline it for the devs that don't know any better
+
+Therefore, Unilang should allow us to automatically inline the functions we write based on some configurable credentials. Whether the function is too small, if its only used in < n places, if we can detect some kind of abstraction level of detail, and inline based on that. It might also be interesting to do the opposite automatically as well. Which I have often thought about for outside-module boundary functions.
+A thin layer to allow us to handle calls from outside parties differently through code generation.
+
+
+
+
+
+-OpenAPI support
+support for all the attributes in REST API things
+
+
+
+
+
+
+-think about frame of references with unit measurements
+in math:
+
+```
+superscript: Car
+T
+subscript: World
+```
+```
+superscript: <FRAME>
+<TYPE>
+subscript: <NAME>
+```
+
+in programming:
+car_from_world
+from
+
+pose_car_wrt_world
+sign_wrt_car
+
+you know they match and cancel when they are written like this:
+car_from_world * world_from_SubA (correct)
+car_from_world * subA_from_world (wrong)
+
+the first is correct because "world" appears right next to each other
+
+
+
+
+
+
+
+
+
+
+
+
+-Need an Object Relational Mapping (ORM) exporter
+Basically to get us to the point of using databases, and getting everything back as the same types we are familiar with. We should probably think about "database schemas", or "table creation scripts" or whatever to make the use of using databases blend easily with whatever language we are using.
+
+
+
+
+
+-a better way to set options in code through data member usage
+-optional static analysis (with tags in the language) to fail if the following is not true:
+all data members of Foo need to be used (in the scope of the function)
+each data member of Foo can only be used once (in the scope of the function)
+the data members must be accessed in order.
+This can mean recursively down through the composition also
+
+
+
+
+
+
+-get list of decorators and annotations from other languages
+c#,rust,javascript,java,Kotlin ... a lot of these languages have interesting annotation extensions that we should steal
+https://projectlombok.org/features/all
+
+
+
+
+
+-UniSlang for Unilang Terminology
+move glossary terms to a section called UniSlang.
+just fun word play stuff.
+UniSlang / UniClang
+UniGang (group of contributors?)
+whatever. just fun terminology for terminology to consider
+
+
+
+
+
+-contextual organization tags on functions and things
+any time you implement anything, you inevitability have to write some utility functions.
+maybe something does some string parsing, maybe something has to do quick geomoetry.
+We don't have time or authority to split and organize all of this as it should be.
+Instead, we will tag functions as things as to whether or not they are directly applicable to solving the problem domain or if they are slightly deviated away from the problem domain and could probably be re-used somewhere else. That way, later when we refactor things, we can easily see whats utility and whats core functional decomposition
+
+
+
+
+
+-Data member ordering affects the information structure presented in a compostional rendering
+the order of the structures and data members should be arranged based on how they are logically read in a composition chart. For example:
+
+a struct that has a foo and two trigger events about foo's state.
+
+You would want to say "Foo whose events are a and b", and not
+"events a and b... which belong to foo.
+
+The reason this is bad is because Foo is sort of the object of the sentence, so it should be introduced first.
+This goes along with pragmatic concepts in linguistics on information structure.
+sentences are normally SVO (subject verb object)... but at a more conceptual level, humans prefer to hear things in a particular order to reduce cognitive load. This may have to do with relevance and such, but we can read more into "information structure within pragmatics" to optimize this ordering.
+
+The specific use case I had involved areas of land, and events on what to do when you enter and leave the land. So I would want to say: "object foo has a chunk of land, with two event actions based on our location on the land."
+
+it would be less efficient to say this: "there are two events" (now the reader has to hang onto that dangling non-fully resolved concept) "and a submap that those events are about".
+
+Hopefully you can see why this is bad. Data member ordering affects composition ordering which affects the pragmatics of how it is read. We could think about adding another token that sort of has these linguistical information structure correlations, and then they can be automatically reordred for things like treesheets rendering. Something to think about.
+
+
+
+
+
+-test properties that need added
+expected time of test ( < 500ms; instant, short, medium, longer, etc)
+no network
+no io
+what kind of test it is: "no crash", "behavioral" .
+Isn't not crashing kind of a behavioral test?
+(look up different kinds of test)
+
+
+
+-tokens and generation for rest APIs
+tokesns and generation for rest APIs.. probably extensions of data tokens
+
+
+
+
+
+
+
+-generate tests based on function/object definition
+we should try to avoid writing tests as much as possible.
+You heard me right. Instead we should rely on our documentation generating tests for us!
+This will avoid inconsistencies in how we test vs what we claim.
+It's also just less work, and if we can get the tests we care about to generate properly, that means we've described the interface correctly.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-natural language expression of function call (generic and specific)
+This is very important, and we can start generating documentation for it now.
+
+Why do functions look like this?:
+
+create_shape(name,radius,points);
+yet in natural language, we might say something like:
+
+create a shape called <name> with a <radius> and <n> number of points
+(ignore any details on units... that's not the point of this, but they would be a part of this also)
+
+with values:
+
+create_shape("star,20,5)
+in natural language:
+
+create a shape called star with a radius of 20 and 5 points
+Ok, not the best example, but I'm sure I'll find a lot better examples in the wild.
+Here's the point though. Can you turn an arbitrary function into the natural way that somebody would informally be talking about it?
+
+Probably not in an elegant way without the help of pre-documentation mustaching.
+
+//create a shape called {{1}} with a radius of {{2}} and n number of {{3}}
+create_shape(name,radius,points);
+
+generates to:  
+create a shape called <name> with a radius of <radius> and n number of <points>
+we'll have to think about whether we want this in two versions.
+(generic identifier version and specific value version).
+As you can see from my simple example above, it feels like it might be good to have both?
+
+This has a lot of good use cases apart from just extra documentation above functions.
+You could also interactively print this information when code is running or leave it as part of a debug or express it as part of a requirements doc, etc, etc.
+
+Having functionality expressed this way in english is great for helping write tests, helping verify tests. Good for a QA team. Good for anyone who is not a developer, or a new developer trying to understand at a high informal level what's kind of going on without having to look functions, read the identifiers, read the types. Understand what was happening at run time/evaluation time.
+
+Lastly, I think this will affect the age old conundrum of what order parameters should go in.
+It's not always an obvious thing on the order parameters should be. It can often be chalked up to opinion, and with natural language, you could just as easily have a multitude of orders as well.
+
+However, we could optionally enforce that the mustache params are ordered in the natural clause provided. This gives a developers an extra avenue of exporting the inter-algorithms they don't even know they are running in their mind to make a natural language sentence that "sounds the best".
+
+Of course we can try to be more formal on the matter. And make sure things seem to fit a linguistic typology. I'm talking subject–verb–object (SVO). That may also require us to tag arguments as these english things... so we'll consider this as well.
+
+A fun little discovery here is think about object oriented code. Your subject is what has all the methods. That's why its first (subject.method()).
+So when we are thinking about what functions are focusing on observering/transforming a particular data type/identifier, its probably the subject, which means it probably aught to be the first argument in a non-object-oriented rendering. (Think every language that doesn't do OO (either intentially or due to missing language capability), and make what is essentially the object the first parameter. A lot to think about here.
+
+which means you could also static analyze and say something like, "this is ref" but comes later after all o of these other arguments, and based on the rules it might be a subject so you might want to put it first.
+
+Let's get the basic functionality in, and we can make separate tickets for more interesting things later, when are comfortable and proud enough to have this as a basis, and are optionally able to use it in production code.
+
+this will be dope for the AAA testing too.
+I can imagine generating documentation like:
+```
+We arrange the <foo> given a <bar> and <baz>.  
+The <foo> is <binged> into a <bazzling> <juke>
+We check that the <juke> is indeed <bazzling>
+
+```
+
+
+
+-tokens to describe what an abstraction is and is not
+an article states:
+http://www.tedinski.com/2018/01/30/the-one-ring-problem-abstraction-and-power.html
+"You cannot create an abstraction without saying two things: what it is, and what it is not."
+
+That's a good point. We should have tokens for labelling functions and classes as:
+[things that it is] and [things that it is not]
+
+
+
+
+
+-Tokens and language support for Meyers Quality Factors
+https://www.win.tue.nl/~wstomv/edu/2ip30/references/design-by-contract/index.html#r1
+2.2 Meyer's Internal and External Software Product Quality Factors
+
+A star graph where each point may pull at one another:
+
+image 1:
+performance
+flexibility
+power efficiency
+scalability
+security
+reliability
+maintainability
+testability
+robustness
+deployability
+usability
+cost
+
+image 2:
+cost
+correctness
+robusness
+efficiency
+extendability
+reusability
+compatibility
+portability
+ease of use
+testability
+understandability
+functionality
+timeliness
+
+
+
+
+
+
+
+-static analysis for identifer anti-patterns 
+Naming Scalars Like Objects
+Bad example:
+store = "Jason's Capsaicin Station"
+Good example:
+store_name = "Jason's Capsaicin Station"
+
+Naming Counts Like Collections
+Bad example:
+products = 0
+Good example:
+product_count = 0
+
+Naming a Variable After Its Type
+Bad example:
+array = []
+Good example:
+customers = []
+
+Overabbreviation
+Bad example:
+passwd
+fname
+cust
+o
+Good example:
+password
+first_name
+customer
+order
+SSN, USA and admin are all fine because these are predictable and already familiar to most people.
+
+Use of “Stuff Words” For Collections
+Bad example:
+news[0]
+inventory[0]
+Good example:
+articles[0]
+inventory_items[0]
+Explanation: There are certain words that have no singular form. Examples include “stuff”, “garbage” and “laundry”. I call these “stuff words”. This anti-pattern especially applies to database table names.
+
+Key/Value Mystery
+Bad examples:
+products.each { |key, value| puts value }
+products.each { |k, v| puts v }
+Good example:
+products.each { |name, price| puts price }
+
+
+
+overloading and default values should be convertable to each other both ways
+if we specify overloads with different number of arguments, we should be able to convert them to the same method with a default value (some of the times... think about..) and same thing about converting the other way
+
+
+
+
+
+
+-add an "indexes to" property on data members
+this a property on data to data member relationships.
+Should the relationship information be tied to A, B, or in a separate table?
+A[B] B
+A B[A]
+A B [A][B]
+I feel like a lot of these problems are data base related. How do you make a descion on these kinds of things?
+Is there a way to get the best of both worlds?
+
+Either way, we want to specify that a data member is "indexibally related".
+Meaning that one data member, can be used to index into another data member.
+
+This occurs occasionally when we have a vector of indexes for a vector of rich data
+```
+vector<fidget_ids> ids;
+vector<fidget_heavy_data> fidgets;
+```
+
+
+
+-do we need public/private contracts?
+And article states:
+
+https://www.win.tue.nl/~wstomv/edu/2ip30/references/design-by-contract/index.html
+```
+ DBC During Implementation
+
+    Implementation of effective (concrete) classes are constrained by their ancestor contracts. But new features (routines) may be added with their own contracts. Requirements must be achievable by clients of the class so they must be expressed only in terms of 'public' features of the class - not 'private' attributes. For example:
+
+    remove is
+            -- Remove an item.
+        require
+            not_empty: not empty
+        do
+            ...
+        ensure
+            not_full: not full
+            one_less: count = old count - 1
+        end
+
+Where features count, empty and full must be 'public' features accessible to clients of the class. Without this constraint, it would not be possible for clients to understand, let alone satisfy, the contract.
+```
+but I want the best of both worlds.
+Contracts that the user can understand and conceptualize
+as well as contracts the implementer can understand and protect themselves with

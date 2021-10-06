@@ -1,0 +1,51 @@
+class
+⚯
+⚞⚟
+
+
+◀public: static▶ void ☀Create()❰
+
+    
+    //get the default split-tree version
+    auto split_trees = Default_Split_Concept_Trees_Getter::Get();
+    std::cout << split_trees.trees.size() << std::endl;
+    
+    
+    Position moving_pos;
+    Frame_Elements frames;
+    for (auto it: split_trees.trees){
+        frames.types += Render_As_Schema_Tree(it,moving_pos).types;
+        moving_pos.x += 150;
+    }
+    
+    Convert_To_Image(frames);
+    
+❱
+
+◀private: static▶ Frame_Elements ☀Render_As_Schema_Tree(String_Tree const& str_tree, Position const& moving_pos)❰
+
+    //and convert it into a label tree
+    auto label_tree = String_Tree_To_Buildable_Schema_Faced_Tree::Convert(str_tree);
+    label_tree.pos = moving_pos;
+    
+    //convert the label tree to drawable frame elements
+    Frame_Elements elements;
+    Pc_Input_State pc_input;
+    auto unilang_font_lookup = Unilang_Character_Maps::Get();
+    elements.types += Buildable_Schema_Face_Tree_Drawer::Draw(unilang_font_lookup,label_tree,pc_input).types;
+    
+    return elements;
+❱
+
+◀private: static▶ void ☀Convert_To_Image(Frame_Elements const& elements)❰
+
+    //draw the elements to an image
+    Cairo_Render_Settings settings;
+    
+    auto host_folder = Bazel_Derived_Root_Of_Repo();
+    settings.file_name = host_folder + ".readme/unilang_split_concept_tree.png";
+    Frame_Renderer::Render(elements,settings);
+    
+    //additional cleanuo
+    Image_Transparent::Convert(settings.file_name);
+❱

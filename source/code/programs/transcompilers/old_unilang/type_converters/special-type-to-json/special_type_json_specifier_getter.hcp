@@ -1,0 +1,31 @@
+class
+
+
+⚯
+❪"code/utilities/linguistics/computer/types/generic/unilang_type_to_language_type_converter"❫
+❪"code/utilities/types/converters/lib"❫
+⚞⚟
+
+◀public: static▶ Special_Json_Type ☀Get(Special_Json_Specifier_Settings const& settings, std::string base_type, bool & found)❰
+    
+    found=false;
+    auto stripped_type_detail = Type_Qualifier_Stripper::Strip_To_Base_Unilang_Type(as_string(base_type),false);
+    auto language_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(stripped_type_detail.base_type, Source_Language::C);
+    
+    auto code = Pull_Out_Code_Based_On_Table(settings.lookup_table,language_type.name,found);
+    
+    return code;
+❱
+
+
+
+◀private: static▶ Special_Json_Type ☀Pull_Out_Code_Based_On_Table(std::unordered_multimap<std::string,Special_Json_Type> const& lookup_table, std::string const& base_type, bool & found)❰
+
+    Special_Json_Type code;
+    auto got_it = lookup_table.find(base_type);
+    if (got_it != lookup_table.end()){
+        code = got_it->second;
+        found = true;
+    }
+    return code;
+❱

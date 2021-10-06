@@ -1,0 +1,496 @@
+class
+❪iostream❫
+❪string❫
+❪utility❫
+❪queue❫
+❪vector❫
+❪map❫
+❪"code/utilities/types/tree/bst/tree_node_properties.hpp"❫
+❪"code/utilities/data_structures/tree/bst/binary_node_with_height.hpp"❫
+⚯
+⚞⚟
+
+
+◀public:
+static std::vector<BinaryNodeWithHeight<int>> get_binary_node_heights(BinaryNode<int> *root){
+    
+    std::vector<BinaryNodeWithHeight<int>> results;
+    
+    // Base Case 
+    if (root == NULL)  return results; 
+  
+    // Create an empty queue for level order tarversal 
+    std::queue<BinaryNodeWithHeight<int>> q; 
+  
+    // Enqueue Root and initialize height
+    BinaryNodeWithHeight<int> temp;
+    temp.node = *root;
+    temp.height = 0;
+    q.push(temp);
+    
+  
+    while (q.empty() == false) 
+    { 
+        // Print front of queue and remove it from queue 
+        BinaryNodeWithHeight<int> node = q.front(); 
+        results.emplace_back(node);
+        q.pop(); 
+  
+        /* Enqueue left child */
+        if (node.node.left != NULL){
+            temp.node = *node.node.left;
+            temp.height = node.height+1;
+            q.push(temp); 
+        }
+  
+        /*Enqueue right child */
+        if (node.node.right != NULL){
+            temp.node = *node.node.right;
+            temp.height = node.height+1;
+            q.push(temp); 
+        }
+    }
+    
+    return results;
+}
+▶
+
+◀public:
+static std::map<int,size_t> get_binary_node_value_height_map(BinaryNode<int> *root){
+    auto x = get_binary_node_heights(root);
+    
+    std::map<int,size_t> result;
+    for (auto it: x){
+        result.insert(std::make_pair(it.node.val,it.height));
+    }
+    return result;
+}
+▶
+
+◀public:
+static std::vector<std::vector<int>> get_binary_node_levels(BinaryNode<int> *root){
+    auto x = get_binary_node_heights(root);
+    
+    std::vector<std::vector<int>> result;
+    std::vector<int> temp;
+    size_t current_height = x[0].height;
+    for (auto it: x){
+        if (it.height == current_height){
+            temp.emplace_back(it.node.val);
+        }
+        else{
+            current_height = it.height;
+            result.emplace_back(temp);
+            temp.clear();
+            temp.emplace_back(it.node.val);
+        }
+    }
+    
+    if (!temp.empty()){
+        result.emplace_back(temp);
+    }
+    return result;
+}
+▶
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+◀public:
+template <typename T>
+static void go_all_the_way_left(T* & node){
+    if (node){
+        if (node->left){
+            node = node->left;
+        }
+    }
+}
+▶
+
+
+//https://www.geeksforgeeks.org/reverse-morris-traversal-using-threaded-binary-tree/
+
+//core traversals
+◀public:
+template <typename T, typename Fun>
+static void morris_traversal(T *root, Fun fun){
+
+    if (root == nullptr){
+        return; 
+    }
+    
+    T* current = nullptr;
+    T* pre = nullptr; 
+    current = root;
+    
+    while (current != nullptr) {
+  
+        if (current->left == nullptr) { 
+            fun(current);
+            std::cout << current->val << " " << current->right->val << std::endl;
+            current = current->right; 
+        }
+        else {
+            
+            find_the_inorder_predecessor_of_current(pre,current);
+  
+            /* Make current as the right child of its inorder  
+               predecessor */
+            if (pre->right == nullptr) {
+                pre->right = current;
+                current = current->left;
+            } 
+  
+            /* Revert the changes made in the 'if' part to restore  
+               the original tree i.e., fix the right child 
+               of predecessor */
+            else {
+
+                fun(current);
+                
+                if (current){
+                    if (current->right){
+                        pre->right = current->right;
+                        go_all_the_way_left(pre->right);
+                        
+                        if (current->val != pre->right->val){
+                            std::cout << current->val << " " << pre->right->val << std::endl;
+                        }
+                        else{
+                            std::cout << current->val << " " << current->right->val << std::endl;
+                        }
+                    }
+                }
+                
+                current = current->right;
+                pre->right = nullptr;
+
+            }
+        }
+    }
+} 
+▶
+
+◀public:
+template <typename T>
+static void find_the_inorder_predecessor_of_current(T* & pre, T* & current){
+    /* Find the inorder predecessor of current */
+    pre = current->left;
+    while (pre->right != nullptr && pre->right != current){
+        pre = pre->right;
+    }
+} 
+▶
+
+
+
+◀public:
+template <typename T>
+static void state_check(T* curr, T* pre){
+    //Tree_Node_Properties::print_local_bst_constraint(curr);
+    //Tree_Node_Properties::print_local_bst_constraint(pre);
+    std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
+    std::cout << "{" << Tree_Node_Properties::left_as_str(curr) << "}";
+    std::cout << "<" << Tree_Node_Properties::right_as_str(curr) << ">";
+    std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]";
+    std::cout << "{" << Tree_Node_Properties::left_as_str(pre) << "}";
+    std::cout << "<" << Tree_Node_Properties::right_as_str(pre) << ">";
+    std::cout << std::endl;
+}
+▶
+
+
+◀public:
+template <typename T, typename Fun>
+static void perform_preorder(T *root, Fun fun){
+    
+    if(root == nullptr) return;
+    fun(root);
+    perform_preorder(root->left,fun);
+    perform_preorder(root->right,fun);
+}
+▶
+
+
+◀public:
+template <typename T>
+static T* set_to_earliest_inorder_nullptr(T *root){
+    
+    if(root == nullptr) return;
+    while (root->left){
+        root = root->left;
+    }
+}
+▶
+
+◀public:
+template <typename T>
+static T* set_to_earliest_outorder_nullptr(T *root){
+    
+    if(root == nullptr) return;
+    while (root->right){
+        root = root->right;
+    }
+}
+▶
+
+
+◀public:
+template <typename T, typename Fun>
+static void perform_inorder(T *root, Fun fun){
+    
+    if(root == nullptr) return;
+    perform_inorder(root->left,fun);
+    fun(root);
+    perform_inorder(root->right,fun);
+}
+▶
+
+◀public:
+template <typename T>
+static T* get_earliest_nullptr_inorder(T *root){
+    
+    if (root){
+        if (!root->left){
+            return root->left;
+        }
+    }
+    return get_earliest_nullptr_inorder(root->left);
+}
+▶
+
+◀public:
+template <typename T>
+static T* get_earliest_nullptr_outorder(T *root){
+    
+    if (root){
+        if (!root->right){
+            return root->right;
+        }
+    }
+    return get_earliest_nullptr_outorder(root->right);
+}
+▶
+
+
+◀public:
+template <typename T, typename Fun>
+static void perform_inorder_with_previous(T *root, Fun fun){
+    T *previous = nullptr;
+    perform_inorder(root,[&](T* t){
+        if (previous){
+            std::pair<T*,T*> window{previous,t};
+            fun(window);
+        }
+        previous = t;
+    });
+}
+▶
+
+◀public:
+template <typename T, typename Fun>
+static void perform_inorder_with_previous(T *previous, T *root, Fun fun){
+    perform_inorder(root,[&](T* t){
+        if (previous){
+            std::pair<T*,T*> window{previous,t};
+            fun(window);
+        }
+        previous = t;
+    });
+}
+▶
+
+◀public:
+template <typename T, typename Fun>
+static void perform_outorder(T *root, Fun fun){
+    
+    if(root == nullptr) return;
+    perform_outorder(root->right,fun);
+    fun(root);
+    perform_outorder(root->left,fun);
+}
+▶
+
+◀public:
+template <typename T, typename Fun>
+static void perform_outorder_with_previous(T *root, Fun fun){
+    T *previous = nullptr;
+    perform_outorder(root,[&](T* t){
+        if (previous){
+            std::pair<T*,T*> window{previous,t};
+            fun(window);
+        }
+        previous = t;
+    });
+}
+▶
+
+◀public:
+template <typename T, typename Fun>
+static void perform_outorder_with_previous(T *previous, T *root, Fun fun){
+    perform_outorder(root,[&](T* t){
+        if (previous){
+            std::pair<T*,T*> window{previous,t};
+            fun(window);
+        }
+        previous = t;
+    });
+}
+▶
+
+◀public:
+template <typename T, typename Fun>
+static void perform_postorder(T *root, Fun fun){
+    
+    if(root == nullptr) return;
+    perform_postorder(root->left,fun);
+    perform_postorder(root->right,fun);
+    fun(root);
+}
+▶
+
+
+//bst traversal utilities
+◀public:
+template <typename T>
+static void bst_inorder_throw_discrepancy(T * root){
+    if(root == nullptr) return;
+    if (root->left && root->val < root->left->val){
+        std::cout << "{" << root->val << "]" << root->left->val << "}" << std::endl;
+        //if (Tree_Node_Properties::child_breaks_bst_constraint(root)){
+        //    root = Tree_Node_Properties::find_invalid_child(root);
+        //}
+        root = root->left;
+        throw root;
+    }
+    bst_inorder_throw_discrepancy(root->left);
+    if (root->right && root->val < root->right->val){
+        std::cout << "{" << root->val << "]" << root->right->val << "}" << std::endl;
+        //if (Tree_Node_Properties::child_breaks_bst_constraint(root)){
+        //    root = Tree_Node_Properties::find_invalid_child(root);
+        //}
+        root = root->right;
+        throw root;
+    }
+    bst_inorder_throw_discrepancy(root->right);
+}
+▶
+◀public:
+template <typename T>
+static void bst_outorder_throw_discrepancy(T *root){
+    if(root == nullptr) return;
+    if (root->right && root->val > root->right->val){
+        std::cout << "<" << root->val << "]" << root->right->val << ">" << std::endl;
+        root = root->right;
+        //if (Tree_Node_Properties::child_breaks_bst_constraint(root)){
+        //    root = Tree_Node_Properties::find_invalid_child(root);
+        //}
+        throw root;
+    }
+    bst_inorder_throw_discrepancy(root->right);
+    if (root->left && root->val > root->left->val){
+        std::cout << "<" << root->val << "]" << root->left->val << ">" << std::endl;
+        root = root->left;
+        //if (Tree_Node_Properties::child_breaks_bst_constraint(root)){
+        //    root = Tree_Node_Properties::find_invalid_child(root);
+        //}
+        throw root;
+    }
+    bst_inorder_throw_discrepancy(root->left);
+}
+▶
+
+
+//utility traversals
+◀public:
+template <typename T>
+static std::vector<T*> inorder_traversal_as_node_list(T *root){
+    std::vector<T*> result;
+    Tree_Traversal::perform_inorder(root,[&](T* t){
+        result.emplace_back(t);
+    });
+    return result;
+}
+▶
+
+◀public:
+template <typename T>
+static std::vector<decltype(T::val)> inorder_traversal_as_list(T *root){
+    std::vector<decltype(T::val)> result;
+    Tree_Traversal::perform_inorder(root,[&](T* t){
+        result.emplace_back(t->val);
+    });
+    return result;
+}
+▶
+
+◀public:
+template <typename T>
+static std::vector<T*> outorder_traversal_as_node_list(T *root){
+    std::vector<T*> result;
+    Tree_Traversal::perform_outorder(root,[&](T* t){
+        result.emplace_back(t);
+    });
+    return result;
+}
+▶
+
+◀public:
+template <typename T>
+static std::vector<decltype(T::val)> outorder_traversal_as_list(T *root){
+    std::vector<decltype(T::val)> result;
+    Tree_Traversal::perform_outorder(root,[&](T* t){
+        result.emplace_back(t->val);
+    });
+    return result;
+}
+▶
+
+
+◀public:
+template <typename T>
+static std::vector<std::pair<std::optional<decltype(T::val)>,std::optional<decltype(T::val)>>> get_all_directed_relationships(T *root){
+    auto all_nodes = inorder_traversal_as_node_list(root);
+    
+    std::vector<std::pair<std::optional<decltype(T::val)>,std::optional<decltype(T::val)>>> results;
+    for (auto node: all_nodes){
+        std::pair<std::optional<decltype(T::val)>,std::optional<decltype(T::val)>> temp;
+        temp.first = node->val;
+        
+        //add left
+        if (node->left){
+            temp.second = node->left->val;
+        }
+        else{
+            temp.second = std::nullopt;
+        }
+        results.emplace_back(temp);
+        
+        //add right
+        if (node->right){
+            temp.second = node->right->val;
+        }
+        else{
+            temp.second = std::nullopt;
+        }
+        results.emplace_back(temp);
+    }
+    
+    return results;
+}
+
+

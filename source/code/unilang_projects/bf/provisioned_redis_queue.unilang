@@ -1,0 +1,583 @@
+􏶞o􏶟
+􏷲a queue that is designed to hold particularly provisioned elements􏷱
+􏷰a provisioned redis queue is an implementation of a queue data structure which internally uses a redis cluster to distribute the data across shards.
+Its important to know that the lifetime of the queue persists before and after the queue data structure is created (since it exists in redis)
+Therefore, two redis queues with the same name, would in fact be the same underlying redis queue
+
+This redis queue comes with a list of required provisions
+if the queue element does not meet the required provisions, it should not be stored in the queue
+
+Provision queues are intended to represent particular operations that should only be processed by particular workers.
+An example use case for this would be to have two dedicated provision queues for CPU and GPU operations.
+CPU/GPU requirements would be determined through the remote api's command platform properties.
+We designate provision queues to have a set of "required provisions" (which match the platform properties).
+This allows the scheduler to distribute operations by their properties and allows workers to dequeue from particular queues􏷯
+􏷞build􏷝􏷞buildfarm􏷝􏷞common􏷝􏷞redis􏷝
+
+􏷤􏷣􏷦com.google.common.collect.LinkedHashMultimap􏷥
+􏷤􏷣􏷦com.google.common.collect.Lists􏷥
+􏷤􏷣􏷦com.google.common.collect.SetMultimap􏷥
+􏷤􏷣􏷦java.util.List􏷥
+􏷤􏷣􏷦build.buildfarm.common.redis.BalancedRedisQueue􏷥
+􏷤􏷣􏷦build.buildfarm.common.redis.FilteredProvisions􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisCluster􏷥
+􏷤􏷣􏷦java.util.HashSet􏷥
+􏷤􏷣􏷦java.util.Map􏷥
+􏷤􏷣􏷦java.util.Set􏷥
+􏷤􏷣􏷦com.google.common.collect.ImmutableSet􏷥
+􏷤􏷣􏷦com.google.common.collect.ImmutableSetMultimap􏷥
+􏷤􏷣􏷦java.util.stream.Collectors􏷥
+
+􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
+􏲏􏲐􏲍build.buildfarm.common.redis.BalancedRedisQueue􏲎
+􏲏􏲐􏲍build.buildfarm.common.StringVisitor􏲎
+􏲏􏲐􏲍redis.clients.jedis.JedisCluster􏲎
+􏲏􏲐􏲍org.junit.Test􏲎
+􏲏􏲐􏲍java.util.List􏲎
+􏲏􏲐􏲍java.util.ArrayList􏲎
+􏲏􏲐􏲍org.junit.runner.RunWith􏲎
+􏲏􏲐􏲍org.junit.runners.JUnit4􏲎
+􏲏􏲐􏲍java.lang.Thread􏲎
+􏲏􏲐􏲍java.util.concurrent.TimeUnit􏲎
+􏲏􏲐􏲍java.lang.RuntimeException􏲎
+􏲏􏲐􏲍java.io.IOException􏲎
+􏲏􏲐􏲍java.util.function.Supplier􏲎
+􏲏􏲐􏲍org.mockito.Mock􏲎
+􏲏􏲐􏲍org.mockito.MockitoAnnotations􏲎
+􏲏􏲐􏲍java.util.Arrays􏲎
+􏲏i􏲐􏲍com.google.common.truth.Truth.assertThat􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.eq􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.mock􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.times􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.verify􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.when􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.any􏲎
+􏲏􏲐􏲍java.util.HashSet􏲎
+􏲏􏲐􏲍java.util.Map􏲎
+􏲏􏲐􏲍java.util.Set􏲎
+􏲏􏲐􏲍com.google.common.collect.ImmutableList􏲎
+􏲏􏲐􏲍build.buildfarm.common.redis.ProvisionedRedisQueue􏲎
+􏲏􏲐􏲍com.google.common.collect.Maps􏲎
+􏲏􏲐􏲍com.google.common.collect.HashMultimap􏲎
+􏲏􏲐􏲍java.util.stream.Collectors􏲎
+􏲏􏲐􏲍com.google.common.collect.SetMultimap􏲎
+􏲏􏲐􏲍com.google.common.collect.Multimap􏲎
+
+
+􏶨wildcard value􏶧
+􏶦symbol for identifying wildcard in both key/value of provisions􏶥
+􏶘+s􏶙􏶰c􏶯􏶮String􏶭􏶬WILDCARD_VALUE􏶫􏶪"*"􏶩
+
+􏶨special key to allow directly matching with a queue􏶧
+􏶦this is to support another paradigm where actions want to specifically request the queue to be placed in.
+its less generic than having buildfarm choose the queue for you, and it leaks implementation details about how buildfarm is queuing your work
+however, its desirable to match similar remote execution solutions that use exec_properties to choose which "pool" they want to run in􏶥
+􏶘+s􏶙􏶰c􏶯􏶮String􏶭􏶬CHOOSE_QUEUE_KEY􏶫􏶪"choose-queue"􏶩
+
+􏶨if the queue will deem any set of properties eligible􏶧
+􏶦if any of the provision keys has a wildcard, we consider anything for the queue to be eligible􏶥
+􏶘-􏶙􏶰c􏶯􏶮bool􏶭􏶬is fully wildcard􏶫􏶪􏶩
+
+􏶨can the user provide extra platform properties that are not a part of the queue and still be matched with it?􏶧
+􏶦if true, the user can provide a superset of platform properties and still be matched with the queue􏶥
+􏶘-􏶙􏶰c􏶯􏶮bool􏶭􏶬allow user unmatched􏶫􏶪􏶩
+
+􏶨provisions enforced by the queue􏶧
+􏶦The provisions are filtered by wildcard􏶥
+􏶘-􏶙􏶰c􏶯􏶮FilteredProvisions􏶭􏶬provisions􏶫􏶪􏶩
+
+􏶨the queue itself􏶧
+􏶦a balanced redis queue designed to hold particularly provisioned elements􏶥
+􏶘-􏶙􏶰c􏶯􏶮BalancedRedisQueue􏶭􏶬queue􏶫􏶪􏶩
+
+􏷐constructor􏷏
+􏶠construct the provision queue􏶡
+􏷘+􏷗􏴅Constructor􏴆􏷒provisioned redis queue􏷑
+􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the queue􏶿
+􏶜􏶝􏷆List<String>􏷅􏷄hashtags􏷃􏷀hashtags to distribute queue data􏶿
+􏶜􏶝􏷆SetMultimap<String, String>􏷅􏷄filter provisions􏷃􏷀the filtered provisions of the queue􏶿
+􏶴
+    this.queue = new BalancedRedisQueue(name, hashtags);
+    isFullyWildcard = filterProvisions.containsKey(WILDCARD_VALUE);
+    provisions = filterProvisionsByWildcard(filterProvisions,isFullyWildcard,WILDCARD_VALUE);
+    allowUserUnmatched = false;
+􏶳
+􏴱can construct􏴲􏴯regular􏴰
+􏲝the object can be constructed􏲞
+􏲛the object cannot be constructed􏲜
+􏴭
+    ProvisionedRedisQueue queue = new ProvisionedRedisQueue("name",ImmutableList.of(),HashMultimap.create());
+􏴮
+
+􏷐constructor􏷏
+􏶠construct the provision queue􏶡
+􏷘+􏷗􏴅Constructor􏴆􏷒provisioned redis queue􏷑
+􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the queue􏶿
+􏶜􏶝􏷆List<String>􏷅􏷄hashtags􏷃􏷀hashtags to distribute queue data􏶿
+􏶜􏶝􏷆SetMultimap<String, String>􏷅􏷄filter provisions􏷃􏷀the filtered provisions of the queue􏶿
+􏶜􏶝􏷆bool􏷅􏷄allow user unmatched􏷃􏷀whether the user can provide extra platform properties and still match the queue􏶿
+􏶴
+    this.queue = new BalancedRedisQueue(name, hashtags);
+    isFullyWildcard = filterProvisions.containsKey(WILDCARD_VALUE);
+    provisions = filterProvisionsByWildcard(filterProvisions,isFullyWildcard,WILDCARD_VALUE);
+    this.allowUserUnmatched = allowUserUnmatched;
+􏶳
+􏴱can construct overload􏴲􏴯regular􏴰
+􏲝the object can be constructed􏲞
+􏲛the object cannot be constructed􏲜
+􏴭
+    ProvisionedRedisQueue queue = new ProvisionedRedisQueue("name",ImmutableList.of(),HashMultimap.create(),true);
+􏴮
+
+􏷐filter the provisions into separate sets by checking for the existence of wildcards􏷏
+􏶠this will organize the incoming  provisions into separate sets􏶡
+􏷘-s􏷗􏴅Observers􏴆􏷒filter provisions by wildcard􏷑
+􏶜􏶝􏷆SetMultimap<String, String>􏷅􏷄filter provisions􏷃􏷀the filtered provisions of the queue􏶿
+􏶜􏶝􏷆bool􏷅􏷄is fully wildcard􏷃􏷀if the queue will deem any set of properties eligible􏶿
+􏶜􏶝􏷆String􏷅􏷄wildcard value􏷃􏷀symbol for identifying wildcard in both key/value of provisions􏶿
+􏶾FilteredProvisions􏶽􏶼filtered provisions􏶻􏶺provisions filtered by wildcard􏶹
+􏶴
+    FilteredProvisions provisions = new FilteredProvisions();
+    provisions.wildcard =
+        isFullyWildcard
+            ? ImmutableSet.of()
+            : filterProvisions.asMap().entrySet().stream()
+                .filter(e -> e.getValue().contains(wildcardValue))
+                .map(e -> e.getKey())
+                .collect(ImmutableSet.toImmutableSet());
+    provisions.required =
+        isFullyWildcard
+            ? ImmutableSet.of()
+            : filterProvisions.entries().stream()
+                .filter(e -> !provisions.wildcard.contains(e.getKey()))
+                .collect(ImmutableSet.toImmutableSet());
+    return provisions;
+􏶳
+
+􏷐checks required properties􏷏
+􏶠checks whether the properties given fulfill all of the required provisions of the queue􏶡
+􏷘+􏷗􏴅Observers􏴆􏷒is eligible􏷑
+􏶜􏶝􏷆SetMultimap<String, String>􏷅􏷄properties􏷃􏷀properties to check that requirements are met􏶿
+􏶾bool􏶽􏶼is eligible􏶻􏶺whether the queue is eligible based on the properties given􏶹
+􏶴
+    //check if a property is specifically requesting to match with the queue
+    //any attempt to specifically match will not evaluate other properties
+    Set<String> selected = properties.get(CHOOSE_QUEUE_KEY);
+    if (!selected.isEmpty()){
+        return selected.contains(queue.getName());
+    }
+    
+    // fully wildcarded queues are always eligible
+    if (isFullyWildcard) {
+      return true;
+    }
+    // all required non-wildcard provisions must be matched
+    Set<Map.Entry<String, String>> requirements = new HashSet<>(provisions.required);
+    for (Map.Entry<String, String> property : properties.entries()) {
+      // for each of the properties specified, we must match requirements
+      if (!provisions.wildcard.contains(property.getKey()) && !requirements.remove(property)) {
+        if (!allowUserUnmatched){
+            return false;
+        }
+      }
+    }
+    return requirements.isEmpty();
+􏶳
+
+􏷐get eligibility result􏷏
+􏶠perform eligibility check with detailed information on evaluation􏶡
+􏷘-􏷗􏴅Observers􏴆􏷒get eligibility result􏷑
+􏶜􏶝􏷆SetMultimap<String, String>􏷅􏷄properties􏷃􏷀properties to get an eligibility explanation of􏶿
+􏶾EligibilityResult􏶽􏶼eligibility result􏶻􏶺detailed results on the evaluation of an eligibility check􏶹
+􏶴
+    EligibilityResult result = new EligibilityResult();
+    result.queueName = queue.getName();
+    result.isEligible = isEligible(properties);
+    result.isFullyWildcard = isFullyWildcard;
+    result.isSpecificallyChosen = false;
+    result.allowsUnmatched = allowUserUnmatched;
+    
+    
+    //check if a property is specifically requesting to match with the queue
+    //any attempt to specifically match will not evaluate other properties
+    Set<String> selected = properties.get(CHOOSE_QUEUE_KEY);
+    if (!selected.isEmpty()){
+        result.isSpecificallyChosen = selected.contains(queue.getName());
+    }
+    
+    //gather matched, unmatched, and still required properties
+    ImmutableSetMultimap.Builder<String, String> matched = ImmutableSetMultimap.builder();
+    ImmutableSetMultimap.Builder<String, String> unmatched = ImmutableSetMultimap.builder();
+    ImmutableSetMultimap.Builder<String, String> stillRequired = ImmutableSetMultimap.builder();
+    Set<Map.Entry<String, String>> requirements = new HashSet<>(provisions.required);
+    for (Map.Entry<String, String> property : properties.entries()) {
+      if (!provisions.wildcard.contains(property.getKey()) && !requirements.remove(property)) {
+        unmatched.put(property);
+      } else {
+        matched.put(property);
+      }
+    }
+    stillRequired.putAll(requirements);
+    
+    result.matched = matched.build();
+    result.unmatched = unmatched.build();
+    result.stillRequired = stillRequired.build();
+    
+    return result;
+
+􏶳
+
+􏷐explain eligibility􏷏
+􏶠returns an explanation as to why the properties provided are eligible / ineligible to be placed on the queue􏶡
+􏷘+􏷗􏴅Observers􏴆􏷒explain eligibility􏷑
+􏶜􏶝􏷆SetMultimap<String, String>􏷅􏷄properties􏷃􏷀properties to get an eligibility explanation of􏶿
+􏶾String􏶽􏶼explanation􏶻􏶺an explanation on the eligibility of the provided properties􏶹
+􏶴
+    
+    EligibilityResult result = getEligibilityResult(properties);
+    return toString(result);
+􏶳
+􏴱no provisions accepted􏴲􏴯regular􏴰
+􏲝the queue will accept the properties if no provisions are involved􏲞
+􏲛the queue is unable to accept the properties with no provisions or the explanation is wrong􏲜
+􏴭
+    //ARRANGE
+    ProvisionedRedisQueue queue = new ProvisionedRedisQueue("foo",ImmutableList.of(),HashMultimap.create());
+    
+    //ACT
+    String explanation = queue.explainEligibility(HashMultimap.create());
+    boolean isEligible = queue.isEligible(HashMultimap.create());
+    
+    //ASSERT
+    String expected_explanation = "The properties are eligible for the foo queue.\n";
+    expected_explanation += "matched: {}\n";
+    expected_explanation += "unmatched: {}\n";
+    expected_explanation += "still required: {}\n";
+    assertThat(explanation).isEqualTo(expected_explanation);
+    assertThat(isEligible).isTrue();
+􏴮
+􏴱no provisions accepted allow user unmatched􏴲􏴯regular􏴰
+􏲝the queue will accept the properties if no provisions are involved􏲞
+􏲛the queue is unable to accept the properties with no provisions or the explanation is wrong􏲜
+􏴭
+    //ARRANGE
+    ProvisionedRedisQueue queue = new ProvisionedRedisQueue("foo",ImmutableList.of(),HashMultimap.create(),true);
+    
+    //ACT
+    String explanation = queue.explainEligibility(HashMultimap.create());
+    boolean isEligible = queue.isEligible(HashMultimap.create());
+    
+    //ASSERT
+    String expected_explanation = "The properties are eligible for the foo queue.\n";
+    expected_explanation += "matched: {}\n";
+    expected_explanation += "unmatched: {}\n";
+    expected_explanation += "still required: {}\n";
+    assertThat(explanation).isEqualTo(expected_explanation);
+    assertThat(isEligible).isTrue();
+􏴮
+􏴱single provision matched􏴲􏴯regular􏴰
+􏲝the queue will accept the properties and show the provision was matched􏲞
+􏲛the queue is unable to accept the properties or the explanation is wrong􏲜
+􏴭
+    //ARRANGE
+    SetMultimap<String,String> queueProperties = HashMultimap.create();
+    queueProperties.put("key", "value");
+    ProvisionedRedisQueue queue = new ProvisionedRedisQueue("foo",ImmutableList.of(),queueProperties);
+    
+    //ACT
+    String explanation = queue.explainEligibility(queueProperties);
+    boolean isEligible = queue.isEligible(queueProperties);
+    
+    //ASSERT
+    String expected_explanation = "The properties are eligible for the foo queue.\n";
+    expected_explanation += "matched: {key=[value]}\n";
+    expected_explanation += "unmatched: {}\n";
+    expected_explanation += "still required: {}\n";
+    assertThat(explanation).isEqualTo(expected_explanation);
+    assertThat(isEligible).isTrue();
+􏴮
+􏴱single provision matched allow user unmatched􏴲􏴯regular􏴰
+􏲝the queue will accept the properties and show the provision was matched􏲞
+􏲛the queue is unable to accept the properties or the explanation is wrong􏲜
+􏴭
+    //ARRANGE
+    SetMultimap<String,String> queueProperties = HashMultimap.create();
+    queueProperties.put("key", "value");
+    ProvisionedRedisQueue queue = new ProvisionedRedisQueue("foo",ImmutableList.of(),queueProperties,true);
+    
+    //ACT
+    String explanation = queue.explainEligibility(queueProperties);
+    boolean isEligible = queue.isEligible(queueProperties);
+    
+    //ASSERT
+    String expected_explanation = "The properties are eligible for the foo queue.\n";
+    expected_explanation += "matched: {key=[value]}\n";
+    expected_explanation += "unmatched: {}\n";
+    expected_explanation += "still required: {}\n";
+    assertThat(explanation).isEqualTo(expected_explanation);
+    assertThat(isEligible).isTrue();
+􏴮
+􏴱single provision not matched􏴲􏴯regular􏴰
+􏲝the queue will not accept properties and show the provision was not matched􏲞
+􏲛the queue is still accepting properties or the explanation is wrong􏲜
+􏴭
+    //ARRANGE
+    SetMultimap<String,String> queueProperties = HashMultimap.create();
+    queueProperties.put("key", "value");
+    ProvisionedRedisQueue queue = new ProvisionedRedisQueue("foo",ImmutableList.of(),HashMultimap.create());
+    
+    //ACT
+    String explanation = queue.explainEligibility(queueProperties);
+    boolean isEligible = queue.isEligible(queueProperties);
+    
+    //ASSERT
+    String expected_explanation = "The properties are not eligible for the foo queue.\n";
+    expected_explanation += "matched: {}\n";
+    expected_explanation += "unmatched: {key=[value]}\n";
+    expected_explanation += "still required: {}\n";
+    assertThat(explanation).isEqualTo(expected_explanation);
+    assertThat(isEligible).isFalse();
+􏴮
+􏴱single provision allowed to not match􏴲􏴯regular􏴰
+􏲝the queue will accept properties even though some were unmatched􏲞
+􏲛the queue is not accepting properties or the explanation is wrong􏲜
+􏴭
+    //ARRANGE
+    SetMultimap<String,String> queueProperties = HashMultimap.create();
+    queueProperties.put("key", "value");
+    ProvisionedRedisQueue queue = new ProvisionedRedisQueue("foo",ImmutableList.of(),HashMultimap.create(),true);
+    
+    //ACT
+    String explanation = queue.explainEligibility(queueProperties);
+    boolean isEligible = queue.isEligible(queueProperties);
+    
+    //ASSERT
+    String expected_explanation = "The properties are eligible for the foo queue.\n";
+    expected_explanation += "matched: {}\n";
+    expected_explanation += "unmatched: {key=[value]}\n";
+    expected_explanation += "still required: {}\n";
+    assertThat(explanation).isEqualTo(expected_explanation);
+    assertThat(isEligible).isTrue();
+􏴮
+􏴱single provision still required􏴲􏴯regular􏴰
+􏲝the queue will not accept properties and show the provision is still required􏲞
+􏲛the queue is still accepting properties or the explanation is wrong􏲜
+􏴭
+    //ARRANGE
+    SetMultimap<String,String> queueProperties = HashMultimap.create();
+    queueProperties.put("key", "value");
+    ProvisionedRedisQueue queue = new ProvisionedRedisQueue("foo",ImmutableList.of(),queueProperties);
+    
+    //ACT
+    String explanation = queue.explainEligibility(HashMultimap.create());
+    boolean isEligible = queue.isEligible(HashMultimap.create());
+    
+    //ASSERT
+    String expected_explanation = "The properties are not eligible for the foo queue.\n";
+    expected_explanation += "matched: {}\n";
+    expected_explanation += "unmatched: {}\n";
+    expected_explanation += "still required: {key=[value]}\n";
+    assertThat(explanation).isEqualTo(expected_explanation);
+    assertThat(isEligible).isFalse();
+􏴮
+􏴱single provision still required allow user unmatched􏴲􏴯regular􏴰
+􏲝the queue will not accept properties and show the provision is still required􏲞
+􏲛the queue is still accepting properties or the explanation is wrong􏲜
+􏴭
+    //ARRANGE
+    SetMultimap<String,String> queueProperties = HashMultimap.create();
+    queueProperties.put("key", "value");
+    ProvisionedRedisQueue queue = new ProvisionedRedisQueue("foo",ImmutableList.of(),queueProperties,true);
+    
+    //ACT
+    String explanation = queue.explainEligibility(HashMultimap.create());
+    boolean isEligible = queue.isEligible(HashMultimap.create());
+    
+    //ASSERT
+    String expected_explanation = "The properties are not eligible for the foo queue.\n";
+    expected_explanation += "matched: {}\n";
+    expected_explanation += "unmatched: {}\n";
+    expected_explanation += "still required: {key=[value]}\n";
+    assertThat(explanation).isEqualTo(expected_explanation);
+    assertThat(isEligible).isFalse();
+􏴮
+􏴱accepted due to wildcard􏴲􏴯regular􏴰
+􏲝the queue will accept the properties because of wildcard􏲞
+􏲛the queue is unable to accept the properties or the explanation is wrong􏲜
+􏴭
+    //ARRANGE
+    SetMultimap<String,String> queueProperties = HashMultimap.create();
+    queueProperties.put("*", "value");
+    ProvisionedRedisQueue queue = new ProvisionedRedisQueue("foo",ImmutableList.of(),queueProperties);
+    
+    //ACT
+    String explanation = queue.explainEligibility(HashMultimap.create());
+    boolean isEligible = queue.isEligible(HashMultimap.create());
+    
+    //ASSERT
+    String expected_explanation = "The properties are eligible for the foo queue.\n";
+    expected_explanation += "The queue is fully wildcard.\n";
+    assertThat(explanation).isEqualTo(expected_explanation);
+    assertThat(isEligible).isTrue();
+􏴮
+􏴱accepted due to wildcard allow user unmatched􏴲􏴯regular􏴰
+􏲝the queue will accept the properties because of wildcard􏲞
+􏲛the queue is unable to accept the properties or the explanation is wrong􏲜
+􏴭
+    //ARRANGE
+    SetMultimap<String,String> queueProperties = HashMultimap.create();
+    queueProperties.put("*", "value");
+    ProvisionedRedisQueue queue = new ProvisionedRedisQueue("foo",ImmutableList.of(),queueProperties,true);
+    
+    //ACT
+    String explanation = queue.explainEligibility(HashMultimap.create());
+    boolean isEligible = queue.isEligible(HashMultimap.create());
+    
+    //ASSERT
+    String expected_explanation = "The properties are eligible for the foo queue.\n";
+    expected_explanation += "The queue is fully wildcard.\n";
+    assertThat(explanation).isEqualTo(expected_explanation);
+    assertThat(isEligible).isTrue();
+􏴮
+􏴱allow unmatched bad use case example􏴲􏴯regular􏴰
+􏲝this shows a non-desired result which acts as a motivating example for the "allow unmatched feature􏲞
+􏲛the queue is accepting properties or the explanation is wrong􏲜
+􏴭
+    //ARRANGE
+    SetMultimap<String,String> queueProperties = HashMultimap.create();
+    queueProperties.put("min-cores", "*");
+    queueProperties.put("max-cores", "*");
+    ProvisionedRedisQueue queue = new ProvisionedRedisQueue("cpu",ImmutableList.of(),queueProperties);
+    
+    //ACT
+    SetMultimap<String,String> userGivenProperties = HashMultimap.create();
+    userGivenProperties.put("min-cores", "1");
+    userGivenProperties.put("max-cores", "1");
+    userGivenProperties.put("env-vars", "{'OMP_NUM_THREAD': '1'}");
+    String explanation = queue.explainEligibility(userGivenProperties);
+    boolean isEligible = queue.isEligible(userGivenProperties);
+    
+    //ASSERT
+    String expected_explanation = "The properties are not eligible for the cpu queue.\n";
+    expected_explanation += "matched: {min-cores=[1], max-cores=[1]}\n";
+    expected_explanation += "unmatched: {env-vars=[{'OMP_NUM_THREAD': '1'}]}\n";
+    expected_explanation += "still required: {}\n";
+    assertThat(explanation).isEqualTo(expected_explanation);
+    assertThat(isEligible).isFalse();
+􏴮
+􏴱allow unmatched use case example􏴲􏴯regular􏴰
+􏲝this is an example use case we have where you would want to allow unmatched􏲞
+􏲛the queue is not accepting properties or the explanation is wrong􏲜
+􏴭
+    //ARRANGE
+    SetMultimap<String,String> queueProperties = HashMultimap.create();
+    queueProperties.put("min-cores", "*");
+    queueProperties.put("max-cores", "*");
+    ProvisionedRedisQueue queue = new ProvisionedRedisQueue("cpu",ImmutableList.of(),queueProperties,true);
+    
+    //ACT
+    SetMultimap<String,String> userGivenProperties = HashMultimap.create();
+    userGivenProperties.put("min-cores", "1");
+    userGivenProperties.put("max-cores", "1");
+    userGivenProperties.put("env-vars", "{'OMP_NUM_THREAD': '1'}");
+    String explanation = queue.explainEligibility(userGivenProperties);
+    boolean isEligible = queue.isEligible(userGivenProperties);
+    
+    //ASSERT
+    String expected_explanation = "The properties are eligible for the cpu queue.\n";
+    expected_explanation += "matched: {min-cores=[1], max-cores=[1]}\n";
+    expected_explanation += "unmatched: {env-vars=[{'OMP_NUM_THREAD': '1'}]}\n";
+    expected_explanation += "still required: {}\n";
+    assertThat(explanation).isEqualTo(expected_explanation);
+    assertThat(isEligible).isTrue();
+􏴮
+􏴱specifically select queue􏴲􏴯regular􏴰
+􏲝show that a queue can be specifically selected􏲞
+􏲛the selection key is not properly being recognized􏲜
+􏴭
+    //ARRANGE
+    ProvisionedRedisQueue queue = new ProvisionedRedisQueue("foo",ImmutableList.of(),HashMultimap.create());
+    SetMultimap<String,String> userGivenProperties = HashMultimap.create();
+    userGivenProperties.put("choose-queue", "foo");
+    
+    //ACT
+    String explanation = queue.explainEligibility(userGivenProperties);
+    boolean isEligible = queue.isEligible(userGivenProperties);
+    
+    //ASSERT
+    String expected_explanation = "The properties are eligible for the foo queue.\n";
+    expected_explanation += "The queue was specifically chosen.\n";
+    assertThat(explanation).isEqualTo(expected_explanation);
+    assertThat(isEligible).isTrue();
+􏴮
+􏴱fail to specifically select queue􏴲􏴯regular􏴰
+􏲝show that trying to select the queue by the wrong name fails eligibility􏲞
+􏲛the queue is incorrectly still being selected or the explanation is wrong􏲜
+􏴭
+    //ARRANGE
+    ProvisionedRedisQueue queue = new ProvisionedRedisQueue("foo",ImmutableList.of(),HashMultimap.create());
+    SetMultimap<String,String> userGivenProperties = HashMultimap.create();
+    userGivenProperties.put("choose-queue", "wrong");
+    
+    //ACT
+    String explanation = queue.explainEligibility(userGivenProperties);
+    boolean isEligible = queue.isEligible(userGivenProperties);
+    
+    //ASSERT
+    String expected_explanation = "The properties are not eligible for the foo queue.\n";
+    expected_explanation += "matched: {}\n";
+    expected_explanation += "unmatched: {choose-queue=[wrong]}\n";
+    expected_explanation += "still required: {}\n";
+    assertThat(explanation).isEqualTo(expected_explanation);
+    assertThat(isEligible).isFalse();
+􏴮
+
+􏷐convert map to printable string􏷏
+􏶠uses streams􏶡
+􏷘-s􏷗􏴅Getters􏴆􏷒to string􏷑
+􏶜􏶝􏷆Map<String, ?>􏷅􏷄map􏷃􏷀map to convert to string􏶿
+􏶾String􏶽􏶼str􏶻􏶺string representation of map􏶹
+􏶴
+    String mapAsString = map.keySet().stream()
+      .map(key -> key + "=" + map.get(key))
+      .collect(Collectors.joining(", ", "{", "}"));
+    return mapAsString;
+􏶳
+
+􏷐convert eligibility result to printable string􏷏
+􏶠used for visibility / debugging􏶡
+􏷘-s􏷗􏴅Getters􏴆􏷒to string􏷑
+􏶜􏶝􏷆EligibilityResult􏷅􏷄result􏷃􏷀detailed results on the evaluation of an eligibility check􏶿
+􏶾String􏶽􏶼explanation􏶻􏶺an explanation on the eligibility of the provided properties􏶹
+􏶴
+
+    String explanation = new String();
+    if (result.isEligible) {
+      explanation += "The properties are eligible for the " + result.queueName + " queue.\n";
+    } else {
+      explanation += "The properties are not eligible for the " + result.queueName + " queue.\n";
+    }
+    
+    if (result.isSpecificallyChosen){
+        explanation += "The queue was specifically chosen.\n";
+        return explanation;
+    }
+
+    if (result.isFullyWildcard) {
+      explanation += "The queue is fully wildcard.\n";
+      return explanation;
+    }
+    
+    explanation += "matched: " + toString(result.matched.asMap()) + "\n";
+    explanation += "unmatched: " + toString(result.unmatched.asMap()) + "\n";
+    explanation += "still required: " + toString(result.stillRequired.asMap()) + "\n";
+    return explanation;
+􏶳
+
+􏷐get queue􏷏
+􏶠obtain the internal queue􏶡
+􏷘+􏷗􏴅Getters􏴆􏷒queue􏷑
+􏶾BalancedRedisQueue􏶽􏶼queue􏶻􏶺the internal queue􏶹
+􏶴
+    return queue;
+􏶳

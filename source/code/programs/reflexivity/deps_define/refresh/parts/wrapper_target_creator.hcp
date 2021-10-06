@@ -1,0 +1,73 @@
+class
+⚯
+⚞⚟
+
+
+◀public: static▶ void ☀Create(Dependency_Specifications const& all_specs)❰
+
+    //move into the folder where all the deps are
+    Temporarily_Move_To_Path_To_Call_Function(Bazel_External_Dep_Targets_Directory(),[&](){
+        
+        for (auto it: all_specs.specs){
+            for (auto target: it.dep_integration.wrapper_targets){
+                Create_Wrapper_Target(target);
+            }
+        }
+    
+    });
+❱
+
+◀private: static▶ void ☀Create_Wrapper_Target(Wrapper_Target const& target)❰
+
+    Create_Path_If_It_Doesnt_Already_Exist(target.name);
+    Create_Build_File(target);
+    Create_Lib_Files(target);
+    
+❱
+
+◀private: static▶ void ☀Create_Build_File(Wrapper_Target const& target)❰
+
+    std::string x;
+    Append_With_Newline(x,"package(default_visibility = [\"//visibility:public\"])");
+    Append_With_Newline(x,"cc_library(");
+    Append_With_Newline(x,"name = \"lib\",");
+    Append_With_Newline(x,"srcs = glob([\"*.cpp\"]),");
+    Append_With_Newline(x,"hdrs = glob([\"*.hpp\"]),");
+    Append_With_Newline(x,"deps = [");
+    Append_With_Newline(x,Get_As_Comma_Seperated_Double_Quoted_String(target.deps));
+    
+    Append_With_Newline(x,"],");
+    Append_With_Newline(x,")");
+
+    
+    
+    Write_To_File_With_Auto_Gen_Comment(target.name + "/BUILD",Source_Language::PYTHON,x);
+
+❱
+
+◀private: static▶ void ☀Create_Lib_Files(Wrapper_Target const& target)❰
+
+    std::string header;
+    std::string source;
+    
+    Append_With_Newline(header,"#pragma once");
+    for (auto const& it: target.includes){
+        Append(header,"#include ");
+        
+        //system
+        if (it[0] == '<'){
+            Append_With_Newline(header,it);
+        }
+        
+        //local
+        else{
+            Append_With_Newline(header, "\"" + it + "\"");
+        }
+    }
+    
+    Append_With_Newline(source,"#include \"lib.hpp\"");
+    
+    Write_To_File_With_Auto_Gen_Comment(target.name + "/lib.hpp",Source_Language::CPP,header);
+    Write_To_File_With_Auto_Gen_Comment(target.name + "/lib.cpp",Source_Language::CPP,source);
+
+❱

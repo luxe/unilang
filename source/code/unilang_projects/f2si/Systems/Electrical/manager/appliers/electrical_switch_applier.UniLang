@@ -1,0 +1,298 @@
+􏶞g􏶟
+􏷲Applies electrical switch changes to the electrical graph􏷱
+􏷰These are the states of various hardware switches sourced from the PLC􏷯
+􏷮Electrical_System􏷭 􏷮Switch_Applier􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦electrical_switches􏷥􏴓d􏴔􏴑ElectricalSwitchesT􏴒
+􏷤􏷣􏷦DCPowerSystem􏷥􏴓d􏴔􏴑DCPowerSystemT􏴒
+
+􏷘+􏷗􏷒apply electrical switch changes􏷑
+􏷐Based on switch state, adjust the the state of the electrical graph􏷏
+􏶠Switches most likely open and close relays􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority that switches will lock nodes in place􏶿
+􏶜r􏶝􏷆ElectricalSwitchesT􏷅􏷄switches􏷃􏷀The state of all of the current electrical switches􏶿
+􏶴
+  
+  􏶲change the electrical graph of the DC power system based on switch states􏶱
+  􏵲handle battery master switch􏵳􏵶dc system􏵷,􏵶switches􏵷->m_eBatteryMaster);
+  􏵲handle generator 1 switch􏵳􏵶dc system􏵷,􏵶priority􏵷,􏵶switches􏵷->m_peGenerator[0]);
+  􏵲handle generator 2 switch􏵳􏵶dc system􏵷,􏵶priority􏵷,􏵶switches􏵷->m_peGenerator[1]);
+  􏵲handle bus tie 1 switch􏵳􏵶dc system􏵷,􏵶priority􏵷,􏵶switches􏵷->m_peBusTie[0]);
+  􏵲handle bus tie 2 switch􏵳􏵶dc system􏵷,􏵶priority􏵷,􏵶switches􏵷->m_peBusTie[1]);
+  􏵲handle emergency shed bus switch􏵳􏵶dc system􏵷,􏵶priority􏵷,􏵶switches􏵷->m_eEmergencyShedBus);
+  􏵲handle avionics master 1 switch􏵳􏵶dc system􏵷,􏵶switches􏵷->m_peAvionicsMaster[0]);
+  􏵲handle avionics master 2 switch􏵳􏵶dc system􏵷,􏵶switches􏵷->m_peAvionicsMaster[1]);
+  􏵲handle mission bus button􏵳􏵶dc system􏵷,􏵶switches􏵷->m_eMissionBus);
+  􏵲handle downlink power button􏵳􏵶dc system􏵷,􏵶switches􏵷->m_eDownlinkPower);
+  􏵲handle search light power button􏵳􏵶dc system􏵷,􏵶switches􏵷->m_eSearchLightPower);
+  􏵲handle engine starter 1 switch􏵳􏵶dc system􏵷,􏵶switches􏵷->m_peEngineEngage[0]);
+  􏵲handle engine starter 2 switch􏵳􏵶dc system􏵷,􏵶switches􏵷->m_peEngineEngage[1]);
+  􏵲handle bat hor switch􏵳􏵶dc system􏵷,􏵶switches􏵷->m_eBatteryHorExit);
+􏶳
+
+
+
+􏷘-􏷗􏷒handle battery master switch􏷑
+􏷐Apply changes to the DC power system based on the state of the battery master switch􏷏
+􏶠This will open and close relays in the DC power system􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜􏶝􏷆BatteryMasterSwitchStateE􏷅􏷄switch state􏷃􏷀The state of the switch􏶿
+􏶴
+  switch(􏵶switch state􏵷){
+    case BATTERY_MASTER_SWITCH_STATE_ENGAGE:
+    
+    􏶲enable what's needed for battery power distribution􏶱
+    
+    􏶲"It is possible with muscle memory speed from the real aircraft to go past the 'ON' position to 'ENGAGE'" -SME􏶱
+    􏶲The pilot intends to transition the switch so fast that our PLC scan rate misses the ON state and sees an "OFF -> ENGAGE" transition􏶱
+    􏶲Although engaging doesn't technically close the battery relay, we will close it here as well to handle the edge case of a fast transition􏶱
+    􏵲battery on actions􏵳􏵶dc system􏵷);
+    
+    􏶲engaging the battery can not engage the generators􏶱
+    􏶲we close other relays and start the generators later based on the engines􏶱
+    DCPowerSystemCloseBusTieRelay1(􏵶dc system􏵷);
+    DCPowerSystemCloseBusTieRelay2(􏵶dc system􏵷);
+    break;
+    
+    
+    case BATTERY_MASTER_SWITCH_STATE_ON:
+    
+      􏵲battery on actions􏵳􏵶dc system􏵷); break;
+      
+    case BATTERY_MASTER_SWITCH_STATE_OFF:
+    
+      􏶲the battery relay opens to cut power from the battery􏶱
+      DCPowerSystemOpenBatteryRelay(􏵶dc system􏵷);
+      DCPowerSystemDisableFlowToTheBatteryBus(􏵶dc system􏵷);
+      
+      
+      􏶲open all of the generator relays and bus relays􏶱
+      DCPowerSystemOpenStarterRelay1(􏵶dc system􏵷);
+      DCPowerSystemOpenStarterRelay2(􏵶dc system􏵷);
+      break;
+  }
+􏶳
+
+􏷘-􏷗􏷒battery on actions􏷑
+􏷐The actions to take when the battery tri-switch is changed to "on"􏷏
+􏶠This will close the necessary relays and allow power to flow in necessary places􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶴
+  􏶲Turning on the battery, closes the battery relay.  It should be as simple as that.􏶱
+  DCPowerSystemCloseBatteryRelay(􏵶dc system􏵷);
+  
+  􏶲However, the SME has informed us that the EPU should not be able to power any devices when the battery is off.􏶱
+  􏶲Strange, because the battery relay is not in any position where it would prevent the flow from the EPU to other devices􏶱
+  􏶲.                 ^􏶱
+  􏶲.                 |􏶱
+  􏶲.                 |􏶱
+  􏶲.          +------+------+􏶱
+  􏶲.          | Battery Bus |􏶱
+  􏶲.          +-------------+􏶱
+  􏶲.          o             o􏶱
+  􏶲.          |             |􏶱
+  􏶲.Bat relay |             | EPU relay􏶱
+  􏶲.          |             |􏶱
+  􏶲.          o             o􏶱
+  􏶲.       +--+--+       +--+--+􏶱
+  􏶲.       | Bat |       | EPU |􏶱
+  􏶲.       +-----+       +-----+􏶱
+  
+  􏶲Nonetheless, an easy fix is to have the battery switch also control flow to the battery bus.􏶱
+  􏶲That's where the battery and the EPU meet, and it will give the correct behavior􏶱
+  DCPowerSystemEnableFlowToTheBatteryBus(􏵶dc system􏵷);
+
+
+􏶳
+
+􏷘-􏷗􏷒handle generator 1 switch􏷑
+􏷐Apply changes to the DC power system based on the state of the generator 1 switch􏷏
+􏶠This will open and close relays in the DC power system􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority that switches will lock nodes in place􏶿
+􏶜􏶝􏷆GeneratorSwitchStateE􏷅􏷄switch state􏷃􏷀The state of the switch􏶿
+􏶴
+  switch(􏵶switch state􏵷){
+    case GENERATOR_SWITCH_STATE_RESET:      DCPowerSystemUnlockGeneratorRelay1(􏵶dc system􏵷,􏵶priority􏵷);      DCPowerSystemCloseGeneratorRelay1(􏵶dc system􏵷); break;
+    case GENERATOR_SWITCH_STATE_NORM:       /* if the engine has sufficient n1, then the generator relay will close automatically; else it will open */ break;
+    case GENERATOR_SWITCH_STATE_OFF:        DCPowerSystemOpenAndLockGeneratorRelay1(􏵶dc system􏵷,􏵶priority􏵷); break;
+  }
+􏶳
+
+􏷘-􏷗􏷒handle generator 2 switch􏷑
+􏷐Apply changes to the DC power system based on the state of the generator 2 switch􏷏
+􏶠This will open and close relays in the DC power system􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority that switches will lock nodes in place􏶿
+􏶜􏶝􏷆GeneratorSwitchStateE􏷅􏷄switch state􏷃􏷀The state of the switch􏶿
+􏶴
+  switch(􏵶switch state􏵷){
+    case GENERATOR_SWITCH_STATE_RESET:      DCPowerSystemUnlockGeneratorRelay2(􏵶dc system􏵷,􏵶priority􏵷);        DCPowerSystemCloseGeneratorRelay2(􏵶dc system􏵷); break;
+    case GENERATOR_SWITCH_STATE_NORM:       /* if the engine has sufficient n1, then the generator relay will close automatically; else it will open */ break;
+    case GENERATOR_SWITCH_STATE_OFF:        DCPowerSystemOpenAndLockGeneratorRelay2(􏵶dc system􏵷,􏵶priority􏵷);   break;
+  }
+􏶳
+
+􏷘-􏷗􏷒handle bus tie 1 switch􏷑
+􏷐Apply changes to the DC power system based on the state of the bus tie 1 switch􏷏
+􏶠This will open and close relays in the DC power system􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority that switches will lock nodes in place􏶿
+􏶜􏶝􏷆BusTieSwitchStateE􏷅􏷄switch state􏷃􏷀The state of the switch􏶿
+􏶴
+  switch(􏵶switch state􏵷){
+    case BUS_TIE_SWITCH_STATE_RESET:               DCPowerSystemCloseBusTieRelay1(􏵶dc system􏵷);         break;
+    case BUS_TIE_SWITCH_STATE_NORM:                DCPowerSystemUnlockBusTieRelay1(􏵶dc system􏵷,􏵶priority􏵷);        break;
+    case BUS_TIE_SWITCH_STATE_OFF:                 DCPowerSystemOpenAndLockBusTieRelay1(􏵶dc system􏵷,􏵶priority􏵷);   break;
+  }
+􏶳
+
+􏷘-􏷗􏷒handle bus tie 2 switch􏷑
+􏷐Apply changes to the DC power system based on the state of the bus tie 2 switch􏷏
+􏶠This will open and close relays in the DC power system􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority that switches will lock nodes in place􏶿
+􏶜􏶝􏷆BusTieSwitchStateE􏷅􏷄switch state􏷃􏷀The state of the switch􏶿
+􏶴
+  switch(􏵶switch state􏵷){
+    case BUS_TIE_SWITCH_STATE_RESET:               DCPowerSystemCloseBusTieRelay2(􏵶dc system􏵷);         break;
+    case BUS_TIE_SWITCH_STATE_NORM:                DCPowerSystemUnlockBusTieRelay2(􏵶dc system􏵷,􏵶priority􏵷);        break;
+    case BUS_TIE_SWITCH_STATE_OFF:                 DCPowerSystemOpenAndLockBusTieRelay2(􏵶dc system􏵷,􏵶priority􏵷);   break;
+  }
+􏶳
+
+􏷘-􏷗􏷒handle emergency shed bus switch􏷑
+􏷐Apply changes to the DC power system based on the state of the emergency shed bus switch􏷏
+􏶠This will open and close relays in the DC power system􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority that switches will lock nodes in place􏶿
+􏶜􏶝􏷆EmergencyShedBusSwitchStateE􏷅􏷄switch state􏷃􏷀The state of the switch􏶿
+􏶴
+  switch(􏵶switch state􏵷){
+    case EMERGENCY_SHED_BUS_SWITCH_STATE_NORM:
+    
+    􏶲turning the emergency shed bus switch back to norm will have no affect on the actual relay􏶱
+    􏶲it will however unlock it, causing the indication to disappear􏶱
+    DCPowerSystemUnlockShedBusRelay1(􏵶dc system􏵷,􏵶priority􏵷);
+    DCPowerSystemUnlockShedBusRelay2(􏵶dc system􏵷,􏵶priority􏵷);
+    DCPowerSystemTurnOffEmergencyShedIndicator(􏵶dc system􏵷);
+    break;
+    
+    􏶲locking will force the emergency shed bus indication to appear􏶱
+    case EMERGENCY_SHED_BUS_SWITCH_STATE_ON:
+    DCPowerSystemCloseAndLockShedBusRelay1(􏵶dc system􏵷,􏵶priority􏵷);
+    DCPowerSystemCloseAndLockShedBusRelay2(􏵶dc system􏵷,􏵶priority􏵷);
+    DCPowerSystemTurnOnEmergencyShedIndicator(􏵶dc system􏵷);
+    break;
+  }
+􏶳
+
+
+􏷘-􏷗􏷒handle avionics master 1 switch􏷑
+􏷐Apply changes to the DC power system based on the state of the avionics 1 master switch􏷏
+􏶠This will open and close relays in the DC power system􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜􏶝􏷆AvionicsMasterSwitchStateE􏷅􏷄switch state􏷃􏷀The state of the switch􏶿
+􏶴
+  switch(􏵶switch state􏵷){
+  
+    􏶲when the switch is on, the following relays are closed􏶱
+    case AVIONICS_MASTER_SWITCH_STATE_ON:
+      DCPowerSystemOpenAvionicRelay1(􏵶dc system􏵷);
+    break;
+    
+    case AVIONICS_MASTER_SWITCH_STATE_OFF:
+      DCPowerSystemCloseAvionicRelay1(􏵶dc system􏵷);
+    break;
+  }
+􏶳
+
+􏷘-􏷗􏷒handle avionics master 2 switch􏷑
+􏷐Apply changes to the DC power system based on the state of the avionics 2 master switch􏷏
+􏶠This will open and close relays in the DC power system􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜􏶝􏷆AvionicsMasterSwitchStateE􏷅􏷄switch state􏷃􏷀The state of the switch􏶿
+􏶴
+  switch(􏵶switch state􏵷){
+  
+    􏶲when the switch is on, the following relays are closed􏶱
+    case AVIONICS_MASTER_SWITCH_STATE_ON:
+      DCPowerSystemOpenAvionicRelay2(􏵶dc system􏵷);
+    break;
+    
+    case AVIONICS_MASTER_SWITCH_STATE_OFF:
+      DCPowerSystemCloseAvionicRelay2(􏵶dc system􏵷);
+    break;
+  }
+􏶳
+
+􏷘-􏷗􏷒handle mission bus button􏷑
+􏷐Apply changes to the DC power system based on the state of the mission bus button􏷏
+􏶠This will enable/disable power to the mission bus􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜􏶝􏷆MissionBusButtonStateE􏷅􏷄button state􏷃􏷀The state of the button􏶿
+􏶴
+  switch(􏵶button state􏵷){
+    case MISSION_BUS_BUTTON_STATE_ON:                 DCPowerSystemSupplyPowerToMepDevices(􏵶dc system􏵷); break;
+    case MISSION_BUS_BUTTON_STATE_OFF:                DCPowerSystemStopPowerToMepDevices(􏵶dc system􏵷); break;
+  }
+􏶳
+
+􏷘-􏷗􏷒handle downlink power button􏷑
+􏷐Apply changes to the DC power system based on the state of the downlink antennas􏷏
+􏶠This will enable/disable power to the downlink antennas􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜􏶝􏷆DownlinkPowerButtonStateE􏷅􏷄button state􏷃􏷀The state of the button􏶿
+􏶴
+  􏶲the dwnlink pwr button currently has no effect in the simulation􏶱
+􏶳
+
+􏷘-􏷗􏷒handle search light power button􏷑
+􏷐Apply changes to the DC power system based on the state of the search light􏷏
+􏶠This will enable/disable power to the search light􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜􏶝􏷆SearchLightPowerButtonStateE􏷅􏷄button state􏷃􏷀The state of the button􏶿
+􏶴
+  switch(􏵶button state􏵷){
+    case SEARCH_LIGHT_POWER_BUTTON_STATE_ON:                 DCPowerSystemSupplyPowerToSearchLight(􏵶dc system􏵷); break;
+    case SEARCH_LIGHT_POWER_BUTTON_STATE_OFF:                DCPowerSystemStopPowerToSearchLight(􏵶dc system􏵷); break;
+  }
+􏶳
+
+􏷘-􏷗􏷒handle engine starter 1 switch􏷑
+􏷐the engine starter switch will keep the starter relay down􏷏
+􏶠This will enable/disable power to the starter relay􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜􏶝􏷆EngineEngageSwitchStateE􏷅􏷄switch state􏷃􏷀The state of the switch􏶿
+􏶴
+  switch(􏵶switch state􏵷){
+    case ENGINE_ENGAGE_SWITCH_STATE_START:               DCPowerSystemCloseStarterRelay1(􏵶dc system􏵷); break;
+    case ENGINE_ENGAGE_SWITCH_STATE_NORM:                DCPowerSystemOpenStarterRelay1(􏵶dc system􏵷); break;
+  }
+􏶳
+
+􏷘-􏷗􏷒handle engine starter 2 switch􏷑
+􏷐the engine starter switch will keep the starter relay down􏷏
+􏶠This will enable/disable power to the starter relay􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜􏶝􏷆EngineEngageSwitchStateE􏷅􏷄switch state􏷃􏷀The state of the switch􏶿
+􏶴
+  switch(􏵶switch state􏵷){
+    case ENGINE_ENGAGE_SWITCH_STATE_START:               DCPowerSystemCloseStarterRelay2(􏵶dc system􏵷); break;
+    case ENGINE_ENGAGE_SWITCH_STATE_NORM:                DCPowerSystemOpenStarterRelay2(􏵶dc system􏵷); break;
+  }
+􏶳
+
+􏷘-􏷗􏷒handle bat hor switch􏷑
+􏷐the bat hor switch will show the overhead panel battery gauge lights􏷏
+􏶠This will turn the test lights on and off􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜􏶝􏷆BatteryHorExitSwitchStateE􏷅􏷄switch state􏷃􏷀The state of the switch􏶿
+􏶴
+  switch(􏵶switch state􏵷){
+    case BATTERY_HOR_EXIT_SWITCH_STATE_TEST:                DCPowerSystemEnableEmergencyBatTestLights(􏵶dc system􏵷); break;
+    case BATTERY_HOR_EXIT_SWITCH_STATE_NORM:                DCPowerSystemDisableEmergencyBatTestLights(􏵶dc system􏵷); break;
+  }
+􏶳

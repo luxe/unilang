@@ -1,0 +1,296 @@
+class
+
+❪vector❫
+❪string❫
+❪iostream❫
+❪fstream❫
+❪"code/utilities/contributor/contributor"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/linguistics/computer/source_language"❫
+❪"code/utilities/types/converters/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/linguistics/computer/export_file_settings/export_file_settings"❫
+
+⚯
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/char/lib"❫
+⚞⚟
+
+◀public: static▶ std::vector<std::string> ☀Export(Structure structure, std::vector<Contributor> const& contributors, Cpp_Benchmark_Export_Settings const& settings)❰
+
+
+    std::vector<std::string> files_created;
+    
+    //force structure changes
+    //TODO: we need to store adjustment phases.  Different tools might want the structure
+    //at different phases in its transition.  For now, and this is a hack, I'll make a copy
+    //for the test wrapper
+    Structure copy = structure;
+    Structure_Adjuster::Adjust(copy,settings.manipulations,Source_Language::CPP);
+    
+        Export_File_Settings file_settings;
+        file_settings.language = Source_Language::CPP;
+        file_settings.code = Code_Type::GLOBAL;
+        file_settings.special = Special_File_Type::NORMAL;
+        file_settings.file = File_Type::IMPLEMENTATION;
+    
+    files_created += Possibly_Create_Benchmark_Artifact(copy,file_settings,settings);
+    
+    return files_created;
+❱
+
+◀private: static▶ std::string ☀Create_Path_To_File(Structure const& structure, Export_File_Settings const& file_settings, Cpp_Benchmark_Export_Settings const& settings)❰
+    
+        //create base file name with file extension
+        auto file_name = File_Name_Getter::Get(file_settings,structure.name + settings.file_suffix,settings.general.filesystem_naming);
+        
+        //create the directory we will create a file in
+        Create_Path_If_It_Doesnt_Already_Exist(Current_Path() + "/" + settings.file_directory);
+        
+        std::string full_path = settings.file_directory + "/" + file_name;
+        return full_path;
+❱
+
+◀private: static▶ std::vector<std::string> ☀Possibly_Create_Benchmark_Artifact(Structure const& structure, Export_File_Settings const& file_settings, Cpp_Benchmark_Export_Settings const& settings)❰
+    std::vector<std::string> files_created;
+    
+    if (Has_Benchmarks(structure)){
+        
+        //create file name
+        auto full_path = Create_Path_To_File(structure,file_settings,settings);
+        files_created.emplace_back(full_path);
+        
+        std::wofstream out(full_path);
+        
+        out << as_wstring(Boilerplate_Printer::Get_Top_Comment(structure,file_settings,settings.portion.meta,full_path));
+        
+        if (settings.print_benchmark_coverage_information){
+            out << as_wstring(Benchmark_Coverage_Summary_Getter::Get(structure,settings));
+            out << as_wstring("\n");
+        }
+        
+        out << as_wstring(Get_Include_Section(structure));
+        
+        
+    auto BAD_DONT_DO_THIS = dont_do_this(settings);
+    Namespace_Printer::Print_Namespace(out,structure.namespaces,BAD_DONT_DO_THIS.portion.namespace_options);
+        out << as_wstring(Structure_As_Benchmark(structure,settings));
+    Namespace_Printer::Print_Namespace_End(out,structure.namespaces,BAD_DONT_DO_THIS.portion.namespace_options);
+    Boilerplate_Printer::Print_End(out,structure,file_settings,BAD_DONT_DO_THIS);
+        out.close();
+    }
+    return files_created;
+❱
+
+◀private: static▶ std::string ☀Structure_As_Benchmark(Structure const& structure, Cpp_Benchmark_Export_Settings const& settings)❰
+    std::string result;
+    
+    for (auto const& it: structure.methods.methods){
+        
+        result += Maybe_Get_Divider(settings.portion.method_options.benchmark_case.before_group);
+        
+        for (auto const& j: it.benchmarks.benchmarks){
+            
+            result += Maybe_Get_Divider(settings.portion.method_options.benchmark_case.before_case);
+            
+            result += Add_Comments(structure,it,j,settings);
+            result += Get_Signature(structure,it,j,settings);
+            result += Get_Body(j,it);
+            result += Add_Register(structure,it,j,settings);
+            
+            result += Maybe_Get_Divider(settings.portion.method_options.benchmark_case.after_case);
+        }
+        
+        result += Maybe_Get_Divider(settings.portion.method_options.benchmark_case.after_group);
+    }
+    return result;
+❱
+
+◀private: static▶ std::string ☀Get_Signature(Structure const& structure, Method_Item const& method, Benchmark const& benchmark, Cpp_Benchmark_Export_Settings const& settings)❰
+    
+    //extract all the data into strings
+    std::string test_name = Case_Modifier::As_Modified_Casing(settings.portion.method_options.benchmark_case.name_casing,as_string(benchmark.name.value));
+    std::string test_tag = Case_Modifier::As_Modified_Casing(settings.portion.method_options.benchmark_case.tag_casing,as_string(benchmark.tag.value));
+    
+    //build signature
+    std::string str;
+    str += "static void ";
+    str += Get_Benchmark_Function_Name(structure,method,benchmark,settings) + "(";
+    str += "benchmark::State &s";
+    str += ")";
+    
+    return str;
+❱
+
+◀private: static▶ std::string ☀Get_Body(Benchmark const& benchmark, Method_Item const& method)❰
+    std::string result;
+    result += "\n{\n\n";
+    result += "// ARRANGE";
+    result += "\n";
+    result += as_string(benchmark.setup.body.value);
+    result += "\n\n";
+    result += "// PROFILE";
+    result += "\n";
+    result += "for (auto _ : s) {";
+    
+    
+    //we only wrap the benchmark in "do not optimize" if it returns a value
+    if (!method.return_results.empty()){
+        result += "benchmark::DoNotOptimize(";
+        result += as_string(benchmark.action.body.value);
+        result += ");\n";
+    }
+    else{
+        result += as_string(benchmark.action.body.value);
+        result += ";\n";
+    }
+    result += "benchmark::ClobberMemory();";
+    result += "\n}";
+    result += "\n\n}\n\n";
+    return result;
+❱
+
+◀private: static▶ std::string ☀Add_Register(Structure const& structure, Method_Item const& method, Benchmark const& benchmark, Cpp_Benchmark_Export_Settings const& settings)❰
+    std::string result;
+    result += "// REGISTER";
+    result += "\n";
+    result += "BENCHMARK(";
+    result += Get_Benchmark_Function_Name(structure,method,benchmark,settings);
+    result += ")";
+    
+    for (auto arg: benchmark.args){
+        
+        //possibly add multiplier
+        bool add_multiplier = true;
+        auto multiplier = as_string(arg.multiplier.value);
+        if (!multiplier.empty()){
+            if (add_multiplier){
+                result += "->RangeMultiplier(";
+                result += multiplier;
+                result += ")";
+            }
+        }
+        
+        //possibly add range
+        bool add_range = true;
+        auto range_low = as_string(arg.range_low.value);
+        auto range_high = as_string(arg.range_high.value);
+        if (add_range){
+            if (!range_low.empty() && !range_high.empty()){
+                result += "->Range(";
+                result += range_low;
+                result += ",";
+                result += range_high;
+                result += ")";
+            }
+        }
+        
+        //possibly add units
+        bool add_units = true;
+        if (add_units){
+            result += "->Unit(";
+            result += "benchmark::kNanosecond";
+            result += ")";
+        }
+        
+        //possibly add complexity
+        bool add_complexity = true;
+        if (add_complexity){
+            result += "->Complexity();";
+        }
+    }
+    
+    
+    result += "\n\n";
+    return result;
+❱
+
+◀private: static▶ std::string ☀Add_Comments(Structure const& structure, Method_Item const& method, Benchmark const& benchmark, Cpp_Benchmark_Export_Settings const& settings)❰
+    std::string comment;
+    
+    //possibly attach comment onto test for the function being benchmarked
+    if (settings.add_function_under_benchmark){
+        comment += "// " + settings.function_under_benchmark_title + ": ";
+        comment += Get_Function_Name(structure,method,settings);
+        comment += "\n";
+    }
+    
+    //possibly attach comment onto test for what's going on with the argument
+    
+    return comment;
+❱
+
+◀private: static▶ std::string ☀Get_Function_Name(Structure const& structure, Method_Item const& method, Cpp_Benchmark_Export_Settings const& settings)❰
+        auto settings2 = dont_do_this(settings);
+        return Shared_Printer::Derive_Function_Name(structure.name,Code_Type::GLOBAL,method,settings2);
+❱
+
+◀private: static▶ std::string ☀Get_Benchmark_Function_Name(Structure const& structure, Method_Item const& method, Benchmark const& benchmark, Cpp_Benchmark_Export_Settings const& settings)❰
+    std::string prefix = settings.benchmark_function_prefix;
+    std::string func_name = prefix + "_" + Get_Function_Name(structure,method,settings);
+    
+    if (!benchmark.tag.value.empty()){
+        func_name += "_" + as_string(benchmark.tag.value);
+    }
+    
+    
+    return func_name;
+❱
+
+◀private: static▶ std::string ☀Get_Include_Section(Structure const& structure)❰
+    std::string result;
+    
+    Append(result,"#include ");
+    result += Get_Double_Quote();
+    auto path = Get_Path_Of_Directory_After_Found_Folder("source");
+    Append(result,path);
+    Append(result,structure.name);
+    Append(result,".hh");
+    result += Get_Double_Quote();
+    result += "\n";
+    
+    for (auto const& it: structure.imports.test_dependencies){
+        Append(result,"#include ");
+        result += Get_Double_Quote();
+        Append(result,as_string(it.name.value));
+        Append(result,".hh");
+        result += Get_Double_Quote();
+        result += "\n";
+    }
+    
+    Append(result,"#include ");
+    result += "<";
+    Append(result,"benchmark/benchmark.h");
+    result += ">";
+    result += "\n";
+
+    return result;
+❱
+
+//TODO: REMOVE THIS
+◀private: static▶ C_Export_Settings ☀dont_do_this(Cpp_Benchmark_Export_Settings const& settings)❰
+    C_Export_Settings x;
+    x.portion = settings.portion;
+    x.general = settings.general;
+    x.manipulations = settings.manipulations;
+    return x;
+❱
+
+
+◀private: static▶ bool ☀Has_Benchmarks(Structure const& structure)❰
+    for (auto const& it: structure.methods.methods){
+        if (!it.benchmarks.benchmarks.empty()){
+            return true;
+        }
+    }
+    
+    return false;
+❱
+
+◀private: static▶ std::string ☀Maybe_Get_Divider(Divider_Settings const& divider)❰
+    if (divider.print){
+        return divider.divider +"\n\n";
+    }
+    return "";
+❱

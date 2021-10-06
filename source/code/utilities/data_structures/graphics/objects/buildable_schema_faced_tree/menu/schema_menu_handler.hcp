@@ -1,0 +1,174 @@
+class
+⚯
+⚞⚟
+
+◀public: static▶ void ☀Handle_Menu_Logic(Frame_Elements & elements, Position const& pos, Character_Maps const& font_chars, Pc_Input_State const& pc_input, Buildable_Face_Tree_State & state, Schema_Path_Settings const& settings, Schema_Menu_Open_Strategy const& how_to_open)❰
+
+
+    //was an element clicked?
+    //decide to show the action menu 
+    Possibly_Open_Menu(pc_input,pos,state,settings,how_to_open);
+    
+    //how to draw and handle menu clicks
+    Handle_Menu(elements,font_chars,pos,settings.schema,settings.styles,state,pc_input,how_to_open);
+❱
+
+
+
+◀private: static▶ void ☀Possibly_Open_Menu(Pc_Input_State const& pc_input, Position const& pos, Buildable_Face_Tree_State & tree, Schema_Path_Settings const& settings, Schema_Menu_Open_Strategy const& how_to_open)❰
+
+    if (how_to_open != Schema_Menu_Open_Strategy::DONT_OPEN){
+        
+        auto menu_settings = Create_Menu_Settings(pc_input,tree.structure,settings.schema,tree.selected_node);
+        
+        
+        //THIS RESULTS IN A SEGFAULT!
+        //EXAMPLATION:
+        //the tree copy_() function fails
+        //tree is somehow corrupted where insert function crashes at end on: "tmp->prev_sibling->next_sibling=tmp;"
+        //ORIGINAL CODE:
+        // auto menu_out = Schema_Tree_Menu_Creator::Create_Menu(tree.structure,lookup,settings,tree.selected_node);
+        // tree.menu.menu = menu_out.menu;
+        
+        //DO THIS INSTEAD (avoid the temporary):
+        tree.menu.menu = Schema_Tree_Menu_Creator::Create_Menu(tree.structure,settings,menu_settings,tree.selected_node).menu;
+        
+        
+        
+        tree.menu.pos = Decide_Menu_Location(pc_input,pos,tree,how_to_open);
+        
+        //does the generated meny actually have menu items?
+        //if it doesn't let's keep the menu invisible.  
+        //otherwise we bring up an empty menu that the yser can't see.
+        //and its confusing, because they have to do something to make the meny disappear
+        //before their actions have another effect.
+        if (tree.menu.menu.nodes.size() > 0){
+            tree.menu.visible = true;
+        }
+    }
+❱
+
+◀private: static▶ Position ☀Decide_Menu_Location(Pc_Input_State const& pc_input, Position const& pos, Buildable_Face_Tree_State & tree, Schema_Menu_Open_Strategy const& how_to_open)❰
+
+    if (how_to_open == Schema_Menu_Open_Strategy::ALONGSIDE){
+        return Button_Face_Tree_Active_Pos_Finder::Find_Active_Pos(tree.structure,pos);
+    }
+    return pc_input.mouse.pos;
+❱
+
+
+◀private: static▶ Schema_Tree_Menu_Creation_Settings ☀Create_Menu_Settings(Pc_Input_State const& pc_input, Button_Face_Tree const& structure, Child_Lookup_Map const& lookup, tree<Buttoned_Faced_Label>::pre_order_iterator it)❰
+    
+    Schema_Tree_Menu_Creation_Settings result;
+    result.add_global_manipulation_options = false;
+    result.add_local_manipulation_options = false;
+    result.add_sibiling_rename_options = false;
+    result.add_children_append_options = false;
+    result.add_choice_value_options = false;
+    
+    auto menu_type = Choose_Menu_Type(pc_input,structure,lookup,it);
+    
+    switch (menu_type){
+        case Schema_Menu_Type::GLOBAL:
+        result.menu_name = "global";
+        result.add_global_manipulation_options = true;
+        break;
+        
+        case Schema_Menu_Type::LOCAL:
+        result.menu_name = "local";
+        result.add_local_manipulation_options = true;
+        break;
+        
+        case Schema_Menu_Type::RENAME:
+        result.menu_name = "rename";
+        result.add_sibiling_rename_options = true;
+        break;
+        
+        case Schema_Menu_Type::INSERT:
+        result.menu_name = "insert";
+        result.add_children_append_options = true;
+        break;
+        
+        case Schema_Menu_Type::CHOICE_SELECT:
+        result.menu_name = "choice";
+        result.add_choice_value_options = true;
+        break;
+    }
+    
+    return result;
+    
+
+❱
+
+
+◀private: static▶ Schema_Menu_Type ☀Choose_Menu_Type(Pc_Input_State const& pc_input, Button_Face_Tree const& structure, Child_Lookup_Map const& lookup, tree<Buttoned_Faced_Label>::pre_order_iterator it)❰
+
+    //keyboard input
+    Schema_Menu_Control_Settings control_settings;
+    auto pick_global_key_state = pc_input.keyboard.key_states[control_settings.choose_menu_global];
+    auto pick_local_key_state = pc_input.keyboard.key_states[control_settings.choose_menu_local];
+    auto pick_rename_key_state = pc_input.keyboard.key_states[control_settings.choose_menu_rename];
+    
+    if (pick_global_key_state == Key_State::DOWN || pick_global_key_state == Key_State::PRESSED){
+        return Schema_Menu_Type::GLOBAL;
+    }
+    if (pick_local_key_state == Key_State::DOWN || pick_local_key_state == Key_State::PRESSED){
+        return Schema_Menu_Type::LOCAL;
+    }
+    if (pick_rename_key_state == Key_State::DOWN || pick_rename_key_state == Key_State::PRESSED){
+        return Schema_Menu_Type::RENAME;
+    }
+    
+    //if there is children to be inserted, we will chose that insertion strategy
+    auto full_name = Button_Face_Tree_Full_Path_Name::Get(structure,it);
+    auto strs = Child_Lookup_Map_Find::Get_Children(lookup,full_name);
+    if (!strs.empty()){
+         return Schema_Menu_Type::INSERT;
+    }
+    
+    //if there are no children.  we will assume the label is a leaf
+    //and instead give the user pre-defined choice options
+    return Schema_Menu_Type::CHOICE_SELECT;
+    
+❱
+
+◀private: static▶ void ☀Handle_Menu(Frame_Elements & elements, Character_Maps const& font_chars, Position const& pos, Child_Lookup_Map const& lookup, Style_Lookup_Map const& style_lookup, Buildable_Face_Tree_State & tree, Pc_Input_State const& pc_input, Schema_Menu_Open_Strategy const& how_to_open)❰
+
+    //keyboard input
+    auto select_key_state = pc_input.keyboard.key_states[tree.menu.key_control.select_active];
+    auto up_key_state = pc_input.keyboard.key_states[tree.menu.key_control.navigate_up];
+    auto down_key_state = pc_input.keyboard.key_states[tree.menu.key_control.navigate_down];
+    
+    if (tree.menu.visible){
+        elements.types += Tree_Label_Drawer::Draw(font_chars,tree.menu.menu,tree.menu.pos,pc_input).types;
+        
+        if (how_to_open == Schema_Menu_Open_Strategy::DONT_OPEN){
+            
+            //user clicked a menu item
+            if (pc_input.mouse.left.clicked || pc_input.mouse.right.clicked){
+                tree.menu.visible = false;
+                Schema_Tree_Menu_Click_Handler::Handle_Menu_Click(font_chars, pos, tree, lookup,style_lookup, pc_input);
+            }
+            
+            //user selected a menu item
+            else if (select_key_state == Key_State::PRESSED){
+                tree.menu.visible = false;
+                Schema_Tree_Menu_Select_Handler::Handle_Menu_Select(font_chars, pos, tree, lookup,style_lookup, pc_input);
+            }
+            
+            //user navigated up
+            else if (up_key_state == Key_State::PRESSED){
+                Faced_Tree_Previous_Active::Perform(tree.menu.menu);
+            }
+            
+            //user navigated down
+            else if (down_key_state == Key_State::PRESSED){
+                Faced_Tree_Next_Active::Perform(tree.menu.menu);
+            }
+            
+            
+            
+        }
+    }
+❱
+

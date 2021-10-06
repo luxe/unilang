@@ -1,0 +1,52 @@
+class
+⚯
+
+⚞⚟
+
+◀public: static▶ Reference_Depth_Map ☀Get(String_Tree const& str_tree, Reference_Lookup_Map const& refs)❰
+
+
+    //A schema tree is technically a graph due to the references.  
+    //One of the strategies for rendering this "tree-like graph" is to render it as separate trees.
+    //Based on the amount reference indirection that any subtree requires would indicate which tree it belongs in.
+    //imagine an x-axis, where each column is a tree.
+    //Trees on the very left (column 0) require no indirection.
+    //Trees on the very right (last column) require the most indirection.
+    //We are going to build the desired column number for every possible label based on knowledge of references.
+    auto x = Calculate_Relative_Depth(str_tree,refs);
+    
+    //the above calculation gets the depth of parent nodes containing relationships correct,
+    //but it does not get all of the parent's children (and children's children etc) to be the correct depth.
+    //we now do another pass, to modify the depth by traversing subtrees.
+    Adjust_Based_On_Subtree(x,str_tree);
+    
+    Reverse_Value_Numbers(x.map);
+    
+    
+    return x;
+❱
+
+◀private: static▶ Reference_Depth_Map ☀Calculate_Relative_Depth(String_Tree const& str_tree, Reference_Lookup_Map const& refs)❰
+
+    Reference_Depth_Map x;
+    
+    auto paths = Tree_Full_Paths_Getter::Get_All_Paths_Ordered(str_tree);
+    for (auto const& path: paths){
+        auto depth = Pk_Depth_Calculator::Calculate(str_tree,refs,path);
+        x.map.emplace(path,depth);
+    }
+    
+    return x;
+❱
+
+◀private: static▶ void ☀Adjust_Based_On_Subtree(Reference_Depth_Map & x, String_Tree const& str_tree)❰
+
+
+    for (auto const& it: x.map){
+        auto subtree_paths = Tree_Full_Paths_Getter::Get_All_Subtree_Paths_Ordered(str_tree,it.first);
+        for (auto const& subtree_path: subtree_paths){
+             Add_If_Larger(x.map,subtree_path,it.second);
+        }
+    }
+    
+❱

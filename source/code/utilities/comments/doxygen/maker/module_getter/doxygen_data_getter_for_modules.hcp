@@ -1,0 +1,37 @@
+class
+⚯
+⚞⚟
+
+◀public: static▶ Doxygen_Data ☀Get(model::Module const& m, Module_Settings const& options)❰
+    
+    Doxygen_Data data;
+    
+    //possibly add a dumb redundant class tag
+     if (options.general.comment.doxygen.use_repetitive_class_tag){
+             auto class_name = Class_Name_Getter::Get(m,options);
+             Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,options.general.comment.doxygen.class_tag,class_name);
+     }
+     
+     if (!m.description_fk.empty()){
+        Add_Description_Tags(data,m,options);
+    }
+    
+    return data;
+❱
+
+◀private: static▶ void ☀Add_Description_Tags(Doxygen_Data & data, model::Module const& m, Module_Settings const& options)❰
+
+    
+    //get module sentences
+    auto brief_sentences = Module_Description_Resolver::Resolve_Brief_Sentences(m);
+    auto detail_sentences = Module_Description_Resolver::Resolve_Detail_Sentences(m);
+    
+    //adjust sentences so they look pretty
+    auto final_brief = Sentences_Fixer::Fix_Up_Sentences(brief_sentences,options.general.comment);
+    auto final_detail = Sentences_Fixer::Fix_Up_Sentences(detail_sentences,options.general.comment);
+    
+    //add them
+    Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,options.general.comment.doxygen.brief_tag,final_brief);
+    Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,options.general.comment.doxygen.detail_tag,final_detail);
+      
+❱

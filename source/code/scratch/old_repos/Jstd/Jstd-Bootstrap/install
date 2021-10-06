@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+#the full path to this script
+DIR_OF_THIS_SCRIPT=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd );
+
+#pull in all the functions
+for f in $(find $DIR_OF_THIS_SCRIPT/functions -type f); do . $f; done;
+
+#this script installs a bunch of mini programs needed to help install parts of the Jstd
+function Install_Bootstrap_Prog(){
+	cd $1/project/src/;
+	Run_Command_And_Exit_If_Command_Failed "\tbuilding $1 (bootstrap)" "make";
+	cd ../../../;
+}
+
+function Download_And_Install_With_Git_It(){
+	Run_Command_And_Exit_If_Command_Failed "\tgetting $1/$2" "git-it --allow-nested-git git@github.com:$1/$2.git";
+	cd $2/project/src/;
+	Run_Command_And_Exit_If_Command_Failed "\tbuilding $1/$2" "make;"
+	cd ../../../;	
+}
+
+# create a temp directory to store bootstrap programs and dependencies
+cd bootstrap_progs;
+
+echo "Installing Bootstrap programs..."
+Install_Bootstrap_Prog "hcp-compiler";
+Install_Bootstrap_Prog "git-it";
+
+echo  -e "\nInstalling other programs..."
+cd ../../;
+mkdir -p downloads; cd downloads;
+Download_And_Install_With_Git_It "luxe" "hcp-compiler";
+Download_And_Install_With_Git_It "luxe" "git-it";
+Download_And_Install_With_Git_It "luxe" "ls-cpp";
+Download_And_Install_With_Git_It "luxe" "hcp-touch";
+

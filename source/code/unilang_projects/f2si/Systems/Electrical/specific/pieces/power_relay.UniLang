@@ -1,0 +1,146 @@
+􏶞p􏶟
+􏷲A Power Relay.  A higher level electrical graph component􏷱
+􏷰In order to work properly, it requires two electrical nodes, and a trigger.􏷯
+􏷮Electrical_System􏷭 􏷮Power_Relay􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦stddef􏷥􏴓1􏴔􏴑size_t􏴒
+􏷤􏷣􏷦electrical_graph􏷥􏴓d􏴔􏴑ElectricalGraphT􏴒
+􏷤􏷣􏷦vector􏷥􏴓1􏴔􏴑VectorT􏴒
+􏶔􏶕􏶒string􏶓􏴏d􏴐􏴍strcpy()􏴎
+􏶔􏶕􏶒ascii_string􏶓􏴏d􏴐􏴍AsciiStringT􏴎
+􏶔􏶕􏶒pole􏶓􏴏d􏴐􏴍PoleT􏴎
+
+􏳹electrical graph􏳺
+
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be in an invalid state until initialized.
+Initializing a 􏶐 will construct all of its nodes into the generic electrical graph.
+It will store the IDs given back by the graph so that they may be queried later by the user.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its nodes into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶜􏶝􏷆i􏷅􏷄number of poles􏷃􏷀the number of poles in the relay􏶿
+􏶴
+
+  􏶲initialize vector􏶱
+  InitializeVector(&􏵴poles􏵵,SPECIALIZE_UNMANAGED(PoleT),0);
+  
+  􏶲create all the internal nodes inside the graph data structure􏶱
+  􏵲create nodes􏵳􏵶graph􏵷,􏵶tag name􏵷,􏵶number of poles􏵷);
+  
+  􏶲connect these newly created nodes􏶱
+  􏵲create wires􏵳􏵶graph􏵷);
+  
+  􏶲connect these newly created nodes􏶱
+  􏵲create triggers􏵳􏵶graph􏵷);
+􏶳
+
+
+
+􏷘+􏷗􏷒^􏶐􏷑
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆void􏷅􏷄self􏷃􏷀the 􏶐 to copy construct􏶿
+􏶴
+  􏶲implicit forwarding cast􏶱
+  􏵲copy􏵳􏵶self􏵷);
+􏶳
+􏷘-􏷗􏷒copy􏷑
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆PowerRelayT􏷅􏷄self􏷃􏷀the 􏶐 to copy construct􏶿
+􏶴
+    􏶲perform deep copy􏶱
+    CopyInitializeVectorT(&􏵴poles􏵵,&􏵶self􏵷->m_tPoles);
+    
+    􏶲perform shallow copy􏶱
+    􏵴coil􏵵 = 􏵶self􏵷->m_uCoil;
+􏶳
+􏷘+􏷗􏷒~􏶐􏷑
+􏷐Destruct the 􏶐􏷏
+􏶠􏶐 will leak memory unless destructed􏶡
+􏶴
+  􏶲destruct􏶱
+  􏵲destruct􏵳);
+􏶳
+􏷘-􏷗􏷒destruct􏷑
+􏷐Destruct the 􏶐􏷏
+􏶠􏶐 will leak memory unless destructed􏶡
+􏶴
+  􏶲C does not have destructors.􏶱
+  DestructVectorT(&􏵴poles􏵵);
+􏶳
+
+􏷘-􏷗􏷒create nodes􏷑
+􏷐Constructs all of the electrical components into the generic electrical graph data structure.􏷏
+􏶠This will give all of the node a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its nodes into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶜􏶝􏷆i􏷅􏷄number of poles􏷃􏷀the number of poles in the relay􏶿
+􏶴
+  􏶲create an n amount of poles􏶱
+  􏶲we start at A and move through the alphabet while naming poles􏶱
+  􏶲*This is how the electrical diagrams do it􏶱
+  char cName = 'A';
+  AsciiStringT tNewTag = ConstructAsciiString(􏵶tag name􏵷);
+  size_t uIndex = 0u;
+  PoleT tTempPole;
+  for(; uIndex < 􏵶number of poles􏵷; ++uIndex){
+  
+    􏶲create new tag􏶱
+    AsciiStringAppendChar(&tNewTag,',');
+    AsciiStringAppendChar(&tNewTag,cName);
+    
+    􏶲add pole􏶱
+    InitializePole(&tTempPole,􏵶graph􏵷,AsciiStringCStr(&tNewTag));
+    VectorPushBack(&􏵴poles􏵵,&tTempPole);
+    
+    􏶲reset tag􏶱
+    AsciiStringAssignCString(&tNewTag,􏵶tag name􏵷);
+    
+    􏶲increment name for next tag􏶱
+    ++cName;
+  }
+  
+  􏶲create the coil􏶱
+  􏵴coil􏵵 = ElectricalGraphAddCoil(􏵶graph􏵷,"coil",􏵶tag name􏵷,0.0f,0.0f,CAN_BE_POWERED_YES);
+  
+  􏶲destruct temp string􏶱
+  DestructAsciiStringT(&tNewTag);
+􏶳
+
+􏷘-􏷗􏷒create wires􏷑
+􏷐Connects all of the necessary 􏶐 nodes together.􏷏
+􏶠The nodes being connected will need to be created first.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its wires into.􏶿
+􏶴
+  􏶲the coil is connected to all of the poles through electromagnetism.􏶱
+  􏶲this is done via the triggers􏶱
+􏶳
+
+􏷘-􏷗􏷒create triggers􏷑
+􏷐Create all the triggers of the power relay􏷏
+􏶠The power relay will open and close terminals based on a charge to the coil􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its wires into.􏶿
+􏶴
+  􏶲a charged coil, closes all of the poles􏶱
+  􏶲an uncharged coil, opens all of the poles􏶱
+  size_t uIndex = 0u;
+  for(; uIndex < VectorSize(&􏵴poles􏵵); ++uIndex){
+  
+      􏶲when there is power, electricity flows to the closed terminals􏶱
+      ElectricalGraphAddFlowDisableTriggerOnAvailablePower(􏵶graph􏵷,􏵴coil􏵵,((PoleT*)VectorAt(&􏵴poles􏵵,uIndex))->m_uOpenTerminal);
+      ElectricalGraphAddFlowEnableTriggerOnAvailablePower(􏵶graph􏵷,􏵴coil􏵵,((PoleT*)VectorAt(&􏵴poles􏵵,uIndex))->m_uClosedTerminal);
+      
+      􏶲when there is not power, electricity flows to the open terminals􏶱
+      ElectricalGraphAddFlowEnableTriggerOnUnavailablePower(􏵶graph􏵷,􏵴coil􏵵,((PoleT*)VectorAt(&􏵴poles􏵵,uIndex))->m_uOpenTerminal);
+      ElectricalGraphAddFlowDisableTriggerOnUnavailablePower(􏵶graph􏵷,􏵴coil􏵵,((PoleT*)VectorAt(&􏵴poles􏵵,uIndex))->m_uClosedTerminal);
+  }
+􏶳
+
+􏶨The relays that are powered by a coil􏶧
+􏶘-g􏶙􏶰􏶯􏶮VectorT􏶭􏶬poles􏶫􏶪0􏶩
+
+􏶨The coil that powers the relay􏶧
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬coil􏶫􏶪0􏶩

@@ -1,0 +1,41 @@
+class
+⚯
+⚞⚟
+
+◀public: static▶ Frame_Elements ☀Draw(Character_Maps const& font_chars, Buildable_Face_Tree_State & state, Position const& pos, Pc_Input_State const& pc_input)❰
+    
+    return Draw_Impl(font_chars,state,pos,pc_input);
+❱
+
+◀public: static▶ Frame_Elements ☀Draw(Character_Maps const& font_chars, Positioned_Buildable_Face_Tree & tree, Pc_Input_State const& pc_input)❰
+    
+    return Draw_Impl(font_chars,tree.state,tree.pos,pc_input);
+❱
+
+◀private: static▶ Frame_Elements ☀Draw_Impl(Character_Maps const& font_chars, Buildable_Face_Tree_State & state, Position const& pos, Pc_Input_State const& pc_input)❰
+    
+    Frame_Elements elements;
+    
+    //draw the tree
+    Schema_Path_Settings path_settings;
+    elements.types += Button_Face_Tree_Drawer::Draw(font_chars,state.structure,pos,pc_input,path_settings).types;
+    
+    //find the element that has been right-clicked
+    //TODO: Drawing the tree should return this information.
+    bool label_first_selected = false;
+    if (!state.menu.visible){
+        state.selected_node = Button_Face_Tree_Click_Finder::Find_Clicked_Label(state.structure);
+        if (state.selected_node != state.structure.nodes.end()){
+            label_first_selected = true;
+        }
+    }
+    
+    //was an element clicked?
+    //decide to show the action menu 
+    Generic_Menu_Handler::Handle_Menu_Logic(elements,font_chars,pc_input,state,label_first_selected);
+    
+    
+    return elements;
+❱
+
+

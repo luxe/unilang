@@ -1,0 +1,55 @@
+class
+⚯
+⚞⚟
+
+◀public: static▶ Frame_Elements ☀Get(Ide_Settings & settings, Pc_Input_State const& pc_input)❰
+    Frame_Elements elements;
+    
+    
+    //move from mouse wheel
+    if (pc_input.mouse.wheel.movement != 0){
+        Position pos;
+        pos.x = 0;
+        pos.y = pc_input.mouse.wheel.movement;
+        Move_All_Ide_Elements::Move(settings,pos);
+    }
+    
+    bool was_performed = Adjust_First_Mouse_Over_Element_Via_View_Anchor(settings,pc_input);
+    
+    if (!was_performed){
+        Update_All_Positions_Via_View_Anchor(settings);
+    }
+    
+    //convert IDE elements to frame elements.
+    //i.e. turn c++ objects into draw-able things.
+    elements.types = Convert_All_Ide_Elements::Convert(settings.elements,settings,pc_input).types;
+    return elements;
+❱
+
+◀private: static▶ bool ☀Adjust_First_Mouse_Over_Element_Via_View_Anchor(Ide_Settings & settings, Pc_Input_State const& pc_input)❰
+
+    Position pos = settings.desktop.mouse.change;
+    
+    //if mouse is over something, we are going to allow moving it,
+    // and adjust the z index appropriately.
+    auto index = Find_Mouse_Over_Index::Find(settings,pc_input);
+    if (index != -1){
+        
+        Move_Ide_Element::Move(settings.elements.types[index],pos);
+        Possibly_Adjust_Z_Index_Of_Objects(settings,pc_input,index);
+        return true;
+    
+    }
+    return false;
+    
+❱
+
+◀private: static▶ void ☀Update_All_Positions_Via_View_Anchor(Ide_Settings & settings)❰
+    Move_All_Ide_Elements::Move(settings,settings.desktop.mouse.change);
+❱
+
+◀private: static▶ void ☀Possibly_Adjust_Z_Index_Of_Objects(Ide_Settings & settings, Pc_Input_State const& pc_input, size_t index)❰
+    if (pc_input.mouse.right.down){
+        Move_Indexed_Item_To_Back(settings.elements.types,index);
+    }
+❱

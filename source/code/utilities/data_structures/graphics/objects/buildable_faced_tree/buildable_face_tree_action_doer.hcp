@@ -1,0 +1,244 @@
+class
+⚯
+⚞⚟
+
+◀public: static▶ void ☀Do_Label_Action(Buildable_Face_Tree_State & tree, Buildable_Label_Action const& action)❰
+
+        
+    switch (action){
+        
+        case Buildable_Label_Action::ADD_SIBLING_BEFORE: Add_Sibling_Before(tree);
+        break;
+        
+        case Buildable_Label_Action::ADD_SIBLING_AFTER: Add_Sibling_After(tree);
+        break;
+        
+        case Buildable_Label_Action::ADD_CHILD_BEFORE: Add_Child_Before(tree);
+        break;
+        
+        case Buildable_Label_Action::ADD_CHILD_AFTER: Add_Child_After(tree);
+        break;
+        
+        case Buildable_Label_Action::DELETE: Delete(tree);
+        break;
+        
+        case Buildable_Label_Action::DELETE_SIBLINGS_BEFORE: Delete_Siblings_Before(tree);
+        break;
+        
+        case Buildable_Label_Action::DELETE_SIBLINGS_AFTER: Delete_Siblings_After(tree);
+        break;
+        
+        case Buildable_Label_Action::DELETE_CHILDREN: Delete_Children(tree);
+        break;
+        
+        case Buildable_Label_Action::COPY: Copy(tree);
+        break;
+        
+        case Buildable_Label_Action::EXPAND_ALL: Expand_All(tree);
+        break;
+        
+        case Buildable_Label_Action::COLLAPSE_ALL: Collapse_All(tree);
+        break;
+        
+        case Buildable_Label_Action::BACKGROUND_COLOR: Background_Color(tree);
+        break;
+        
+        case Buildable_Label_Action::TEXT_COLOR: Text_Color(tree);
+        break;
+        
+        case Buildable_Label_Action::DUPLICATE: Duplicate(tree);
+        break;
+        
+        case Buildable_Label_Action::MOVE_SIBLING_UP: Move_Sibling_Up(tree);
+        break;
+        
+        case Buildable_Label_Action::MOVE_SIBLING_DOWN: Move_Sibling_Down(tree);
+        break;
+        
+        case Buildable_Label_Action::MOVE_SIBLING_FIRST: Move_Sibling_First(tree);
+        break;
+        
+        case Buildable_Label_Action::MOVE_SIBLING_LAST: Move_Sibling_Last(tree);
+        break;
+        
+        case Buildable_Label_Action::MOVE_CHILDREN_TO_NEW_PARENT: Move_Children_To_New_Parent(tree);
+        break;
+    }
+❱
+
+
+◀private: static▶ void ☀Move_Children_To_New_Parent(Buildable_Face_Tree_State & tree)❰
+    
+    //if its a root node, there is no parent, and the operation doesn't make sense to do
+    if (tree.structure.nodes.depth(tree.selected_node) <= 0){
+        return;
+    }
+    
+    //insert the new parent
+    auto parent = tree.structure.nodes.parent(tree.selected_node);
+    auto new_parent = tree.structure.nodes.insert_after(parent,*parent);
+    
+    //reparent the remaining nodes
+    auto last_child = tree.structure.nodes.sibling(tree.selected_node,tree.structure.nodes.number_of_siblings(tree.selected_node)+1);
+    tree.structure.nodes.reparent(new_parent,tree.selected_node,last_child);
+
+❱
+◀private: static▶ void ☀Add_Sibling_Before(Buildable_Face_Tree_State & tree)❰
+    
+    auto x = Buttoned_Faced_Label_Premades::Single_Plain_White_Box_For_Tree();
+    tree.structure.nodes.insert(tree.selected_node,x);
+❱
+◀private: static▶ void ☀Add_Sibling_After(Buildable_Face_Tree_State & tree)❰
+
+    auto x = Buttoned_Faced_Label_Premades::Single_Plain_White_Box_For_Tree();
+    tree.structure.nodes.insert_after(tree.selected_node,x);
+❱
+◀private: static▶ void ☀Add_Child_Before(Buildable_Face_Tree_State & tree)❰
+    
+    auto x = Buttoned_Faced_Label_Premades::Single_Plain_White_Box_For_Tree();
+    tree.structure.nodes.prepend_child(tree.selected_node,x);
+❱
+◀private: static▶ void ☀Add_Child_After(Buildable_Face_Tree_State & tree)❰
+
+    auto x = Buttoned_Faced_Label_Premades::Single_Plain_White_Box_For_Tree();
+    tree.structure.nodes.append_child(tree.selected_node,x);
+❱
+◀private: static▶ void ☀Delete_Siblings_Before(Buildable_Face_Tree_State & tree)❰
+    tree.structure.nodes.erase_left_siblings(tree.selected_node);
+❱
+◀private: static▶ void ☀Delete_Siblings_After(Buildable_Face_Tree_State & tree)❰
+    tree.structure.nodes.erase_right_siblings(tree.selected_node);
+❱
+◀private: static▶ void ☀Delete_Children(Buildable_Face_Tree_State & tree)❰
+    tree.structure.nodes.erase_children(tree.selected_node);
+❱
+
+
+
+◀private: static▶ void ☀Delete(Buildable_Face_Tree_State & tree)❰
+    
+    tree.structure.nodes.erase(tree.selected_node);
+❱
+◀private: static▶ void ☀Copy(Buildable_Face_Tree_State & tree)❰
+    std::cout << "doing copy" << std::endl;
+❱
+
+◀private: static▶ void ☀Expand_All(Buildable_Face_Tree_State & tree)❰
+
+    Set_Button_Face_On_Currently_Selected_Subtree(tree,1);
+❱
+
+◀private: static▶ void ☀Collapse_All(Buildable_Face_Tree_State & tree)❰
+
+    Set_Button_Face_On_Currently_Selected_Subtree(tree,0);
+❱
+
+
+
+◀private: static▶ void ☀Background_Color(Buildable_Face_Tree_State & tree)❰
+    
+    //didn't work (but this would be ideal)
+    //std::vector<std::reference_wrapper<Transparent_Rgb_Color>> colors;
+    //colors.push_back(std::ref(tree.selected_node->label.state.faces[tree.selected_node->label.state.index].label.styles.regular_active.box.colors.fill));
+    
+    Color_Picker_Settings c_settings;
+    Color_Picker::Select_Color_From_Thread (tree.selected_node->label.state.faces[tree.selected_node->label.state.index].label.styles.regular_active.box.colors.fill
+                                           ,tree.selected_node->label.state.faces[tree.selected_node->label.state.index].label.styles.regular_nonactive.box.colors.fill
+                                           ,tree.selected_node->label.state.faces[tree.selected_node->label.state.index].label.styles.hovered_active.box.colors.fill
+                                           ,tree.selected_node->label.state.faces[tree.selected_node->label.state.index].label.styles.hovered_nonactive.box.colors.fill
+                                           ,c_settings);
+❱
+
+
+◀private: static▶ void ☀Text_Color(Buildable_Face_Tree_State & tree)❰
+
+    Color_Picker_Settings c_settings;
+    Color_Picker::Select_Color_From_Thread (tree.selected_node->label.state.faces[tree.selected_node->label.state.index].label.styles.regular_active.text
+                                           ,tree.selected_node->label.state.faces[tree.selected_node->label.state.index].label.styles.regular_nonactive.text
+                                           ,tree.selected_node->label.state.faces[tree.selected_node->label.state.index].label.styles.hovered_active.text
+                                           ,tree.selected_node->label.state.faces[tree.selected_node->label.state.index].label.styles.hovered_nonactive.text
+                                           ,c_settings);
+❱
+
+◀private: static▶ void ☀Duplicate(Buildable_Face_Tree_State & tree)❰
+
+    //extract subtree
+    auto end_marker = tree.structure.nodes.next_sibling(tree.selected_node);
+    auto subtree = tree.structure.nodes.subtree(tree.selected_node,end_marker);
+    
+    //add it
+    tree.structure.nodes.insert_subtree(tree.selected_node,subtree.begin());
+❱
+
+
+◀private: static▶ void ☀Move_Sibling_Up(Buildable_Face_Tree_State & tree)❰
+    auto next = tree.structure.nodes.previous_sibling(tree.selected_node);
+    if (next != nullptr){
+        tree.structure.nodes.swap(tree.selected_node,next);
+    }
+❱
+◀private: static▶ void ☀Move_Sibling_Down(Buildable_Face_Tree_State & tree)❰
+    auto next = tree.structure.nodes.next_sibling(tree.selected_node);
+    if (next != nullptr){
+        tree.structure.nodes.swap(tree.selected_node,next);
+    }
+❱
+◀private: static▶ void ☀Move_Sibling_First(Buildable_Face_Tree_State & tree)❰
+
+    //get the first sibling
+    auto first = tree.structure.nodes.sibling(tree.selected_node,0);
+    
+    //move
+    tree.structure.nodes.insert_subtree(first,tree.selected_node);
+    tree.structure.nodes.erase(tree.selected_node);
+❱
+◀private: static▶ void ☀Move_Sibling_Last(Buildable_Face_Tree_State & tree)❰
+
+    //get the last sibling
+    auto count = tree.structure.nodes.number_of_siblings(tree.selected_node);
+    auto last = tree.structure.nodes.sibling(tree.selected_node,count);
+    
+    //move
+    tree.structure.nodes.insert_subtree_after(last,tree.selected_node);
+    tree.structure.nodes.erase(tree.selected_node);
+    
+❱
+
+
+
+
+
+
+//utility
+◀private: static▶ void ☀Set_Button_Face_On_Currently_Selected_Subtree(Buildable_Face_Tree_State & tree, int face_number)❰
+
+    //eh, maybe the tree api has a better way to iterate over a subtree, but it wasn't obvious to me.
+    //I tried extracting a subtree with sibling pairs but that failed.
+    //I'll just recurse with a queue by asking for children.
+    //If this can be improved, great!
+    std::queue<::tree<Buttoned_Faced_Label>::iterator_base> q;
+    q.push(tree.selected_node);
+    while (!q.empty()){
+        auto e = q.front(); q.pop();
+        e->button.current_face = face_number;
+        Add_Children_To_Queue(tree,e,q);
+    }
+    
+    return;
+❱
+
+◀private: static▶ void ☀Add_Children_To_Queue(Buildable_Face_Tree_State const& tree, ::tree<Buttoned_Faced_Label>::iterator_base it, std::queue<::tree<Buttoned_Faced_Label>::iterator_base> & q)❰
+
+    //get total number of children
+    auto total_children = tree.structure.nodes.number_of_children(it);
+    if (total_children == 0){
+        return;
+    }
+    
+    for (size_t i = 0; i < total_children; ++i){
+        
+        auto child_to_recurse = tree.structure.nodes.child(it,i);
+        q.push(child_to_recurse);
+    }
+❱
+

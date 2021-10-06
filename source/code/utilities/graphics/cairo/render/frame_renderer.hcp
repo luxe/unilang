@@ -1,0 +1,222 @@
+class
+❪"code/utilities/data_structures/graphics/objects/frame_elements"❫
+❪"code/utilities/data_structures/color/transparent_rgb_color"❫
+❪"code/utilities/graphics/cairo/render/cairo_render_settings"❫
+❪cairo-svg.h❫
+❪"SDL.h"❫
+⚯
+❪"code/utilities/graphics/cairo/render/cairo_surface_creator"❫
+❪"code/utilities/graphics/imgui/render/elements/rectangle_drawer"❫
+❪"code/utilities/graphics/imgui/render/elements/line_drawer"❫
+❪"code/utilities/graphics/imgui/render/elements/multi_color_bitmap_drawer"❫
+❪"code/utilities/data_structures/graphics/bitmap/multi_color_bitmap/positioned_multi_color_bitmap"❫
+❪"code/utilities/data_structures/graphics/bitmap/full_color_bitmap/positioned_full_color_bitmap"❫
+❪"code/utilities/data_structures/graphics/image/positioned_texture"❫
+❪"code/utilities/types/variant/lib"❫
+❪"code/utilities/math/math"❫
+❪"code/utilities/types/general/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Render(Frame_Elements const& elements, Cairo_Render_Settings const& settings)❰
+
+        Render_Frame_Elements(elements,settings);
+❱
+
+◀private: static▶ void ☀Render_Frame_Elements(Frame_Elements const& elements, Cairo_Render_Settings const& settings)❰
+    
+    //build drawing context
+    auto surface = Cairo_Surface_Creator::Create(elements, settings);
+    cairo_t *cr = cairo_create(surface);
+    
+    //draw background
+    cairo_save(cr);
+    cairo_set_source_rgb(cr, settings.bg_color.r, settings.bg_color.g, settings.bg_color.b);
+    cairo_paint(cr);
+    //cairo_restore(cr);
+    
+    for (auto const& it: elements.types){
+        std::visit(overloaded {
+            [&](Positioned_Rectangle_Settings const& x) {
+                if (Can_Draw(x)){
+                    Draw(cr,x);
+                }
+            },
+            [&](Positioned_Multi_Color_Bitmap const& x) {
+                Draw(cr,x);
+            },
+            [&](Positioned_Full_Color_Bitmap const& x) {
+                Draw(cr,x);
+            },
+            [&](Positioned_Image_Data const& x) {
+                //TODO
+            },
+            [&](Positioned_Animated_Image_Data const& x) {
+                //TODO
+            },
+            [&](Positioned_Texture const& x) {
+                //TODO
+            }
+            
+        }, it);
+    }
+    
+    //export image
+    cairo_surface_write_to_png(surface,settings.file_name.c_str());
+    
+    //cleanup
+    cairo_destroy(cr), cr = NULL;
+    cairo_surface_destroy(surface), surface = NULL;
+❱
+
+◀private: static▶ bool ☀Can_Draw(Positioned_Rectangle_Settings const& shape)❰
+
+    bool can_draw = true;
+    if (shape.pos.x < 0 || shape.pos.y < 0){
+        std::cerr << "rectangle position is invalid: " << shape.pos.x << "x" << shape.pos.y << " (skipping)" << std::endl;
+        can_draw = false;
+    }
+    auto width = shape.shape.dimensions.width-1;
+    auto height = shape.shape.dimensions.height-1;
+    if (width < 0 || height < 0){
+        std::cerr << "rectangle dimensions are invalid: " << width << "x" << height << " (skipping)" << std::endl;
+        can_draw = false;
+    }
+
+    return can_draw;
+❱
+
+
+
+//ciaro draw functions
+◀private: static▶ void ☀Draw(cairo_t *cr, Positioned_Rectangle_Settings const& shape)❰
+    
+    
+    if (shape.shape.hooks.draw_fill){
+        Draw_Fill_Pixel_By_Pixel(cr,shape);
+    }
+    
+    if (shape.shape.hooks.draw_shade){
+        Positioned_Multi_Color_Bitmap x;
+        x.pos = shape.pos;
+        x.bitmap = Rectangle_Fill_Bitmap::Convert(shape.pos,shape.shape.shades,shape.shape.dimensions);
+        Draw(cr,x);
+    }
+    
+    if (shape.shape.hooks.draw_border){
+        Draw_Border_Pixel_By_Pixel(cr,shape);
+    }
+      
+❱
+
+◀private: static▶ void ☀Draw(cairo_t *cr, Positioned_Multi_Color_Bitmap const& shape)❰
+    for (auto const& it: shape.bitmap.pixels){
+
+        Position p = shape.pos;
+        p.x += it.pos.x;
+        p.y += it.pos.y;
+        Draw_Pixel(cr,p,it.color_fill);
+    }
+❱
+◀private: static▶ void ☀Draw(cairo_t *cr, Positioned_Full_Color_Bitmap const& shape)❰
+
+    for (auto const& it: shape.bitmap.pixels){
+        
+        Position p = shape.pos;
+        p.x += it.x;
+        p.y += it.y;
+        Draw_Pixel(cr,p,shape.bitmap.color_fill);
+    }
+❱
+
+◀private: static▶ void ☀Draw_Fill_Pixel_By_Pixel(cairo_t *cr, Positioned_Rectangle_Settings const& shape)❰
+
+    //draw fill
+    //std::cout << shape.shape.dimensions.width-1 << " x " << shape.shape.dimensions.height-1 << std::endl;
+    //std::cout << shape.pos.x << " x " << shape.pos.y << std::endl;
+    for (size_t i = 0; i < shape.shape.dimensions.width-1; ++i){
+        for (size_t j = 0; j < shape.shape.dimensions.height-1; ++j){
+            
+            Position p = shape.pos;
+            p.x += i;
+            p.y += j;
+            Draw_Pixel(cr,p,shape.shape.colors.fill);
+        }
+    }
+❱
+
+◀private: static▶ void ☀Draw_Border_Pixel_By_Pixel(cairo_t *cr, Positioned_Rectangle_Settings const& shape)❰
+    
+    //draw top border
+    for (size_t i = 0; i < shape.shape.dimensions.width; ++i){
+        
+        Position p = shape.pos;
+        p.x += i;
+        Draw_Pixel(cr,p,shape.shape.colors.border);
+    }
+    
+    //draw bottom border
+    for (size_t i = 0; i < shape.shape.dimensions.width; ++i){
+        
+        Position p = shape.pos;
+        p.x += i;
+        p.y += shape.shape.dimensions.height-1;
+        Draw_Pixel(cr,p,shape.shape.colors.border);
+    }
+    
+    //draw left border
+    for (size_t i = 0; i < shape.shape.dimensions.height-1; ++i){
+        Position p = shape.pos;
+        p.y += i;
+        Draw_Pixel(cr,p,shape.shape.colors.border);
+    }
+    
+    //draw right border
+    for (size_t i = 0; i < shape.shape.dimensions.height-1; ++i){
+        Position p = shape.pos;
+        p.x += shape.shape.dimensions.width-1;
+        p.y += i;
+        Draw_Pixel(cr,p,shape.shape.colors.border);
+    }
+❱
+
+◀private: static▶ void ☀Draw_Rectangle(cairo_t *cr, Positioned_Rectangle_Settings const& shape)❰
+
+    //I was having some trouble trying to make pixel perfect rectangles with cairo
+    //they even have a statement about it, but its still confusing, and I get fuzzy results when I try
+    //to follow their advice.  Alternatively, I decided to just convert rectangle objects into individual pixels
+    //myself and only tell cairo to draw the pixels instead of a full rectangle command.
+    //probably slower to generate an image this way, but I care more about quality than speed of image generation.
+    //https://www.cairographics.org/FAQ/#sharp_lines
+
+    Set_Rgb(cr,shape.shape.colors.fill);
+    cairo_rectangle(cr, shape.pos.x+.5, shape.pos.y+.5, shape.shape.dimensions.width, shape.shape.dimensions.height);
+    cairo_stroke_preserve(cr);
+    cairo_fill(cr);
+    cairo_stroke(cr);
+
+    Set_Rgb(cr,shape.shape.colors.border);
+    cairo_set_line_width(cr,1);
+    //cairo_translate (cr, 1, 0);
+    cairo_rectangle(cr, shape.pos.x+.5, shape.pos.y+.5, shape.shape.dimensions.width, shape.shape.dimensions.height);
+    //cairo_stroke_preserve(cr);
+    cairo_stroke(cr);
+❱
+
+
+
+◀private: static▶ void ☀Draw_Pixel(cairo_t *cr, Position const& pos, Transparent_Rgb_Color const& color)❰
+    //std::cout << "start" << std::endl;
+    //std::cout << pos.x << " " << pos.y << std::endl;
+    Set_Rgb(cr,color);
+    cairo_rectangle (cr, pos.x, pos.y, 1, 1);
+    cairo_fill (cr);
+    //std::cout << "end" << std::endl;
+❱
+◀private: static▶ void ☀Set_Rgb(cairo_t *cr, Transparent_Rgb_Color const& color)❰
+    
+    auto new_r = Math::map_value_across_range(color.r,0,255,0,1);
+    auto new_g = Math::map_value_across_range(color.g,0,255,0,1);
+    auto new_b = Math::map_value_across_range(color.b,0,255,0,1);
+    auto new_a = Math::map_value_across_range(color.alpha,0,255,0,1);
+    cairo_set_source_rgba (cr, new_r, new_g, new_b, new_a);
+❱

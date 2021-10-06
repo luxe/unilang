@@ -1,0 +1,74 @@
+class
+⚯
+⚞⚟
+
+◀public: static▶ void ☀Add(Doxygen_Data & data, model::Module const& structure, model::DataMember const& item, Module_Settings const& options)❰
+
+    //TODO: settings
+    bool add_stupid_var_tag = options.portion.data_member_options.add_stupid_var_tag;
+    std::string var_tag = options.portion.data_member_options.var_tag;
+    std::string brief_tag = options.portion.data_member_options.brief_tag;
+    std::string details_tag = options.portion.data_member_options.details_tag;
+    
+    if (add_stupid_var_tag){
+        //no grammar on purpose
+        auto derived_name = Data_Member_To_Identifier::Derive_Name(item,options,false,true);
+        Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,var_tag,derived_name);
+    }
+
+    auto brief = Potentially_Derive_Brief_Statement(structure,item,options);
+    auto detail = Derive_Data_Detail(structure,item,options);
+    Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,brief_tag,brief,options.portion.data_member_options.comment.grammar);
+    Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,details_tag,detail,options.portion.data_member_options.comment.grammar);
+❱
+
+◀private: static▶ std::string ☀Potentially_Derive_Brief_Statement(model::Module const& structure, model::DataMember const& it,Module_Settings const& options)❰
+    
+    std::string x = "";
+    
+    auto comment = Get_Brief_Sentences(structure,it,options);
+    auto name = First_Element_Or_Default(it.identifier).value;
+    
+    if (comment.empty() && options.portion.data_member_options.derive_brief_comment){
+      x = name;
+    }
+    else{
+      x = comment;
+    }
+    
+    return x;
+❱
+
+◀private: static▶ std::string ☀Derive_Data_Detail(model::Module const& structure, model::DataMember const& item, Module_Settings const& options)❰
+    auto comment = Get_Detail_Sentences(structure,item,options);
+    std::string str = comment;
+    
+    //add value meanings as part of the detail section
+    // if (!str.empty()){
+    //     str += "\n";
+    //     for (auto const& it: item.value_meaning){
+    //         if (!as_string(it.value.value).empty() && !as_string(it.meaning.value).empty()){
+    //             str += as_string(it.value.value) + " = " + as_string(it.meaning.value) + "\n";
+    //         }
+    //     }
+    // }
+    
+    return str;
+❱
+
+◀private: static▶ std::string ☀Get_Brief_Sentences(model::Module const& structure, model::DataMember const& item, Module_Settings const& options)❰
+    std::string str;
+    
+   auto sentences = Data_Member_Description_Resolver::Resolve_Brief_Sentences(structure,item);
+   auto final_text = Sentences_Fixer::Fix_Up_Sentences(sentences,options.general.comment);
+   
+    return final_text;
+❱
+◀private: static▶ std::string ☀Get_Detail_Sentences(model::Module const& structure, model::DataMember const& item, Module_Settings const& options)❰
+    std::string str;
+    
+   auto sentences = Data_Member_Description_Resolver::Resolve_Detail_Sentences(structure,item);
+   auto final_text = Sentences_Fixer::Fix_Up_Sentences(sentences,options.general.comment);
+   
+    return final_text;
+❱

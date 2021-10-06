@@ -1,0 +1,76 @@
+class
+❪iostream❫
+❪string❫
+❪set❫
+⚯
+❪"code/utilities/web/endpoints/gcal/data/gcal_sorted_events"❫
+❪"code/utilities/types/strings/transformers/search_replace/lib"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
+❪"code/utilities/formats/json/converters/lib"❫
+❪"code/utilities/time/date/rfc333_datetime_to_epoch_converter"❫
+❪"code/utilities/time/date/rfc333_datetime_within_range_checker"❫
+❪"code/utilities/data_structures/counters/unique_counter/unique_counter"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/types/strings/observers/comparing/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/web/endpoints/gcal/data/gcal_rooms"❫
+❪"code/utilities/formats/json/converters/json_file_io"❫
+⚞⚟
+
+◀public: static▶ void ☀Export_Metrics(std::string const& all_file, std::string const& metrics_file) ❰
+    
+❱
+◀private: static▶ void ☀Collect_Status_Metrics(std::string const& all_pit_room_events_file) ❰
+
+        //read in data
+        Gcal_Rooms pit_rooms;
+        std::cout << "loading..." << std::endl;
+        Json_File_Io::Read_Json_From_File(pit_rooms,all_pit_room_events_file);
+        
+        //flatten it
+        Unique_Counter<std::string> counter;
+        std::cout << "collecting..." << std::endl;
+        for (auto const& x: pit_rooms.rooms){
+            for (auto const& y: x.events){
+                if (y.find("status") != y.end()){
+                    counter.Add(y["status"]);
+                }
+            }
+        }
+        
+        for (auto const& it: counter.hash_table){
+            std::cout << it.second << " " << it.first << std::endl;
+        }
+❱
+◀private: static▶ void ☀Collect_Atendee_Metrics(std::string const& all_pit_room_events_file) ❰
+
+        //read in data
+        Gcal_Rooms pit_rooms;
+        std::cout << "loading..." << std::endl;
+        Json_File_Io::Read_Json_From_File(pit_rooms,all_pit_room_events_file);
+        
+        //flatten it
+        Unique_Counter<std::string> counter;
+        std::cout << "collecting..." << std::endl;
+        for (auto const& x: pit_rooms.rooms){
+            for (auto const& y: x.events){
+                    counter.Add("total");
+                    counter.Add(std::to_string(y["attendees"].size()));
+            }
+        }
+        
+        for (auto const& it: counter.hash_table){
+            std::cout << it.second << " " << it.first << std::endl;
+        }
+❱
+
+
+
+    /*
+    size_t total_events = 0;
+    for (auto const& it: pit_rooms.rooms){
+        total_events += it.events.size();
+    }
+    std::cout << "total events: " << total_events << std::endl;
+    */

@@ -1,0 +1,58 @@
+class
+⚯
+
+⚞⚟
+
+◀public: static▶ int ☀Calculate(String_Tree const& str_tree, Reference_Lookup_Map const& refs, std::string const& path)❰
+
+    auto child_paths = Children_Path_Names::Get_All_Children_Names(str_tree,path);
+    if (!FK_To_PK_Exists(str_tree,refs,child_paths)){
+        return 0;
+    }
+    
+    
+    int depth = 0;
+    for (auto const& it: child_paths){
+        if (Exists_For_FK(refs,it)){
+            auto new_depth = Follow_FK_To_Get_Depth(str_tree,refs,it);
+            depth = std::max(depth,new_depth);
+        }
+    }
+    return depth;
+❱
+
+
+◀private: static▶ int ☀Follow_FK_To_Get_Depth(String_Tree const& str_tree, Reference_Lookup_Map const& refs, std::string path)❰
+
+    //jump to the subtree
+    path = refs.map.find(path)->second;
+    auto parent_path = Parent_Path::Get(path);
+    auto child_paths = Children_Path_Names::Get_All_Children_Names(str_tree,parent_path);
+    
+    int depth = 0;
+    for (auto const& it: child_paths){
+        if (Exists_For_FK(refs,it)){
+            auto new_depth = Follow_FK_To_Get_Depth(str_tree,refs,it);
+            depth = std::max(depth,new_depth);
+        }
+    }
+    
+    return depth+1;
+❱
+
+
+
+
+◀private: static▶ bool ☀FK_To_PK_Exists(String_Tree const& str_tree, Reference_Lookup_Map const& refs, std::vector<std::string> const& child_paths)❰
+
+    for (auto const& it: child_paths){
+        if (Exists_For_FK(refs,it)){
+            return true;
+        }
+    }
+    return false;
+❱
+
+◀private: static▶ bool ☀Exists_For_FK(Reference_Lookup_Map const& refs, std::string const& it)❰
+    return Exists(refs.map,it);
+❱

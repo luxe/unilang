@@ -1,0 +1,89 @@
+class
+⚯
+⚞⚟
+
+
+//perform an inorder traversal and build up token information with enough relevant information to:  
+//build populated static language types, hold leaf values, and link back to components in the graphical tree
+
+
+
+
+//tokenize assuming full range
+◀public: static▶ std::vector<Tree_Token> ☀Tokenize(Button_Face_Tree const& t)❰
+
+    
+    Button_Face_Tree_Range range;
+    range.begin = t.nodes.begin();
+    range.end = t.nodes.end();
+    return Tokenize(t,range);
+❱
+◀public: static▶ std::vector<Tree_Token> ☀Tokenize(tree<Buttoned_Faced_Label> const& tr)❰
+
+    
+    Button_Face_Tree_Range range;
+    range.begin = tr.begin();
+    range.end = tr.end();
+    return Tokenize(tr,range);
+❱
+
+
+
+
+
+
+//tokenize with a rangee
+◀public: static▶ std::vector<Tree_Token> ☀Tokenize(Button_Face_Tree const& t, Button_Face_Tree_Range const& range)❰
+
+    return Tokenize(t.nodes,range);
+❱
+
+◀public: static▶ std::vector<Tree_Token> ☀Tokenize(tree<Buttoned_Faced_Label> const& tr, Button_Face_Tree_Range const& range)❰
+
+    std::vector<Tree_Token> results;
+    int index = 0;
+    for (auto it = range.begin; it != range.end; ++it){
+        if (Should_Keep(*it)){
+            results.emplace_back(Create_Token(tr,it,index));
+        }
+        ++index;
+    }
+    return results;
+❱
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+◀private: static▶ bool ☀Should_Keep(Buttoned_Faced_Label const& label)❰
+    return Buttoned_Faced_Label_Is_Enabled::Check(label);
+❱
+
+◀private: static▶ Tree_Token ☀Create_Token(Button_Face_Tree const& t, tree<Buttoned_Faced_Label>::pre_order_iterator it, int index)❰
+    Tree_Token x;
+    x.full_path = Button_Face_Tree_Full_Path_Name::Get(t,it);
+    x.value = Faced_Label_Message::Get(it->label);
+    
+    //no need to store an explicit index on the token, as an index is derivable based on its position in the list
+    //x.index = index;
+    return x;
+❱
+
+◀private: static▶ Tree_Token ☀Create_Token(tree<Buttoned_Faced_Label> const& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, int index)❰
+    Tree_Token x;
+    x.full_path = Button_Face_Tree_Full_Path_Name::Get(tr,it);
+    x.value = Faced_Label_Message::Get(it->label);
+    
+    //no need to store an explicit index on the token, as an index is derivable based on its position in the list
+    //x.index = index;
+    return x;
+❱

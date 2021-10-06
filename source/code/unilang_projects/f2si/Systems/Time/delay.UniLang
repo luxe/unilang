@@ -1,0 +1,59 @@
+􏶞p􏶟
+􏷲A representation of timed delay in milliseconds􏷱
+􏷰Uses a timer internally􏷯
+􏷮Electrical􏷭 􏷮Node􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦MillisecondTimer􏷥􏴓1􏴔􏴑MillisecondTimerT􏴒
+􏷤􏷣􏷦ascii_string􏷥􏴓d􏴔􏴑AsciiStringT􏴒
+􏷤􏷣􏷦json􏷥􏴓d􏴔􏴑JSON_Object􏴒
+
+MEMORY MANAGEMENT:
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be in an invalid state until initialized􏶡
+􏶜􏶝􏷆f􏷅􏷄delay amount􏷃􏵘milliseconds􏵙􏷀the amount of time in milliseconds that the delay will represent􏶿
+􏶴
+  􏶲construct the timer and store the delay amount􏶱
+  InitializeMillisecondTimer(&􏵴timer􏵵,TRUE);
+  􏵴delay amount􏵵 = 􏵶delay amount􏵷;
+􏶳
+
+􏷘+􏷗􏷒start􏷑
+􏷐start waiting for the delay to finish􏷏
+􏶠The user will need to perform "continues" and check if the delay has passed􏶡
+􏶴
+    􏶲reset and start the timer􏶱
+    MillisecondTimerReset(&􏵴timer􏵵);
+    MillisecondTimerUnpause(&􏵴timer􏵵);
+􏶳
+
+􏷘+􏷗􏷒continue􏷑
+􏷐continue the delay based on a new time delta􏷏
+􏶠This call may or may not reach the delay amount.􏶡
+􏶜􏶝􏷆f􏷅􏷄time delta􏷃􏵘milliseconds􏵙􏷀the time delta􏶿
+􏶴
+    􏶲update the internal timer􏶱
+    MillisecondTimerUpdate(&􏵴timer􏵵,􏵶time delta􏵷);
+􏶳
+
+􏷘+c􏷗􏷒is over􏷑
+􏷐decides whether the delay is over􏷏
+􏶠returns true if enough time has gone by rendering the delay finished; false if we are still delaying􏶡
+􏶚m􏶛􏶾bool􏶽􏶼delay finished􏶻􏶺true if the delay has finished, false otherwise􏶹
+􏶴
+    if (􏵴timer􏵵.m_fElapsedTime_ms >= 􏵴delay amount􏵵){
+        return TRUE;
+    }
+    return FALSE;
+􏶳
+
+
+DATA:
+􏶨the timer used internally to determine if the delay has passed􏶧
+􏶦We will leverage the timer API for most functionality􏶥
+􏶘-􏶙􏶮MillisecondTimerT􏶭􏶬timer􏶫􏶪􏶩
+
+􏶨the amount of delay we are waiting for􏶧
+􏶦We will compare this against the timer's value􏶥
+􏶘-gip~=􏶙􏶮f􏶭􏶬delay amount􏶫􏵚milliseconds􏵛􏶪􏶩

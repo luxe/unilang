@@ -1,0 +1,129 @@
+class
+
+❪variant❫
+❪"code/utilities/types/variant/lib"❫
+⚯
+❪"code/utilities/comments/code/comment_creator"❫
+❪"code/utilities/types/converters/lib"❫
+❪"code/utilities/types/strings/transformers/trimming/lib"❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/types/converters/lib"❫
+❪"code/utilities/types/general/lib"❫
+❪iostream❫
+⚞⚟
+
+
+◀public: static▶ void ☀Print(std::wofstream & out, std::string const& file_name, Method_Item const& method, std::vector<Data_Member_Item> const& members, std::vector<Method_Item> const& methods, bool const& object_method, C_Export_Settings const& options,std::string const& implicit_name,Object_Export_Method const& export_method)❰
+
+    //printing each token of the body
+    //DEPREICATE THIS
+/*
+    for (auto it: method.body){
+
+        
+        switch(it.name){
+            case Body_Token_Name::REGULAR: Print_Regular(out,method,it.value); break;
+            case Body_Token_Name::COMMENT: Print_Comment(out,method,it.value); break;
+            case Body_Token_Name::BODY_PARAMETER: Print_Body_Param(out,method,it.value,options); break;
+            case Body_Token_Name::SELF_DATA_MEMBER: Print_Data_Member(out,method,it.value,members,options,implicit_name,object_method); break;
+            case Body_Token_Name::SELF_DATA_MEMBER_WITHOUT_OBJ: Print_Data_Member_Without_Obj(out,method,it.value,members,options,implicit_name,object_method); break;
+            case Body_Token_Name::SELF_FUNCTION_CALL: Print_Function_Call(options,out,it.value,methods,object_method,implicit_name,file_name,export_method); break;
+            case Body_Token_Name::FOREIGN_FUNCTION_CALL: Print_Foriegn_Function_Call(options,out,it.value,methods,object_method,implicit_name,file_name,export_method); break;
+
+            default: Print_To_Stream(out,it.value);
+        }
+    }
+    */
+    
+    for (auto it: method.entire_body.elements){
+        std::visit(overloaded {
+            
+        //comments
+        [&](Regular_Body_Comment const& a) {
+            Print_Comment(out,method,a.value.value);
+        },
+        [&](Todo_Body_Comment const& a) {
+            Print_Comment(out,method,a.value.value);
+        },
+        [&](Warning_Body_Comment const& a) {
+            Print_Comment(out,method,a.value.value);
+        },
+        
+        //statements
+        [&](Regular_Statement const& a) {
+            //TODO
+        },
+        [&](Return_Statement const& a) {
+            //TODO
+        },
+        
+        //scape hatches
+        [&](Function_Call_Local const& a){
+            Print_Function_Call_Local(out,options,methods,object_method,export_method,file_name, implicit_name, as_string(a.value.value));
+        },
+        [&](Uncaught_Statement const& a) {
+            Print_Regular(out,method,a.value.value);
+        },
+        }, it.types);
+    }
+❱
+
+
+◀private: static▶ void ☀Print_Function_Call_Local(std::wofstream & out, C_Export_Settings const& options, std::vector<Method_Item> const& methods, bool const& object_method, Object_Export_Method const& export_method, std::string const& file_name, std::string const& implicit_name, std::string const& used)❰
+    auto str = Method_Call_In_Method_Printer::Get_Printable_Method_Call(options,methods, used, object_method, implicit_name, file_name, export_method);
+    Print_To_Stream(out,str);
+    
+❱
+
+
+//special body tags
+◀private: static▶ void ☀Print_Regular(std::wofstream & out, Method_Item const& method, std::wstring str)❰
+
+    //this is the scape goat for any code which be directly put into the function
+    Print_To_Stream(out,str);
+❱
+◀private: static▶ void ☀Print_Comment(std::wofstream & out, Method_Item const& method, std::wstring str)❰
+    
+    auto s = Get_Prepped_Token_Value(str);
+	C_Comment_Settings settings;
+	settings.style = Comment_Style::LINE;
+    auto comment = Comment_Creator::Create_Comment_From_String(s,settings);
+    Print_To_Stream(out,comment);
+❱
+
+
+
+
+
+
+◀private: static▶ void ☀Print_Body_Param(std::wofstream & out, Method_Item const& method, std::wstring str, C_Export_Settings const& options)❰
+    auto s = Get_Prepped_Token_Value(str);
+    auto print = Body_Param_In_Method_Printer::Get_Printable_Body_Param(method,s,options);
+    Print_To_Stream(out,print);
+❱
+◀private: static▶ void ☀Print_Data_Member(std::wofstream & out, Method_Item const& method, std::wstring str, std::vector<Data_Member_Item> const& members, C_Export_Settings const& options, std::string const& implicit_name, bool const& object_method)❰
+    auto s = Get_Prepped_Token_Value(str);
+    auto print = Data_Member_In_Method_Printer::Get_Printable_Data_Member(members,s,options,implicit_name,object_method);
+    Print_To_Stream(out,print);
+❱
+◀private: static▶ void ☀Print_Data_Member_Without_Obj(std::wofstream & out, Method_Item const& method, std::wstring str, std::vector<Data_Member_Item> const& members, C_Export_Settings const& options, std::string const& implicit_name, bool const& object_method)❰
+    auto s = Get_Prepped_Token_Value(str);
+    auto print = Data_Member_In_Method_Printer::Get_Printable_Data_Member_Without_Obj(members,s,options,implicit_name,object_method);
+    Print_To_Stream(out,print);
+❱
+◀private: static▶ void ☀Print_Function_Call(C_Export_Settings const& settings, std::wofstream & out, std::wstring str, std::vector<Method_Item> const& methods, bool const& object_method, std::string const& implicit_name, std::string const& file_name, Object_Export_Method const& export_method)❰
+    auto s = Get_Prepped_Token_Value(str);
+    auto print = Method_Call_In_Method_Printer::Get_Printable_Method_Call(settings,methods,s,object_method,implicit_name,file_name,export_method);
+    Print_To_Stream(out,print);
+❱
+◀private: static▶ void ☀Print_Foriegn_Function_Call(C_Export_Settings const& settings, std::wofstream & out, std::wstring str, std::vector<Method_Item> const& methods, bool const& object_method, std::string const& implicit_name, std::string const& file_name, Object_Export_Method const& export_method)❰
+    auto s = Get_Prepped_Token_Value(str);
+    auto print = Foreign_Method_Call_In_Method_Printer::Get_Printable_Method_Call(settings,methods,s,object_method,implicit_name,file_name,export_method);
+    Print_To_Stream(out,print);
+❱
+
+◀private: static▶ std::string ☀Get_Prepped_Token_Value(std::wstring const& str)❰
+    auto s = as_string(str);
+    trim(s);
+	return s;	
+❱

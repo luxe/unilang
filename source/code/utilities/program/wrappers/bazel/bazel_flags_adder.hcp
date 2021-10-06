@@ -1,0 +1,65 @@
+class
+❪vector❫
+❪string❫
+❪iostream❫
+❪sstream❫
+❪iomanip❫
+❪"code/utilities/program/wrappers/bazel/build_settings"❫
+❪"code/utilities/program/wrappers/bazel/setup/config/bazel_config_settings"❫
+❪"code/utilities/program/inputs/flags/data/flags"❫
+⚯
+❪"code/utilities/program/inputs/flags/flag_util"❫
+⚞⚟
+
+◀public: static▶ void ☀Add_Bazel_Flags(Flags & flags, Build_Settings const& settings, Bazel_Config_Settings const& config_settings)❰
+
+    Add_Flags_Based_On_Environment(flags,settings,config_settings);
+    Add_Spawn_Strategy_Flags(flags,settings);
+    Add_Miscellaneous_Flags(flags,settings);
+❱
+
+◀private: static▶ void ☀Add_Flags_Based_On_Environment(Flags & flags, Build_Settings const& settings, Bazel_Config_Settings const& config_settings)❰
+
+    //remote specific flags
+    if (settings.environment == Run_Environment::REMOTE){
+        for (auto const& it: config_settings.remote_configs){
+            Flag_Util::Add_Flag(flags,"config",it);
+        }
+        Flag_Util::Add_Flag(flags,"noremote_accept_cached");
+        Flag_Util::Add_Flag(flags,"nocache_test_results");
+    }
+    
+    //local specific flags
+    else{
+        for (auto const& it: config_settings.local_configs){
+            Flag_Util::Add_Flag(flags,"config",it);
+        }
+    }
+❱
+
+◀private: static▶ void ☀Add_Spawn_Strategy_Flags(Flags & flags, Build_Settings const& settings)❰
+
+    if (settings.strategy == Spawn_Strategy::LOCAL){
+        Flag_Util::Add_Flag(flags,"spawn_strategy","local");
+    }
+    else if (settings.strategy == Spawn_Strategy::SANDBOXED){
+        Flag_Util::Add_Flag(flags,"spawn_strategy","sandboxed");
+    }
+    else if (settings.strategy == Spawn_Strategy::WORKER){
+        Flag_Util::Add_Flag(flags,"spawn_strategy","worker");
+    }
+    else if (settings.strategy == Spawn_Strategy::DOCKER){
+        Flag_Util::Add_Flag(flags,"spawn_strategy","docker");
+    }
+    else if (settings.strategy == Spawn_Strategy::REMOTE){
+        Flag_Util::Add_Flag(flags,"spawn_strategy","remote");
+    }
+❱
+◀private: static▶ void ☀Add_Miscellaneous_Flags(Flags & flags, Build_Settings const& settings)❰
+    
+    Flag_Util::Add_Flag(flags,"show_timestamps");
+    Flag_Util::Add_Flag(flags,"curses","no");
+    //Flag_Util::Add_Flag(flags,"verbose_failures"); //doesn't work with sync
+    //Flag_Util::Add_Flag(flags,"experimental_repository_cache_hardlinks");
+    Flag_Util::Add_Flag(flags,"keep_going");
+❱

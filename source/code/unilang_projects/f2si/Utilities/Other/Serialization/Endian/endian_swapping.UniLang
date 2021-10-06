@@ -1,0 +1,128 @@
+􏶞g􏶟
+􏷲swaps endian by particular byte invariance based  on current machine architecture􏷱
+􏷰Deals with endianness and address invariance. not padding/offsets􏷯
+􏷮Endian Swapping􏷭 􏷮Network􏷭 􏷮Utilities􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦Defs.h􏷥􏷢USES: BYTE􏷡
+􏷤s􏷣􏷦stddef􏷥􏷢USES: size_t􏷡
+􏷤􏷣􏷦EndianDetection􏷥􏷢USES: MachineEndianE, OnBigEndianArchitecture(), OnLittleEndianArchitecture()􏷡
+􏶔􏶕􏶒FfsCommon.h􏶓􏶖USES: DwordReverseByteOrder ReverseByteOrder􏶗
+
+􏷘-􏷗􏷒byte swap􏷑
+􏷐reverses the values of two bytes􏷏
+􏶠we can't have a generic swap because of C􏶡
+􏶜rm􏶝􏷆BYTE􏷅􏷄byte 1􏷃􏷀one of the bytes to swap􏶿
+􏶜rm􏶝􏷆BYTE􏷅􏷄byte 2􏷃􏷀one of the bytes to swap􏶿
+􏶴
+    􏶲usual swap using a temp􏶱
+    BYTE ucTemp = *􏵶byte 1􏵷;
+    *􏵶byte 1􏵷 = *􏵶byte 2􏵷;
+    *􏵶byte 2􏵷 = ucTemp;
+􏶳
+
+􏷘+􏷗􏷒reverse byte array􏷑
+􏷐reverses the array of bytes􏷏
+􏶠used for switching endianness􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer whose endian will be reversed􏶿
+􏶜􏶝􏷆size_t􏷅􏷄buffer size􏷃􏷀the size of the buffer􏶿
+􏵪uBufferSize > 0􏵫􏵨buffer size must be greater than 0􏵩
+􏶴
+    􏶲create an index to the first element􏶱
+    size_t uLow = 0u;
+    
+    􏶲create an index to the last element􏶱
+    size_t uHigh = 􏵶buffer size􏵷 - 1u;
+    
+    􏶲increase the low, and decrease the high until they meet in the middle􏶱
+    􏶲swap the element as we go, effectively reversing the bytes of the array􏶱
+    for(; uHigh>uLow; ++uLow, --uHigh)
+    {
+        􏶲swap the bytes based on the two indexes􏶱
+        􏵲byte swap􏵳&􏵶buffer􏵷[uLow],&􏵶buffer􏵷[uHigh]);
+    }
+􏶳
+
+􏷘+􏷗􏷒reverse endian when on little endian machine􏷑
+􏷐reverses endian for little endian machines only􏷏 
+􏶠only performs transformations on a little endian machine
+Used when the buffer represents the bytes of a single type􏶡 
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer whose endian will potentially be reversed􏶿
+􏶜􏶝􏷆size_t􏷅􏷄buffer size􏷃􏷀the size of the buffer􏶿
+􏵪uDataSize % 2 == 0􏵫􏵨data size should be divisible by 2􏵩
+􏶴
+    􏶲only flip the endian if we are on little endian􏶱
+    if (OnLittleEndianArchitecture()){
+        ReverseByteArray(􏵶buffer􏵷,􏵶buffer size􏵷);
+    }
+􏶳
+
+􏷘+􏷗􏷒reverse endian when on big endian machine􏷑
+􏷐reverses endian for big endian machines only􏷏 
+􏶠only performs transformations on a big endian machine
+Used when the buffer represents the bytes of a single type􏶡 
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer whose endian will potentially be reversed􏶿
+􏶜􏶝􏷆size_t􏷅􏷄buffer size􏷃􏷀the size of the buffer􏶿
+􏵪uDataSize % 2 == 0􏵫􏵨data size should be divisible by 2􏵩
+􏶴
+    􏶲only flip the endian if we are on big endian􏶱
+    if (OnBigEndianArchitecture()){
+        ReverseByteArray(􏵶buffer􏵷,􏵶buffer size􏵷);
+    }
+􏶳
+
+􏷘+􏷗􏷒reverse endian by 4 bytes when on little endian machine􏷑
+􏷐reverses endian for little endian machines only􏷏 
+􏶠only performs transformations on a little endian machine
+Used when the buffer represents a collection of DWORDS􏶡 
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer whose endian will potentially be reversed􏶿
+􏶜􏶝􏷆size_t􏷅􏷄buffer size􏷃􏷀the size of the buffer􏶿
+􏵪uDataSize % 4 == 0􏵫􏵨data size should be divisible by 4􏵩
+􏶴
+    􏶲if we are on little endian, flip the endian of every 4 bytes􏶱
+    if (OnLittleEndianArchitecture()){
+        DwordReverseByteOrder(􏵶buffer􏵷,􏵶buffer size􏵷);
+    }
+􏶳
+
+􏷘+􏷗􏷒reverse endian by 4 bytes when on big endian machine􏷑
+􏷐reverses endian for big endian machines only􏷏 
+􏶠only performs transformations on a big endian machine
+Used when the buffer represents a collection of DWORDS􏶡 
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer whose endian will potentially be reversed􏶿
+􏶜􏶝􏷆size_t􏷅􏷄buffer size􏷃􏷀the size of the buffer􏶿
+􏵪uDataSize % 4 == 0􏵫􏵨data size should be divisible by 4􏵩
+􏶴
+    􏶲if we are on big endian, flip the endian of every 4 bytes􏶱
+    if (OnBigEndianArchitecture()){
+        DwordReverseByteOrder(􏵶buffer􏵷,􏵶buffer size􏵷);
+    }
+􏶳
+
+􏷘+􏷗􏷒reverse endian by 2 bytes when on little endian machine􏷑
+􏷐reverses endian for little endian machines only􏷏 
+􏶠only performs transformations on a little endian machine
+Used when the buffer represents a collection of WORDS􏶡 
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer whose endian will potentially be reversed􏶿
+􏶜􏶝􏷆size_t􏷅􏷄buffer size􏷃􏷀the size of the buffer􏶿
+􏵪uDataSize % 2 == 0􏵫􏵨data size should be divisible by 2􏵩
+􏶴
+    􏶲if we are on little endian, flip the endian of every 2 bytes􏶱
+    if (OnLittleEndianArchitecture()){
+        ReverseByteOrder(􏵶buffer􏵷,􏵶buffer size􏵷);
+    }
+􏶳
+
+􏷘+􏷗􏷒reverse endian by 2 bytes when on big endian machine􏷑
+􏷐reverses endian for big endian machines only􏷏 
+􏶠only performs transformations on a big endian machine
+Used when the buffer represents a collection of WORDS􏶡 
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer whose endian will potentially be reversed􏶿
+􏶜􏶝􏷆size_t􏷅􏷄buffer size􏷃􏷀the size of the buffer􏶿
+􏵪uDataSize % 2 == 0􏵫􏵨data size should be divisible by 2􏵩
+􏶴
+    􏶲if we are on big endian, flip the endian of every 4 bytes􏶱
+    if (OnBigEndianArchitecture()){
+        ReverseByteOrder(􏵶buffer􏵷,􏵶buffer size􏵷);
+    }
+􏶳

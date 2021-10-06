@@ -1,0 +1,177 @@
+􏶞g􏶟
+􏷲generic algorithms to run with a graph􏷱
+􏷰Traversal routines exist separated from the graph itself
+Using the visitor pattern, you can pass in a function pointer, 
+which will be applied to each vertex/edge during a traversal.􏷯
+􏷮Algorithms􏷭􏷮Graph􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦stddef􏷥􏴓d􏴔􏴑size_t􏴒
+􏷤􏷣􏷦stdioLib􏷥􏴓d􏴔􏴑BOOL􏴒
+􏷤􏷣􏷦vector􏷥􏴓d􏴔􏴑VectorT􏴒
+􏷤􏷣􏷦graph􏷥􏴓d􏴔􏴑GraphT􏴒
+􏷤􏷣􏷦graph_vertex􏷥􏴓d􏴔􏴑GraphVertexT􏴒
+􏷤􏷣􏷦graph_edge􏷥􏴓d􏴔􏴑GraphEdgeT􏴒
+􏷤􏷣􏷦graph_traversal_control􏷥􏴓d􏴔􏴑GraphTraversalControlT􏴒
+􏷤􏷣􏷦graph_action_types􏷥􏴓d􏴔􏴑VertexActionT􏴒􏴓d􏴔􏴑EdgeActionT􏴒􏴓d􏴔􏴑ConnectionActionT􏴒
+􏷤􏷣􏷦memory_management_types􏷥􏴓d􏴔􏴑TypeInformationT􏴒
+􏷤􏷣􏷦graph_dfs_actions􏷥􏴓d􏴔􏴑GraphDfsActionsT􏴒
+
+
+
+
+
+
+
+ORDERED TRAVERSALS:
+
+
+DFS:
+􏷘+􏷗􏷒apply vertex actions during dfs traversal􏷑
+􏷐call custom function on each vertex encountered while traversing􏷏
+􏶠Depth first traversal is used􏶡
+􏶜mr􏶝􏷆GraphT􏷅􏷄graph􏷃􏷀the graph to perform the action on􏶿
+􏶜mr􏶝􏷆void􏷅􏷄custom data􏷃􏷀custom data to be forwarded to each action􏶿
+􏶜􏶝􏷆size_t􏷅􏷄id􏷃􏷀the id of the vertex to start at􏶿
+􏶜􏶝􏷆GraphDfsActionsT􏷅􏷄actions􏷃􏷀custom actions to take while traversing􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼traversal stopped􏶻􏶺whether the user has decided stop the entire traversal􏶹
+􏶴
+    VectorT tSeen = ConstructVector(SPECIALIZE_UNMANAGED(size_t),32);
+    BOOL bStopSub = FALSE;
+    BOOL bTraversalStopped = 􏵲vertex dfs􏵳􏵶graph􏵷,&tSeen,􏵶custom data􏵷,􏵶id􏵷,􏵶actions􏵷,&bStopSub);
+    DestructVectorT(&tSeen);
+    return bTraversalStopped;
+􏶳
+
+
+􏷘-􏷗􏷒vertex dfs􏷑
+􏷐call custom function on each vertex encountered while traversing􏷏
+􏶠begins at specified vertex and performs dfs traversal􏶡
+􏶜mr􏶝􏷆GraphT􏷅􏷄graph􏷃􏷀the graph to perform the action on􏶿
+􏶜mr􏶝􏷆VectorT􏷅􏷄seen􏷃􏷀the vertices already seen while traversing.  Used to avoid cycles􏶿
+􏶜mr􏶝􏷆void􏷅􏷄custom data􏷃􏷀custom data to be forwarded to each action􏶿
+􏶜􏶝􏷆size_t􏷅􏷄id􏷃􏷀the id of the vertex to start at􏶿
+􏶜􏶝􏷆GraphDfsActionsT􏷅􏷄actions􏷃􏷀custom actions to take while traversing􏶿
+􏶜mr􏶝􏷆BOOL􏷅􏷄sub stop􏷃􏷀stop a sub traversal􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼traversal stopped􏶻􏶺whether the user has decided stop the entire traversal􏶹
+􏶴
+    􏶲check if node already exists in path􏶱
+    BOOL bAlreadyEncountered = 􏵲already seen􏵳􏵶seen􏵷,􏵶id􏵷);
+    BOOL bTraversalStopped = FALSE;
+    
+    􏶲continue dfs traversal on vertex if we not come across it yet􏶱
+    if (!bAlreadyEncountered){
+    
+        􏶲since we are going to take action on the vertex, mark it as seen􏶱
+        VectorPushBack(􏵶seen􏵷,&􏵶id􏵷);
+        
+        􏶲perform the visitation (an action upon the vertex)􏶱
+        􏶲only continue if the user has decided to continue􏶱
+        bTraversalStopped = 􏵲visitation action vertex􏵳􏵶graph􏵷,􏵶custom data􏵷,􏵶id􏵷,􏵶actions􏵷.m_tForward,􏵶sub stop􏵷);
+        if (!bTraversalStopped && !*􏵶sub stop􏵷){
+            
+            bTraversalStopped = 􏵲visit neighbors vertex􏵳􏵶graph􏵷,􏵶seen􏵷,􏵶custom data􏵷,􏵶id􏵷,􏵶actions􏵷);
+            
+            􏶲children exhausted step (backwards step after traversing all children)􏶱
+            if (!bTraversalStopped){
+                bTraversalStopped = 􏵲visitation action vertex􏵳􏵶graph􏵷,􏵶custom data􏵷,􏵶id􏵷,􏵶actions􏵷.m_tChildExhaust,􏵶sub stop􏵷);
+            }
+        }
+        
+        􏶲the sub-traversal ended without the uses bailing out early􏶱
+        􏶲when we arrive at a leaf node,
+        the recursion will reach its base case, and begin to unroll.
+        To implement depth first search, we will pop off the current vertex as we unroll
+        This is analogous to popping off stack elements.􏶱
+        VectorPopBack(􏵶seen􏵷);
+    }
+    
+    return bTraversalStopped;
+􏶳
+
+
+􏷘-􏷗􏷒visit neighbors vertex􏷑
+􏷐visit the neighbors of a vertex, to visit more vertexes􏷏
+􏶠the recursive call of the sub-search􏶡
+􏶜mr􏶝􏷆GraphT􏷅􏷄graph􏷃􏷀the graph to perform the action on􏶿
+􏶜mr􏶝􏷆VectorT􏷅􏷄seen􏷃􏷀the vertices already seen while traversing.  Used to avoid cycles􏶿
+􏶜mr􏶝􏷆void􏷅􏷄custom data􏷃􏷀custom data to be forwarded to each action􏶿
+􏶜􏶝􏷆size_t􏷅􏷄id􏷃􏷀the id of the vertex to start at􏶿
+􏶜􏶝􏷆GraphDfsActionsT􏷅􏷄actions􏷃􏷀custom actions to take while traversing􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼traversal stopped􏶻􏶺whether the user has decided stop the entire traversal􏶹
+􏶴
+    size_t uIndex = 0;
+    BOOL bTraversalStopped = FALSE;
+    BOOL bSubTraversalStopped = FALSE;
+    
+    􏶲get all the edges􏶱
+    VectorT* ptEdges = GraphVertexEdges(GraphGetVertex(􏵶graph􏵷,􏵶id􏵷));
+    
+    􏶲we stop traversing when we have either run out of elements to traverse, or the user has asked to bail out􏶱
+    for(;uIndex < VectorSize(ptEdges) && !bTraversalStopped; ++uIndex){
+        
+        􏶲forward step (recursive call)􏶱
+        bTraversalStopped = 􏵲vertex dfs􏵳􏵶graph􏵷,􏵶seen􏵷,􏵶custom data􏵷,GraphEdgePointsTo((GraphEdgeT*)VectorAt(ptEdges,uIndex)),􏵶actions􏵷,&bSubTraversalStopped);
+        
+        􏶲backward step (recursive unwind)􏶱
+        if (!bTraversalStopped){
+            bTraversalStopped = 􏵲visitation action vertex􏵳􏵶graph􏵷,􏵶custom data􏵷,􏵶id􏵷,􏵶actions􏵷.m_tBackward,&bSubTraversalStopped);
+        }
+    }
+    
+    􏶲inform the caller that the traversal has been stopped􏶱
+    return bTraversalStopped;
+􏶳
+
+􏷘-􏷗􏷒visitation action vertex􏷑
+􏶜mr􏶝􏷆GraphT􏷅􏷄graph􏷃􏷀the graph to perform the action on􏶿
+􏶜mr􏶝􏷆void􏷅􏷄custom data􏷃􏷀custom data to be forwarded to each action􏶿
+􏶜􏶝􏷆size_t􏷅􏷄id􏷃􏷀the id of the vertex to start at􏶿
+􏶜􏶝􏷆VertexActionT􏷅􏷄action􏷃􏷀the action to take on the vertex􏶿
+􏶜mr􏶝􏷆BOOL􏷅􏷄sub stopped􏷃􏷀the action to take on the vertex􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼traversal stopped􏶻􏶺whether the user has decided stop the entire traversal􏶹
+􏶴
+    GraphTraversalControlT tControl = ConstructGraphTraversalControl();
+    BOOL bAllStopped = 􏵲take action on vertex􏵳GraphGetVertex(􏵶graph􏵷,􏵶id􏵷),&tControl,􏵶custom data􏵷,􏵶action􏵷);
+    *􏵶sub stopped􏵷 = tControl.m_bStopSubTraversal;
+    return bAllStopped;
+􏶳
+
+
+􏷘-􏷗􏷒already seen􏷑
+􏷐checks to see if a vertex id exists in the seen list􏷏
+􏶠if what it does, return true to avoid cycles􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄seen􏷃􏷀the vertices already seen while traversing.  Used to avoid cycles􏶿
+􏶜􏶝􏷆size_t􏷅􏷄id􏷃􏷀the id of the vertex to look up􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼found􏶻􏶺whether or not we have seen the vertex yet in the traversal􏶹
+􏶴
+    􏶲Note: linear search.  could be constant lookup with a set/hash table􏶱
+    
+    􏶲iterate over all of the seen vertices􏶱
+    size_t uIndex = 0;
+    for(;uIndex < VectorSize(􏵶seen􏵷); ++uIndex){
+    
+        􏶲if we've already seen the vertex, return true􏶱
+        if (*((size_t*)VectorAt(􏵶seen􏵷,uIndex)) == 􏵶id􏵷){
+            return TRUE;
+        }
+    }
+    
+    􏶲else return false􏶱
+    return FALSE;
+􏶳
+
+􏷘-􏷗􏷒take action on vertex􏷑
+􏷐calls the visitation function on a vertex􏷏
+􏶠a single user-defined step in a visitation traversal􏶡
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀the graph vertex to perform the action on􏶿
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀the traversal control􏶿
+􏶜mr􏶝􏷆void􏷅􏷄custom data􏷃􏷀custom data to be forwarded to each action􏶿
+􏶜􏶝􏷆VertexActionT􏷅􏷄action􏷃􏷀the action to take on each vertex􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼traversal stopped􏶻􏶺whether the user has decided stop the entire traversal􏶹
+􏶴
+    􏶲reset the user triggers for each visitation􏶱
+    GraphTraversalControlReset(􏵶control􏵷);
+    (*􏵶action􏵷)(􏵶control􏵷,􏵶custom data􏵷,􏵶vertex􏵷);
+    return 􏵶control􏵷->m_bStopTraversal;
+􏶳

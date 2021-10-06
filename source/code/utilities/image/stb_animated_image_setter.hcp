@@ -1,0 +1,115 @@
+class
+❪string❫
+❪iostream❫
+❪algorithm❫
+❪"code/utilities/data_structures/graphics/image/positioned_animated_image_data"❫
+❪"code/utilities/image/stb_image_set_settings"❫
+⚯
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/image/stb_image"❫
+❪"code/utilities/image/texture_loader"❫
+⚞⚟
+
+◀public: static▶ void ☀Set(Positioned_Animated_Image_Data & data)❰
+
+        Load_Image(data);
+        
+        Load_Textures(data);
+❱
+
+◀private: static▶ void ☀Load_Image(Positioned_Animated_Image_Data & data)❰
+    
+    
+    Stb_Image_Set_Settings settings;
+    
+    //we don't need to load the file if we've already saved and serialized it in memory
+    if (Maybe_Load_From_Serialized_Memory(data,settings.attempt_loading_from_serialized_in_memory)){
+        return;
+    }
+    
+    //however, if it was not saved and serialized to memory, we will instead load it from the file_name given
+    Load_Image_From_Filename(data);
+    
+    //decide whether to save the image in memory for serialization
+    if (settings.save_image_in_memory_for_serialization){
+        Save_To_Serializable_Memory(data);
+    }
+    
+    std::cout << "loaded" << std::endl;
+❱
+
+
+◀private: static▶ bool ☀Maybe_Load_From_Serialized_Memory(Positioned_Animated_Image_Data & data, bool const& should_load)❰
+
+    if (should_load){
+        if (!data.seralizable_image.empty()){
+            std::cout << "loading image from encoded memory" << std::endl;
+            
+            for (auto & it: data.seralizable_image){
+                unsigned char* temp = reinterpret_cast<unsigned char*>(it.data());
+                data.img_data.emplace_back(temp);
+            }
+            return true;
+        }
+        else{
+            std::cout << "you wanted to load image from serialized memory, but nothing was serialized" << std::endl;
+        }
+    }
+    
+    return false;
+❱
+
+◀private: static▶ void ☀Load_Image_From_Filename(Positioned_Animated_Image_Data & data)❰
+
+    //load file
+    size_t size;
+    void* buf = FileReadToNewBuffer(data.orign_filepath.c_str(), size);
+    
+    if (buf == nullptr)
+    {
+        std::cerr << "failed to open image" << std::endl;
+        exit(-1);
+    }
+
+    
+    //interpret it as a gif
+    int* delays;
+    int frames = 0;
+    unsigned char* full_img_data = (unsigned char*) stbi_load_gif_from_memory((const stbi_uc*)buf, (int) size, &delays, &data.width, &data.height, &frames, &data.rows, 0);
+    
+    if (full_img_data == nullptr)
+    {
+        std::cerr << "failed to interpret image as gif" << std::endl;
+        exit(-1);
+    }
+    
+    //split up each frame of the image
+    for (int frameIndex = 0; frameIndex < frames - 1; ++frameIndex){
+        int imageOffset = (data.width * data.height * data.rows) * frameIndex;
+        unsigned char* imageStart = &full_img_data[imageOffset];
+        data.img_data.emplace_back(imageStart);
+    }
+❱
+
+◀private: static▶ void ☀Save_To_Serializable_Memory(Positioned_Animated_Image_Data & data)❰
+
+    //https://github.com/nothings/stb/issues/855
+    int total_bytes = data.width*data.height*data.rows;
+    data.seralizable_image.clear();
+    
+    for (auto const& it: data.img_data){
+        std::vector<unsigned char> tmp;
+        std::copy(it, it+total_bytes, std::back_inserter(tmp));
+        data.seralizable_image.emplace_back(tmp);
+        
+    }
+❱
+
+◀private: static▶ void ☀Load_Textures(Positioned_Animated_Image_Data & data)❰
+
+    for (auto & it: data.img_data){
+        GLuint tex = 0;
+        Texture_Loader::Load(tex,it,data.width,data.height);
+        data.texture.emplace_back(tex);
+    }
+❱

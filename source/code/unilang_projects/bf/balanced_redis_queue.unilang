@@ -1,0 +1,1955 @@
+􏶞o􏶟
+􏷲a balanced redis queue􏷱
+􏷰a balanced redis queue is an implementation of a queue data structure which internally uses multiple redis nodes to distribute the data across the cluster.
+Its important to know that the lifetime of the queue persists before and after the queue data structure is created (since it exists in redis)
+Therefore, two redis queues with the same name, would in fact be the same underlying redis queues􏷯
+􏷞build􏷝􏷞buildfarm􏷝􏷞instance􏷝􏷞shard􏷝􏷞queues􏷝
+
+􏷤􏷣􏷦redis.clients.jedis.JedisCluster􏷥
+􏷤􏷣􏷦java.util.List􏷥
+􏷤􏷣􏷦java.util.Set􏷥
+􏷤􏷣􏷦java.util.HashSet􏷥
+􏷤􏷣􏷦java.util.Iterator􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanResult􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanParams􏷥
+􏷤􏷣􏷦redis.clients.jedis.Jedis􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisPool􏷥
+􏷤􏷣􏷦java.util.ArrayList􏷥
+􏷤􏷣􏷦build.buildfarm.common.StringVisitor􏷥
+􏷤􏷣􏷦java.util.Collections􏷥
+􏷤􏷣􏷦java.util.regex.Matcher􏷥
+􏷤􏷣􏷦java.util.regex.Pattern􏷥
+􏷤􏷣􏷦build.buildfarm.v1test.QueueStatus􏷥
+
+􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
+􏲏􏲐􏲍build.buildfarm.instance.shard.queues.RedisQueue􏲎
+􏲏􏲐􏲍build.buildfarm.instance.shard.queues.BalancedRedisQueue􏲎
+􏲏􏲐􏲍redis.clients.jedis.JedisCluster􏲎
+􏲏􏲐􏲍java.util.List􏲎
+􏲏􏲐􏲍java.util.ArrayList􏲎
+􏲏􏲐􏲍java.util.Arrays􏲎
+􏲏􏲐􏲍org.junit.Test􏲎
+􏲏􏲐􏲍org.junit.runner.RunWith􏲎
+􏲏􏲐􏲍org.junit.runners.JUnit4􏲎
+􏲏􏲐􏲍java.lang.Thread􏲎
+􏲏􏲐􏲍java.util.concurrent.TimeUnit􏲎
+􏲏􏲐􏲍java.lang.RuntimeException􏲎
+􏲏i􏲐􏲍com.google.common.truth.Truth.assertThat􏲎
+􏲏􏲐􏲍build.buildfarm.common.StringVisitor􏲎
+􏲏􏲐􏲍org.mockito.Mock􏲎
+􏲏􏲐􏲍org.mockito.MockitoAnnotations􏲎
+􏲏􏲐􏲍java.util.Arrays􏲎
+􏲏􏲐􏲍build.buildfarm.v1test.QueueStatus􏲎
+􏲏i􏲐􏲍com.google.common.truth.Truth.assertThat􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.eq􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.mock􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.times􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.verify􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.when􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.any􏲎
+
+
+􏶨the unique name of the queue􏶧
+􏶦the name is used as a template for the internal queues distributed across nodes
+hashtags are added to this base name
+this name will not contain a redis hashtag􏶥
+􏶘-􏶙􏶰c􏶯􏶮string􏶭􏶬name􏶫􏶪􏶩
+
+􏶨the original hashtag of the name provided to the queue􏶧
+􏶦if the balanced queue is named with a hashtag, we store it, but will not be able to use it for the internal balanced queues
+they will need to have their own hashes that correlate to particular nodes
+however, if the balanced queue is unable to derive hashtags it will fallback to a single queue
+and rely on the original hashtag it was given
+if an original hashtag is not given, this will be empty􏶥
+􏶘-􏶙􏶰c􏶯􏶮string􏶭􏶬original hashtag􏶫􏶪􏶩
+
+􏶨internal queues used to distribute data across redis nodes􏶧
+􏶦although these are multiple queues, the balanced redis queue treats them as one in its interface􏶥
+􏶘-􏶙􏶰􏶯􏶮List<RedisQueue>􏶭􏶬queues􏶫􏶪new ArrayList<RedisQueue>()􏶩
+
+􏶨the current queue to act push on􏶧
+􏶦used in a round-robin fashion to ensure an even distribution of pushes and appropriate ordering of pops􏶥
+􏶘-􏶙􏶰􏶯􏶮i􏶭􏶬current push queue􏶫􏶪0􏶩
+
+􏶨the current queue to act pop on􏶧
+􏶦used in a round-robin fashion to ensure an even distribution of pushes and appropriate ordering of pops􏶥
+􏶘-􏶙􏶰􏶯􏶮i􏶭􏶬current pop queue􏶫􏶪0􏶩
+
+􏷐constructor􏷏
+􏶠construct a named redis queue with an established redis cluster􏶡
+􏷘+􏷗􏴅Constructor􏴆􏷒balanced redis queue􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄redis􏷃􏷀an established redis cluster􏶿
+􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the queue􏶿
+􏶴
+    this(redis,name,RedisNodeHashes.getEvenlyDistributedHashesWithFallback(redis));
+􏶳
+􏴱derive hashes constructs without error􏴲􏴯redis􏴰
+􏲝the queue can be constructed with a valid cluster instance and name􏲞
+􏲛the queue is throwing an exception upon construction􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    
+    //ACT
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+􏴮
+
+􏷐constructor􏷏
+􏶠construct a named redis queue with an established redis cluster􏶡
+􏷘+􏷗􏴅Constructor􏴆􏷒balanced redis queue􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄redis􏷃􏷀an established redis cluster􏶿
+􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the queue􏶿
+􏶜􏶝􏷆List<String>􏷅􏷄hashtags􏷃􏷀hashtags to distribute queue data􏶿
+􏶴
+    this.originalHashtag = existingHash(name);
+    this.name = unhashedName(name);
+    createHashedQueues(redis,this.name,hashtags);
+    
+􏶳
+􏴱create hashes constructs without error􏴲􏴯redis􏴰
+􏲝the queue can be constructed with a valid cluster instance and name􏲞
+􏲛the queue is throwing an exception upon construction􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    List<String> hashtags = RedisNodeHashes.getEvenlyDistributedHashes(redis);
+    
+    //ACT
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test",hashtags);
+􏴮
+
+􏷐push a value onto the queue􏷏
+􏶠adds the value into one of the internal backend redis queues􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒push􏷑
+􏶜􏶝􏷆string􏷅􏷄val􏷃􏷀the value to push onto the queue􏶿
+􏶴
+    queues.get(roundRobinPushIndex()).push(val);
+􏶳
+􏴱push without error􏴲􏴯redis􏴰
+􏲝the queue can have a value pushed onto it􏲞
+􏲛the queue is throwing an exception upon push􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+􏴮
+􏴱push different without error􏴲􏴯redis􏴰
+􏲝the queue can have the different values pushed onto it􏲞
+􏲛the queue is throwing an exception upon pushing different values􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+􏴮
+􏴱push same without error􏴲􏴯redis􏴰
+􏲝the queue can have the same values pushed onto it􏲞
+􏲛the queue is throwing an exception upon pushing the same values􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("foo");
+􏴮
+􏴱push many􏴲􏴯redis􏴰
+􏲝the queue can have many values pushed into it􏲞
+􏲛the queue is throwing an exception upon pushing many values􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    for (int i = 0; i < 1000; ++i){
+        queue.push("foo" + String.valueOf(i));
+    }
+􏴮
+􏴱push increases size􏴲􏴯redis􏴰
+􏲝the queue size increases as elements are pushed􏲞
+􏲛the queue size is not accurately reflecting the pushes􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT / ASSERT
+    assertThat(queue.size()).isEqualTo(0);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(1);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(2);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(3);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(4);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(5);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(6);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(7);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(8);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(9);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(10);
+􏴮
+
+
+
+􏷐pop a value off of the queue􏷏
+􏶠takes the tail value at the end of the conceptually balanced queue􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒pop􏷑
+􏶾string􏶽􏶼pop_val􏶻􏶺the popped value􏶹
+􏶴
+    adjustToNonemptyQueue();
+    
+    // we either found a queue that was not empty,
+    // or we did a full trip around all the queues
+    // and discovered all of them were empty.
+    // either way, we will attempt to pop where
+    // we ended up.
+    String val = queues.get(roundRobinPopIndex()).pop();
+    return val;
+􏶳
+􏴱value can be popped􏴲􏴯redis􏴰
+􏲝the queue can have a value pushed and popped off􏲞
+􏲛the queue was unable to push and pop the same value off􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    String val = queue.pop();
+    
+    //ASSERT
+    assertThat(val).isEqualTo("foo");
+􏴮
+􏴱value can be popped􏴲􏴯mock􏴰
+􏲝the queue can have a value pushed and popped off􏲞
+􏲛the queue was unable to push and pop the same value off􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.llen(any(String.class))).thenReturn(1L);
+    when(redis.brpop(any(int.class),any(String.class))).thenReturn(Arrays.asList("test","foo"));
+    
+    //ARRANGE
+    List<String> hashtags = Arrays.asList("node1","node2","node3","node4");
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test",hashtags);
+    
+    //ACT
+    queue.push("foo");
+    String val = queue.pop();
+    
+    //ASSERT
+    assertThat(val).isEqualTo("foo");
+􏴮
+􏴱value can be popped due to adjustment􏴲􏴯mock􏴰
+􏲝the queue can have a value pushed and popped off􏲞
+􏲛the queue was unable to push and pop the same value off􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.llen(any(String.class))).thenReturn(0L).thenReturn(1L);
+    when(redis.brpop(any(int.class),any(String.class))).thenReturn(Arrays.asList("test","foo"));
+    
+    //ARRANGE
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    String val = queue.pop();
+    
+    //ASSERT
+    assertThat(val).isEqualTo("foo");
+􏴮
+􏴱value popped in order􏴲􏴯redis􏴰
+􏲝the queue can have a value pushed and popped off in the correct order􏲞
+􏲛the queue was unable to push and pop values in the correct order􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("element 1");
+    queue.push("element 2");
+    queue.push("element 3");
+    queue.push("element 4");
+    queue.push("element 5");
+    queue.push("element 6");
+    String element1 = queue.pop();
+    String element2 = queue.pop();
+    String element3 = queue.pop();
+    String element4 = queue.pop();
+    String element5 = queue.pop();
+    String element6 = queue.pop();
+    
+    //ASSERT
+    assertThat(element1).isEqualTo("element 1");
+    assertThat(element2).isEqualTo("element 2");
+    assertThat(element3).isEqualTo("element 3");
+    assertThat(element4).isEqualTo("element 4");
+    assertThat(element5).isEqualTo("element 5");
+    assertThat(element6).isEqualTo("element 6");
+􏴮
+􏴱pop decreases size􏴲􏴯redis􏴰
+􏲝the queue size decreases as elements are popped􏲞
+􏲛the queue size is not accurately reflecting the pops􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT / ASSERT
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(6);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(5);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(4);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(3);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(2);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(1);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(0);
+􏴮
+
+􏷐adjust current pop queue to non empty queue􏷏
+􏶠when asked to pop a value, the current pop queue may be empty
+however, other queues may not be empty
+instead of blocking on the empty queue when there are other values to pop, this adjustment is an attempt to change the roundrobin chosen internal queue to a nonempty one
+this is done by cycling through the internal queues until one is found that is not empty
+if they are all empty then the same internal queue will be chosen before the adjustment was attempted
+
+from a single-threaded push/pop paradigm, this adjustment would never be needed, and the internal queues would all be the same size (+/- 1 due to the current round robin index)
+however, the balanced queue supports delete operations, and there many other behaviors that might cause the internal queues to not be evenly sized allowing a potential opportunity for this adjustment
+
+this adjustment comes at a cost however, because we have to check the internal queues on whether they are empty when deciding to make the adjustment
+checking if a queue is empty is a redis operation itself􏶡
+􏷘-􏷗􏴅Transformer􏴆􏷒adjust to nonempty queue􏷑
+􏶴
+    //as a best effort, skip popping the current queue if its empty
+    //there is the possibility of another internal queue having data that can be popped
+    int startQueue = currentPopQueue;
+    while (queues.get(currentPopQueue).empty()) {
+      currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
+        if (startQueue == currentPopQueue){
+            break;
+        }
+    }
+􏶳
+
+􏷐remove element from queue􏷏
+􏶠removes an element from a queue and specifies whether it was removed􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒remove􏷑
+􏶜􏶝􏷆string􏷅􏷄val􏷃􏷀the value to remove􏶿
+􏶾bool􏶽􏶼was removed􏶻􏶺whether or not the value was removed􏶹
+􏶴
+    for (RedisQueue queue: partialIterationQueueOrder()){
+        if (queue.remove(val)){
+            return true;
+        }
+    }
+    return false;
+􏶳
+􏴱false on empty􏴲􏴯redis􏴰
+􏲝removing returns false because the queue is empty and there is nothing to remove􏲞
+􏲛the queue was either not empty, or an error occured while removing from an empty queue􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    Boolean success = queue.remove("foo");
+    
+    //ASSERT
+    assertThat(success).isFalse();
+􏴮
+􏴱false on empty􏴲􏴯mock􏴰
+􏲝removing returns false because the queue is empty and there is nothing to remove􏲞
+􏲛the queue was either not empty, or an error occured while removing from an empty queue􏲜
+􏴭
+    // ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrem(any(String.class), any(Long.class), any(String.class))).thenReturn(0L);
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis, "test");
+
+    // ACT
+    Boolean success = queue.remove("foo");
+
+    // ASSERT
+    assertThat(success).isFalse();
+􏴮
+􏴱false when value is missing􏴲􏴯redis􏴰
+􏲝removing returns false because the queue does not contain the value to be removed􏲞
+􏲛the queue was either contained the value or incorrectly reported a deletion􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    Boolean success = queue.remove("baz");
+    
+    //ASSERT
+    assertThat(success).isFalse();
+􏴮
+􏴱false when value is missing􏴲􏴯mock􏴰
+􏲝removing returns false because the queue does not contain the value to be removed􏲞
+􏲛the queue was either contained the value or incorrectly reported a deletion􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrem(any(String.class), any(Long.class), any(String.class))).thenReturn(0L);
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    Boolean success = queue.remove("baz");
+    
+    //ASSERT
+    assertThat(success).isFalse();
+􏴮
+􏴱true when value exists􏴲􏴯redis􏴰
+􏲝removing returns true because the queue contained the value before removing􏲞
+􏲛the queue either did not contain the value or incorrectly reported a deletion􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baz");
+    Boolean success = queue.remove("bar");
+    
+    //ASSERT
+    assertThat(success).isTrue();
+􏴮
+􏴱true when value exists􏴲􏴯mock􏴰
+􏲝removing returns true because the queue contained the value before removing􏲞
+􏲛the queue either did not contain the value or incorrectly reported a deletion􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrem(any(String.class), any(Long.class), any(String.class))).thenReturn(1L);
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baz");
+    Boolean success = queue.remove("bar");
+    
+    //ASSERT
+    assertThat(success).isTrue();
+􏴮
+􏴱size changes when value is removed􏴲􏴯redis􏴰
+􏲝removing the value decreases the size􏲞
+􏲛the size does not accurately reflect the removal􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baz");
+    queue.remove("bar");
+    
+    //ASSERT
+    assertThat(queue.size()).isEqualTo(2);
+􏴮
+􏴱does not remove multiple􏴲􏴯redis􏴰
+􏲝remove does not remove all values that match (only 1)􏲞
+􏲛remove is no longer removing a single element􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("foo");
+    queue.push("foo");
+    queue.remove("foo");
+    
+    //ASSERT
+    assertThat(queue.size()).isEqualTo(4);
+􏴮
+􏴱many adds many deletes consistent size􏴲􏴯redis􏴰
+􏲝we can add many elements and delete many elements and the size is what we expect􏲞
+􏲛the size is not correct while deleting many times􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    for (int i = 0; i < 1000; ++i){
+        queue.push("foo");
+    }
+    
+    //ACT / ASSERT
+    for (int i = 0; i < 1000; ++i){
+        assertThat(queue.size()).isEqualTo(1000 - i);
+        queue.remove("foo");
+    }
+    assertThat(queue.size()).isEqualTo(0);
+􏴮
+
+􏷐remove element from dequeue􏷏
+􏶠removes an element from the dequeue and specifies whether it was removed􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒remove from dequeue􏷑
+􏶜􏶝􏷆string􏷅􏷄val􏷃􏷀the value to remove􏶿
+􏶾bool􏶽􏶼was removed􏶻􏶺whether or not the value was removed􏶹
+􏶴
+    for (RedisQueue queue: partialIterationQueueOrder()){
+        if (queue.removeFromDequeue(val)){
+            return true;
+        }
+    }
+    return false;
+􏶳
+􏴱false on empty􏴲􏴯redis􏴰
+􏲝removing returns false because the queue is empty and there is nothing to remove􏲞
+􏲛the queue was either not empty, or an error occured while removing from an empty queue􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    Boolean success = queue.removeFromDequeue("foo");
+    
+    //ASSERT
+    assertThat(success).isFalse();
+􏴮
+􏴱false on empty􏴲􏴯mock􏴰
+􏲝removing returns false because the queue is empty and there is nothing to remove􏲞
+􏲛the queue was either not empty, or an error occured while removing from an empty queue􏲜
+􏴭
+    // ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrem(any(String.class), any(Long.class), any(String.class))).thenReturn(0L);
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis, "test");
+
+    // ACT
+    Boolean success = queue.removeFromDequeue("foo");
+
+    // ASSERT
+    assertThat(success).isFalse();
+􏴮
+􏴱false when value is missing􏴲􏴯redis􏴰
+􏲝removing returns false because the queue does not contain the value to be removed􏲞
+􏲛the queue was either contained the value or incorrectly reported a deletion􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.dequeue();
+    queue.dequeue();
+    Boolean success = queue.removeFromDequeue("baz");
+    
+    //ASSERT
+    assertThat(success).isFalse();
+􏴮
+􏴱false when value is missing􏴲􏴯mock􏴰
+􏲝removing returns false because the queue does not contain the value to be removed􏲞
+􏲛the queue was either contained the value or incorrectly reported a deletion􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrem(any(String.class), any(Long.class), any(String.class))).thenReturn(0L);
+    when(redis.brpoplpush(any(String.class),any(String.class),any(int.class)))
+    .thenReturn("foo")
+    .thenReturn("bar");
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.dequeue();
+    queue.dequeue();
+    Boolean success = queue.removeFromDequeue("baz");
+    
+    //ASSERT
+    assertThat(success).isFalse();
+􏴮
+􏴱true when value exists􏴲􏴯redis􏴰
+􏲝removing returns true because the queue contained the value before removing􏲞
+􏲛the queue either did not contain the value or incorrectly reported a deletion􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baz");
+    queue.dequeue();
+    queue.dequeue();
+    queue.dequeue();
+    Boolean success = queue.removeFromDequeue("bar");
+    
+    //ASSERT
+    assertThat(success).isTrue();
+􏴮
+􏴱true when value exists􏴲􏴯mock􏴰
+􏲝removing returns true because the queue contained the value before removing􏲞
+􏲛the queue either did not contain the value or incorrectly reported a deletion􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrem(any(String.class), any(Long.class), any(String.class))).thenReturn(1L);
+    when(redis.brpoplpush(any(String.class),any(String.class),any(int.class)))
+    .thenReturn("foo")
+    .thenReturn("bar")
+    .thenReturn("baz");
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baz");
+    queue.dequeue();
+    queue.dequeue();
+    queue.dequeue();
+    Boolean success = queue.removeFromDequeue("bar");
+    
+    //ASSERT
+    assertThat(success).isTrue();
+􏴮
+
+
+
+􏷐remove all elements that match from queue􏷏
+􏶠removes all matching elements from the queue and specifies whether it was removed􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒remove all􏷑
+􏶜􏶝􏷆string􏷅􏷄val􏷃􏷀the value to remove􏶿
+􏶾bool􏶽􏶼was removed􏶻􏶺whether or not the value was removed􏶹
+􏶴
+    boolean removed = false;
+    for (RedisQueue queue: fullIterationQueueOrder()){
+        if (queue.removeAll(val)){
+            removed = true;
+        }
+    }
+    return removed;
+􏶳
+􏴱false on empty􏴲􏴯redis􏴰
+􏲝removing returns false because the queue is empty and there is nothing to remove􏲞
+􏲛the queue was either not empty, or an error occured while removing from an empty queue􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    Boolean success = queue.removeAll("foo");
+    
+    //ASSERT
+    assertThat(success).isFalse();
+􏴮
+􏴱false on empty􏴲􏴯mock􏴰
+􏲝removing returns false because the queue is empty and there is nothing to remove􏲞
+􏲛the queue was either not empty, or an error occured while removing from an empty queue􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrem(any(String.class), any(Long.class), any(String.class))).thenReturn(0L);
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    Boolean success = queue.removeAll("foo");
+    
+    //ASSERT
+    assertThat(success).isFalse();
+􏴮
+􏴱false when value is missing􏴲􏴯redis􏴰
+􏲝removing returns false because the queue does not contain the value to be removed􏲞
+􏲛the queue was either contained the value or incorrectly reported a deletion􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    Boolean success = queue.removeAll("baz");
+    
+    //ASSERT
+    assertThat(success).isFalse();
+􏴮
+􏴱true when value exists􏴲􏴯redis􏴰
+􏲝removing returns true because the queue contained the value before removing􏲞
+􏲛the queue either did not contain the value or incorrectly reported a deletion􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baz");
+    Boolean success = queue.removeAll("bar");
+    
+    //ASSERT
+    assertThat(success).isTrue();
+􏴮
+􏴱true when value exists􏴲􏴯mock􏴰
+􏲝removing returns true because the queue contained the value before removing􏲞
+􏲛the queue either did not contain the value or incorrectly reported a deletion􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrem(any(String.class), any(Long.class), any(String.class))).thenReturn(1L);
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baz");
+    Boolean success = queue.removeAll("bar");
+    
+    //ASSERT
+    assertThat(success).isTrue();
+􏴮
+􏴱size changes when value is removed􏴲􏴯redis􏴰
+􏲝removing the value decreases the size􏲞
+􏲛the size does not accurately reflect the removal􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baz");
+    queue.removeAll("bar");
+    
+    //ASSERT
+    assertThat(queue.size()).isEqualTo(2);
+􏴮
+􏴱does remove multiple􏴲􏴯redis􏴰
+􏲝remove removes all values that match (not just 1)􏲞
+􏲛remove is no longer removing all matching elements􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("foo");
+    queue.push("foo");
+    queue.removeAll("foo");
+    
+    //ASSERT
+    assertThat(queue.size()).isEqualTo(1);
+􏴮
+
+􏷐clear the queue􏷏
+􏶠delete all elements in the queue so that it is empty􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒clear􏷑
+􏶴
+    for (RedisQueue queue : fullIterationQueueOrder()) {
+        queue.clear();
+    }
+􏶳
+􏴱clearing empty is safe􏴲􏴯redis􏴰
+􏲝it is safe to clear an already empty queue􏲞
+􏲛clearing a queue should not fail􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.clear();
+􏴮
+􏴱clearing empty is safe􏴲􏴯mock􏴰
+􏲝it is safe to clear an already empty queue􏲞
+􏲛clearing a queue should not fail􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.clear();
+􏴮
+􏴱clearing a full queue is safe􏴲􏴯redis􏴰
+􏲝it is safe to clear a  queue of values􏲞
+􏲛clearing a queue should not fail􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baz");
+    queue.clear();
+􏴮
+􏴱clearing sets size to zero􏴲􏴯redis􏴰
+􏲝clearing a queue sets its size to zero􏲞
+􏲛clearing a queue does not reflect the appropriate size􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baz");
+    queue.clear();
+    
+    //ASSERT
+    assertThat(queue.size()).isEqualTo(0);
+􏴮
+
+􏷐pop element into another queue􏷏
+􏶠this pops the element from one queue and pushes it onto another queue
+it will wait indefinitely until the thread is interrupted
+null is returned if the thread is interrupted􏶡
+􏷘+u􏷗􏴅Transformer􏴆􏷒pop into􏷑
+􏶜􏶝􏷆RedisQueue􏷅􏷄into queue􏷃􏷀the queue to obtain the popped the value􏶿
+􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
+􏶴
+    String val = queues.get(roundRobinPopIndex()).popIntoCrossSlot(intoQueue);
+    return val;
+􏶳
+􏴱transfer item􏴲􏴯mock􏴰
+􏲝the transfer is able to happen on the first try􏲞
+􏲛the transfer did not happen as it should have􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.brpop(any(int.class), any(String.class))).thenReturn(Arrays.asList("container","value"));
+    
+    //ARRANGE
+    BalancedRedisQueue queue1 = new BalancedRedisQueue(redis,"queue-1");
+    RedisQueue queue2 = new RedisQueue(redis,"queue-2");
+    
+    //ACT
+    String val = queue1.popInto(queue2);
+    
+    //ASSERT
+    assertThat(val).isEqualTo("value");
+􏴮
+􏴱transfer item effects sizes􏴲􏴯redis􏴰
+􏲝transferring items changes the size of the two queues􏲞
+􏲛the queue sizes do not reflect the transfer􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue1 = new BalancedRedisQueue(redis,"queue-1");
+    RedisQueue queue2 = new RedisQueue(redis,"queue-2");
+    
+    //ACT
+    queue1.push("foo");
+    queue1.popInto(queue2);
+    
+    //ASSERT
+    assertThat(queue1.size()).isEqualTo(0);
+    assertThat(queue2.size()).isEqualTo(1);
+􏴮
+􏴱transfer large queue􏴲􏴯redis􏴰
+􏲝transferring items changes the size of the two queues􏲞
+􏲛the queue sizes do not reflect the transfer􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue1 = new BalancedRedisQueue(redis,"queue-1");
+    RedisQueue queue2 = new RedisQueue(redis,"queue-2");
+    
+    //ACT
+    for (int i = 0; i < 1000; ++i){
+        queue1.push("foo" + String.valueOf(i));
+    }
+    for (int i = 0; i < 1000; ++i){
+        queue1.popInto(queue2);
+    }
+    
+    //ASSERT
+    assertThat(queue1.size()).isEqualTo(0);
+    assertThat(queue2.size()).isEqualTo(1000);
+    
+    for (int i = 0; i < 1000; ++i){
+        assertThat(queue2.pop()).isEqualTo("foo" + String.valueOf(i));
+    }
+􏴮
+􏴱transfer item effects sizes with delayed push􏴲􏴯redis􏴰
+􏲝transferring items changes the size of the two queues (even when the initial push is delayed)􏲞
+􏲛the queue sizes do not reflect the transfer􏲜
+􏴭
+    // ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue1 = new BalancedRedisQueue(redis, "queue-1");
+    RedisQueue queue2 = new RedisQueue(redis, "queue-2");
+    
+    // ACT
+    //start a delayed push
+    //we do this because internally
+    //the implementation may have a timeout while it checks for thread interruptions
+    //timeouts had caused an NPE, which this test was written for when fixing.
+    Thread push = new Thread(() -> {
+                try {
+                  TimeUnit.SECONDS.sleep(2);
+                  queue1.push("foo");
+                }
+                catch(Exception e) {
+                    throw new RuntimeException(e);
+                }
+              });
+    push.start();
+    
+    //waiting to pop
+    Thread popInto = new Thread(() -> queue1.popInto(queue2));
+    popInto.start();
+    push.join();
+    popInto.join();
+    
+    // ASSERT
+    assertThat(queue1.size()).isEqualTo(0);
+    assertThat(queue2.size()).isEqualTo(1);
+􏴮
+
+􏷐pop element into another queue􏷏
+􏶠this pops the element from one queue and pushes it onto another queue
+it will wait indefinitely until the thread is interrupted
+null is returned if the thread is interrupted􏶡
+􏷘+u􏷗􏴅Transformer􏴆􏷒pop into􏷑
+􏶜􏶝􏷆BalancedRedisQueue􏷅􏷄into queue􏷃􏷀the queue to obtain the popped the value􏶿
+􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
+􏶴
+    int queueIndex = roundRobinPopIndex();
+    String val = queues.get(queueIndex).popIntoCrossSlot(intoQueue.getInternalQueue(queueIndex));
+    return val;
+􏶳
+􏴱transfer balanced item􏴲􏴯mock􏴰
+􏲝the transfer is able to happen on the first try􏲞
+􏲛the transfer did not happen as it should have􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.brpop(any(int.class), any(String.class))).thenReturn(Arrays.asList("container","value"));
+    
+    //ARRANGE
+    BalancedRedisQueue queue1 = new BalancedRedisQueue(redis,"queue-1");
+    BalancedRedisQueue queue2 = new BalancedRedisQueue(redis,"queue-2");
+    
+    //ACT
+    String val = queue1.popInto(queue2);
+    
+    //ASSERT
+    assertThat(val).isEqualTo("value");
+􏴮
+
+􏷐pop element into internal dequeue and return value􏷏
+􏶠this pops the element from one queue atomically into an internal list called the dequeue
+it will wait indefinitely until the thread is interrupted
+null is returned if the thread is interrupted􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒dequeue􏷑􏶸InterruptedException􏶷
+􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
+􏶴
+    String val = queues.get(roundRobinPopIndex()).dequeue();
+    return val;
+􏶳
+
+􏷐pop element into internal dequeue and return value􏷏
+􏶠this pops the element from one queue atomically into an internal list called the dequeue
+it will perform an exponential backoff
+null is returned if the overall backoff times out􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒dequeue exponential backoff􏷑
+􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
+􏶴
+    //The conditions of this algorithm are as followed:
+    // - from a client's perspective we want to block indefinitely.
+    //   (so this function should not return null under any normal circumstances.)
+    // - from an implementation perspective however, we don't want to block indefinitely on any one internal queue.
+
+    // We choose a strategy that round-robins over the queues in different phases.
+    // 1. continuously round-robin each queue with nonblocking calls for N seconds
+    // 2. switch to continuously round-robin blocking calls that exponentially increase their timeout after each full round
+    // 3. continue iterating over each queue at a maximally reached timeout.
+    // During all phases of this algorithm we want to be able to interrupt the thread.
+    
+    
+    // The fastest thing to do first, is round-robin over every queue with a nonblocking dequeue call.
+    // If none of the queues are able to dequeue.  We can move onto a different strategy.
+    // (a strategy in which the system appears to be under less load)
+    int startQueue = currentPopQueue;
+    while (true) {
+        
+        //return if found
+        String val = queues.get(roundRobinPopIndex()).nonblockingDequeue();
+        if (val != null){
+            return val;
+        }
+        
+        //check for interrupt if not found
+        if (Thread.currentThread().isInterrupted()) {
+          return null;
+        }
+        
+        //end this phase if we have done a full round-robin
+        if (startQueue == currentPopQueue){
+            break;
+        }
+    }
+    
+    
+    //try each of the internal queues with exponential backoff
+    int currentTimeout_s = 1;
+    int maxTimeout_s = 8;
+    startQueue = currentPopQueue;
+    while (currentTimeout_s <= maxTimeout_s){
+    
+        //try each of the queues with the current timeout
+        do {
+        
+            //try to dequeue (may timeout or interrupt)
+            try {
+            
+                //return if found
+                String val = queues.get(roundRobinPopIndex()).dequeue(currentTimeout_s);
+                if (val != null){
+                    return val;
+                }
+            }
+            catch (InterruptedException e){
+                return null;
+            }
+        
+            //check for interrupt if not found
+            if (Thread.currentThread().isInterrupted()) {
+              return null;
+            }
+            
+        } while (currentPopQueue != startQueue);
+        
+        currentTimeout_s *= 2;
+    }
+    
+    //exponential backoff has timed out
+    //we will now block indefinitely while
+    //trying each queue at the max timeout
+    while (true){
+    
+        //try to dequeue (may timeout or interrupt)
+        try {
+        
+            //return if found
+            String val = queues.get(roundRobinPopIndex()).dequeue(maxTimeout_s);
+            if (val != null){
+                return val;
+            }
+            
+        } catch (InterruptedException e){
+            return null;
+        }
+        
+        //check for interrupt if not found
+        if (Thread.currentThread().isInterrupted()) {
+          return null;
+        }
+        
+    }
+􏶳
+􏴱element dequeued on non block􏴲􏴯mock􏴰
+􏲝the element is dequeued via nonblocking􏲞
+􏲛the element failed to dequeue􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.rpoplpush(any(String.class),any(String.class))).thenReturn("foo");
+    
+    //ARRANGE
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    String val = queue.dequeueExponentialBackoff();
+    
+    //ASSERT
+    assertThat(val).isEqualTo("foo");
+􏴮
+􏴱element dequeued on block􏴲􏴯mock􏴰
+􏲝the element is dequeued via nonblocking􏲞
+􏲛the element failed to dequeue􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.rpoplpush(any(String.class),any(String.class))).thenReturn(null);
+    when(redis.brpoplpush(any(String.class),any(String.class),any(int.class) )).thenReturn("foo");
+    
+    //ARRANGE
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    String val = queue.dequeueExponentialBackoff();
+    
+    //ASSERT
+    assertThat(val).isEqualTo("foo");
+􏴮
+
+
+
+
+􏷐get the current pop queue􏷏
+􏶠get the queue that the balanced queue intends to pop from next􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒get current pop queue􏷑
+􏶾RedisQueue􏶽􏶼current pop queue􏶻􏶺the queue that the balanced queue intends to pop from next􏶹
+􏶴
+    return queues.get(currentPopQueue);
+􏶳
+􏴱can get􏴲􏴯regular􏴰
+􏲝the current pop queue can be retrieved􏲞
+􏲛it was a failure to get the current pop queue􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"queue_name");
+    
+    //ACT
+    RedisQueue internalQueue = queue.getCurrentPopQueue();
+    
+􏴮
+
+􏷐get the current pop queue index􏷏
+􏶠get the index of the queue that the balanced queue intends to pop from next􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒get current pop queue index􏷑
+􏶾i􏶽􏶼current pop queue index􏶻􏶺the index of the queue that the balanced queue intends to pop from next􏶹
+􏶴
+    return currentPopQueue;
+􏶳
+􏴱can get􏴲􏴯regular􏴰
+􏲝the current pop queue index can be retrieved􏲞
+􏲛it was a failure to get the current pop queue index􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"queue_name");
+    
+    //ACT
+    int index = queue.getCurrentPopQueueIndex();
+􏴮
+
+􏷐get queue at index􏷏
+􏶠get the internal queue at the specified index􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒get internal queue􏷑
+􏶜􏶝􏷆i􏷅􏷄index􏷃􏷀the index to the internal queue (must be in bounds)􏶿
+􏶾RedisQueue􏶽􏶼internal queue􏶻􏶺the internal queue found at that index􏶹
+􏶴
+    return queues.get(index);
+􏶳
+􏴱can get􏴲􏴯regular􏴰
+􏲝a queue can be retrieved by an index􏲞
+􏲛the queue could not be retrieved by an index􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"queue_name");
+    
+    //ACT
+    RedisQueue internalQueue = queue.getInternalQueue(0);
+􏴮
+
+􏷐get dequeue name􏷏
+􏶠get the name of the internal dequeue used by the queue. since each internal queue has their own dequeue, this name is generic without the hashtag􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒get dequeue name􏷑
+􏶾string􏶽􏶼name􏶻􏶺the name of the queue􏶹
+􏶴
+    return name + "_dequeue";
+􏶳
+􏴱can get􏴲􏴯regular􏴰
+􏲝the dequeue name is as expected􏲞
+􏲛the dequeue name is not as expected􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"queue_name");
+    
+    //ACT
+    String name = queue.getDequeueName();
+    
+    //ASSERT
+    assertThat(name).isEqualTo("queue_name_dequeue");
+􏴮
+
+
+
+􏷐get name􏷏
+􏶠get the name of the queue.  this is the redis key used as base name for internal queues􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒get name􏷑
+􏶾string􏶽􏶼name􏶻􏶺the base name of the queue􏶹
+􏶴
+    return name;
+􏶳
+􏴱name is stored􏴲􏴯redis􏴰
+􏲝the name can be received􏲞
+􏲛name does not match what it should􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"queue_name");
+    
+    //ACT
+    String name = queue.getName();
+    
+    //ASSERT
+    assertThat(name).isEqualTo("queue_name");
+􏴮
+􏴱name is stored􏴲􏴯regular􏴰
+􏲝the name can be received􏲞
+􏲛name does not match what it should􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"queue_name");
+    
+    //ACT
+    String name = queue.getName();
+    
+    //ASSERT
+    assertThat(name).isEqualTo("queue_name");
+􏴮
+􏴱name has hashtag removed front􏴲􏴯redis􏴰
+􏲝the name is stored without a hashtag􏲞
+􏲛name does not match what it should􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"{hash}queue_name");
+    
+    //ACT
+    String name = queue.getName();
+    
+    //ASSERT
+    assertThat(name).isEqualTo("queue_name");
+􏴮
+􏴱name has hashtag colon removed front􏴲􏴯redis􏴰
+􏲝the name is stored without a hashtag􏲞
+􏲛name does not match what it should􏲜
+􏴭
+    //ARRANGE
+    //similar to what has been seen in configuration files
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"{Execution}:QueuedOperations");
+    
+    //ACT
+    String name = queue.getName();
+    
+    //ASSERT
+    assertThat(name).isEqualTo(":QueuedOperations");
+􏴮
+􏴱name has hashtag removed back􏴲􏴯redis􏴰
+􏲝the name is stored without a hashtag􏲞
+􏲛name does not match what it should􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"queue_name{hash}");
+    
+    //ACT
+    String name = queue.getName();
+    
+    //ASSERT
+    assertThat(name).isEqualTo("queue_name");
+􏴮
+􏴱name has hashtag removed middle􏴲􏴯redis􏴰
+􏲝the name is stored without a hashtag􏲞
+􏲛name does not match what it should􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"queue_{hash}name");
+    
+    //ACT
+    String name = queue.getName();
+    
+    //ASSERT
+    assertThat(name).isEqualTo("queue_name");
+􏴮
+􏴱name has hashtag removed front back􏴲􏴯redis􏴰
+􏲝the name is stored without a hashtag􏲞
+􏲛name does not match what it should􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"{hash}queue_name{hash}");
+    
+    //ACT
+    String name = queue.getName();
+    
+    //ASSERT
+    assertThat(name).isEqualTo("queue_name");
+􏴮
+
+􏷐peek the next queue value􏷏
+􏶠similar to a pop, peek will preserve the item in the queue.
+be careful about peeking with multiple threads.
+a thread that peeks cannot assume they will get that value when popping due to other threads􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒peek􏷑
+􏶾string􏶽􏶼peek_val􏶻􏶺the peeked value􏶹
+􏶴
+    return queues.get(currentPopQueue).peek();
+􏶳
+􏴱value can be peeked􏴲􏴯redis􏴰
+􏲝the correct value is peeked from the queue􏲞
+􏲛the queue sizes do not reflect the transfer􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baze");
+    String peeked = queue.peek();
+    
+    //ASSERT
+    assertThat(peeked).isEqualTo("foo");
+􏴮
+􏴱value can be peeked􏴲􏴯mock􏴰
+􏲝the correct value is peeked from the queue􏲞
+􏲛the queue sizes do not reflect the transfer􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrange(any(String.class), any(Long.class), any(Long.class))).thenReturn(Arrays.asList("foo"));
+    
+    //ARRANGE
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baze");
+    String peeked = queue.peek();
+    
+    //ASSERT
+    assertThat(peeked).isEqualTo("foo");
+􏴮
+􏴱peeking is idempotent􏴲􏴯redis􏴰
+􏲝the same value is peeked from the queue if not popped􏲞
+􏲛peeking is not idempotent􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baze");
+    
+    //ASSERT
+    assertThat(queue.peek()).isEqualTo("foo");
+    assertThat(queue.peek()).isEqualTo("foo");
+    assertThat(queue.peek()).isEqualTo("foo");
+􏴮
+
+􏷐get size􏷏
+􏶠checks the current length of the queue􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒size􏷑
+􏶾l􏶽􏶼length􏶻􏶺the current length of the queue􏶹
+􏶴
+    //the accumulated size of all of the queues
+    return queues.stream().mapToInt(i -> (int)i.size()).sum();
+􏶳
+􏴱adjust push pop􏴲􏴯redis􏴰
+􏲝size adjusts with push and pop􏲞
+􏲛size is incorrectly reporting the expected queue size􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+   BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT / ASSERT
+    assertThat(queue.size()).isEqualTo(0);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(1);
+    queue.push("bar");
+    assertThat(queue.size()).isEqualTo(2);
+    queue.push("baz");
+    assertThat(queue.size()).isEqualTo(3);
+    queue.push("baz");
+    assertThat(queue.size()).isEqualTo(4);
+    queue.push("baz");
+    assertThat(queue.size()).isEqualTo(5);
+    queue.push("baz");
+    assertThat(queue.size()).isEqualTo(6);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(5);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(4);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(3);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(2);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(1);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(0);
+􏴮
+􏴱initial size is zero􏴲􏴯mock􏴰
+􏲝the shared initial size is 0􏲞
+􏲛size is incorrectly reporting the expected queue size􏲜
+􏴭
+    //MOCK
+   JedisCluster redis = mock(JedisCluster.class);
+    when(redis.llen(any(String.class))).thenReturn(0L);
+   
+   //ARRANGE
+   BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+   
+   //ACT
+   long size = queue.size();
+   
+   //ASSERT
+   assertThat(size).isEqualTo(0);
+􏴮
+
+
+
+􏷐get status information about the queue􏷏
+􏶠helpful for understanding the current load on the queue and how elements are balanced􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒status􏷑
+􏶾QueueStatus􏶽􏶼status􏶻􏶺the current status of the queue􏶹
+􏶴
+    //get properties
+    long size = size();
+    List<Long> sizes = new ArrayList<>();
+    for (RedisQueue queue: queues){
+        sizes.add(queue.size());
+    }
+    
+    //build proto
+    QueueStatus status = QueueStatus.newBuilder()
+    .setSize(size)
+    .addAllInternalSizes(sizes)
+    .build();
+    return status;
+􏶳
+
+􏷐check if the queue is empty􏷏
+􏶠checks whether the queue is empty; i.e. has no elements􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒empty􏷑
+􏶾bool􏶽􏶼is empty􏶻􏶺whether the queue is empty or not􏶹
+􏶴
+    for (RedisQueue queue : partialIterationQueueOrder()) {
+        if (!queue.empty()){
+            return false;
+        }
+    }
+    return true;
+􏶳
+􏴱empty on construction􏴲􏴯redis􏴰
+􏲝the queue is empty on construction􏲞
+􏲛empty is incorrectly reporting the expected queue state􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    Boolean isEmpty = queue.empty();
+    
+    //ASSERT
+    assertThat(isEmpty).isTrue();
+􏴮
+􏴱empty on construction􏴲􏴯mock􏴰
+􏲝the queue is empty on construction􏲞
+􏲛empty is incorrectly reporting the expected queue state􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.llen(any(String.class)))
+    .thenReturn(0L);
+    
+    //ARRANGE
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    Boolean isEmpty = queue.empty();
+    
+    //ASSERT
+    assertThat(isEmpty).isTrue();
+􏴮
+􏴱nonempty after pushes􏴲􏴯redis􏴰
+􏲝the queue is not empty after pushing a value􏲞
+􏲛empty is incorrectly reporting the expected queue state􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    Boolean isEmpty = queue.empty();
+    
+    //ASSERT
+    assertThat(isEmpty).isFalse();
+􏴮
+􏴱nonempty after pushes􏴲􏴯mock􏴰
+􏲝the queue is not empty after pushing a value􏲞
+􏲛empty is incorrectly reporting the expected queue state􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.llen(any(String.class)))
+    .thenReturn(1L);
+    
+    //ARRANGE
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    Boolean isEmpty = queue.empty();
+    
+    //ASSERT
+    assertThat(isEmpty).isFalse();
+􏴮
+
+􏷐visit each element in the queue􏷏
+􏶠enacts a visitor over each element in the queue􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒visit􏷑
+􏶜􏶝􏷆StringVisitor􏷅􏷄visitor􏷃􏷀a visitor for each visited element in the queue􏶿
+􏶴
+    for (RedisQueue queue: fullIterationQueueOrder()){
+        queue.visit(visitor);
+    }
+􏶳
+􏴱check visit of each element􏴲􏴯redis􏴰
+􏲝each element in the queue can be visited􏲞
+􏲛we are unable to visit each element in the queue􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    queue.push("element 1");
+    queue.push("element 2");
+    queue.push("element 3");
+    queue.push("element 4");
+    queue.push("element 5");
+    queue.push("element 6");
+    queue.push("element 7");
+    queue.push("element 8");
+    
+    // ACT
+    List<String> visited = new ArrayList<String>();
+    StringVisitor visitor =
+        new StringVisitor() {
+          public void visit(String entry) {
+            visited.add(entry);
+          }
+        };
+    queue.visit(visitor);
+    
+    //ASSERT
+    assertThat(visited.size()).isEqualTo(8);
+    assertThat(visited.contains("element 1")).isTrue();
+    assertThat(visited.contains("element 2")).isTrue();
+    assertThat(visited.contains("element 3")).isTrue();
+    assertThat(visited.contains("element 4")).isTrue();
+    assertThat(visited.contains("element 5")).isTrue();
+    assertThat(visited.contains("element 6")).isTrue();
+    assertThat(visited.contains("element 7")).isTrue();
+    assertThat(visited.contains("element 8")).isTrue();
+􏴮
+􏴱check visit of each element􏴲􏴯mock􏴰
+􏲝each element in the queue can be visited􏲞
+􏲛we are unable to visit each element in the queue􏲜
+􏴭
+    // MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrange(any(String.class), any(Long.class), any(Long.class)))
+        .thenReturn(
+            Arrays.asList(
+                "element 1",
+                "element 2",
+                "element 3",
+                "element 4",
+                "element 5",
+                "element 6",
+                "element 7",
+                "element 8"));
+
+    // ARRANGE
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis, "test");
+    queue.push("element 1");
+    queue.push("element 2");
+    queue.push("element 3");
+    queue.push("element 4");
+    queue.push("element 5");
+    queue.push("element 6");
+    queue.push("element 7");
+    queue.push("element 8");
+
+    // ACT
+    List<String> visited = new ArrayList<String>();
+    StringVisitor visitor =
+        new StringVisitor() {
+          public void visit(String entry) {
+            visited.add(entry);
+          }
+        };
+    queue.visit(visitor);
+
+    // ASSERT
+    assertThat(visited.size()).isEqualTo(8);
+    assertThat(visited.contains("element 1")).isTrue();
+    assertThat(visited.contains("element 2")).isTrue();
+    assertThat(visited.contains("element 3")).isTrue();
+    assertThat(visited.contains("element 4")).isTrue();
+    assertThat(visited.contains("element 5")).isTrue();
+    assertThat(visited.contains("element 6")).isTrue();
+    assertThat(visited.contains("element 7")).isTrue();
+    assertThat(visited.contains("element 8")).isTrue();
+􏴮
+
+􏷐visit each element in the dequeue􏷏
+􏶠enacts a visitor over each element in the dequeue􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒visit dequeue􏷑
+􏶜􏶝􏷆StringVisitor􏷅􏷄visitor􏷃􏷀a visitor for each visited element in the queue􏶿
+􏶴
+    for (RedisQueue queue: fullIterationQueueOrder()){
+        queue.visitDequeue(visitor);
+    }
+􏶳
+􏴱check visit of each element􏴲􏴯mock􏴰
+􏲝each element in the queue can be visited􏲞
+􏲛we are unable to visit each element in the queue􏲜
+􏴭
+    // MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrange(any(String.class), any(Long.class), any(Long.class)))
+        .thenReturn(
+            Arrays.asList(
+                "element 1",
+                "element 2",
+                "element 3",
+                "element 4",
+                "element 5",
+                "element 6",
+                "element 7",
+                "element 8"));
+
+    // ARRANGE
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis, "test");
+
+    // ACT
+    List<String> visited = new ArrayList<String>();
+    StringVisitor visitor =
+        new StringVisitor() {
+          public void visit(String entry) {
+            visited.add(entry);
+          }
+        };
+    queue.visitDequeue(visitor);
+
+    // ASSERT
+    assertThat(visited.size()).isEqualTo(8);
+    assertThat(visited.contains("element 1")).isTrue();
+    assertThat(visited.contains("element 2")).isTrue();
+    assertThat(visited.contains("element 3")).isTrue();
+    assertThat(visited.contains("element 4")).isTrue();
+    assertThat(visited.contains("element 5")).isTrue();
+    assertThat(visited.contains("element 6")).isTrue();
+    assertThat(visited.contains("element 7")).isTrue();
+    assertThat(visited.contains("element 8")).isTrue();
+􏴮
+
+􏷐check that the internal queues have evenly distributed the values􏷏
+􏶠we are checking that the size of all the internal queues are the same
+this means, the balanced queue will be evenly distributed on every n elements pushed, where n is the number of internal queues􏶡
+􏷘+􏷗􏴅observer􏴆􏷒is evenly distributed􏷑
+􏶾bool􏶽􏶼is evenly distributed􏶻􏶺whether or not the queues values are evenly distributed by internal queues􏶹
+􏶴
+    long size = queues.get(0).size();
+    for (RedisQueue queue: partialIterationQueueOrder()){
+        if (queue.size() != size){
+            return false;
+        }
+    }
+    return true;
+􏶳
+􏴱empty is evenly distributed􏴲􏴯redis􏴰
+􏲝an empty queue is always already evenly distributed􏲞
+􏲛evenly distributed is not working on the empty queue􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    Boolean isEvenlyDistributed = queue.isEvenlyDistributed();
+    
+    //ASSERT
+    assertThat(isEvenlyDistributed).isTrue();
+􏴮
+􏴱empty is evenly distributed􏴲􏴯mock􏴰
+􏲝an empty queue is always already evenly distributed􏲞
+􏲛evenly distributed is not working on the empty queue􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.llen(any(String.class)))
+    .thenReturn(0L);
+    
+    //ARRANGE
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    Boolean isEvenlyDistributed = queue.isEvenlyDistributed();
+    
+    //ASSERT
+    assertThat(isEvenlyDistributed).isTrue();
+􏴮
+􏴱four nodes four hundred pushes is even􏴲􏴯redis􏴰
+􏲝having 4 nodes and pushing 400 elements should show that the elements are evenly distributed􏲞
+􏲛queue is not evenly distributing as it should􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    List<String> hashtags = Arrays.asList("node1","node2","node3","node4");
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test",hashtags);
+    
+    //ACT
+    for (int i = 0; i < 400; ++i){
+        queue.push("foo");
+    }
+    Boolean isEvenlyDistributed = queue.isEvenlyDistributed();
+    
+    //ASSERT
+    assertThat(isEvenlyDistributed).isTrue();
+􏴮
+􏴱four nodes four hundred one pushes is not even􏴲􏴯redis􏴰
+􏲝having 4 nodes and pushing 401 elements should show that the elements are not evenly distributed􏲞
+􏲛queue is incorrectly reporting an even distribution􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    List<String> hashtags = Arrays.asList("node1","node2","node3","node4");
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test",hashtags);
+    
+    //ACT
+    for (int i = 0; i < 401; ++i){
+        queue.push("foo");
+    }
+    Boolean isEvenlyDistributed = queue.isEvenlyDistributed();
+    
+    //ASSERT
+    assertThat(isEvenlyDistributed).isFalse();
+􏴮
+􏴱single node always evenly distributes􏴲􏴯redis􏴰
+􏲝having a single node means the values are always evenly distributed over that node􏲞
+􏲛queue is incorrectly reporting an even distribution􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    List<String> hashtags = Arrays.asList("single_node");
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test",hashtags);
+    
+    //ACT / ASSERT
+    queue.push("foo");
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.push("foo");
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.push("foo");
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.push("foo");
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.pop();
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.pop();
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.pop();
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.pop();
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    
+􏴮
+􏴱two node example􏴲􏴯redis􏴰
+􏲝this example shows how a two internal queues affect the even distribution􏲞
+􏲛queue is incorrectly reporting an even distribution􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    List<String> hashtags = Arrays.asList("node_1","node_2");
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test",hashtags);
+    
+    //ACT / ASSERT
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.push("foo");
+    assertThat(queue.isEvenlyDistributed()).isFalse();
+    queue.push("foo");
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.push("foo");
+    assertThat(queue.isEvenlyDistributed()).isFalse();
+    queue.push("foo");
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.push("foo");
+    assertThat(queue.isEvenlyDistributed()).isFalse();
+    queue.push("foo");
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.push("foo");
+    assertThat(queue.isEvenlyDistributed()).isFalse();
+    queue.pop();
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.pop();
+    assertThat(queue.isEvenlyDistributed()).isFalse();
+    queue.pop();
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.pop();
+    assertThat(queue.isEvenlyDistributed()).isFalse();
+    queue.pop();
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.pop();
+    assertThat(queue.isEvenlyDistributed()).isFalse();
+    queue.pop();
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+􏴮
+
+􏷐create multiple queues for each of the hashes given􏷏
+􏶠create the multiple queues that will act as a single balanced queue􏶡
+􏷘-􏷗􏴅Transformer􏴆􏷒create hashed queues􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄redis􏷃􏷀an established redis cluster􏶿
+􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the queue􏶿
+􏶜􏶝􏷆List<String>􏷅􏷄hashtags􏷃􏷀hashtags to distribute queue data􏶿
+􏶴
+    //create an internal queue for each of the provided hashtags
+    for (String hashtag: hashtags){
+        queues.add(new RedisQueue(redis,hashedName(name,hashtag)));
+    }
+    
+    //if there were no hashtags, we'll create a single internal queue
+    //so that the balanced redis queue can still function.
+    //we'll use the basename provided to create the single internal queue and use the original hashtag provided.
+    //if there was no original hashtag, we will use a hashtag that corresponds to the first slot.
+    //note: we must build the balanced queues internal queue with a hashtag because it will dequeue to the same redis slot.
+    if (hashtags.isEmpty()){
+    
+        if (!originalHashtag.isEmpty()){
+            queues.add(new RedisQueue(redis, hashedName(name,originalHashtag)));
+        }
+        else{
+            queues.add(new RedisQueue(redis, hashedName(name,"06S")));
+        }
+    }
+􏶳
+
+􏷐get the current queue index for round-robin pushing􏷏
+􏶠adjusts the round-robin index for next call􏶡
+􏷘-􏷗􏴅Transformer􏴆􏷒round robin push index􏷑
+􏶾i􏶽􏶼queue index􏶻􏶺the current round-robin index􏶹
+􏶴
+    int currentIndex = currentPushQueue;
+    currentPushQueue = nextQueueInRoundRobin(currentPushQueue);
+    return currentIndex;
+􏶳
+
+􏷐get the current queue index for round-robin popping􏷏
+􏶠adjusts the round-robin index for next call􏶡
+􏷘-􏷗􏴅Transformer􏴆􏷒round robin pop index􏷑
+􏶾i􏶽􏶼queue index􏶻􏶺the current round-robin index􏶹
+􏶴
+    int currentIndex = currentPopQueue;
+    currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
+    return currentIndex;
+􏶳
+
+􏷐get the next queue in the round robin􏷏
+􏶠if we are currently on the last queue it becomes the first queue􏶡
+􏷘-􏷗􏴅Transformer􏴆􏷒next queue in round robin􏷑
+􏶜􏶝􏷆i􏷅􏷄index􏷃􏷀current queue index􏶿
+􏶾i􏶽􏶼adjusted current queue􏶻􏶺and adjusted val based on the current queue index􏶹
+􏶴
+    if (index >= queues.size()-1){
+        return 0;
+    }
+    return index+1;
+􏶳
+
+􏷐get the previous queue in the round robin􏷏
+􏶠if we are currently on the first queue it becomes the last queue􏶡
+􏷘-􏷗􏴅Transformer􏴆􏷒previous queue in round robin􏷑
+􏶜􏶝􏷆i􏷅􏷄index􏷃􏷀current queue index􏶿
+􏶾i􏶽􏶼adjusted current queue􏶻􏶺and adjusted val based on the current queue index􏶹
+􏶴
+    if (index == 0){
+        return queues.size()-1;
+    }
+    return index-1;
+􏶳
+
+􏷐list of queues in a particular order for full iteration over all of the queues􏷏
+􏶠an ordered list of queues for operations that assume to traverse over all of the queues
+some operations like clear() / size() require calling methods on all of the internal queues
+for those cases, this function represents the desired order of the queues􏶡
+􏷘-􏷗􏴅observer􏴆􏷒full iteration queue order􏷑
+􏶾List<RedisQueue>􏶽􏶼queues􏶻􏶺an ordered list of queues􏶹
+􏶴
+    // if we are going to iterate over all of the queues
+    // there will be no noticeable side effects from the order
+    return queues;
+􏶳
+
+􏷐list of queues in a particular order for a possibly partial iteration over all of the queues􏷏
+􏶠an ordered list of queues for operations that may end early without needing to perform the operation on all of the internal queues
+some operations like exists() / remove() can return early without processing over all of the internal queues
+for those cases, this function represents the desired order of the queues􏶡
+􏷘-􏷗􏴅observer􏴆􏷒partial iteration queue order􏷑
+􏶾List<RedisQueue>􏶽􏶼queues􏶻􏶺an ordered list of queues􏶹
+􏶴
+    // to improve cpu utilization, we can try randomizing
+    // the order we traverse the internal queues for operations
+    // that may return early
+    List<RedisQueue> randomQueues = new ArrayList<RedisQueue>();
+    randomQueues.addAll(queues);
+    Collections.shuffle(randomQueues);
+    return randomQueues;
+􏶳

@@ -1,0 +1,141 @@
+􏶞o􏶟
+􏷲create a jedis cluster instance from proto configs􏷱
+􏷰a factory for creating a jedis cluster instance􏷯
+􏷞build􏷝􏷞buildfarm􏷝􏷞instance􏷝􏷞shard􏷝
+
+􏷤􏷣􏷦com.google.common.collect.LinkedHashMultimap􏷥
+􏷤􏷣􏷦com.google.common.collect.Lists􏷥
+􏷤􏷣􏷦com.google.common.collect.SetMultimap􏷥
+􏷤􏷣􏷦java.util.List􏷥
+􏷤􏷣􏷦build.buildfarm.instance.shard.queues.RedisQueue􏷥
+􏷤􏷣􏷦build.buildfarm.v1test.RedisShardBackplaneConfig􏷥
+􏷤􏷣􏷦redis.clients.jedis.HostAndPort􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisCluster􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisClusterPipeline􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisPoolConfig􏷥
+􏷤􏷣􏷦java.net.URI􏷥
+􏷤􏷣􏷦javax.naming.ConfigurationException􏷥
+􏷤􏷣􏷦java.util.function.Supplier􏷥
+􏷤􏷣􏷦java.net.URISyntaxException􏷥
+􏷤􏷣􏷦java.util.List􏷥
+􏷤􏷣􏷦java.util.Set􏷥
+􏷤􏷣􏷦java.util.HashSet􏷥
+􏷤􏷣􏷦java.util.Iterator􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanResult􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanParams􏷥
+􏷤􏷣􏷦redis.clients.jedis.Jedis􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisPool􏷥
+
+https://javadoc.io/doc/redis.clients/jedis/latest/redis/clients/jedis/JedisCluster.html
+
+
+􏷐create a jedis cluster instance􏷏
+􏶠use proto configuration to connect to a redis cluster server and provide a jedis client􏶡
+􏷘+s􏷗􏴅Observer􏴆􏷒create􏷑􏶸ConfigurationException􏶷􏶶configuration is not valid for creating jedis cluster client􏶵
+􏶜􏶝􏷆RedisShardBackplaneConfig􏷅􏷄config􏷃􏷀configuration for connecting to a redis cluster server􏶿
+􏶾Supplier<JedisCluster>􏶽􏶼jedis􏶻􏶺an established jedis client used to operate on the redis cluster􏶹
+􏶴
+    return createJedisClusterFactory(parseUri(config.getRedisUri()), createJedisPoolConfig(config));
+􏶳
+
+􏷐create a test jedis cluster instance􏷏
+􏶠use pre-defined proto configuration to connect to a redis cluster server and provide a jedis client􏶡
+􏷘+s􏷗􏴅Observer􏴆􏷒create test􏷑􏶸Exception􏶷􏶶configuration is not valid for creating jedis cluster client􏶵
+􏶾JedisCluster􏶽􏶼jedis􏶻􏶺an established test jedis client used to operate on a redis cluster􏶹
+􏶴
+    // create the a client to interact with redis.
+    // we assume you are running a local cluster of redis.
+    // configuration values (port chosen by redis create-clusters).
+    RedisShardBackplaneConfig config =
+        RedisShardBackplaneConfig.newBuilder()
+            .setRedisUri("redis://localhost:30001")
+            .setJedisPoolMaxTotal(3)
+            .build();
+    JedisCluster redis = JedisClusterFactory.create(config).get();
+    
+    //use the client to create an empty redis cluster
+    //this will prevent any persistent data across test runs
+    //it also means that tests will not be able to run in parallel.
+    deleteExistingKeys(redis);
+    
+    return redis;
+􏶳
+
+􏷐delete existing keys on a redis cluster􏷏
+􏶠delete all of the keys on a redis cluster and ensure that the database is empty􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒delete existing keys􏷑􏶸Exception􏶷􏶶failure to delete all existing keys􏶵
+􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established jedis client to operate on a redis cluster􏶿
+􏶴
+    for (JedisPool pool: cluster.getClusterNodes().values()){
+        Jedis node = pool.getResource();
+        deleteExistingKeys(node);
+    }
+􏶳
+
+􏷐delete existing keys on a redis node􏷏
+􏶠delete all of the keys on a particular redis node and ensure that the node's contribution to the database is empty􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒delete existing keys􏷑􏶸Exception􏶷􏶶failure to delete all existing keys􏶵
+􏶜􏶝􏷆Jedis􏷅􏷄node􏷃􏷀an established jedis client to operate on a redis node􏶿
+􏶴
+    String nextCursor = "0";
+    Set<String> matchingKeys = new HashSet<>();
+    ScanParams params = new ScanParams();
+    params.match("*");
+
+    //get all of the keys for the particular node
+    do {
+        ScanResult scanResult = node.scan(nextCursor, params);
+        List<String> keys = scanResult.getResult();
+        nextCursor = scanResult.getCursor();
+
+        matchingKeys.addAll(keys);
+
+    } while(!nextCursor.equals("0"));
+
+    if (matchingKeys.size() == 0) {
+      return;
+    }
+
+    //we cannot pass all of the keys to del because of the following error:
+    //"CROSSSLOT Keys in request don't hash to the same slot"
+    //so iterate over and delete them individually.
+    for (String key: matchingKeys.toArray(new String[matchingKeys.size()])){
+      node.del(key);
+    }
+􏶳
+
+􏷐create a jedis cluster instance􏷏
+􏶠use the URI and pool information to connect to a redis cluster server and provide a jedis client􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒create jedis cluster factory􏷑
+􏶜􏶝􏷆URI􏷅􏷄redis uri􏷃􏷀a valid uri to a redis instance􏶿
+􏶜􏶝􏷆JedisPoolConfig􏷅􏷄pool config􏷃􏷀configuration related to redis pools􏶿
+􏶾Supplier<JedisCluster>􏶽􏶼jedis􏶻􏶺an established jedis client used to operate on the redis cluster􏶹
+􏶴
+    return () -> new JedisCluster(new HostAndPort(redisUri.getHost(), redisUri.getPort()), poolConfig);
+􏶳
+
+􏷐create a jedis pool config􏷏
+􏶠use configuration to build the appropriate jedis pool configuration􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒create jedis pool config􏷑
+􏶜􏶝􏷆RedisShardBackplaneConfig􏷅􏷄config􏷃􏷀configuration for connecting to a redis cluster server􏶿
+􏶾JedisPoolConfig􏶽􏶼pool config􏶻􏶺a created jedis pool config􏶹
+􏶴
+    JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+    jedisPoolConfig.setMaxTotal(config.getJedisPoolMaxTotal());
+    return jedisPoolConfig;
+􏶳
+
+􏷐parse string URI into URI object􏷏
+􏶠convert the string representation of the URI into a URI object
+if the URI object is invalid a configuration exception will be thrown􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒parse uri􏷑􏶸ConfigurationException􏶷􏶶URI is not a valid format􏶵
+􏶜􏶝􏷆String􏷅􏷄uri􏷃􏷀a uri􏶿
+􏶾URI􏶽􏶼uri􏶻􏶺a parsed and valid URI􏶹
+􏶴
+    try {
+      return new URI(uri);
+    } catch (URISyntaxException e) {
+      throw new ConfigurationException(e.getMessage());
+    }
+􏶳
+

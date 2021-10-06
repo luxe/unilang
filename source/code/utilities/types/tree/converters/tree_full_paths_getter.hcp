@@ -1,0 +1,107 @@
+class
+❪string❫
+❪unordered_set❫
+❪"code/utilities/data_structures/tree/generic/string_tree"❫
+❪"code/utilities/types/tree/full_path_name"❫
+⚯
+❪iostream❫
+⚞⚟
+
+
+//UNORDERED
+◀public: static▶ std::unordered_set<std::string> ☀Get_All_Paths(String_Tree const& str_tree)❰
+    
+    std::unordered_set<std::string> paths;
+    for (auto it = str_tree.nodes.begin(); it != str_tree.nodes.end(); ++it){
+            paths.insert(Full_Path_Name::Get(str_tree,it));
+    }
+    
+    return paths;
+❱
+◀public: static▶ std::unordered_set<std::string> ☀Get_All_Parent_Paths(String_Tree const& str_tree)❰
+    
+    std::unordered_set<std::string> paths;
+    for (auto it = str_tree.nodes.begin(); it != str_tree.nodes.end(); ++it){
+        if (str_tree.nodes.number_of_children(it) > 0){
+            paths.insert(Full_Path_Name::Get(str_tree,it));
+        }
+    }
+    
+    return paths;
+❱
+
+◀public: static▶ std::unordered_set<std::string> ☀Get_All_Child_Paths(String_Tree const& str_tree)❰
+
+    std::unordered_set<std::string> paths;
+    for (auto it = str_tree.nodes.begin(); it != str_tree.nodes.end(); ++it){
+        if (str_tree.nodes.number_of_children(it) == 0){
+            paths.insert(Full_Path_Name::Get(str_tree,it));
+        }
+    }
+    
+    return paths;
+❱
+
+//ORDERED
+◀public: static▶ std::vector<std::string> ☀Get_All_Paths_Ordered(String_Tree const& str_tree)❰
+    
+    std::vector<std::string> paths;
+    for (auto it = str_tree.nodes.begin(); it != str_tree.nodes.end(); ++it){
+            paths.emplace_back(Full_Path_Name::Get(str_tree,it));
+    }
+    
+    return paths;
+❱
+◀public: static▶ std::vector<std::string> ☀Get_All_Parent_Paths_Ordered(String_Tree const& str_tree)❰
+    
+    std::vector<std::string> paths;
+    for (auto it = str_tree.nodes.begin(); it != str_tree.nodes.end(); ++it){
+        if (str_tree.nodes.number_of_children(it) > 0){
+            paths.emplace_back(Full_Path_Name::Get(str_tree,it));
+        }
+    }
+    
+    return paths;
+❱
+
+◀public: static▶ std::vector<std::string> ☀Get_All_Child_Paths_Ordered(String_Tree const& str_tree)❰
+
+    std::vector<std::string> paths;
+    for (auto it = str_tree.nodes.begin(); it != str_tree.nodes.end(); ++it){
+        if (str_tree.nodes.number_of_children(it) == 0){
+            paths.emplace_back(Full_Path_Name::Get(str_tree,it));
+        }
+    }
+    
+    return paths;
+❱
+
+
+◀public: static▶ std::vector<std::string> ☀Get_All_Subtree_Paths_Ordered(String_Tree const& str_tree, std::string const& path)❰
+
+    std::vector<std::string> paths;
+    for (auto it = str_tree.nodes.begin(); it != str_tree.nodes.end(); ++it){
+            auto visit_path = Full_Path_Name::Get(str_tree,it);
+            if (visit_path == path){
+                
+                //beginning of subtree found
+                int start_depth = str_tree.nodes.depth(it);
+                
+                //collect the subtree by continually adding children until the depth is resurfaced
+                ++it;
+                for (; it != str_tree.nodes.end(); ++it){
+                    int current_depth = str_tree.nodes.depth(it);
+                    if (current_depth <= start_depth){
+                        return paths;
+                    }
+                    paths.emplace_back(Full_Path_Name::Get(str_tree,it));
+                }
+                return paths;
+                
+                
+            }
+    }
+    
+    return paths;
+❱
+

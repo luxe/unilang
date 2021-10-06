@@ -1,0 +1,78 @@
+class
+⚯
+⚞⚟
+
+
+//Sometimes you need the repo to build itself programatically.  
+//If you are writing a program in the repo that needs to build the repo,
+//these APIs are frontend for building in the same way that a user builds.
+
+
+◀public: static▶ Timed_Process_Results ☀Get_Results_Of_Building_Through_Docker_Container()❰
+
+    Timed_Process_Results x;
+    Temporarily_Move_To_Path_To_Call_Function(Bazel_Derived_Root_Of_Repo(),[&](){
+        x = Timed_Process_Spawner::Execute_And_Get_Back_Results(Build_Everything_With_Docker_Command());
+    });
+    return x;
+❱
+◀public: static▶ Timed_Process_Results ☀Get_Results_Of_Testing_Through_Docker_Container()❰
+
+    Timed_Process_Results x;
+    Temporarily_Move_To_Path_To_Call_Function(Bazel_Derived_Root_Of_Repo(),[&](){
+        x = Timed_Process_Spawner::Execute_And_Get_Back_Results(Test_Everything_With_Docker_Command());
+    });
+    return x;
+❱
+◀public: static▶ Timed_Process_Results ☀Get_Results_Of_Building_Repo_As_Is()❰
+    
+    Timed_Process_Results x;
+    Temporarily_Move_To_Path_To_Call_Function(Bazel_Derived_Root_Of_Repo(),[&](){
+        x = Timed_Process_Spawner::Execute_And_Get_Back_Results(Build_Everything_Command());
+    });
+    return x;
+❱
+◀public: static▶ Timed_Process_Results ☀Get_Results_Of_Testing_Repo_As_Is()❰
+    
+    Timed_Process_Results x;
+    Temporarily_Move_To_Path_To_Call_Function(Bazel_Derived_Root_Of_Repo(),[&](){
+        x = Timed_Process_Spawner::Execute_And_Get_Back_Results(Test_Everything_Command());
+    });
+    return x;
+❱
+◀public: static▶ Timed_Process_Results ☀Get_Results_Formatting_Build_Files()❰
+    
+    Timed_Process_Results x;
+    Temporarily_Move_To_Path_To_Call_Function(Bazel_Derived_Root_Of_Repo(),[&](){
+        x = Timed_Process_Spawner::Execute_And_Get_Back_Results(Format_Build_Files());
+    });
+    return x;
+❱
+
+//robots are going to change and build this repository
+//they will need a way to pragmatically check if their changes result in a successful build
+◀public: static▶ bool ☀Does_Current_Repo_Build_Through_Docker_Container()❰
+    return !Get_Results_Of_Building_Through_Docker_Container().results.return_code;
+❱
+◀public: static▶ bool ☀Does_Current_Repo_Build_As_Is()❰
+    return !Get_Results_Of_Building_Repo_As_Is().results.return_code;
+❱
+
+
+
+//these are scripts on the root of the repo
+◀private: static▶ std::string ☀Build_Everything_With_Docker_Command()❰
+    return "./docker_build_everything";
+❱
+◀private: static▶ std::string ☀Test_Everything_With_Docker_Command()❰
+    return "./docker_test_everything";
+❱
+◀private: static▶ std::string ☀Build_Everything_Command()❰
+    return "./user_build_everything";
+❱
+◀private: static▶ std::string ☀Test_Everything_Command()❰
+    return "./user_test_everything";
+❱
+◀private: static▶ std::string ☀Format_Build_Files()❰
+    return "./format_build_files";
+❱

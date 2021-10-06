@@ -1,0 +1,219 @@
+class
+⚯
+⚞⚟
+
+◀public: static▶ void ☀Create()❰
+
+
+    Ide_Creation_Settings create;
+    create.add_starting_code_tree = true;
+    
+    auto s = Ide_Settings_Getter::Get(create,"");
+    
+    //what parts of the experience to draw.
+    //only the ide elements please.
+    Everything_Draw_Settings draw_settings;
+    draw_settings.draw_background = false;
+    draw_settings.draw_mouse = false;
+    draw_settings.draw_elements = true;
+    
+    //how to save image frames to disk
+    Incrementing_Tmp_Images output_dir(true);
+    
+    
+    //keys
+    Key_Codes key_codes;
+    
+    std::cout << "sdfsdf1s" << std::endl;
+    //the simulation of using the unilang ide
+    Draw_Image_N_Times(s,draw_settings,output_dir,1);
+    Press_Button_And_Draw_Image(s,output_dir,draw_settings,key_codes.alt);
+    Draw_Image_N_Times(s,draw_settings,output_dir,8);
+    Press_Button_And_Draw_Image(s,output_dir,draw_settings,key_codes.enter);
+    Press_Button_And_Draw_Image(s,output_dir,draw_settings,key_codes.alt);
+    Draw_Image_N_Times(s,draw_settings,output_dir,8);
+    Press_Button_And_Draw_Image(s,output_dir,draw_settings,key_codes.enter);
+    Type_Message_And_Draw_Images(s,output_dir,draw_settings,"hello world");
+    Draw_Image_N_Times(s,draw_settings,output_dir,8);
+    Hold_Shift_Click_Left_And_Draw_Image(s,output_dir,draw_settings);
+    Hold_Shift_Click_Left_And_Draw_Image(s,output_dir,draw_settings);
+    Hold_Shift_Click_Left_And_Draw_Image(s,output_dir,draw_settings);
+    Hold_Shift_Click_Left_And_Draw_Image(s,output_dir,draw_settings);
+    Hold_Shift_Click_Left_And_Draw_Image(s,output_dir,draw_settings);
+    Type_Message_And_Draw_Images(s,output_dir,draw_settings,"unilang");
+    Draw_Image_N_Times(s,draw_settings,output_dir,8);
+    Click_Up_And_Draw_Image(s,output_dir,draw_settings);
+    
+    //show some toggle
+    //Click_Shift_And_Draw_Image(s,output_dir,draw_settings);
+    //Draw_Image_N_Times(s,draw_settings,output_dir,4);
+    //Click_Shift_And_Draw_Image(s,output_dir,draw_settings);
+    //Draw_Image_N_Times(s,draw_settings,output_dir,4);
+    //Click_Up_And_Draw_Image(s,output_dir,draw_settings);
+    //Click_Shift_And_Draw_Image(s,output_dir,draw_settings);
+    //Draw_Image_N_Times(s,draw_settings,output_dir,4);
+    
+    Click_Up_And_Draw_Image(s,output_dir,draw_settings);
+    
+    Click_Alt_2_And_Draw_Image(s,output_dir,draw_settings);
+    Draw_Image_N_Times(s,draw_settings,output_dir,4);
+    Click_Down_And_Draw_Image(s,output_dir,draw_settings);
+    Click_Down_And_Draw_Image(s,output_dir,draw_settings);
+    Click_Down_And_Draw_Image(s,output_dir,draw_settings);
+    Click_Down_And_Draw_Image(s,output_dir,draw_settings);
+    Click_Down_And_Draw_Image(s,output_dir,draw_settings);
+    Draw_Image_N_Times(s,draw_settings,output_dir,4);
+    Press_Button_And_Draw_Image(s,output_dir,draw_settings,key_codes.enter);
+    
+    
+    //pause a little bit at the end
+    Draw_To_Image(s,draw_settings,output_dir.Next_Image_Name());
+    Draw_To_Image(s,draw_settings,output_dir.Next_Image_Name());
+    Draw_To_Image(s,draw_settings,output_dir.Next_Image_Name());
+    Draw_To_Image(s,draw_settings,output_dir.Next_Image_Name());
+    Draw_To_Image(s,draw_settings,output_dir.Next_Image_Name());
+    Draw_To_Image(s,draw_settings,output_dir.Next_Image_Name());
+    Draw_To_Image(s,draw_settings,output_dir.Next_Image_Name());
+    Draw_To_Image(s,draw_settings,output_dir.Next_Image_Name());
+    
+    //animate images
+    Image_Animated_Settings animate_settings;
+    animate_settings.input_dir = output_dir.Path() + "/";
+    animate_settings.output_file = Root_Readme_Directory() + "hello_world.gif";
+    animate_settings.delay = 10;
+    animate_settings.get_files_via_ls_v = true;
+    animate_settings.get_files_via_wildcard = false;
+    Convert_Image_Animator::Make(animate_settings);
+    
+    Image_Overlap_Layer_Remover::Fix(animate_settings.output_file);
+    
+    std::cout << output_dir.Path() << std::endl;
+❱
+
+◀private: static▶ void ☀Draw_Image_N_Times(Ide_Settings & s, Everything_Draw_Settings const& draw_settings, Incrementing_Tmp_Images & output_dir, int times)❰
+    for (size_t i = 0; i < times; ++i){
+        Draw_To_Image(s,draw_settings,output_dir.Next_Image_Name());
+    }
+❱
+
+◀private: static▶ void ☀Press_Button_And_Draw_Image(Ide_Settings & s, Incrementing_Tmp_Images & output_dir, Everything_Draw_Settings const& draw_settings, int key)❰
+
+    s.desktop.input.keyboard.key_states[key] = Key_State::PRESSED;
+    Everything_Drawer::Draw(s,draw_settings,s.desktop.input);
+    s.desktop.input.keyboard.key_states[key] = Key_State::NONE;
+    Draw_To_Image(s,draw_settings,output_dir.Next_Image_Name());
+    
+    //calculate and draw (we calculate twice because things may not change frame over frame perfectly like I'd want to show)
+    //this should be fixed, but also doing it twice should ensure any of those small subtleties don't show up in the rendered example
+    Everything_Drawer::Draw(s,draw_settings,s.desktop.input);
+❱
+
+◀private: static▶ void ☀Hold_Shift_Click_Left_And_Draw_Image(Ide_Settings & s, Incrementing_Tmp_Images & output_dir, Everything_Draw_Settings const& draw_settings)❰
+
+    s.desktop.input.keyboard.left = Key_State::PRESSED;
+    s.desktop.input.keyboard.shift = Key_State::DOWN;
+    Everything_Drawer::Draw(s,draw_settings,s.desktop.input);
+    s.desktop.input.keyboard.left = Key_State::NONE;
+    Draw_To_Image(s,draw_settings,output_dir.Next_Image_Name());
+    
+    //calculate and draw (we calculate twice because things may not change frame over frame perfectly like I'd want to show)
+    //this should be fixed, but also doing it twice should ensure any of those small subtleties don't show up in the rendered example
+    Everything_Drawer::Draw(s,draw_settings,s.desktop.input);
+    
+    s.desktop.input.keyboard.shift = Key_State::NONE;
+❱
+
+◀private: static▶ void ☀Click_Up_And_Draw_Image(Ide_Settings & s, Incrementing_Tmp_Images & output_dir, Everything_Draw_Settings const& draw_settings)❰
+
+    s.desktop.input.keyboard.up = Key_State::PRESSED;
+    Everything_Drawer::Draw(s,draw_settings,s.desktop.input);
+    s.desktop.input.keyboard.up = Key_State::NONE;
+    Draw_To_Image(s,draw_settings,output_dir.Next_Image_Name());
+    
+    //calculate and draw (we calculate twice because things may not change frame over frame perfectly like I'd want to show)
+    //this should be fixed, but also doing it twice should ensure any of those small subtleties don't show up in the rendered example
+    Everything_Drawer::Draw(s,draw_settings,s.desktop.input);
+❱
+
+◀private: static▶ void ☀Click_Down_And_Draw_Image(Ide_Settings & s, Incrementing_Tmp_Images & output_dir, Everything_Draw_Settings const& draw_settings)❰
+
+    s.desktop.input.keyboard.down = Key_State::PRESSED;
+    s.desktop.input.keyboard.key_states[81] = Key_State::PRESSED;
+    Everything_Drawer::Draw(s,draw_settings,s.desktop.input);
+    s.desktop.input.keyboard.down = Key_State::NONE;
+    s.desktop.input.keyboard.key_states[81] = Key_State::NONE;
+    Draw_To_Image(s,draw_settings,output_dir.Next_Image_Name());
+    
+    //calculate and draw (we calculate twice because things may not change frame over frame perfectly like I'd want to show)
+    //this should be fixed, but also doing it twice should ensure any of those small subtleties don't show up in the rendered example
+    Everything_Drawer::Draw(s,draw_settings,s.desktop.input);
+❱
+
+◀private: static▶ void ☀Click_Shift_And_Draw_Image(Ide_Settings & s, Incrementing_Tmp_Images & output_dir, Everything_Draw_Settings const& draw_settings)❰
+
+    s.desktop.input.keyboard.shift = Key_State::PRESSED;
+    Everything_Drawer::Draw(s,draw_settings,s.desktop.input);
+    s.desktop.input.keyboard.shift = Key_State::NONE;
+    Draw_To_Image(s,draw_settings,output_dir.Next_Image_Name());
+    
+    //calculate and draw (we calculate twice because things may not change frame over frame perfectly like I'd want to show)
+    //this should be fixed, but also doing it twice should ensure any of those small subtleties don't show up in the rendered example
+    Everything_Drawer::Draw(s,draw_settings,s.desktop.input);
+❱
+
+◀private: static▶ void ☀Click_Alt_2_And_Draw_Image(Ide_Settings & s, Incrementing_Tmp_Images & output_dir, Everything_Draw_Settings const& draw_settings)❰
+
+
+    s.desktop.input.keyboard.key_states[226] = Key_State::PRESSED;
+    s.desktop.input.keyboard.key_states[31] = Key_State::DOWN;
+    Everything_Drawer::Draw(s,draw_settings,s.desktop.input);
+    s.desktop.input.keyboard.key_states[226] = Key_State::NONE;
+    s.desktop.input.keyboard.key_states[31] = Key_State::NONE;
+    Draw_To_Image(s,draw_settings,output_dir.Next_Image_Name());
+    
+    //calculate and draw (we calculate twice because things may not change frame over frame perfectly like I'd want to show)
+    //this should be fixed, but also doing it twice should ensure any of those small subtleties don't show up in the rendered example
+    Everything_Drawer::Draw(s,draw_settings,s.desktop.input);
+❱
+
+
+◀private: static▶ void ☀Type_Message_And_Draw_Images(Ide_Settings & s, Incrementing_Tmp_Images & output_dir, Everything_Draw_Settings const& draw_settings, std::string const& str)❰
+    for (auto const& c: str){
+        Fill_Text_Buffer_And_Draw_Image(s,output_dir,draw_settings,c);
+    }
+❱
+
+◀private: static▶ void ☀Fill_Text_Buffer_And_Draw_Image(Ide_Settings & s, Incrementing_Tmp_Images & output_dir, Everything_Draw_Settings const& draw_settings, char c)❰
+
+    s.desktop.input.keyboard.buffered_chars.emplace_back(c);
+    Everything_Drawer::Draw(s,draw_settings,s.desktop.input);
+    s.desktop.input.keyboard.buffered_chars.clear();
+    Draw_To_Image(s,draw_settings,output_dir.Next_Image_Name());
+    
+    //calculate and draw (we calculate twice because things may not change frame over frame perfectly like I'd want to show)
+    //this should be fixed, but also doing it twice should ensure any of those small subtleties don't show up in the rendered example
+    Everything_Drawer::Draw(s,draw_settings,s.desktop.input);
+❱
+
+◀private: static▶ void ☀Draw_To_Image(Ide_Settings & s, Everything_Draw_Settings const& draw_settings, std::string const& file_name)❰
+
+
+    Rgb_Color bg_color;
+    bg_color.r = 255;
+    bg_color.g = 0;
+    bg_color.b = 255;
+
+    //draw the elements to an image
+    Cairo_Render_Settings settings;
+    settings.file_name = file_name;
+    settings.surface.use_explicit = true;
+    settings.surface.explicit_size.x = 150;
+    settings.surface.explicit_size.y = 150;
+    settings.bg_color = Rgb_To_Zero_One_Range::Convert(bg_color);
+    auto frames = Everything_Drawer::Draw(s,draw_settings,s.desktop.input);
+    Frame_Renderer::Render(frames,settings);
+    
+    Image_Transparent::Convert(file_name,bg_color);
+    
+❱
+

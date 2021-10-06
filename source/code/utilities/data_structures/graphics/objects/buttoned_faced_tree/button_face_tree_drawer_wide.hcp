@@ -1,0 +1,83 @@
+class
+⚯
+⚞⚟
+
+
+
+◀public: static▶ Frame_Elements  ☀Draw(Character_Maps const& font_chars, Pc_Input_State const& pc_input, Position const& pos, const tree<Buttoned_Faced_Label>& tr, Button_Face_Tree_Draw_Settings const& draw_settings, Schema_Path_Settings const& settings, Button_Face_Tree_Range const& range)❰
+    
+    auto start_pos = pos;
+    auto current_pos = pos;
+    
+    Frame_Elements all;
+    Frame_Elements branches;
+    Frame_Elements labels;
+    Frame_Elements hints;
+    
+    std::vector<int> recent_depth_x_positions; //indexed by depth;
+    
+    
+    For_Each_Noncollapsed::Iterate_With_Previous(tr,range.begin,range.end,[&](tree<Buttoned_Faced_Label>::pre_order_iterator prev, tree<Buttoned_Faced_Label>::pre_order_iterator it, int prev_depth, int depth){
+        
+        
+        
+        //should we show the button
+        it->style.show_button = false;
+        
+        //adjust draw cursor
+        if (prev_depth >= depth) {
+            if (!recent_depth_x_positions.empty()){
+                current_pos.x = recent_depth_x_positions[depth];
+                Move_Down(it->label,start_pos,current_pos,depth);
+            }
+            else {
+                Indent(it->label,start_pos,current_pos,depth);
+            }
+        }
+        
+        
+        //draw the label
+        Faced_Label_Eventer::Event_It(font_chars,it->label,current_pos,pc_input);
+        Append(labels.types,Buttoned_Faced_Label_Drawer::Draw(font_chars,*it,current_pos,pc_input).types);
+        Safely_Add_To_Vector_At_Index(recent_depth_x_positions,depth,current_pos.x);
+        
+        
+        
+        //adjust draw cursor
+        Indent(it->label,start_pos,current_pos,depth);
+        
+        
+        return Should_Break::NO;
+    },
+    
+    
+    
+    //the first label that's collapsed
+    //this is a good place to draw a hint to the user on what exists in the collapsed subtree
+    [&](tree<Buttoned_Faced_Label>::pre_order_iterator prev, tree<Buttoned_Faced_Label>::pre_order_iterator it, int prev_depth, int depth){
+        
+        Append(hints.types,Button_Face_Tree_Peek_Drawer::Draw(font_chars,tr,prev,it,prev_depth,depth,current_pos,settings).types);
+        
+    });
+    
+    
+    
+    
+    
+    all.types += branches.types;
+    all.types += labels.types;
+    all.types += hints.types;
+    return all;
+❱
+
+◀private: static▶ void  ☀Indent(Faced_Label const& label, Position const& start_pos, Position & current_pos, int const& depth)❰
+
+        auto dim = Faced_Label_Drawer::Get_Dimensions(label);
+        current_pos.x += dim.x -1;
+❱
+
+◀private: static▶ void  ☀Move_Down(Faced_Label const& label, Position const& start_pos, Position & current_pos, int const& depth)❰
+
+        auto dim = Faced_Label_Drawer::Get_Dimensions(label);
+        current_pos.y += dim.y-1;
+❱

@@ -1,0 +1,245 @@
+􏶞p􏶟
+􏷲The aircraft times of the simulator􏷱
+􏷰A simulation clock, a mission timer, and a total elapsed simulation clock􏷯
+􏷮Time􏷭 􏷮Aircraft Times􏷭 􏷮Component􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦SimulationClock􏷥􏷢HASA: SimulationClockT􏷡
+􏷤􏷣􏷦FlightModelMillisecondTimer􏷥􏷢HASA: FlightModelMillisecondTimerT􏷡
+􏷤􏷣􏷦DateTime􏷥􏷢HASA: DateTimeT􏷡
+􏷤􏷣􏷦IostoHost􏷥􏷢HASA: IOStoHostT􏷡
+􏷤􏷣􏷦IosCommunication􏷥􏷢HASA: IosStatesE􏷡
+􏶔􏶕􏶒Month􏶓􏶖USES: MONTH_JAN􏶗
+􏶔􏶕􏶒TimeUtilities􏶓􏶖USES: TicksToMilliseconds()􏶗
+􏶔􏶕􏶒vxworks􏶓􏶖must be included for tickLib􏶗
+􏶔􏶕􏶒tickLib􏶓􏶖USES: tickGet()􏶗
+
+
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Initialize the 􏶐􏷏
+􏶠initializes all the aircraft times to a default state􏶡
+􏶜􏶝􏷆unsigned long􏷅􏷄simulator start time􏷃􏷀the start time captured at the beginning of the simulation􏶿
+􏶴
+    􏶲initialize the components􏶱
+    InitializeFlightModelMillisecondTimer(&􏵴mission timer􏵵);
+    
+    􏶲initialize the simulation clock to a valid starting date􏶱
+    􏶲The IOS is expected to do the same when it resets the clock.􏶱
+    􏶲we'll start at the epoch􏶱
+    InitializeSimulationClock(&􏵴simulation clock􏵵,MONTH_JAN,1,1970,0);
+
+    􏶲set the initial tick􏶱
+    􏵴simulator start time􏵵 = 􏵶simulator start time􏵷;
+    
+    􏶲we'll assume that the IOS is uninitialized􏶱
+    􏶲there are certain state transitions we care about,􏶱
+    􏶲and if the IOS jumps from initialized to an unconnected state in the state machine, it won't affect anything.􏶱
+    􏵴last ios state􏵵 = IOS_UNINITIALIZED;
+
+    􏶲ensure the total simulation clock is correct upon initialization􏶱
+    􏵲update total elapsed time􏵳);
+􏶳
+
+GETTERS:
+􏷘+􏷗􏷒current time􏷑
+􏷐get the current date time of the simulation􏷏
+􏶠returns the current date and time of the simulation􏶡
+􏶚m􏶛􏶾DateTimeT􏶽􏶼the current date and time􏶻􏶺the current date and time of the simulation􏶹
+􏶴
+    return 􏵴simulation clock􏵵.m_tDateTime;
+􏶳
+
+􏷘+􏷗􏷒elapsed mission time􏷑
+􏷐get how long the mission has been running􏷏
+􏶠returns the elapsed time of the mission􏶡
+􏶚m􏶛􏶾double􏶽􏶼elapsed mission time􏶻􏵜milliseconds􏵝􏶺the total elapsed time of the mission􏶹
+􏶴
+    return FlightModelMillisecondTimerElapsedTime(&􏵴mission timer􏵵);
+􏶳
+
+􏷘+􏷗􏷒elapsed simulation time􏷑
+􏷐get how long the simulation has been running􏷏
+􏶠returns the elapsed time of the simulation􏶡
+􏶚m􏶛􏶾double􏶽􏶼elapsed simulator time􏶻􏵜milliseconds􏵝􏶺the total elapsed time of the simulation􏶹
+􏶴
+    return 􏵴elapsed simulator time􏵵;
+􏶳
+
+
+TRANSFORMERS:
+􏷘+􏷗􏷒update􏷑
+􏷐update the aircraft times based on change triggers and forward progress of time􏷏􏶠􏶡
+􏶜􏶝􏷆IOStoHostT􏷅􏷄triggered changes􏷃􏷀triggered changes for the various aircraft times􏶿
+􏶴
+    􏶲update the internal time components􏶱
+    􏵲update mission timer􏵳􏵶triggered changes􏵷);
+    􏵲update simulation clock􏵳􏵶triggered changes􏵷);
+
+    􏶲update the total simulation clock􏶱
+    􏵲update total elapsed time􏵳);
+
+    􏶲store the current ios state to compare during the next update􏶱
+    􏶲based on the state transition we see, we'll know whether to affect the times􏶱
+    􏵴last ios state􏵵 = 􏵶triggered changes􏵷.m_nIosStateInt;
+􏶳
+
+􏷘-􏷗􏷒update mission timer􏷑
+􏷐updates mission timer based on change triggers and forward progress of time􏷏􏶠􏶡
+􏶜􏶝􏷆IOStoHostT􏷅􏷄triggered changes􏷃􏷀triggered changes for the various aircraft times􏶿
+􏶴
+    􏶲decide whether to pause/unpause the mission time􏶱
+    􏵲decide whether to affect mission timer pause􏵳􏵶triggered changes􏵷);
+
+    􏶲decide whether to reset the mission time􏶱
+    􏵲decide whether to reset mission time􏵳􏵶triggered changes􏵷);
+    
+    FlightModelMillisecondTimerUpdate(&􏵴mission timer􏵵);
+􏶳
+
+􏷘-􏷗􏷒update simulation clock􏷑
+􏷐updates simulation clock based on change triggers and forward progress of time􏷏􏶠􏶡
+􏶜􏶝􏷆IOStoHostT􏷅􏷄triggered changes􏷃􏷀triggered changes for the various aircraft times􏶿
+􏶴
+    􏶲decide whether to pause/unpause the simulation clock􏶱
+    􏵲decide whether to affect simulation clock pause􏵳􏵶triggered changes􏵷);
+    
+    􏶲decide whether to reset the simulation clock􏶱
+    􏵲decide whether to reset simulation clock􏵳􏵶triggered changes􏵷);
+    
+    SimulationClockUpdate(&􏵴simulation clock􏵵);
+􏶳
+
+􏷘-􏷗􏷒update total elapsed time􏷑
+􏷐􏷏
+􏶠updates the elapsed simulator time based on the current time, and the start time􏶡
+􏶴
+    􏶲update the elapsed simulator time based on the current time, and the start time􏶱
+    􏵴elapsed simulator time􏵵 = TicksToMilliseconds(tickGet() - 􏵴simulator start time􏵵);
+􏶳
+
+􏷐decides whether to pause/unpause the mission time􏷏
+􏶠uses ios state transitions to make the decision􏶡
+􏷘-􏷗􏷒decide whether to affect mission timer pause􏷑
+􏶜􏶝􏷆IOStoHostT􏷅􏷄triggered changes􏷃􏷀triggered changes for the various aircraft times􏶿
+􏶴
+    􏶲decide if there was a state change that affects the mission time pause􏶱
+    if (􏵲transitioning to frozen􏵳􏵶triggered changes􏵷)){
+        FlightModelMillisecondTimerPause(&􏵴mission timer􏵵);
+    }
+    else if(􏵲transitioning to running􏵳􏵶triggered changes􏵷)){
+        FlightModelMillisecondTimerUnPause(&􏵴mission timer􏵵);
+    }
+􏶳
+
+􏷐decide whether to reset the mission time􏷏
+􏶠uses ios state transitions to make the decision􏶡
+􏷘-􏷗􏷒decide whether to reset mission time􏷑
+􏶜􏶝􏷆IOStoHostT􏷅􏷄triggered changes􏷃􏷀triggered changes for the various aircraft times􏶿
+􏶴
+    􏶲decide if there was a state change that resets the mission time􏶱
+    if (􏵲transitioning to reposition􏵳􏵶triggered changes􏵷)){
+        FlightModelMillisecondTimerReset(&􏵴mission timer􏵵);
+    }
+􏶳
+
+􏷐decide whether to pause/unpause the simulation clock􏷏
+􏶠uses ios state transitions to make the decision􏶡
+􏷘-􏷗􏷒decide whether to affect simulation clock pause􏷑
+􏶜􏶝􏷆IOStoHostT􏷅􏷄triggered changes􏷃􏷀triggered changes for the various aircraft times􏶿
+􏶴
+    􏶲decide if there was a state change that affects the simulation clock pause􏶱
+    if (􏵲transitioning to frozen􏵳􏵶triggered changes􏵷)){
+        SimulationClockPause(&􏵴simulation clock􏵵);
+    }
+    else if(􏵲transitioning to running􏵳􏵶triggered changes􏵷)){
+        SimulationClockUnPause(&􏵴simulation clock􏵵);
+    }
+􏶳
+
+􏷐decide whether to reset the simulation clock􏷏
+􏶠uses ios state transitions to make the decision􏶡
+􏷘-􏷗􏷒decide whether to reset simulation clock􏷑
+􏶜􏶝􏷆IOStoHostT􏷅􏷄triggered changes􏷃􏷀triggered changes for the various aircraft times􏶿
+􏶴
+    􏶲decide if there was a state change that resets the simulation clock􏶱
+    if (􏵲transitioning to initialized􏵳􏵶triggered changes􏵷)){
+        
+        􏶲reset the simulation clock with the new time given by the IOS􏶱
+        SimulationClockReset(&􏵴simulation clock􏵵,
+        (MonthE)􏵶triggered changes􏵷.m_nMonth,
+        􏵶triggered changes􏵷.m_nDay,
+        􏵶triggered changes􏵷.m_nYear,
+        􏵶triggered changes􏵷.m_nMilliseconds);
+    }
+􏶳
+
+
+STATE TRANSITION HELPERS:
+􏷐Determines whether the IOS has just transitioned into its frozen state􏷏
+􏶠uses the saved previous state to determine the transition􏶡
+􏷘-􏷗􏷒transitioning to frozen􏷑
+􏶜􏶝􏷆IOStoHostT􏷅􏷄triggered changes􏷃􏷀triggered changes for the various aircraft times􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼transition has just occurred􏶻􏶺whether the first transition to the specified state has occurred􏶹
+􏶴
+    return 􏵲transitioning to state􏵳􏵶triggered changes􏵷,IOS_FROZEN);
+􏶳
+
+􏷐Determines whether the IOS has just transitioned into its reposition state􏷏
+􏶠uses the saved previous state to determine the transition􏶡
+􏷘-􏷗􏷒transitioning to reposition􏷑
+􏶜􏶝􏷆IOStoHostT􏷅􏷄triggered changes􏷃􏷀triggered changes for the various aircraft times􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼transition has just occurred􏶻􏶺whether the first transition to the specified state has occurred􏶹
+􏶴
+    return 􏵲transitioning to state􏵳􏵶triggered changes􏵷,IOS_REPOSITION);
+􏶳
+
+􏷐Determines whether the IOS has just transitioned into its initialized state􏷏
+􏶠uses the saved previous state to determine the transition􏶡
+􏷘-􏷗􏷒transitioning to initialized􏷑
+􏶜􏶝􏷆IOStoHostT􏷅􏷄triggered changes􏷃􏷀triggered changes for the various aircraft times􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼transition has just occurred􏶻􏶺whether the first transition to the specified state has occurred􏶹
+􏶴
+    return 􏵲transitioning to state􏵳􏵶triggered changes􏵷,IOS_INITIALIZED);
+􏶳
+
+􏷐Determines whether the IOS has just transitioned into its running state􏷏
+􏶠uses the saved previous state to determine the transition􏶡
+􏷘-􏷗􏷒transitioning to running􏷑
+􏶜􏶝􏷆IOStoHostT􏷅􏷄triggered changes􏷃􏷀triggered changes for the various aircraft times􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼transition has just occurred􏶻􏶺whether the first transition to the specified state has occurred􏶹
+􏶴
+    return 􏵲transitioning to state􏵳􏵶triggered changes􏵷,IOS_RUNNING);
+􏶳
+
+􏷐ensure the ios has changed from state to the specified state􏷏
+􏶠this would return false if it is already on the specified state (i.e. not a transition)􏶡
+􏷘-􏷗􏷒transitioning to state􏷑
+􏶜􏶝􏷆IOStoHostT􏷅􏷄triggered changes􏷃􏷀triggered changes for the various aircraft times􏶿
+􏶜􏶝􏷆IosStatesE􏷅􏷄new state􏷃􏷀the new state we are testing to see if the IOS has transitioned into􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼transition has just occurred􏶻􏶺whether the first transition to the specified state has occurred􏶹
+􏶴
+    return (􏵶triggered changes􏵷.m_nIosStateInt == 􏵶new state􏵷) && (􏵴last ios state􏵵 != 􏵶new state􏵷);
+􏶳
+
+􏶨simulation clock􏶧
+􏶦An artificial clock, with date capabilities􏶥
+􏶘-􏶙􏶮SimulationClockT􏶭􏶬simulation clock􏶫􏶪0􏶩
+
+􏶨mission timer􏶧
+􏶦How long the current mission has been going on􏶥
+􏶘-􏶙􏶮FlightModelMillisecondTimerT􏶭􏶬mission timer􏶫􏶪0􏶩
+
+􏶨the total elapsed simulator time􏶧
+􏶦the total amount of time that the simulator has been running􏶥
+􏶘-􏶙􏶮double􏶭􏶬elapsed simulator time􏶫􏵚milliseconds􏵛􏶪0􏶩
+
+􏶨The starting kernel tick set when system was initialized.􏶧
+􏶦It's used in correlation with the actual kernel tick to derive the amount of time that has gone by.􏶥
+􏶘-􏶙􏶮double􏶭􏶬simulator start time􏶫􏶪0􏶩
+
+􏶨The previous state of the ios􏶧
+􏶦the state that was read in, the last time that the component was updated
+We use the IOS state transitions to decide how to change the mission time and simulation clock.􏶥
+􏶘-􏶙􏶮IosStatesE􏶭􏶬last ios state􏶫
+
+

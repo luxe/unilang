@@ -1,0 +1,120 @@
+class
+⚯
+⚞⚟
+
+◀public: static▶ Split_String_Trees ☀Get(String_Tree tree, Reference_Depth_Map const& depth_map)❰
+
+    //create empty trees for each of the depth slots
+    auto number_of_trees = Max_Value(depth_map.map) +1;
+    Split_String_Trees trees;
+    for (size_t i = 0; i < number_of_trees; ++i){
+        String_Tree tmp;
+        trees.trees.emplace_back(tmp);
+    }
+    
+    //start with the entire tree in the last column
+    Str_Tree_To_Unique_Id_Tree::Convert(tree);
+    trees.trees[number_of_trees-1] = tree;
+    
+    //we will extract subtrees from each column and put them into the previous.  
+    //that is how we will distribute the tree across multiple columns.
+    //I might do this in a weird inefficient way because I'm worried about iterator invalidation of the tree API.
+    for (size_t i = number_of_trees-1; i > 0; --i){
+        Handle_Column_Transfer(trees.trees[i],trees,depth_map,i);
+    }
+    
+    //convert trees back
+    for (auto & it: trees.trees){
+        Unique_Id_Tree_To_Str_Tree::Convert(it);
+    }
+    
+    return trees;
+❱
+
+
+
+◀private: static▶ void ☀Handle_Column_Transfer(String_Tree & from_tree, Split_String_Trees & to_trees, Reference_Depth_Map const& depth_map, int depth)❰
+
+    
+    while (true){
+        
+        bool found = false;
+        for (auto it = from_tree.nodes.begin(); it != from_tree.nodes.end(); ++it){
+            if (Is_Below_Existing_Depth(from_tree,it,depth_map,depth)){
+                
+                Transfer_Subtree(from_tree,it,to_trees.trees[depth-1]);
+                
+                //start over to avoid iterator invalidation
+                found = true;
+                break;
+            }
+        }
+        
+        //went through the whole tree and didn't find a subtree
+        if (!found){
+            break;
+        }
+    }
+    
+❱
+
+
+◀private: static▶ void ☀Transfer_Subtree(String_Tree & from_tree, tree<std::string>::pre_order_iterator it, String_Tree & to_tree)❰
+
+    //extract subtree
+    auto end_marker = from_tree.nodes.next_sibling(it);
+    auto subtree = from_tree.nodes.subtree(it,end_marker);
+    
+    //get the position in the next tree to add it
+    auto from_marker = to_tree.nodes.begin();
+    auto from_sibling_count = to_tree.nodes.number_of_siblings(from_marker);
+    if (from_sibling_count > 0){
+        from_marker = to_tree.nodes.sibling(from_marker,from_sibling_count);
+    }
+    
+    //add it
+    to_tree.nodes.insert_subtree(from_marker,subtree.begin());
+    
+    //remove the original subtree
+    from_tree.nodes.erase(it);
+❱
+
+
+
+
+
+◀private: static▶ bool ☀Is_At_Desired_Depth(String_Tree & from_tree, tree<std::string>::pre_order_iterator it, Reference_Depth_Map const& depth_map, int depth)❰
+    auto path = Path_Name(from_tree,it);
+    auto find = depth_map.map.find(path);
+    if (find == depth_map.map.end()){
+        return false;
+    }
+    
+    return find->second == depth;
+❱
+
+◀private: static▶ bool ☀Is_Over_Existing_Depth(String_Tree & from_tree, tree<std::string>::pre_order_iterator it, Reference_Depth_Map const& depth_map, int depth)❰
+    auto path = Path_Name(from_tree,it);
+    auto find = depth_map.map.find(path);
+    if (find == depth_map.map.end()){
+        return false;
+    }
+    
+    return find->second > depth;
+❱
+
+◀private: static▶ bool ☀Is_Below_Existing_Depth(String_Tree & from_tree, tree<std::string>::pre_order_iterator it, Reference_Depth_Map const& depth_map, int depth)❰
+    auto path = Path_Name(from_tree,it);
+    auto find = depth_map.map.find(path);
+    if (find == depth_map.map.end()){
+        return false;
+    }
+    
+    return find->second < depth;
+❱
+
+
+◀private: static▶ std::string ☀Path_Name(String_Tree const& tr, tree<std::string>::pre_order_iterator it)❰
+    //return Full_Path_Name::Get(from_tree,it);
+    return *it;
+❱

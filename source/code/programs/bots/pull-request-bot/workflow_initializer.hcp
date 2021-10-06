@@ -1,0 +1,47 @@
+class
+❪"systems"❫
+❪"utilities"❫
+❪"workload"❫
+⚯
+❪"branch_changer"❫
+⚞⚟
+
+◀public: static▶ void ☀Prepare_Initial_Setup_Before_Performing_Workflow(Workload const& workload) ❰
+
+    //as a safety precaution, make sure that we are at least in a git repo
+    Quit_If_We_Arnt_In_A_Git_Repo();
+    
+    //make sure that we start on development
+    Branch_Changer::Change_Branch("development");
+    
+    //make sure that we are sitting in the right directory of the repo as well
+    //that way I don't format other projects or code in the repo by accident
+    Make_Sure_We_Can_Start_In_The_Right_Path_And_Start_There(workload.settings.workspace.path_from_repo_root_to_run_tasks_in);
+    
+    std::cout << execute("pwd") << std::endl;
+❱
+
+◀private: static▶ void ☀Quit_If_We_Arnt_In_A_Git_Repo() ❰
+    
+    //don't go any further if we aren't in a github repo
+    if (!Inside_Git_Repository()){
+        Exit_With_Red_Error("You need to run this inside of a git repo.");
+    }
+❱
+
+◀private: static▶ void ☀Make_Sure_We_Can_Start_In_The_Right_Path_And_Start_There(std::string const& path) ❰
+    
+    //move to the root of the repo
+    //from there, we will step down into the area that we want the bot to be working at
+    //this avoid the bot from accidentally changing other files
+    Go_To_Git_Repo_Root();
+    
+    //step into the designated path, or quit if we cant
+    if (Directory_Exists(path)){
+        Step_Into_Folder(path);
+    }
+    else{
+        Exit_With_Red_Error("Was not able to step into " + path + " from project root.");
+    }
+    
+❱

@@ -1,0 +1,66 @@
+class
+⚯
+⚞⚟
+
+
+//assume string representation of tree is like (yes those are ascii dots):
+//o
+//.o
+//.o
+//..o
+//...o
+//.o
+//
+◀public: static▶ String_Tree ☀Convert(std::string str) ❰
+
+    //fix any formatting issues
+    trim(str);
+    auto lines = Split_Into_Parts_From_Newline(str);
+    Remove_Whitespace_Lines(lines);
+    Trim_Lines(lines);
+    
+    //convert string representation into a list of strings with depth
+    auto depth_list = Convert_To_String_Depths(lines);
+    Check_Depth_Correctness(depth_list);
+
+    //convert to tree
+    String_Tree tree;
+    tree.nodes = from_depth_list(depth_list);
+    
+    return tree;
+❱
+
+◀private: static▶ void ☀Check_Depth_Correctness(std::vector<std::pair<int,std::string>> const& depth_list)❰
+    int current_count = 0;
+    for (auto const& it: depth_list){
+        if (it.first == current_count+1){
+            //good (increasing 1)
+        }
+        else if (it.first <= current_count){
+            //good (fallback to higher level)
+        }
+        else if (it.first < 0){
+            std::cerr << "not possible to have " << it.second << " at level " << it.first << std::endl;
+            exit(-1);
+        }
+        else if (it.first > current_count+1){
+            std::cerr << "not possible to have " << it.second << " at level " << it.first << std::endl;
+            exit(-1);
+        }
+        current_count = it.first;
+        
+    }
+❱
+
+◀private: static▶ std::vector<std::pair<int,std::string>> ☀Convert_To_String_Depths(std::vector<std::string> const& lines) ❰
+
+    std::vector<std::pair<int,std::string>> results;
+    for (auto it: lines){
+        
+        //trim off the indent characters to get the depth and store it with the label
+        auto depth = Starts_With_How_Many_Dots(it);
+        Remove_First_N_Chars(it,depth);
+        results.emplace_back(depth,it);
+    }
+    return results;
+❱

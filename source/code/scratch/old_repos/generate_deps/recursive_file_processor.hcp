@@ -1,0 +1,240 @@
+class
+❪"utilities"❫
+❪"systems"❫
+❪"program_options"❫
+⚯
+⚞⚟
+◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& program_options) ❰
+ std::ofstream outfile("recursive_file_processor.hcp");
+outfile << R"DELIM(class
+ļ❪"utilities"ļ❫
+ļ❪"systems"ļ❫
+ļ❪"program_options"ļ❫
+ļ⚯
+ļ❪"file_system_traverser"ļ❫
+ļ⚞ļ⚟
+ļ◀public: staticļ▶ void ļ☀Process(Program_Options const& program_options, std::function<std::vector<std::string>& (std::vector<std::string> &)> const& bulk_line_processing_function) ļ❰
+  auto all_paths = Get_All_Of_The_Paths_Needed_Based_Off_The_Program_Flags(program_options);
+  if (program_options.Dry_Run()){
+    Print_Each_Element_On_A_Line(all_paths);
+  }else{
+    for (auto const& file_path: all_paths){
+      Process_File_With_Function(file_path,bulk_line_processing_function);
+    }
+  }
+ļ❱
+ļ◀public: staticļ▶ void ļ☀Process(Program_Options const& program_options, std::function<std::string& (std::string &)> const& line_processing_function) ļ❰
+  auto all_paths = Get_All_Of_The_Paths_Needed_Based_Off_The_Program_Flags(program_options);
+  if (program_options.Dry_Run()){
+    Print_Each_Element_On_A_Line(all_paths);
+  }else{
+    for (auto const& file_path: all_paths){
+      Process_File_With_Function(file_path,line_processing_function);
+    }
+  }
+ļ❱
+
+ļ◀public: staticļ▶ std::vector<std::string> ļ☀Get_All_Of_The_Paths_Needed_Based_Off_The_Program_Flags(Program_Options const& program_options) ļ❰
+
+  //get all the paths to all the files
+  auto all_paths = Set_Path_And_Get_List_To_All_File_Paths(program_options);
+  
+  //do all exclusions filters first  
+  Filter_Out_Paths_Based_On_Exclusions(all_paths,program_options);
+  
+  if (All_True(
+      program_options.File_Paths().empty()
+      , program_options.Dir_Paths().empty()
+      , program_options.Dir_Names().empty()
+      , program_options.File_Names().empty()
+      , program_options.File_Extensions().empty()
+      )){
+        return all_paths;
+    }
+    
+    auto set = Get_Set_Of_Valid_Paths_Based_On_Inclusions(all_paths,program_options);
+    return Set_To_Vector(set);
+ļ❱
+
+
+ļ◀private: staticļ▶ std::vector<std::string> ļ☀Set_Path_And_Get_List_To_All_File_Paths(Program_Options const& program_options)ļ❰
+  Set_Path(program_options.Start_Path());
+  auto root_path = Current_Path();
+  std::vector<std::string> all_paths;
+  
+  
+  //get a relative path to every single file
+  File_System_Traverser file_system_traverser(program_options.Exclude_Dir_Names());
+  while (file_system_traverser.Move_Into_Next_Directory()) {
+    std::vector<std::string> local_file_paths;
+    
+    auto local_file_names = Get_Regular_Files_Of_Path();
+    for (auto & file_name: local_file_names){
+      local_file_paths.push_back("." + As_Beginning_Matching_Part_Of_String_Removed(Current_Path() + "/" + file_name,root_path));
+    }
+    
+    all_paths += local_file_paths;
+    
+  }
+  
+  return all_paths;
+ļ❱
+
+
+ļ◀private: staticļ▶ void ļ☀Filter_Out_Paths_Based_On_Exclusions(std::vector<std::string> & all_paths, Program_Options const& program_options) ļ❰
+  //file path
+  if (!program_options.Exclude_File_Paths().empty()){
+    Remove_Elements_Where_Function_Is_True(all_paths,[&](std::string path_to_file)->bool{
+      
+      for (auto const& it: program_options.Exclude_File_Paths()){
+        if (path_to_file == it){
+          return true;
+        }
+      }
+      return false;
+    });
+  }
+
+  //dir paths
+  if (!program_options.Exclude_Dir_Paths().empty()){
+    Remove_Elements_Where_Function_Is_True(all_paths,[&](std::string path_to_file)->bool{
+      
+      for (auto const& it: program_options.Exclude_Dir_Paths()){
+        
+        //remove file name portion
+        auto str = As_All_Chars_Removed_From_Back_Until_Char_Is_Seen(path_to_file, '/');
+        
+        
+        if (Begins_With(str,it)){
+          return true;
+        }
+      }
+      return false;
+    });
+  }
+  
+  //dir names
+    if (!program_options.Exclude_Dir_Names().empty()){
+    Remove_Elements_Where_Function_Is_True(all_paths,[&](std::string path_to_file)->bool{
+      
+      for (auto const& it: program_options.Exclude_Dir_Names()){
+        auto parts = Get_Path_In_Parts(path_to_file);
+        Remove_Last_Element(parts);
+        for (auto const& d: parts){
+          if (it == d){
+            return true;
+          }
+        }
+      }
+      return false;
+    });
+  }
+
+  //file names
+  if (!program_options.Exclude_File_Names().empty()){
+    Remove_Elements_Where_Function_Is_True(all_paths,[&](std::string path_to_file)->bool{
+      
+      for (auto const& it: program_options.Exclude_File_Names()){
+        if (Get_File_Name(path_to_file) == it){
+          return true;
+        }
+      }
+      return false;
+    });
+  }
+  
+  //file extensions
+  if (!program_options.Exclude_File_Extensions().empty()){
+    Remove_Elements_Where_Function_Is_True(all_paths,[&](std::string path_to_file)->bool{
+      
+      for (auto const& it: program_options.Exclude_File_Extensions()){
+        if (Get_File_Extension(path_to_file) == it){
+          return true;
+        }
+      }
+      return false;
+    });
+  }
+ļ❱
+
+
+ļ◀private: staticļ▶ std::set<std::string> ļ☀Get_Set_Of_Valid_Paths_Based_On_Inclusions(std::vector<std::string> const& all_paths, Program_Options const& program_options) ļ❰
+  
+  std::set<std::string> keeps;
+        
+  //file path
+  if (!program_options.File_Paths().empty()){
+    for (auto const& path_to_file: all_paths){
+      for (auto const& it: program_options.File_Paths()){
+        if (path_to_file == it){
+          Add_To_Set(keeps,path_to_file);
+        }
+      }
+    }
+  }
+  
+  //dir path
+  if (!program_options.Dir_Paths().empty()){
+    for (auto const& path_to_file: all_paths){
+      for (auto const& it: program_options.Dir_Paths()){
+        
+        //remove file name portion
+        auto str = As_All_Chars_Removed_From_Back_Until_Char_Is_Seen(path_to_file, '/');
+        
+        
+        if (Begins_With(str,it)){
+          Add_To_Set(keeps,path_to_file);
+        }
+      }
+    }
+  }
+  
+  //dir name
+    if (!program_options.Dir_Names().empty()){
+      for (auto const& path_to_file: all_paths){
+        for (auto const& it: program_options.Dir_Names()){
+          auto parts = Get_Path_In_Parts(path_to_file);
+          Remove_Last_Element(parts);
+          for (auto const& d: parts){
+            if (it == d){
+              Add_To_Set(keeps,path_to_file);
+            }
+          }
+        }
+      }
+    }
+
+  //file names
+  if (!program_options.File_Names().empty()){
+      for (auto const& path_to_file: all_paths){
+        for (auto const& it: program_options.File_Names()){
+          if (Get_File_Name(path_to_file) == it){
+            Add_To_Set(keeps,path_to_file);
+          }
+        }
+      }
+  }
+
+  //file extensions
+  if (!program_options.File_Extensions().empty()){
+    for (auto const& path_to_file: all_paths){
+      for (auto const& it: program_options.File_Extensions()){
+        if (Get_File_Extension(path_to_file) == it){
+          Add_To_Set(keeps,path_to_file);
+        }
+      }
+    }
+  }
+  
+  return keeps;
+ļ❱
+
+ļ◀public: staticļ▶ void ļ☀Process_File_With_Function(std::string const& path, std::function<std::vector<std::string>& (std::vector<std::string> &)> const& func) ļ❰
+  Transform_File_Lines_In_Bulk_With_Function(path,func);
+ļ❱
+ļ◀public: staticļ▶ void ļ☀Process_File_With_Function(std::string const& path, std::function<std::string& (std::string &)> const& func) ļ❰
+  Transform_Each_Line_Of_File_With_Function(path,func);
+ļ❱
+
+)DELIM";
+❱

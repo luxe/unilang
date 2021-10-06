@@ -1,0 +1,143 @@
+􏶞p􏶟
+􏷲The 􏶏 specific to the UH72A DC power system.􏷱
+􏷰Stores a collection of System Bus node IDs and builds them into the generic electrical graph.􏷯
+􏷮Electrical_System􏷭 􏷮System_Buses􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦stddef􏷥􏴓1􏴔􏴑size_t􏴒
+􏷤􏷣􏷦ElectricalGraph􏷥􏴓d􏴔􏴑ElectricalGraphT􏴒
+􏷤􏷣􏷦PowerRelay􏷥􏴓d􏴔􏴑PowerRelayT􏴒
+􏶔􏶕􏶒string􏶓􏴏d􏴐􏴍strcpy()􏴎
+􏶔􏶕􏶒pole􏶓􏴏d􏴐􏴍PoleT􏴎
+
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be in an invalid state until initialized.
+Initializing a 􏶐 will construct all of its nodes into the generic electrical graph.
+It will store the IDs given back by the graph so that they may be queried later by the user.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its nodes into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+  􏶲create all the internal nodes inside the graph data structure􏶱
+  􏵲create nodes􏵳􏵶graph􏵷,􏵶tag name􏵷);
+  
+  􏶲connect these newly created nodes􏶱
+  􏵲create wires􏵳􏵶graph􏵷);
+􏶳
+
+􏷘+􏷗􏷒^􏶐􏷑
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆void􏷅􏷄self􏷃􏷀the 􏶐 to copy construct􏶿
+􏶴
+  􏶲implicit forwarding cast􏶱
+  􏵲copy􏵳􏵶self􏵷);
+􏶳
+􏷘-􏷗􏷒copy􏷑
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆SystemBusesT􏷅􏷄self􏷃􏷀the 􏶐 to copy construct􏶿
+􏶴
+  􏶲perform deep copy􏶱
+  CopyInitializePowerRelayT(&􏵴essential power relay􏵵,&􏵶self􏵷->m_tEssentialPowerRelay);
+  CopyInitializePowerRelayT(&􏵴shed power relay􏵵,&􏵶self􏵷->m_tShedPowerRelay);
+    
+  􏶲perform shallow copy􏶱
+  􏵴essential bus􏵵 = 􏵶self􏵷->m_uEssentialBus;
+  􏵴nonessential bus􏵵 = 􏵶self􏵷->m_uNonessentialBus;
+  􏵴shed bus􏵵 = 􏵶self􏵷->m_uShedBus;
+  􏵴mission bus􏵵 = 􏵶self􏵷->m_uMissionBus;
+  􏵴avionic shed bus􏵵 = 􏵶self􏵷->m_uAvionicShedBus;
+  􏵴avionic essential bus􏵵 = 􏵶self􏵷->m_uAvionicEssentialBus;
+  􏵴avionic switch􏵵 = 􏵶self􏵷->m_uAvionicSwitch;
+􏶳
+􏷘+􏷗􏷒~􏶐􏷑
+􏷐Destruct the 􏶐􏷏
+􏶠􏶐 will leak memory unless destructed􏶡
+􏶴
+  􏶲destruct􏶱
+  􏵲destruct􏵳);
+􏶳
+􏷘-􏷗􏷒destruct􏷑
+􏷐Destruct the 􏶐􏷏
+􏶠􏶐 will leak memory unless destructed􏶡
+􏶴
+  􏶲C does not have destructors.􏶱
+  DestructPowerRelayT(&􏵴essential power relay􏵵);
+  DestructPowerRelayT(&􏵴shed power relay􏵵);
+􏶳
+
+􏷘-􏷗􏷒create nodes􏷑
+􏷐Constructs all of the electrical components into the generic electrical graph data structure.􏷏
+􏶠This will give all of the node a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its nodes into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+  􏶲create all of the vertices that are part of the 􏶐􏶱
+  􏶲add nodes to graph􏶱
+  
+  􏶲spawned distribution buses􏶱
+  􏵴essential bus􏵵 = ElectricalGraphAddGroundedBus(􏵶graph􏵷,"ess bus",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);
+  􏵴nonessential bus􏵵 = ElectricalGraphAddGroundedBus(􏵶graph􏵷,"non ess bus",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);
+  􏵴shed bus􏵵 = ElectricalGraphAddGroundedBus(􏵶graph􏵷,"shed bus",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);
+  􏵴mission bus􏵵 = ElectricalGraphAddGroundedBus(􏵶graph􏵷,"mission bus",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);
+  
+  􏶲avionic sub buses􏶱
+  􏵴avionic shed bus􏵵 = ElectricalGraphAddGroundedBus(􏵶graph􏵷,"avio shed bus",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);
+  􏵴avionic essential bus􏵵 = ElectricalGraphAddGroundedBus(􏵶graph􏵷,"avio ess bus",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);
+  
+  􏶲avionic power relays􏶱
+  􏵴essential power relay􏵵 = ElectricalGraphAddPowerRelay(􏵶graph􏵷,􏵶tag name􏵷,2);
+  􏵴shed power relay􏵵 = ElectricalGraphAddPowerRelay(􏵶graph􏵷,􏵶tag name􏵷,2);
+  
+  􏶲avionic switch is connected to the power relays􏶱
+  􏵴avionic switch􏵵 = ElectricalGraphAddGroundedSwitch(􏵶graph􏵷,"avio switch",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_NO);
+􏶳
+
+􏷘-􏷗􏷒create wires􏷑
+􏷐Connects all of the necessary 􏶐 nodes together.􏷏
+􏶠The nodes being connected will need to be created first.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its wires into.􏶿
+􏶴
+  􏶲connect sub buses to the power relays􏶱
+  ElectricalGraphAddDirectedWire(􏵶graph􏵷,((PoleT*)VectorAt(&􏵴essential power relay􏵵.m_tPoles,0))->m_uOpenTerminal,􏵴avionic essential bus􏵵);
+  ElectricalGraphAddDirectedWire(􏵶graph􏵷,((PoleT*)VectorAt(&􏵴shed power relay􏵵.m_tPoles,0))->m_uOpenTerminal,􏵴avionic shed bus􏵵);
+  
+  􏶲avio switch to power relays􏶱
+  ElectricalGraphAddDirectedWire(􏵶graph􏵷,􏵴essential power relay􏵵.m_uCoil,􏵴avionic switch􏵵);
+  ElectricalGraphAddDirectedWire(􏵶graph􏵷,􏵴shed power relay􏵵.m_uCoil,􏵴avionic switch􏵵);
+  
+  􏶲connect the mission bus􏶱
+  ElectricalGraphAddDirectedWire(ptGraph, ptSystemBuses->m_uNonessentialBus, ptSystemBuses->m_uMissionBus);
+􏶳
+
+
+
+
+
+􏶨The IDs of one of the essential buses which are used to connect essential devices.􏶧
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬essential bus􏶫􏶪0􏶩
+
+􏶨The IDs of one of the nonessential buses which are used to connect nonessential devices.􏶧
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬nonessential bus􏶫􏶪0􏶩
+
+􏶨The IDs of one of the mission buses which are used to connect MEP devices.􏶧
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬mission bus􏶫􏶪0􏶩
+
+􏶨The IDs of one of the shed buses which are used to connect shed devices.􏶧
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬shed bus􏶫􏶪0􏶩
+
+􏶨The IDs of one of the avionic shed buses which are used to connect avionic shed devices.􏶧
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬avionic shed bus􏶫􏶪0􏶩
+
+􏶨The IDs of one of the avionic essential buses which are used to connect avionic essential devices.􏶧
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬avionic essential bus􏶫􏶪0􏶩
+
+􏶨the power relay in front of the essential avionic bus􏶧
+􏶘-g􏶙􏶰􏶯􏶮PowerRelayT􏶭􏶬essential power relay􏶫􏶪0􏶩
+
+􏶨the power relay in front of the shed avionic bus􏶧
+􏶘-g􏶙􏶰􏶯􏶮PowerRelayT􏶭􏶬shed power relay􏶫􏶪0􏶩
+
+􏶨a switch that connects the power relays to ground􏶧
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬avionic switch􏶫􏶪0􏶩

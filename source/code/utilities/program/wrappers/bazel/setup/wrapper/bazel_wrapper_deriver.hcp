@@ -1,0 +1,33 @@
+class
+❪iostream❫
+❪string❫
+❪"code/utilities/filesystem/files/getting/lib"❫
+❪"code/utilities/program/wrappers/bazel/setup/wrapper/bazel_wrapper"❫
+❪"code/utilities/system/lib"❫
+⚯
+⚞⚟
+
+◀public: static▶ void ☀Possibly_Derive_Bazel_Runner(Bazel_Wrapper & settings, std::string const& path)❰
+    if (settings.derive){
+        settings.program_name = Derive_Program_Name(settings,path);
+    }
+❱
+
+◀private: static▶ std::string ☀Derive_Program_Name(Bazel_Wrapper const& settings, std::string const& path) ❰
+
+    //if a wrapper tool exists in the repo, use that.
+    auto program_name = First_Filename_Found_At_Path(settings.search_derive_programs, path);
+    if (!program_name.empty()){
+        program_name = "./" + program_name;
+        return program_name;
+    }
+    
+    // if a global bazel exists on the system, use that.
+    bool global_bazel_exists = Does_Program_Exist("bazel");
+    if (global_bazel_exists){
+        return "bazel";
+    }
+    
+    //if we didn't find anything to run, use what was currently configured
+    return program_name;
+❱

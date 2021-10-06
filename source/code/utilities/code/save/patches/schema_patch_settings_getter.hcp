@@ -1,0 +1,268 @@
+class
+⚯
+⚞⚟
+
+
+//patching code for when the code schema changes and needs updated automatically for forwards compatibility
+◀public: static▶ std::vector<std::function<void(Positioned_Buildable_Schema_Faced_Tree&)>> ☀Get()❰
+
+
+    using PatchFunctionT = std::function<void(Positioned_Buildable_Schema_Faced_Tree&)>;
+    std::vector<PatchFunctionT> patches;
+    patches.emplace_back(Patch_0);
+    patches.emplace_back(Patch_1);
+    patches.emplace_back(Patch_2);
+    patches.emplace_back(Patch_3);
+    patches.emplace_back(Patch_4);
+    patches.emplace_back(Patch_5);
+    
+    //add more
+    return patches;
+❱
+
+
+◀private: static▶ void ☀Patch_0(Positioned_Buildable_Schema_Faced_Tree & j)❰
+    //intentionally empty
+    (void)j;
+❱
+◀private: static▶ void ☀Patch_1(Positioned_Buildable_Schema_Faced_Tree & j)❰
+
+
+    //imports moved
+    Add_Section_And_Move_Section_Under_It(j,"module","imports","import interface");
+    Add_Section_And_Move_Section_Under_It(j,"module","imports","import implementation");
+    Add_Section_And_Move_Section_Under_It(j,"module","imports","import test");
+    
+    //this stuff changed too.
+    //I'm lazy and am just going to delete it so it adheres to the newly enforced schema
+    Delete_Section_By_Path(j,"code/module/brief/");
+    Delete_Section_By_Path(j,"code/module/data member/brief/");
+    Delete_Section_By_Path(j,"code/module/data member/class specifiers/");
+    Delete_Section_By_Path(j,"code/module/data member/type qualifiers/");
+    Delete_Section_By_Path(j,"code/module/data member/detail/");
+    Delete_Section_By_Path(j,"code/module/detail/");
+    Delete_Section_By_Path(j,"code/module/function/brief/");
+    Delete_Section_By_Path(j,"code/module/function/detail/");
+    Delete_Section_By_Path(j,"code/module/function/specifiers/");
+❱
+
+◀private: static▶ void ☀Patch_2(Positioned_Buildable_Schema_Faced_Tree & j)❰
+
+    Add_Section_And_Move_Section_Under_It(j,"module","data members","data member");
+❱
+
+◀private: static▶ void ☀Patch_3(Positioned_Buildable_Schema_Faced_Tree & j)❰
+
+    Add_Section_And_Move_Section_Under_It_Via_Full_Paths(j,"code/module/","descriptions","code/module/description/");
+❱
+
+◀private: static▶ void ☀Patch_4(Positioned_Buildable_Schema_Faced_Tree & j)❰
+
+    Add_Section_And_Move_Section_Under_It_Via_Full_Paths(j,"code/module/","functions","code/module/function/");
+❱
+
+◀private: static▶ void ☀Patch_5(Positioned_Buildable_Schema_Faced_Tree & j)❰
+
+    //WRONG MOVE ALL UNDER THE SAME PARENT
+    std::vector<std::string> v;
+    v.emplace_back("code/module/raw statement/");
+    v.emplace_back("code/module/todo statement/");
+    v.emplace_back("code/module/comment/");
+    Add_Section_And_Move_Section_Under_It_Via_Full_Paths(j,"code/module/","statements",v);
+❱
+
+
+
+
+//utilities
+◀private: static▶ void ☀Add_Section_And_Move_Section_Under_It(Positioned_Buildable_Schema_Faced_Tree & j, std::string const& new_section_parent, std::string const& new_section_name, std::string const& section_to_move)❰
+
+
+
+    std::vector<tree<Buttoned_Faced_Label>::pre_order_iterator> need_removed;
+
+
+    //find all module sections
+    for (auto it = j.state.tree.state.structure.nodes.begin(); it != j.state.tree.state.structure.nodes.end(); ++it){
+        if (it->label.state.faces[it->label.state.faces.size()-1].label.message == new_section_parent){
+            
+                //add an imports section
+                Buttoned_Faced_Label imports_node = *it;
+                imports_node.label.state.faces[imports_node.label.state.faces.size()-1].name = new_section_name;
+                imports_node.label.state.faces[imports_node.label.state.faces.size()-1].label.message = new_section_name;
+                auto import_node_ptr = j.state.tree.state.structure.nodes.append_child(it,imports_node);
+                auto import_node_child_ptr = j.state.tree.state.structure.nodes.append_child(import_node_ptr,imports_node);
+                
+                //continue looping and move each of the import sections under this new section
+                for (; it != j.state.tree.state.structure.nodes.end(); ++it){
+                    
+                    //move section
+                    if (it->label.state.faces[it->label.state.faces.size()-1].label.message == section_to_move){
+                        
+                            //get the first sibling
+                            auto first = j.state.tree.state.structure.nodes.sibling(import_node_child_ptr,0);
+                            
+                            //move
+                            j.state.tree.state.structure.nodes.insert_subtree(first,it);
+                            need_removed.emplace_back(it);
+                    }
+                }
+                
+                //CLEANUP
+                //remove the dummy element
+                j.state.tree.state.structure.nodes.erase(import_node_child_ptr);
+                
+                //remove section if there was nothing added
+                auto count = j.state.tree.state.structure.nodes.number_of_children(import_node_ptr);
+                if (count == 0){
+                    j.state.tree.state.structure.nodes.erase(import_node_ptr);
+                }
+                break;
+                
+        }
+    }
+    
+    
+    //remove the subtrees that were moved
+    for (auto const& it: need_removed){
+        j.state.tree.state.structure.nodes.erase(it);
+    }
+
+
+❱
+
+◀private: static▶ void ☀Add_Section_And_Move_Section_Under_It_Via_Full_Paths(Positioned_Buildable_Schema_Faced_Tree & j, std::string const& new_section_parent, std::string const& new_section_name, std::string const& section_to_move)❰
+
+
+
+    std::vector<std::string> v;
+    v.emplace_back(section_to_move);
+    Add_Section_And_Move_Section_Under_It_Via_Full_Paths(j,new_section_parent,new_section_name,v);
+
+
+❱
+
+◀private: static▶ void ☀Add_Section_And_Move_Section_Under_It_Via_Full_Paths(Positioned_Buildable_Schema_Faced_Tree & j, std::string const& new_section_parent, std::string const& new_section_name, std::vector<std::string> const& section_to_move)❰
+
+
+
+    std::vector<tree<Buttoned_Faced_Label>::pre_order_iterator> need_removed;
+
+
+    //find all module sections
+    for (auto it = j.state.tree.state.structure.nodes.begin(); it != j.state.tree.state.structure.nodes.end(); ++it){
+        
+        auto full_name1 = Button_Face_Tree_Full_Path_Name::Get(j.state.tree.state.structure,it);
+        if (full_name1 == new_section_parent){
+            
+                //add an imports section
+                Buttoned_Faced_Label imports_node = *it;
+                imports_node.label.state.faces[imports_node.label.state.faces.size()-1].name = new_section_name;
+                imports_node.label.state.faces[imports_node.label.state.faces.size()-1].label.message = new_section_name;
+                auto import_node_ptr = j.state.tree.state.structure.nodes.append_child(it,imports_node);
+                auto import_node_child_ptr = j.state.tree.state.structure.nodes.append_child(import_node_ptr,imports_node);
+                
+                //continue looping and move each of the import sections under this new section
+                for (; it != j.state.tree.state.structure.nodes.end(); ++it){
+                    
+                    //move section
+                    auto full_name2 = Button_Face_Tree_Full_Path_Name::Get(j.state.tree.state.structure,it);
+                    
+                    if (String_In_Vector(section_to_move,full_name2)){
+
+                        
+                            //get the first sibling
+                            auto first = j.state.tree.state.structure.nodes.sibling(import_node_child_ptr,0);
+                            
+                            //move
+                            j.state.tree.state.structure.nodes.insert_subtree(first,it);
+                            need_removed.emplace_back(it);
+                    }
+                }
+                
+                //CLEANUP
+                //remove the dummy element
+                j.state.tree.state.structure.nodes.erase(import_node_child_ptr);
+                
+                //remove section if there was nothing added
+                auto count = j.state.tree.state.structure.nodes.number_of_children(import_node_ptr);
+                if (count == 0){
+                    j.state.tree.state.structure.nodes.erase(import_node_ptr);
+                }
+                break;
+                
+        }
+    }
+    
+    
+    //remove the subtrees that were moved
+    for (auto const& it: need_removed){
+        j.state.tree.state.structure.nodes.erase(it);
+    }
+
+
+❱
+
+
+◀private: static▶ void ☀Delete_Section(Positioned_Buildable_Schema_Faced_Tree & j, std::string const& new_section_parent, std::string const& new_section_name)❰
+
+
+
+    std::vector<tree<Buttoned_Faced_Label>::pre_order_iterator> need_removed;
+
+
+    //find all module sections
+    for (auto it = j.state.tree.state.structure.nodes.begin(); it != j.state.tree.state.structure.nodes.end(); ++it){
+        if (it->label.state.faces[it->label.state.faces.size()-1].label.message == new_section_parent){
+            
+            ++it;
+            if (it != j.state.tree.state.structure.nodes.end()){
+                if (it->label.state.faces[it->label.state.faces.size()-1].label.message == new_section_name){
+                    need_removed.emplace_back(it);
+                }
+            }
+            
+        }
+    }
+    
+    
+    //remove the subtrees that were requested
+    for (auto const& it: need_removed){
+        j.state.tree.state.structure.nodes.erase(it);
+    }
+
+
+❱
+
+
+◀private: static▶ void ☀Delete_Section_By_Path(Positioned_Buildable_Schema_Faced_Tree & j, std::string const& path)❰
+
+
+
+    std::vector<tree<Buttoned_Faced_Label>::pre_order_iterator> need_removed;
+
+
+    //find all module sections
+    for (auto it = j.state.tree.state.structure.nodes.begin(); it != j.state.tree.state.structure.nodes.end(); ++it){
+        auto full_name = Button_Face_Tree_Full_Path_Name::Get(j.state.tree.state.structure,it);
+        if (full_name == path){
+            need_removed.emplace_back(it);
+        }
+    }
+    
+    
+    //remove the subtrees that were requested
+    for (auto const& it: need_removed){
+        j.state.tree.state.structure.nodes.erase(it);
+    }
+
+
+❱
+
+
+
+
+
+
+
+

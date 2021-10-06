@@ -1,0 +1,67 @@
+􏶞g􏶟
+􏷲Support for appending types to json arrays􏷱
+􏷰Provides type supporting functions that take types to serialize into an existing JSON array
+Designed for use in iterable containers.􏷯
+􏷮􏶐􏷭 􏷮JSON􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤s􏷣􏷦stddef􏷥􏴓1􏴔􏴑size_t􏴒
+􏷤s􏷣􏷦stdioLib􏷥􏴓d􏴔􏴑BOOL􏴒
+􏷤􏷣􏷦json􏷥􏴓d􏴔􏴑JSON_Value􏴒􏴓d􏴔􏴑JSON_Object􏴒
+􏷤􏷣􏷦ascii_string􏷥􏴓d􏴔􏴑AsciiStringT􏴒
+
+􏴣Uses a callback to place a custom object into a json array􏴤
+􏴡ucalled by iterable containers􏴢
+􏴥+􏴦􏴟custom object into json array􏴠
+􏴙void *􏴚􏴗pointer to custom object􏴘
+􏴙JSON_Array *const􏴚􏴗the array to append the object to􏴘
+
+INDIVIDUAL ELEMENT APPEND IN JSON ARRAY
+􏳇name􏳈        􏳅short􏳆􏳅int􏳆􏳅long􏳆􏳅size t􏳆􏳅float􏳆􏳅double􏳆􏳅long double􏳆
+􏳇uni type􏳈    􏳅s􏳆    􏳅i􏳆  􏳅l􏳆   􏳅size􏳆  􏳅f􏳆    􏳅d􏳆     􏳅ld􏳆
+􏷘+􏷗􏷒serialize {{name}} into json array􏷑
+􏴅serialization􏴆
+􏷐serializes an element as a {{name}} into an array􏷏
+􏶠concatenates a json number to a json serialization structure􏶡
+􏶜mr􏶝􏷆{{uni type}}􏷅􏷄number􏷃􏷀the number to add to the array􏶿
+􏶜mr􏶝􏷆JSON_Array􏷅􏷄elements􏷃􏷀the json array to serialize into􏶿
+􏶴
+    􏶲JSON has a number type which is a double􏶱
+    􏶲we'll ensure we append the floating point number as a double􏶱
+    double dValue = *􏵶number􏵷;
+    json_array_append_number(􏵶elements􏵷,dValue);
+􏶳
+􏷘+􏷗􏷒serialize bool into json array􏷑
+􏴅serialization􏴆
+􏷐serializes an element as a bool into an array􏷏
+􏶠concatenates a json bool to a json serialization structure􏶡
+􏶜mr􏶝􏷆bool􏷅􏷄bool􏷃􏷀the bool to add to the array􏶿
+􏶜mr􏶝􏷆JSON_Array􏷅􏷄elements􏷃􏷀the json array to serialize into􏶿
+􏶴
+    􏶲ensure a bool is being put into the array􏶱
+    BOOL bValue = *􏵶bool􏵷;
+    json_array_append_boolean(􏵶elements􏵷,bValue);
+􏶳
+
+􏷘+􏷗􏷒serialize string into json array􏷑
+􏴅serialization􏴆
+􏷐serializes an element as a string into an array􏷏
+􏶠concatenates a json string to a json serialization structure􏶡
+􏶜mr􏶝􏷆AsciiStringT􏷅􏷄str􏷃􏷀the str to add to the array􏶿
+􏶜mr􏶝􏷆JSON_Array􏷅􏷄elements􏷃􏷀the json array to serialize into􏶿
+􏶴
+    􏶲emplace the c string version of the string into the append interface􏶱
+    json_array_append_string(􏵶elements􏵷,AsciiStringCStr(􏵶str􏵷));
+􏶳
+
+􏷘+􏷗􏷒serialize object into json array􏷑
+􏴅serialization􏴆
+􏷐serializes an element as a specified object into an array􏷏
+􏶠concatenates a json object to a json serialization structure􏶡
+􏶜mr􏶝􏷆void􏷅􏷄object􏷃􏷀the object to add to the array􏶿
+􏶜mr􏶝􏷆JSON_Array􏷅􏷄elements􏷃􏷀the json array to serialize into􏶿
+􏶜􏶝􏷆CustomObjectIntoJsonArrayT􏷅􏷄callback􏷃􏷀a callback to place a custom object into a json array􏶿
+􏶴
+    􏶲emplace the object into the array using the custom function􏶱
+    (*􏵶callback􏵷)(􏵶object􏵷,􏵶elements􏵷);
+􏶳

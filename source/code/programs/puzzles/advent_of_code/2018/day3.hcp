@@ -1,0 +1,89 @@
+class
+❪"utilities"❫
+❪"systems"❫
+⚯
+⚞⚟
+
+◀public: static▶ void ☀Go()❰
+    auto input = Get_And_Parse_Each_Line_Of_File("data/3.txt");
+    auto sides1 = VecVecStringToVecVecInt(input);
+    auto sides2 = TurnRowsToColumns(sides1);
+    
+    std::cout << Answer1(sides1) << '\n';
+    std::cout << Answer2(sides2) << '\n';
+❱
+
+
+◀private: static▶ std::vector<std::vector<int>> ☀TurnRowsToColumns(std::vector<std::vector<int>> const& in)❰
+    std::vector<std::vector<int>> results;
+    
+    for (auto x: in){
+        for (int i = 0; i < x.size(); ++i){
+            if (results.size() <= i){
+                results.emplace_back();
+                results[i].push_back(x[i]);
+            }else{
+                results[i].push_back(x[i]);
+            }
+        }
+    }
+    
+    return results;
+❱
+
+◀private: static▶ int ☀Answer1(std::vector<std::vector<int>> sides)❰
+    int yes=0;
+    for (auto it: sides){
+        if (ValidTriangle(it[0],it[1],it[2])){++yes;}
+    }
+    return yes;
+❱
+◀private: static▶ int ☀Answer2(std::vector<std::vector<int>> sides)❰
+    int yes=0;
+  for (auto it: sides){
+        auto chunks = SplitIntoNChunks(it,3);
+        for (auto c: chunks){
+                if (ValidTriangle(c[0],c[1],c[2])){
+                    //std::cout << "yes: " << c << std::endl;
+                    ++yes;
+                }else{
+                    //std::cout << "no:  " << c << std::endl;
+                }
+        }
+  }
+  
+    return yes;
+❱
+
+◀private: static▶ std::vector<std::vector<int>> ☀SplitIntoNChunks(std::vector<int> const& in, int chunk_size)❰
+    std::vector<std::vector<int>> results;
+    std::vector<int> temp;
+    
+    int current_mark = 0;
+    for (auto it: in){
+        if (current_mark < chunk_size){
+            ++current_mark;
+            temp.push_back(it);
+        }
+        else{
+            current_mark = 0;
+            results.push_back(temp);
+            temp.clear();
+            
+            ++current_mark;
+            temp.push_back(it);
+        }
+    }
+    
+    if (!temp.empty()){
+        results.push_back(temp);
+    }
+    
+    return results;
+❱
+
+◀private: static▶ bool ☀ValidTriangle(int side1, int side2, int side3)❰
+    std::vector<int> it {side1,side2,side3};
+    std::sort(it.begin(),it.end());
+    return it[0] + it[1] > it[2];
+❱

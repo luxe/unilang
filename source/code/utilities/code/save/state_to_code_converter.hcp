@@ -1,0 +1,46 @@
+class
+⚯
+⚞⚟
+
+◀public: static▶ model::Code ☀Convert(Ide_Elements & elements)❰
+
+
+    model::Code code;
+    bool found = false;
+
+    //find the type we care about
+    for (auto & it: elements.types){
+        std::visit(overloaded {
+            [&](Positioned_Buildable_Face_Tree & x) {
+                //don't care
+            },
+            [&](Positioned_Image_Data & x) {
+                //don't care
+            },
+            [&](Positioned_Animated_Image_Data & x) {
+                //don't care
+            },
+            [&](Positioned_Select_Menu & x) {
+                //don't care
+            },
+            [&](Positioned_Buildable_Schema_Faced_Tree & x) {
+                
+                //tokenize
+                auto tokens = Buildable_Schema_Faced_Tree_Tokenizer::Tokenize(x);
+                //Json_File_Io::Print_Json(tokens);
+                
+                //parse
+                code = Concept_String_Tree_Parser::Parse(tokens);
+                //Json_File_Io::Print_Json(code);
+                found = true;
+                
+            },
+        }, it.element);
+        
+        if (found){
+            break;
+        }
+    }
+    
+    return code;
+❱

@@ -1,0 +1,261 @@
+􏶞o􏶟
+􏷲a list of redis hashtags that each map to different nodes in the cluster􏷱
+􏷰when looking to evenly distribute keys across nodes, specific hashtags need obtained in which each hashtag hashes to a particular slot owned by a particular worker
+this class is used to obtain the hashtags needed to hit every node in the cluster􏷯
+􏷞build􏷝􏷞buildfarm􏷝􏷞common􏷝􏷞redis􏷝
+
+􏷤􏷣􏷦redis.clients.jedis.JedisCluster􏷥
+􏷤􏷣􏷦build.buildfarm.instance.shard.JedisClusterFactory􏷥
+􏷤􏷣􏷦java.util.List􏷥
+􏷤􏷣􏷦java.util.Set􏷥
+􏷤􏷣􏷦java.util.HashSet􏷥
+􏷤􏷣􏷦java.util.Map􏷥
+􏷤􏷣􏷦java.util.Iterator􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanResult􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanParams􏷥
+􏷤􏷣􏷦redis.clients.jedis.Jedis􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisPool􏷥
+􏷤􏷣􏷦java.util.ArrayList􏷥
+􏷤􏷣􏷦com.google.common.collect.ImmutableList􏷥
+􏷤􏷣􏷦redis.clients.jedis.exceptions.JedisException􏷥
+􏷤􏷣􏷦redis.clients.jedis.exceptions.JedisNoReachableClusterNodeException􏷥
+
+􏲏􏲐􏲍build.buildfarm.instance.shard􏲎
+􏲏􏲐􏲍build.buildfarm.instance.shard.queues.RedisQueue􏲎
+􏲏􏲐􏲍redis.clients.jedis.JedisCluster􏲎
+􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
+􏲏􏲐􏲍redis.clients.jedis.Jedis􏲎
+􏲏􏲐􏲍redis.clients.jedis.JedisPool􏲎
+􏲏􏲐􏲍org.junit.Test􏲎
+􏲏􏲐􏲍org.junit.runner.RunWith􏲎
+􏲏􏲐􏲍org.junit.runners.JUnit4􏲎
+􏲏􏲐􏲍java.lang.Thread􏲎
+􏲏􏲐􏲍java.util.concurrent.TimeUnit􏲎
+􏲏􏲐􏲍java.lang.RuntimeException􏲎
+􏲏􏲐􏲍java.util.List􏲎
+􏲏􏲐􏲍org.junit.Test􏲎
+􏲏􏲐􏲍java.util.List􏲎
+􏲏􏲐􏲍java.util.ArrayList􏲎
+􏲏􏲐􏲍org.junit.runner.RunWith􏲎
+􏲏􏲐􏲍org.junit.runners.JUnit4􏲎
+􏲏􏲐􏲍java.lang.Thread􏲎
+􏲏􏲐􏲍java.util.concurrent.TimeUnit􏲎
+􏲏􏲐􏲍java.lang.RuntimeException􏲎
+􏲏􏲐􏲍java.io.IOException􏲎
+􏲏􏲐􏲍java.util.function.Supplier􏲎
+􏲏􏲐􏲍org.mockito.Mock􏲎
+􏲏􏲐􏲍org.mockito.MockitoAnnotations􏲎
+􏲏􏲐􏲍java.util.Arrays􏲎
+􏲏􏲐􏲍java.util.Map􏲎
+􏲏􏲐􏲍java.util.HashMap􏲎
+􏲏i􏲐􏲍com.google.common.truth.Truth.assertThat􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.eq􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.mock􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.times􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.verify􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.when􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.any􏲎
+
+
+􏷐get a list of evenly distributing hashtags for the provided redis cluster􏷏
+􏶠each hashtag will map to a slot on a different node􏶡
+􏷘+s􏷗􏴅Observer􏴆􏷒get evenly distributed hashes􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀an established jedis client􏶿
+􏶾List<String>􏶽􏶼hashtags􏶻􏶺hashtags that will each has to a slot on a different node􏶹
+􏶴
+    try {
+      List<List<Long>> slotRanges = getSlotRanges(jedis);
+      ImmutableList.Builder hashTags = ImmutableList.builder();
+      for (List<Long> slotRange : slotRanges) {
+
+        // we can use any slot that is in range for the node.
+        // in this case, we will use the first slot.
+        hashTags.add(RedisSlotToHash.correlate(slotRange.get(0)));
+      }
+      return hashTags.build();
+    } catch (JedisException e) {
+      return ImmutableList.of();
+    }
+􏶳
+􏴱can retrieve distributed hashes􏴲􏴯redis􏴰
+􏲝an established redis cluster can be used to obtain distributed hashes􏲞
+􏲛there is an error in the cluster's ability to report slot ranges or convert ranges to hashtags􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    
+    //ACT
+    List<String> hashtags = RedisNodeHashes.getEvenlyDistributedHashes(redis);
+    
+    //ASSERT
+    assertThat(hashtags.isEmpty()).isFalse();
+􏴮
+􏴱can retrieve distributed hashes􏴲􏴯mock􏴰
+􏲝an established redis cluster can be used to obtain distributed hashes􏲞
+􏲛there is an error in the cluster's ability to report slot ranges or convert ranges to hashtags􏲜
+􏴭
+    // ARRANGE
+    Jedis node = mock(Jedis.class);
+    when(node.clusterSlots()).thenReturn(Arrays.asList(Arrays.asList(0L, 100L)));
+
+    JedisPool pool = mock(JedisPool.class);
+    when(pool.getResource()).thenReturn(node);
+
+    JedisCluster redis = mock(JedisCluster.class);
+    Map<String, JedisPool> poolMap  = new HashMap<String, JedisPool>() {{
+        put("key1", pool);
+    }};
+    when(redis.getClusterNodes()).thenReturn(poolMap);
+
+    // ACT
+    List<String> hashtags = RedisNodeHashes.getEvenlyDistributedHashes(redis);
+
+    // ASSERT
+    assertThat(hashtags.isEmpty()).isFalse();
+􏴮
+􏴱cannot retrieve distributed hashes􏴲􏴯mock􏴰
+􏲝without mocking we exercise the fallback behavior􏲞
+􏲛the fallback behavior does not result in successful completion of call􏲜
+􏴭
+    // ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    
+    // ACT
+    List<String> hashtags = RedisNodeHashes.getEvenlyDistributedHashes(redis);
+
+    // ASSERT
+    assertThat(hashtags.isEmpty()).isTrue();
+􏴮
+
+
+􏴱can construct􏴲􏴯regular􏴰
+􏲝the object can be constructed􏲞
+􏲛the object cannot be constructed􏲜
+􏴭
+    RedisNodeHashes converter = new RedisNodeHashes();
+􏴮
+
+􏷐get a list of evenly distributing hashtags for the provided redis cluster􏷏
+􏶠each hashtag will map to a slot on a different node􏶡
+􏷘+s􏷗􏴅Observer􏴆􏷒get evenly distributed hashes with prefix􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀an established jedis client􏶿
+􏶜􏶝􏷆String􏷅􏷄prefix􏷃􏷀the prefix to include as part of hashtags􏶿
+􏶾List<String>􏶽􏶼hashtags􏶻􏶺hashtags that will each has to a slot on a different node􏶹
+􏶴
+    try {
+      List<List<Long>> slotRanges = getSlotRanges(jedis);
+      ImmutableList.Builder hashTags = ImmutableList.builder();
+      for (List<Long> slotRange : slotRanges) {
+
+        // we can use any slot that is in range for the node.
+        // in this case, we will use the first slot.
+        hashTags.add(RedisSlotToHash.correlateRangeWithPrefix(slotRange.get(0),slotRange.get(1),prefix));
+      }
+      return hashTags.build();
+    } catch (JedisException e) {
+      return ImmutableList.of();
+    }
+􏶳
+􏴱can retrieve distributed hashes􏴲􏴯redis􏴰
+􏲝an established redis cluster can be used to obtain distributed hashes􏲞
+􏲛there is an error in the cluster's ability to report slot ranges or convert ranges to hashtags􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    
+    //ACT
+    List<String> hashtags = RedisNodeHashes.getEvenlyDistributedHashes(redis,"Execution");
+    
+    //ASSERT
+    assertThat(hashtags.isEmpty()).isFalse();
+􏴮
+􏴱expected prefix hashes􏴲􏴯mock􏴰
+􏲝an established redis cluster can be used to obtain distributed hashes with prefixes􏲞
+􏲛there is an error in the cluster's ability to report slot ranges or convert ranges to hashtags􏲜
+􏴭
+    // ARRANGE
+    Jedis node = mock(Jedis.class);
+    when(node.clusterSlots())
+        .thenReturn(Arrays.asList(Arrays.asList(0L, 100L), Arrays.asList(101L, 200L)));
+
+    JedisPool pool = mock(JedisPool.class);
+    when(pool.getResource()).thenReturn(node);
+
+    JedisCluster redis = mock(JedisCluster.class);
+    Map<String, JedisPool> poolMap =
+        new HashMap<String, JedisPool>() {
+          {
+            put("key1", pool);
+          }
+        };
+    when(redis.getClusterNodes()).thenReturn(poolMap);
+
+    // ACT
+    List<String> hashtags = RedisNodeHashes.getEvenlyDistributedHashesWithPrefix(redis, "Execution");
+
+    // ASSERT
+    assertThat(hashtags.size()).isEqualTo(2);
+    assertThat(hashtags.get(0)).isEqualTo("Execution:97");
+    assertThat(hashtags.get(1)).isEqualTo("Execution:66");
+􏴮
+
+
+􏷐get a list of slot ranges for each of the nodes in the cluster􏷏
+􏶠this information can be found from any of the redis nodes in the cluster􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒get slot ranges􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀an established jedis client􏶿
+􏶾List<List<Long>>􏶽􏶼slot ranges􏶻􏶺slot ranges for all of the nodes in the cluster􏶹
+􏶴
+
+    // get slot information for each node
+    List<Object> slots = getClusterSlots(jedis);
+
+    // convert slot information into a list of slot ranges
+    ImmutableList.Builder<List<Long>> slotRanges = ImmutableList.builder();
+    for (Object slotInfoObj : slots) {
+      List<Object> slotInfo = (List<Object>) slotInfoObj;
+      List<Long> slotNums = slotInfoToSlotRange(slotInfo);
+      slotRanges.add(slotNums);
+    }
+
+    return slotRanges.build();
+    
+􏶳
+
+􏷐convert a jedis slotInfo object to a range or slot numbers􏷏
+􏶠every redis node has a range of slots represented as integers􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒slot info to slot range􏷑
+􏶜􏶝􏷆List<Object>􏷅􏷄slot info􏷃􏷀slot info objects from a redis node􏶿
+􏶾List<Long>􏶽􏶼slot range􏶻􏶺the slot number range for the particular redis node􏶹
+􏶴
+    return ImmutableList.of((Long) slotInfo.get(0), (Long) slotInfo.get(1));
+􏶳
+
+􏷐query slot information for each redis node􏷏
+􏶠obtains cluster information for understanding slot ranges for balancing􏶡
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀an established jedis client􏶿
+􏶾List<Object>􏶽􏶼cluster slots􏶻􏶺cluster slot information􏶹
+􏷘-s􏷗􏴅Observer􏴆􏷒get cluster slots􏷑
+􏶴
+    JedisException nodeException = null;
+    for (Map.Entry<String, JedisPool> node : jedis.getClusterNodes().entrySet()) {
+      JedisPool pool = node.getValue();
+      Jedis resource = pool.getResource();
+      try {
+        return resource.clusterSlots();
+      } catch (JedisException e) {
+        nodeException = e;
+        // log error with node
+      } finally {
+        resource.close();
+      }
+    }
+    if (nodeException != null) {
+      throw nodeException;
+    }
+    throw new JedisNoReachableClusterNodeException("No reachable node in cluster");
+􏶳
+
+
+
+

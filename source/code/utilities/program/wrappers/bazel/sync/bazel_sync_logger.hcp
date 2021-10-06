@@ -1,0 +1,87 @@
+class
+❪iostream❫
+❪algorithm❫
+❪"code/utilities/build/build_repo_establisher/build_repo_settings"❫
+⚯
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/program/wrappers/bazel/bazel_runner"❫
+❪"src/main/java/com/google/devtools/build/lib/bazel/debug/workspace_log.pb.h"❫
+⚞⚟
+
+//https://docs.bazel.build/versions/3.5.0/workspace-log.html
+
+◀public: static▶ std::vector<std::vector<std::string>> ☀Get_Sync_Urls(Build_Repo_Settings const& repo_context)❰
+
+    auto bin_file = Bazel_Runner::Get_Sync_Information(repo_context.program_to_run_build,
+                                       repo_context.build_settings,
+                                       repo_context.bazel_setup_settings.config_settings);
+    
+    auto urls = Extract_All_Urls(bin_file);
+    return urls;
+❱
+
+◀public: static▶ std::vector<std::vector<std::string>> ☀Get_Sync_Urls_From_Build(Build_Repo_Settings const& repo_context)❰
+
+    auto bin_file = Bazel_Runner::Get_Sync_Information_From_Build(repo_context.program_to_run_build,
+                                       repo_context.build_settings,
+                                       repo_context.bazel_setup_settings.config_settings);
+    
+    auto urls = Extract_All_Urls(bin_file);
+    return urls;
+❱
+
+◀public: static▶ std::vector<std::vector<std::string>> ☀Get_Sync_Urls_From_Test(Build_Repo_Settings const& repo_context)❰
+
+    auto bin_file = Bazel_Runner::Get_Sync_Information_From_Test(repo_context.program_to_run_build,
+                                       repo_context.build_settings,
+                                       repo_context.bazel_setup_settings.config_settings);
+    
+    auto urls = Extract_All_Urls(bin_file);
+    return urls;
+❱
+
+
+◀private: static▶ std::vector<std::vector<std::string>> ☀Extract_All_Urls(std::string const& workspace_log_file)❰
+
+    auto protos = Deserialize_Multiple_Protos_From_Bin_File<workspace_log::WorkspaceEvent>(workspace_log_file);
+    
+    std::vector<std::vector<std::string>> results;
+    std::vector<std::string> sub;
+    
+    //add all the urls from download event
+    for (auto event: protos){
+        
+        if (event.event_case() == workspace_log::WorkspaceEvent::EventCase::kDownloadEvent){
+            auto download_event = event.mutable_download_event();
+            auto urls = download_event->url();
+            for (auto const& it: urls){
+                sub.emplace_back(it);
+            }
+            
+            if (!sub.empty()){
+                results.emplace_back(sub);
+                sub.clear();
+            }
+        }
+    }
+    
+    //add all the urls from download/extract event
+    for (auto event: protos){
+        
+        if (event.event_case() == workspace_log::WorkspaceEvent::EventCase::kDownloadAndExtractEvent){
+            auto download_event = event.mutable_download_and_extract_event();
+            auto urls = download_event->url();
+            for (auto const& it: urls){
+                sub.emplace_back(it);
+            }
+            
+            if (!sub.empty()){
+                results.emplace_back(sub);
+                sub.clear();
+            }
+        }
+    }
+    
+    return results;
+    
+❱

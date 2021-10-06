@@ -1,0 +1,95 @@
+class
+❪iostream❫
+❪vector❫
+❪string❫
+❪utility❫
+❪"code/utilities/output/printers/lib.hpp"❫
+❪"code/utilities/data_structures/tree/bst/binary_node.hpp"❫
+❪"code/utilities/types/tree/bst/tree_traversal.hpp"❫
+❪"code/utilities/types/tree/bst/tree_node_properties.hpp"❫
+⚯
+⚞⚟
+
+◀private:
+template <typename T>
+static void correctBSTUtil( T* root, T** first,
+                     T** middle, T** last,
+                     T** prev )
+{ 
+    if( root )
+    { 
+        // Recur for the left subtree 
+        correctBSTUtil( root->left, first, middle, last, prev );
+  
+        // If this node is smaller than the previous node, it's violating 
+        // the BST rule. 
+        if (*prev && root->val < (*prev)->val)
+        { 
+            if ( !*first )
+            { 
+                *first = *prev;
+                *middle = root;
+            } 
+  
+            // If this is second violation, mark this node as last 
+            else
+                *last = root;
+        } 
+  
+        // Mark this node as previous 
+        *prev = root;
+  
+        // Recur for the right subtree 
+        correctBSTUtil( root->right, first, middle, last, prev ); 
+    }
+}
+▶
+
+// A function to fix a given BST where two nodes are swapped.  This 
+// function uses correctBSTUtil() to find out two nodes and swaps the 
+// nodes to fix the BST 
+◀public:
+template <typename T>
+static void fix_bst(T* root ) 
+{ 
+    // Initialize pointers needed for correctBSTUtil() 
+    T *first, *middle, *last, *prev; 
+    first = middle = last = prev = NULL; 
+  
+    // Set the poiters to find out two nodes 
+    correctBSTUtil( root, &first, &middle, &last, &prev ); 
+  
+    // Fix (or correct) the tree 
+    if( first && last ) 
+        std::swap( first->val, last->val ); 
+    else if( first && middle ) // Adjacent nodes swapped 
+        std::swap( first->val, middle->val ); 
+  
+    // else nodes have not been swapped, passed tree is really BST. 
+}
+▶
+
+◀public:
+template <typename T>
+static std::pair<int,int> vals_to_swap(T* root ) 
+{
+    
+    // Initialize pointers needed for correctBSTUtil() 
+    T *first, *middle, *last, *prev; 
+    first = middle = last = prev = NULL; 
+  
+    // Set the poiters to find out two nodes 
+    correctBSTUtil( root, &first, &middle, &last, &prev );
+    
+    std::pair<int,int> answer;
+    if( first && last ){
+        answer.first = first->val;
+        answer.second = last->val;
+    }
+    else if( first && middle ){
+        answer.first = first->val;
+        answer.second = middle->val;
+    }
+    return answer;
+}
+▶

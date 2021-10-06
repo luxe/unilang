@@ -1,0 +1,100 @@
+class
+
+❪"code/utilities/linguistics/chinese/chinese_translations"❫
+⚯
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/program/common_actions/exits/lib"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
+❪"code/utilities/program/common_actions/locale/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/filesystem/files/getting/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/output/upload/file_uploader"❫
+❪"code/utilities/time/date/lib"❫
+⚞⚟
+
+
+//also want flash cards:
+//https://decks.fandom.com/wiki/Anki_APKG_format_documentation
+◀public: static▶ void ☀Execute_Needed_Tasks() ❰
+
+    //Unicode please
+    Set_English_UTF8_Locale();
+    
+    //the files we are reading/building
+    auto slides_base_name = Full_Path_To_Desktop() + "chinese_exercise";
+    auto slides_full = slides_base_name + ".html";
+    std::string uploaded_filename = "chinese_exercise.html";
+    
+    
+    //settings
+    Program_Input input;
+    input.settings = Root_Settings_Getter::Get();
+    auto slide_settings = input.settings.compiler_settings.trevor.settings.foreign_language.slidy;
+    auto contributors = input.settings.compiler_settings.trevor.contributors;
+    
+    //convert to unilang structure
+    auto structure = Chinese_Data_As_Unilang_Structure();
+    
+    //build html slides documentation
+    Slidy_Exporter::Create_Markdown_And_Slides(structure,contributors,slide_settings,slides_base_name);
+    
+    //upload slides somewhere
+    File_Upload_Settings settings;
+    settings.upload_to_github = true;
+    settings.upload_to_dropbox = false;
+    settings.strategy = Upload_To_Dropbox_Strategy::CURL_LIB;
+    settings.local_file_name = slides_full;
+    settings.remote_file_name = uploaded_filename;
+    
+    File_Uploader::Upload(settings);
+❱
+
+◀private: static▶ Structure ☀Chinese_Data_As_Unilang_Structure() ❰
+    Structure s;
+    
+    //welcome message
+    {
+        Paragraph title;
+        title.title.value = L"today's chinese exercise";
+        title.title.value += L"\n";
+        title.title.value += as_wstring(Date_As_Full_Month_Day_Year());
+        s.literature.paragraphs.emplace_back(title);
+    }
+    
+    
+    // come up with today's lesson plan
+    auto chinese_data = Chinese_Translations::Get();
+    Populate_Lesson_Plan(s,chinese_data);
+    
+    //completion message
+    {
+        Paragraph title;
+        title.title.value = L"You're done!";
+        s.literature.paragraphs.emplace_back(title);
+    }
+    
+    
+    return s;
+❱
+
+◀private: static▶ void ☀Populate_Lesson_Plan(Structure & s, std::vector<Translation_Entry> const& chinese_data) ❰
+
+    for (auto const& it: chinese_data){
+        
+        //title of question
+        Paragraph x;
+        x.title.value = it.english;
+        
+        //the answers
+        Outline_Point p;
+        p.point.value = it.pinyin;
+        x.outline_points.emplace_back(p);
+        p.point.value = it.chinese;
+        x.outline_points.emplace_back(p);
+        
+        //add question
+        s.literature.paragraphs.emplace_back(x);
+    }
+❱

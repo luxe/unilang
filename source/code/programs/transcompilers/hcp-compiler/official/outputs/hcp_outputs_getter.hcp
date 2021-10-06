@@ -1,0 +1,45 @@
+class
+❪iostream❫
+❪string❫
+❪fstream❫
+❪"code/programs/transcompilers/hcp-compiler/official/structure/class_structure"❫
+❪"code/programs/transcompilers/hcp-compiler/official/settings/hcp_settings"❫
+❪"code/programs/transcompilers/hcp-compiler/official/outputs/hcp_outputs"❫
+⚯
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/strings/observers/path/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/utilities/types/wstrings/transformers/trimming/lib"❫
+❪"code/utilities/types/wstrings/transformers/other/lib"❫
+❪"code/utilities/types/converters/lib"❫
+❪"code/programs/transcompilers/hcp-compiler/official/include_file_printer"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/programs/transcompilers/shared/json_gen"❫
+⚞⚟
+
+
+◀public: static▶ Hcp_Outputs ☀Get(Class_Structure const& structure, Hcp_Settings const& settings)❰
+    Hcp_Outputs outputs;
+    
+    //the hcp compiler is going to generate c++ files.
+    //how those paths should be may be dependent on what the caller wants to give.
+    //a build system will want to give the exact output paths.
+    //that's why we have so many different ways on figuring out the paths.
+    //for my purposes, I really just care about how bazel is going to call the tool.
+    outputs.header_path = As_Removed_Suffix(structure.Path_To_File_Name())+ ".hpp";
+    outputs.source_path = As_Removed_Suffix(structure.Path_To_File_Name())+ ".cpp";
+    
+    if (!settings.output_basename.empty()){
+        outputs.header_path = settings.output_basename + ".hpp";
+        outputs.source_path = settings.output_basename + ".cpp";
+    }
+
+    if (!settings.output_directory.empty()){
+        outputs.header_path = settings.output_directory + "/" + Get_File_Name(outputs.header_path);
+        outputs.source_path = settings.output_directory + "/" + Get_File_Name(outputs.source_path);
+    }
+    
+    return outputs;
+    
+❱

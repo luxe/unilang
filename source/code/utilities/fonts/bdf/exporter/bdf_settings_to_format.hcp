@@ -1,0 +1,205 @@
+class
+
+
+❪vector❫
+❪string❫
+❪iostream❫
+❪"code/utilities/fonts/bdf/settings/bdf_settings"❫
+⚯
+❪"code/utilities/fonts/bdf/exporter/bdf_character_name_deriver"❫
+⚞⚟
+
+
+◀public: static▶ std::string ☀Convert(Bdf_Settings const& settings)❰
+
+    std::string str;
+    //https://www.x.org/docs/BDF/bdf.PS.gz
+    // https://www.adobe.com/content/dam/acom/en/devnet/font/pdfs/5005.BDF_Spec.pdf
+    str += Standard_Section_1(settings);
+    str += Standard_Section_2(settings);
+    str += Standard_Section_3(settings);
+    str += Standard_Section_4(settings);
+    str += Standard_Section_5(settings);
+    str += Standard_Section_6(settings);
+    str += Standard_Section_7(settings);
+    str += Standard_Section_8(settings);
+    str += Standard_Section_9(settings);
+    str += Standard_Section_10(settings);
+    str += Standard_Section_11(settings);
+    return str;
+❱
+
+◀public: static▶ std::string ☀Standard_Section_1(Bdf_Settings const& settings)❰
+    std::string str;
+    str += settings.start_font_keyword;
+    str += " ";
+    str += settings.version;
+    str += "\n";
+    return str;
+❱
+◀public: static▶ std::string ☀Standard_Section_2(Bdf_Settings const& settings)❰
+    std::string str;
+    str += settings.comment_keyword;
+    str += " ";
+    str += settings.main_font_comment;
+    str += "\n";
+    return str;
+❱
+◀public: static▶ std::string ☀Standard_Section_3(Bdf_Settings const& settings)❰
+    std::string str;
+    str += settings.font_keyword;
+    str += " ";
+    str += settings.xlfd.divider;
+    str += settings.xlfd.foundry;
+    str += settings.xlfd.divider;
+    str += settings.xlfd.family_name;
+    str += settings.xlfd.divider;
+    str += settings.xlfd.weight;
+    str += settings.xlfd.divider;
+    str += settings.xlfd.slant;
+    str += settings.xlfd.divider;
+    str += settings.xlfd.set_width_name;
+    str += settings.xlfd.divider;
+    str += settings.xlfd.add_style_name;
+    str += settings.xlfd.divider;
+    str += std::to_string(settings.xlfd.pixel_size);
+    str += settings.xlfd.divider;
+    str += std::to_string(settings.xlfd.point_size);
+    str += settings.xlfd.divider;
+    str += std::to_string(settings.xlfd.resoultion_x);
+    str += settings.xlfd.divider;
+    str += std::to_string(settings.xlfd.resoultion_y);
+    str += settings.xlfd.divider;
+    str += settings.xlfd.spacing;
+    str += settings.xlfd.divider;
+    str += std::to_string(settings.xlfd.average_width);
+    str += settings.xlfd.divider;
+    str += settings.xlfd.charset_registry;
+    str += settings.xlfd.divider;
+    str += settings.xlfd.charset_encoding;
+    str += "\n";
+    return str;
+❱
+◀public: static▶ std::string ☀Standard_Section_4(Bdf_Settings const& settings)❰
+    std::string str;
+    str += settings.bdf_size.size_keyword;
+    str += " ";
+    str += std::to_string(settings.bdf_size.point_size);
+    str += " ";
+    str += std::to_string(settings.bdf_size.x_resolution);
+    str += " ";
+    str += std::to_string(settings.bdf_size.y_resolution);
+    str += "\n";
+    return str;
+❱
+◀public: static▶ std::string ☀Standard_Section_5(Bdf_Settings const& settings)❰
+    std::string str;
+    str += settings.font_bounding_box_keyword;
+    str += " ";
+    str += std::to_string(settings.width);
+    str += " ";
+    str += std::to_string(settings.height);
+    str += " ";
+    str += std::to_string(settings.x_displacement);
+    str += " ";
+    str += std::to_string(settings.y_displacement);
+    str += "\n";
+    return str;
+❱
+◀public: static▶ std::string ☀Standard_Section_6(Bdf_Settings const& settings)❰
+    std::string str;
+    str += settings.start_properties_keyword;
+    str += " ";
+    str += std::to_string(settings.attributes.size());
+    str += "\n";
+    return str;
+❱
+◀public: static▶ std::string ☀Standard_Section_7(Bdf_Settings const& settings)❰
+    std::string str;
+    for (auto const& it: settings.attributes){
+        str += it.first;
+        str += " ";
+        str += it.second;
+        str += "\n";
+    }
+    return str;
+❱
+◀public: static▶ std::string ☀Standard_Section_8(Bdf_Settings const& settings)❰
+    std::string str;
+    str += settings.end_properties_keyword;
+    str += "\n";
+    return str;
+❱
+◀public: static▶ std::string ☀Standard_Section_9(Bdf_Settings const& settings)❰
+    std::string str;
+    str += settings.chars_keyword;
+    str += " ";
+    str += std::to_string(settings.segments.size());
+    str += "\n";
+    return str;
+❱
+◀public: static▶ std::string ☀Standard_Section_10(Bdf_Settings const& settings)❰
+    std::string str;
+    for (size_t i = 0; i < settings.segments.size(); ++i){
+        
+        //start
+        str += settings.STARTCHAR_keyword;
+        str += " ";
+        str += Bdf_Character_Name_Deriver::Character_Name(settings,settings.segments[i]);
+        str += "\n";
+        
+        //encoding
+        str += settings.ENCODING_keyword;
+        str += " ";
+        str += std::to_string(settings.segments[i].glyph_index);
+        str += "\n";
+        
+        
+        //swidth
+        str += settings.SWIDTH_keyword;
+        str += " ";
+        str += std::to_string(settings.segments[i].s_width_x);
+        str += " ";
+        str += std::to_string(settings.segments[i].s_width_y);
+        str += "\n";
+        
+        //dwidth
+        str += settings.DWIDTH_keyword;
+        str += " ";
+        str += std::to_string(settings.segments[i].d_width_x);
+        str += " ";
+        str += std::to_string(settings.segments[i].d_width_y);
+        str += "\n";
+        
+        //bbx
+        str += settings.BBX_keyword;
+        str += " ";
+        str += std::to_string(settings.segments[i].bbx_w);
+        str += " ";
+        str += std::to_string(settings.segments[i].bb_h);
+        str += " ";
+        str += std::to_string(settings.segments[i].bbo_x);
+        str += " ";
+        str += std::to_string(settings.segments[i].bbo_y);
+        str += "\n";
+        
+        //bitmap
+        str += settings.BITMAP_keyword;
+        str += "\n";
+        for (auto const & it: settings.segments[i].hex_encoded_bitmap){
+            str += it;
+            str += "\n";
+        }
+        
+        //end
+        str += settings.ENDCHAR_keyword;
+        str += "\n";
+    }
+    return str;
+❱
+◀public: static▶ std::string ☀Standard_Section_11(Bdf_Settings const& settings)❰
+    std::string str;
+    str += settings.end_font_keyword;
+    str += "\n";
+    return str;
+❱

@@ -1,0 +1,226 @@
+class
+❪"systems"❫
+❪"utilities"❫
+❪"program_input"❫
+❪"paths"❫
+❪"sql_db"❫
+❪"tweet"❫
+⚯
+❪"tweet_validator"❫
+⚞⚟
+
+//constructor
+◀public:▶ ☀◈(Program_Input const& input, Paths const& paths)◖
+              :m_account_name(input.options.account)
+             ◗❰
+             
+    //if the database needs rebuilt, then delete the current one
+    if (input.options.rebuild){
+        Empty_Database(paths);
+    }
+
+    //rebuild the database if it doesn't exist
+    if (!File_Exists(paths.normal.response_database)){
+        m_db.connect((paths.normal.response_database).c_str());
+        Rebuild(input,paths);
+    }else{
+        m_db.connect((paths.normal.response_database).c_str());
+    }
+❱
+
+◀private:▶ void ☀Rebuild(Program_Input const& input, Paths const& paths)❰
+
+    Initialize_Database();
+    Populate_Database(input,paths);
+❱
+
+◀private:▶ void ☀Initialize_Database()❰
+
+    m_db.execute("CREATE TABLE MAIN(id TEXT NOT NULL, phrase TEXT NOT NULL)");
+
+    return;
+❱
+
+
+
+◀private:▶ void ☀Empty_Database(Paths const& paths)❰
+    execute( std::string("rm " + paths.normal.response_database + " > /dev/null 2>&1").c_str() );
+❱
+
+
+
+
+◀private:▶ void ☀Populate_Database(Program_Input const& input, Paths const& paths)❰
+
+    //open initial database file
+    std::ifstream infile{paths.normal.initial_database_input};
+    assert(infile && "input file is missing!");
+
+    //create primary key at "0"
+    mpz_class primary_key;
+    mpz_class line_number;
+    std::string line;
+
+    //fill the database with phrases
+    std::getline(infile,line);
+    while(infile){
+        auto tweet = Create_Tweet_From_Line(line);
+        
+        if (Tweet_Validator::Validate(input,tweet,line_number)){
+            
+            //possible store appropriate tweet
+            if (tweet.rating == Tweet_Rating::APPROPRIATE){ Possibly_Store_Appropriate_Tweet(input,tweet,line,primary_key);}
+            else if (tweet.rating == Tweet_Rating::INAPPROPRIATE){Possibly_Store_Inappropriate_Tweet(input,tweet,line,primary_key);}
+            else{std::cerr << "unknown tweet rating\n";}
+        }
+
+        ++line_number;
+        std::getline(infile,line);
+    }
+
+    --primary_key;
+    Update_Max_Phrase_File(paths,primary_key);
+❱
+
+
+◀private:▶ void ☀Possibly_Store_Appropriate_Tweet(Program_Input const& input, Tweet const& tweet, std::string const& line, mpz_class & primary_key)❰
+    if (input.settings.database.store_appropriate){
+        Add_Phrase_To_Database(tweet,primary_key);
+        ++primary_key;
+    }
+    else{
+        std::cout << "skipping appropriate... " << line << std::endl;
+    }
+❱
+◀private:▶ void ☀Possibly_Store_Inappropriate_Tweet(Program_Input const& input, Tweet const& tweet, std::string const& line, mpz_class & primary_key)❰
+    if (input.settings.database.store_inappropriate){
+        Add_Phrase_To_Database(tweet,primary_key);
+        ++primary_key;
+    }
+    else{
+        std::cout << "skipping inappropriate... " << line << std::endl;
+    }
+❱
+
+◀private:▶ Tweet ☀Create_Tweet_From_Line(std::string const& line)❰
+    Tweet tweet;
+    auto parts = Split_Into_Parts_From_Delimiter(line,'|');
+    
+    //decide rating
+    if (parts[0] == "a"){
+        tweet.rating = Tweet_Rating::APPROPRIATE;
+    }
+    else if (parts[0] == "i"){
+        tweet.rating = Tweet_Rating::INAPPROPRIATE;
+    }
+    else{
+        std::cerr << "unknown rating\n";
+    }
+    
+    //store the rest
+    Remove_First_Element(parts);
+    tweet.lines = parts;
+    
+    
+    return tweet;
+❱
+
+◀private:▶ void ☀Add_Phrase_To_Database(Tweet const& tweet, mpz_class const& primary_key)❰
+
+    //add the phrase to the database
+    auto line = Get_As_String_With_Delim_In_Between_Each_Element(tweet.lines,"|");
+
+    Convert_String_To_SQL_String(line);
+    line = "INSERT INTO MAIN (id, phrase) VALUES('" + to_string(primary_key) + "','" + line + "')";
+    m_db.execute(line.c_str());
+
+    std::cout << line << std::endl;
+❱
+◀private:▶ void ☀Update_Max_Phrase_File(Paths const& paths, mpz_class const& primary_key)❰
+
+    //open 'max number of phrase' file
+    std::ofstream outfile{paths.normal.max_response};
+    outfile << primary_key;
+❱
+◀private:▶ void ☀Convert_String_To_SQL_String(std::string & str)❰
+
+    str = string_replace_all(str,"'","''");
+❱
+
+◀public:▶ std::vector<std::string> ☀Get_Current_Tweets(Paths const& paths)❰
+
+    mpz_class max_number_of_responses{Get_Max_Number_Of_Responses(paths)};
+    mpz_class current_response{Get_Current_Response_Number(paths)};
+
+    //if reached end of responses, start over again
+    if ( current_response >= max_number_of_responses){
+         current_response = 0;
+    }
+    Store_Current_Response_For_Next_Time(paths, current_response);
+
+
+    std::string full;
+    sqlite3pp::query qry(m_db, ("SELECT phrase FROM MAIN WHERE id='" + to_string(current_response) + "'").c_str());
+    for (sqlite3pp::query::iterator i = qry.begin(); i != qry.end(); ++i) {
+        for (int j = 0; j < qry.column_count(); ++j) {
+            full += (*i).get<char const*>(j);
+        }
+    }
+
+    std::vector<std::string> response;
+    std::string temp;
+    for (auto it: full){
+        if (it != '|'){
+            temp+=it;
+        }
+        else{
+            response.push_back(temp);
+            temp.clear();
+        }
+    }
+    response.push_back(temp);
+
+    return response;
+❱
+
+
+
+
+
+
+
+//getting/storing things
+◀private:▶ mpz_class ☀Get_Max_Number_Of_Responses(Paths const& paths)❰
+
+    std::ifstream infile{paths.normal.max_response};
+    assert(infile && "max response file is missing!");
+    std::string number;
+    std::getline(infile,number);
+
+    return mpz_class(number);
+❱
+◀private:▶ mpz_class ☀Get_Current_Response_Number(Paths const& paths)❰
+
+    std::ifstream infile{paths.normal.current_response_number};
+    assert(infile && "current response file is missing!");
+    std::string number;
+    std::getline(infile,number);
+
+    return mpz_class(number);
+❱
+◀private:▶ void ☀Store_Current_Response_For_Next_Time(Paths const& paths, mpz_class current_response)❰
+
+    std::ofstream outfile{paths.normal.current_response_number};
+    ++current_response;
+    outfile << current_response;
+❱
+
+
+
+◀private:
+
+    //data variables
+    std::string m_account_name;
+    sqlite3pp::database m_db;
+
+▶

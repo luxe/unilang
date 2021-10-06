@@ -1,0 +1,80 @@
+class
+❪string❫
+❪"code/utilities/formats/json/extraction/json_extraction_settings"❫
+❪"nlohmann/json.hpp"❫
+⚯
+❪sys/stat.h❫
+❪iostream❫
+❪"code/utilities/types/strings/observers/converting/lib"❫
+⚞⚟
+
+
+
+◀public: static▶ float ☀Extract(std::string const& str, Json_Extraction_Settings const& settings)❰
+    
+    //parse string to json
+    auto j = nlohmann::json::parse(str);
+    
+    //drill down to final element
+    for (auto const& it: settings.steps){
+        
+        if (it.index){
+            j = j[as_signed(it.key)];
+        }
+        else{
+            j = j[it.key];
+        }
+    }
+    
+    //extract final element
+    auto val = j.value(settings.desired_key,0.00);
+    return val;
+❱
+
+◀public: static▶ std::string ☀Extract_String(nlohmann::json j, Json_Extraction_Settings const& settings)❰
+
+    try{
+    
+        //drill down to final element
+        for (auto const& it: settings.steps){
+            
+            if (it.index){
+                j = j[as_signed(it.key)];
+            }
+            else{
+                j = j[it.key];
+            }
+        }
+        
+        //extract final element
+        auto val = j.value(settings.desired_key,"");
+        return val;
+    }
+    catch(...){
+    }
+    return "";
+❱
+
+◀public: static▶ int ☀Extract_Integer(nlohmann::json j, Json_Extraction_Settings const& settings)❰
+
+    try{
+    
+        //drill down to final element
+        for (auto const& it: settings.steps){
+            
+            if (it.index){
+                j = j[as_signed(it.key)];
+            }
+            else{
+                j = j[it.key];
+            }
+        }
+        
+        //extract final element
+        auto val = j.value(settings.desired_key,0);
+        return val;
+    }
+    catch(...){
+    }
+    return 0;
+❱

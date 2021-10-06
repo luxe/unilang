@@ -1,0 +1,72 @@
+class
+
+❪fstream❫
+❪iostream❫
+❪"code/utilities/contributor/contributor"❫
+❪"code/utilities/code/concept_static_tree_structs"❫
+❪"code/utilities/linguistics/computer/frontends/java/settings/java_settings"❫
+⚯
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/converters/lib"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/program/call/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/types/vectors/converters/lib"❫
+❪"code/utilities/types/strings/observers/converting/lib"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/code/query/virtual_method_checker"❫
+❪"code/utilities/code/query/class_name_getter"❫
+❪"code/utilities/comments/doxygen/maker/doxygen_block_printer"❫
+❪"code/utilities/linguistics/computer/frontends/java/parts/data_members_getter"❫
+❪"code/utilities/linguistics/computer/frontends/java/parts/methods_getter"❫
+⚞⚟
+
+◀public: static▶ std::string ☀Get(model::Module const& structure, std::vector<Contributor> const& contributors, Java_Settings const& settings)❰
+
+    //java, everything is a class:
+    std::string text;
+    text += Doxygen_Block_Printer::Get_Indented_Block(structure,settings.module,0);
+    text += "\n";
+    Append_With_Newline(text,Class_Start(structure,contributors,settings));
+    Append_With_Newline(text,Data_Members_Getter::Get(structure,contributors,settings));
+    Append_With_Newline(text,Methods_Getter::Get(structure,contributors,settings));
+    Append_With_Newline(text,"}");
+    
+    return text;
+❱
+
+
+◀private: static▶ std::string ☀Class_Start(model::Module const& structure, std::vector<Contributor> const& contributors, Java_Settings const& settings)❰
+    std::string str;
+    str += "public ";
+    
+    if (Virtual_Method_Checker::Has_Virtual_Methods(structure)){
+         str += "abstract ";
+     }
+    
+    str += "class ";
+    str += Class_Name_Getter::Get(structure,settings.module);
+    str += Add_Posible_Templates(structure,settings);
+    str += " {\n";
+    return str;
+❱
+
+◀private: static▶ std::string ☀Add_Posible_Templates(model::Module const& structure, Java_Settings const& settings)❰
+    if (structure.template_argument.empty()){
+        return "";
+    }
+    
+    std::string x;
+    x += "<";
+    for (auto const& it: structure.template_argument){
+        x += First_Element_Or_Default(it.type).value;
+        x += ",";
+    }
+    x.pop_back();
+    x += ">";
+    return x;
+    
+❱
+

@@ -1,0 +1,54 @@
+􏶞g􏶟
+􏷲Applies breaker changes to the electrical graph triggered from the IOS data, and the PLC.
+Also outputs the relevant changes back to the PLC􏷱
+􏷰Iterates over the breaker bindings􏷯
+􏷮Electrical_System􏷭 􏷮Breaker_Applier􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦vector􏷥􏴓d􏴔􏴑VectorT􏴒
+􏷤􏷣􏷦breaker_binding􏷥􏴓d􏴔􏴑BreakerBindingT􏴒
+􏷤􏷣􏷦DCPowerSystem􏷥􏴓d􏴔􏴑DCPowerSystemT􏴒
+
+􏷘+􏷗􏷒apply electrical breaker changes􏷑
+􏷐Tells the PLC the new breaker states according to the triggers from the IOS􏷏
+􏶠If the IOS has commanded the breaker to pop, we will inform the PLC of this through our outputs􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆VectorT􏷅􏷄breaker modifiers􏷃􏷀all of the binded breaker data􏶿
+􏶴
+  􏶲iterate over all of our IOS breakers coming in, and apply them to our output so they can be later used by the PLC􏶱
+  VectorForEach1(􏵶breaker modifiers􏵷,(BinaryActionT)ApplyBreakerBindingChanges,􏵶dc system􏵷);
+􏶳
+
+􏷘-􏷗􏷒apply breaker binding changes􏷑
+􏷐Changes an individual breaker bindings for the graph and the output of the system􏷏
+􏶠One change may affect another change of the same element, but it will not known until next system update􏶡
+􏶜mr􏶝􏷆BreakerBindingT􏷅􏷄element􏷃􏷀a binded breaker element􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶴
+    􏶲Pop breaker physically according to the IOS􏶱
+    􏵲apply plc breaker state􏵳􏵶element􏵷);
+    
+    􏶲We pop any breakers on the graph that are popped according to the PLC􏶱
+    􏵲apply graph breaker state􏵳􏵶dc system􏵷,􏵶element􏵷);
+􏶳
+
+
+􏷘-􏷗􏷒apply plc breaker state􏷑
+􏷐Tells the PLC the new breaker states according to the triggers from the IOS􏷏
+􏶠If the IOS has commanded the breaker to pop, we will inform the PLC of this through our outputs􏶡
+􏶜mr􏶝􏷆BreakerBindingT􏷅􏷄element􏷃􏷀a binded breaker element􏶿
+􏶴
+    􏶲set the output breaker equal to the IOS trigger􏶱
+    􏶲we do this, by setting the result breaker equal to the incoming IOS breaker􏶱
+    CircuitBreakerAssign(􏵶element􏵷->m_ptResult,􏵶element􏵷->m_tIos);
+􏶳
+􏷘-􏷗􏷒apply graph breaker state􏷑
+􏷐Adjust the state of the graph breakers based on the state of the PLC breakers􏷏
+􏶠Adjusts whether the nodes of the graph are "flow-able" according to the physical state of the breakers􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆BreakerBindingT􏷅􏷄element􏷃􏷀a binded breaker element􏶿
+􏶴
+    􏶲set the graph breaker equal to the PLC breaker􏶱
+    􏶲we do this, by setting the flow of graph node based on whether the PLC breaker is popped or not􏶱
+    ElectricalGraphGetCircuitComponent(&􏵶dc system􏵷->m_tCircuit.m_tGraph,􏵶element􏵷->m_uId)->m_tFlowAbility.m_bCanBePowered = !CircuitBreakerIsPopped(&􏵶element􏵷->m_tPlc);
+􏶳

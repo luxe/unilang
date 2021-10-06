@@ -1,0 +1,76 @@
+class
+❪"utilities"❫
+❪"systems"❫
+❪"program_input"❫
+❪"bulk_line_processor"❫
+⚯
+⚞⚟
+◀public: static▶ void ☀Execute_Needed_Tasks(Program_Input const& input) ❰
+    
+    Bulk_Line_Processor::Process(input.options,Impl);
+❱
+
+
+◀private: static▶ std::vector<std::string>& ☀Impl(std::vector<std::string> & lines)❰
+    
+	//build int/string list
+	std::vector<std::pair<int,std::string>> finds;
+	for (auto it: lines){
+		auto numbers = Get_Numeric_Chunks(it);
+		if (numbers.empty()){
+			finds.emplace_back(0,it);
+		}
+		else{
+			finds.emplace_back(numbers[0],it);
+		}
+	}
+
+	//sort list
+	std::sort(finds.begin(),finds.end(),[](auto a, auto b){
+		return a.first < b.first;
+	});
+
+	lines.clear();
+	for (auto const& it: finds){
+		lines.push_back(it.second);
+	}
+    
+    return lines;
+❱
+
+//not accounting for negative numbers
+◀private: static▶ std::vector<int> ☀Get_Numeric_Chunks(std::string const& str)❰
+	auto chunks_str = Get_Numeric_Chunks_As_Strings(str);
+	std::vector<int> numbers;
+	for (auto it: chunks_str){
+		numbers.push_back(as_signed(it));
+	}
+	return numbers;
+❱
+
+◀private: static▶ std::vector<std::string> ☀Get_Numeric_Chunks_As_Strings(std::string const& str)❰
+	std::vector<std::string> chunks;
+
+	std::string temp;
+	for (auto it: str){
+		if (Is_A_Numeric_Character(it)){
+			temp += it;
+		}
+		else{
+
+			//add chunk if it is non-empty
+			if (!temp.empty()){
+				chunks.push_back(temp);
+				temp.clear();
+			}
+		}
+	}
+
+	//add chunk if it is non-empty
+	if (!temp.empty()){
+		chunks.push_back(temp);
+		temp.clear();
+	}
+
+	return chunks;
+❱

@@ -1,0 +1,85 @@
+class
+❪iostream❫
+❪string❫
+❪fstream❫
+⚯
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/strings/observers/path/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/utilities/types/wstrings/transformers/trimming/lib"❫
+❪"code/utilities/types/wstrings/transformers/other/lib"❫
+❪"code/utilities/types/converters/lib"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+⚞⚟
+
+◀public: static▶ std::string ☀all_nlohmann_serialization_headers()❰
+  std::string str;
+  str += nlohmann_serialization_headers();
+  str += nlohmann_serialization_support_headers();
+  return str;
+❱
+◀private: static▶ std::string ☀nlohmann_serialization_headers()❰
+  std::string str;
+  str += "#include \"nlohmann/json.hpp\"\n";
+  return str;
+❱
+◀private: static▶ std::string ☀nlohmann_serialization_support_headers()❰
+  std::string str;
+  str += "#include \"code/utilities/formats/json/overloads/tree_json_converters.hpp\"\n";
+  str += "#include \"code/utilities/formats/json/overloads/chrono_json_converters.hpp\"\n";
+  return str;
+❱
+
+
+
+◀public: static▶ std::string ☀nlohmann_serialization_interface_methods(std::string const& type_name)❰
+  std::string str;
+  Append(str,"void to_json(nlohmann::json& j, const ");
+  Append(str,type_name);
+  Append_With_Newline(str,"&x);");
+  
+  Append(str,"void from_json(const nlohmann::json& j, ");
+  Append(str,type_name);
+  Append_With_Newline(str,"&x);");
+  return str;
+❱
+
+◀public: static▶ std::string ☀nlohmann_serialization_implementation_methods(std::string const& type_name, std::vector<std::string> const& data_members)❰
+  std::string str;
+  
+  //to json
+  Append(str,"void to_json(nlohmann::json& j, const ");
+  Append(str,type_name);
+  Append_With_Newline(str,"&x) {");
+  Append_With_Newline(str,"(void)x; //avoid warning");
+  Append_With_Newline(str,"(void)j; //avoid warning");
+  Append_With_Newline(str,"j = nlohmann::json{");
+  for (auto const& data_member: data_members){
+    Append(str,"{\"");
+    Append(str,data_member);
+    Append(str,"\", x.");
+    Append(str,data_member);
+    Append_With_Newline(str,"},");
+  }
+  Append_With_Newline(str,"};");
+  Append_With_Newline(str,"}");
+  
+  
+  //from json
+  Append(str,"void from_json(const nlohmann::json& j, ");
+  Append(str,type_name);
+  Append_With_Newline(str,"&x) {");
+  Append_With_Newline(str,"(void)x; //avoid warning");
+  Append_With_Newline(str,"(void)j; //avoid warning");
+  for (auto const& data_member: data_members){
+    Append(str,"j.at(\"");
+    Append(str,data_member);
+    Append(str,"\").get_to(x.");
+    Append(str,data_member);
+    Append_With_Newline(str,");");
+  }
+  Append_With_Newline(str,"}");
+  
+  return str;
+❱

@@ -1,0 +1,397 @@
+􏶞g􏶟
+􏷲Algorithms that can be applied through iterators􏷱
+􏷰http://en.cppreference.com/w/cpp/algorithm􏷯
+􏷮Algorithm􏷭􏷮Iterator􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤s􏷣􏷦stdioLib􏷥􏴓d􏴔􏴑BOOL􏴒
+􏷤s􏷣􏷦stddef􏷥􏴓1􏴔􏴑size_t􏴒
+􏷤􏷣􏷦algorithm_delegates􏷥􏴓d􏴔􏴑predicates􏴒􏴓d􏴔􏴑actions􏴒
+􏷤􏷣􏷦iterator􏷥􏴓d􏴔􏴑IteratorT􏴒
+
+Non modifying sequence operations:
+􏷘+􏷗􏷒all of􏷑
+􏷐Checks if unary predicate p returns true for all elements in the range [first, last).􏷏
+􏶠uses predicate over range of elements􏶡
+􏶜m􏶝􏷆IteratorT􏷅􏷄first􏷃􏷀the first element of the range to examine􏶿
+􏶜m􏶝􏷆IteratorT􏷅􏷄last􏷃􏷀the last element of the range to examine􏶿
+􏶜m􏶝􏷆UnaryPredicateT􏷅􏷄predicate􏷃􏷀the unary predicate used across the range􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼result􏶻􏶺true if unary predicate returns true for all elements in the range, false otherwise. Returns true if the range is empty.􏶹
+􏶴
+    􏶲leverage find algorithm to get back an iterator􏶱
+    IteratorT tFound = 􏵲find if not􏵳􏵶first􏵷,􏵶last􏵷,􏵶predicate􏵷);
+    
+    􏶲compare them to deduce algorithm result􏶱
+    return IteratorEqual(&tFound,&􏵶last􏵷);
+􏶳
+
+􏷘+􏷗􏷒any of􏷑
+􏷐Checks if unary predicate p returns true for at least one element in the range [first, last).􏷏
+􏶠uses predicate over range of elements􏶡
+􏶜m􏶝􏷆IteratorT􏷅􏷄first􏷃􏷀the first element of the range to examine􏶿
+􏶜m􏶝􏷆IteratorT􏷅􏷄last􏷃􏷀the last element of the range to examine􏶿
+􏶜m􏶝􏷆UnaryPredicateT􏷅􏷄predicate􏷃􏷀the unary predicate used across the range􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼result􏶻􏶺true if unary predicate returns true for at least one element in the range, false otherwise. Returns false if the range is empty.􏶹
+􏶴
+    􏶲leverage find algorithm to get back an iterator􏶱
+    IteratorT tFound = 􏵲find if􏵳􏵶first􏵷,􏵶last􏵷,􏵶predicate􏵷);
+    
+    􏶲compare them to deduce algorithm result􏶱
+    return IteratorNotEqual(&tFound,&􏵶last􏵷);
+􏶳
+
+􏷘+􏷗􏷒none of􏷑
+􏷐Checks if unary predicate p returns true for no elements in the range [first, last).􏷏
+􏶠uses predicate over range of elements􏶡
+􏶜m􏶝􏷆IteratorT􏷅􏷄first􏷃􏷀the first element of the range to examine􏶿
+􏶜m􏶝􏷆IteratorT􏷅􏷄last􏷃􏷀the last element of the range to examine􏶿
+􏶜m􏶝􏷆UnaryPredicateT􏷅􏷄predicate􏷃􏷀the unary predicate used across the range􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼result􏶻􏶺true if unary predicate returns true for no elements in the range, false otherwise. Returns true if the range is empty.􏶹
+􏶴
+    􏶲leverage find algorithm to get back an iterator􏶱
+    IteratorT tFound = 􏵲find if􏵳􏵶first􏵷,􏵶last􏵷,􏵶predicate􏵷);
+    
+    􏶲compare them to deduce algorithm result􏶱
+    return IteratorEqual(&tFound,&􏵶last􏵷);
+􏶳
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------
+ForEach outside of object
+􏷘+􏷗􏷒for each􏷑
+􏷐Applies the given action to the result of dereferencing every iterator in the range [first, last), in order.􏷏
+􏶠uses unary action over range of elements􏶡
+􏶜m􏶝􏷆IteratorT􏷅􏷄first􏷃􏷀the first element of the range to examine􏶿
+􏶜m􏶝􏷆IteratorT􏷅􏷄last􏷃􏷀the last element of the range to examine􏶿
+􏶜m􏶝􏷆UnaryActionT􏷅􏷄action􏷃􏷀the unary action used across the range􏶿
+􏶚m􏶛􏶾UnaryActionT􏶽􏶼action􏶻􏶺returns the action passed in􏶹
+􏶴
+    for (; IteratorNotEqual(&􏵶first􏵷,&􏵶last􏵷); IteratorPrefixIncrement(&􏵶first􏵷)) {
+        (*􏵶action􏵷)(IteratorRef(&􏵶first􏵷));
+    }
+    return 􏵶action􏵷;
+􏶳
+
+􏷘+􏷗􏷒for each 1􏷑
+􏷐Applies the given action to the result of dereferencing every iterator in the range [first, last), in order.􏷏
+􏶠uses binary action over range of elements by using the element and forwarding 1 extra argument􏶡
+􏶜m􏶝􏷆IteratorT􏷅􏷄first􏷃􏷀the first element of the range to examine􏶿
+􏶜m􏶝􏷆IteratorT􏷅􏷄last􏷃􏷀the last element of the range to examine􏶿
+􏶜m􏶝􏷆BinaryActionT􏷅􏷄action􏷃􏷀the binary action used across the range􏶿
+􏶜mr􏶝􏷆void􏷅􏷄argument1􏷃􏷀an additional argument forwarded to the action􏶿
+􏶚m􏶛􏶾BinaryActionT􏶽􏶼action􏶻􏶺returns the action passed in􏶹
+􏶴
+    for (; IteratorNotEqual(&􏵶first􏵷,&􏵶last􏵷); IteratorPrefixIncrement(&􏵶first􏵷)) {
+        (*􏵶action􏵷)(IteratorRef(&􏵶first􏵷),􏵶argument1􏵷);
+    }
+    return 􏵶action􏵷;
+􏶳
+
+􏷘+􏷗􏷒for each 2􏷑
+􏷐Applies the given action to the result of dereferencing every iterator in the range [first, last), in order.􏷏
+􏶠uses ternary action over range of elements by using the element and forwarding 2 extra arguments􏶡
+􏶜m􏶝􏷆IteratorT􏷅􏷄first􏷃􏷀the first element of the range to examine􏶿
+􏶜m􏶝􏷆IteratorT􏷅􏷄last􏷃􏷀the last element of the range to examine􏶿
+􏶜m􏶝􏷆TernaryActionT􏷅􏷄action􏷃􏷀the ternary action used across the range􏶿
+􏶜mr􏶝􏷆void􏷅􏷄argument1􏷃􏷀an additional argument forwarded to the action􏶿
+􏶜mr􏶝􏷆void􏷅􏷄argument2􏷃􏷀an additional argument forwarded to the action􏶿
+􏶚m􏶛􏶾TernaryActionT􏶽􏶼action􏶻􏶺returns the action passed in􏶹
+􏶴
+    for (; IteratorNotEqual(&􏵶first􏵷,&􏵶last􏵷); IteratorPrefixIncrement(&􏵶first􏵷)) {
+        (*􏵶action􏵷)(IteratorRef(&􏵶first􏵷),􏵶argument1􏵷,􏵶argument2􏵷);
+    }
+    return 􏵶action􏵷;
+􏶳
+
+􏷘+􏷗􏷒for each 3􏷑
+􏷐Applies the given action to the result of dereferencing every iterator in the range [first, last), in order.􏷏
+􏶠uses quaternary action over range of elements by using the element and forwarding 3 extra arguments􏶡
+􏶜m􏶝􏷆IteratorT􏷅􏷄first􏷃􏷀the first element of the range to examine􏶿
+􏶜m􏶝􏷆IteratorT􏷅􏷄last􏷃􏷀the last element of the range to examine􏶿
+􏶜m􏶝􏷆QuaternaryActionT􏷅􏷄action􏷃􏷀the quaternary action used across the range􏶿
+􏶜mr􏶝􏷆void􏷅􏷄argument1􏷃􏷀an additional argument forwarded to the action􏶿
+􏶜mr􏶝􏷆void􏷅􏷄argument2􏷃􏷀an additional argument forwarded to the action􏶿
+􏶜mr􏶝􏷆void􏷅􏷄argument3􏷃􏷀an additional argument forwarded to the action􏶿
+􏶚m􏶛􏶾QuaternaryActionT􏶽􏶼action􏶻􏶺returns the action passed in􏶹
+􏶴
+    for (; IteratorNotEqual(&􏵶first􏵷,&􏵶last􏵷); IteratorPrefixIncrement(&􏵶first􏵷)) {
+        (*􏵶action􏵷)(IteratorRef(&􏵶first􏵷),􏵶argument1􏵷,􏵶argument2􏵷,􏵶argument3􏵷);
+    }
+    return 􏵶action􏵷;
+􏶳
+ForEach inside of object
+􏷘+􏷗􏷒obj for each􏷑
+􏷐Applies the given action to the result of dereferencing every iterator in the range [first, last), in order.􏷏
+􏶠uses binary action over range of elements, expecting this pointer as first argument to forward􏶡
+􏶜m􏶝􏷆IteratorT􏷅􏷄first􏷃􏷀the first element of the range to examine􏶿
+􏶜m􏶝􏷆IteratorT􏷅􏷄last􏷃􏷀the last element of the range to examine􏶿
+􏶜m􏶝􏷆BinaryActionT􏷅􏷄action􏷃􏷀the binary action used across the range􏶿
+􏶜mr􏶝􏷆void􏷅􏷄self􏷃􏷀the "this" pointer of an object􏶿
+􏶚m􏶛􏶾BinaryActionT􏶽􏶼action􏶻􏶺returns the action passed in􏶹
+􏶴
+    for (; IteratorNotEqual(&􏵶first􏵷,&􏵶last􏵷); IteratorPrefixIncrement(&􏵶first􏵷)) {
+        (*􏵶action􏵷)(􏵶self􏵷,IteratorRef(&􏵶first􏵷));
+    }
+    return 􏵶action􏵷;
+􏶳
+
+􏷘+􏷗􏷒obj for each 1􏷑
+􏷐Applies the given action to the result of dereferencing every iterator in the range [first, last), in order.􏷏
+􏶠uses ternary action over range of elements by expecting this pointer as first argument to forward, using the element, and forwarding 1 extra argument􏶡
+􏶜m􏶝􏷆IteratorT􏷅􏷄first􏷃􏷀the first element of the range to examine􏶿
+􏶜m􏶝􏷆IteratorT􏷅􏷄last􏷃􏷀the last element of the range to examine􏶿
+􏶜m􏶝􏷆TernaryActionT􏷅􏷄action􏷃􏷀the ternary action used across the range􏶿
+􏶜mr􏶝􏷆void􏷅􏷄self􏷃􏷀the "this" pointer of an object􏶿
+􏶜mr􏶝􏷆void􏷅􏷄argument1􏷃􏷀an additional argument forwarded to the action􏶿
+􏶚m􏶛􏶾TernaryActionT􏶽􏶼action􏶻􏶺returns the action passed in􏶹
+􏶴
+    for (; IteratorNotEqual(&􏵶first􏵷,&􏵶last􏵷); IteratorPrefixIncrement(&􏵶first􏵷)) {
+        (*􏵶action􏵷)(􏵶self􏵷,IteratorRef(&􏵶first􏵷),􏵶argument1􏵷);
+    }
+    return 􏵶action􏵷;
+􏶳
+
+􏷘+􏷗􏷒obj for each 2􏷑
+􏷐Applies the given action to the result of dereferencing every iterator in the range [first, last), in order.􏷏
+􏶠uses quaternary action over range of elements  by expecting this pointer as first argument to forward,  using the element, and forwarding 2 extra arguments􏶡
+􏶜m􏶝􏷆IteratorT􏷅􏷄first􏷃􏷀the first element of the range to examine􏶿
+􏶜m􏶝􏷆IteratorT􏷅􏷄last􏷃􏷀the last element of the range to examine􏶿
+􏶜m􏶝􏷆QuaternaryActionT􏷅􏷄action􏷃􏷀the quaternary action used across the range􏶿
+􏶜mr􏶝􏷆void􏷅􏷄self􏷃􏷀the "this" pointer of an object􏶿
+􏶜mr􏶝􏷆void􏷅􏷄argument1􏷃􏷀an additional argument forwarded to the action􏶿
+􏶜mr􏶝􏷆void􏷅􏷄argument2􏷃􏷀an additional argument forwarded to the action􏶿
+􏶚m􏶛􏶾QuaternaryActionT􏶽􏶼action􏶻􏶺returns the action passed in􏶹
+􏶴
+    for (; IteratorNotEqual(&􏵶first􏵷,&􏵶last􏵷); IteratorPrefixIncrement(&􏵶first􏵷)) {
+        (*􏵶action􏵷)(􏵶self􏵷,IteratorRef(&􏵶first􏵷),􏵶argument1􏵷,􏵶argument2􏵷);
+    }
+    return 􏵶action􏵷;
+􏶳
+-------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+􏷘+􏷗􏷒for each n􏷑
+􏷐Applies the given action object f to the result of dereferencing every iterator in the range [first, first + n), in order.􏷏
+􏶠uses unary action over range of elements􏶡
+􏶜m􏶝􏷆IteratorT􏷅􏷄first􏷃􏷀  the beginning of the range to apply the action to􏶿
+􏶜m􏶝􏷆size􏷅􏷄amount􏷃􏷀the number of elements to apply the action to􏶿
+􏶜m􏶝􏷆UnaryActionT􏷅􏷄action􏷃􏷀the unary action used across the range􏶿
+􏶚m􏶛􏶾IteratorT􏶽􏶼nth iterator􏶻􏶺first + n􏶹
+􏶴
+    size_t uIndex = 0;
+    for (; uIndex < 􏵶amount􏵷; IteratorPrefixIncrement(&􏵶first􏵷), ++uIndex){
+        (*􏵶action􏵷)(IteratorRef(&􏵶first􏵷));
+    }
+    return 􏵶first􏵷;
+􏶳
+
+TODO: count (figure out how to pass any value type in)
+
+􏷐Returns the number of elements in the range [first, last) satisfying specific criteria.􏷏
+􏶠uses predicate over range of elements􏶡
+􏷘+􏷗􏷒count if􏷑
+􏶜m􏶝􏷆IteratorT􏷅􏷄first􏷃􏷀the first element of the range to examine􏶿
+􏶜m􏶝􏷆IteratorT􏷅􏷄last􏷃􏷀the last element of the range to examine􏶿
+􏶜m􏶝􏷆UnaryPredicateT􏷅􏷄predicate􏷃􏷀the unary predicate used across the range􏶿
+􏶚m􏶛􏶾size􏶽􏶼count􏶻􏶺accumulated count based on predicate􏶹
+􏶴
+    size_t uCount = 0;
+    for (; IteratorNotEqual(&􏵶first􏵷,&􏵶last􏵷); IteratorPrefixIncrement(&􏵶first􏵷)) {
+        if ((*􏵶predicate􏵷)(IteratorRef(&􏵶first􏵷))){
+            ++uCount;
+        }
+    }
+    return uCount;
+􏶳
+
+TODO: all of mismatch (make pair type)
+TODO: all of equal (iterator doesn't carry Type_Information, and Type_Information doesn't carry operators)
+TODO: all of lexicographical compare (iterator doesn't carry Type_Information, and Type_Information doesn't carry operators)
+TODO: find (can't pass in templated value type.. will have to something with any type and operators..)
+
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------
+􏷘+􏷗􏷒find if􏷑
+􏷐searches for an element for which predicate p returns true􏷏
+􏶠uses predicate over range of elements􏶡
+􏶜m􏶝􏷆IteratorT􏷅􏷄first􏷃􏷀the first element of the range to examine􏶿
+􏶜m􏶝􏷆IteratorT􏷅􏷄last􏷃􏷀the last element of the range to examine􏶿
+􏶜m􏶝􏷆UnaryPredicateT􏷅􏷄predicate􏷃􏷀the unary predicate used across the range􏶿
+􏶚m􏶛􏶾IteratorT􏶽􏶼result􏶻􏶺Iterator to the first element satisfying the condition or last if no such element is found.􏶹
+􏶴
+    for (; IteratorNotEqual(&􏵶first􏵷,&􏵶last􏵷); IteratorPrefixIncrement(&􏵶first􏵷)) {
+        if ((*􏵶predicate􏵷)(IteratorRef(&􏵶first􏵷))){
+            return 􏵶first􏵷;
+        }
+    }
+    return 􏵶last􏵷;
+􏶳
+
+􏷘+􏷗􏷒find if 1􏷑
+􏷐searches for an element for which predicate p returns true􏷏
+􏶠uses predicate over range of elements􏶡
+􏶜m􏶝􏷆IteratorT􏷅􏷄first􏷃􏷀the first element of the range to examine􏶿
+􏶜m􏶝􏷆IteratorT􏷅􏷄last􏷃􏷀the last element of the range to examine􏶿
+􏶜m􏶝􏷆BinaryPredicateT􏷅􏷄predicate􏷃􏷀the predicate used across the range􏶿
+􏶜mr􏶝􏷆void􏷅􏷄argument1􏷃􏷀an additional argument forwarded to the action􏶿
+􏶚m􏶛􏶾IteratorT􏶽􏶼result􏶻􏶺Iterator to the first element satisfying the condition or last if no such element is found.􏶹
+􏶴
+    for (; IteratorNotEqual(&􏵶first􏵷,&􏵶last􏵷); IteratorPrefixIncrement(&􏵶first􏵷)) {
+        if ((*􏵶predicate􏵷)(IteratorRef(&􏵶first􏵷),􏵶argument1􏵷)){
+            return 􏵶first􏵷;
+        }
+    }
+    return 􏵶last􏵷;
+􏶳
+
+􏷘+􏷗􏷒find if 2􏷑
+􏷐searches for an element for which predicate p returns true􏷏
+􏶠uses predicate over range of elements􏶡
+􏶜m􏶝􏷆IteratorT􏷅􏷄first􏷃􏷀the first element of the range to examine􏶿
+􏶜m􏶝􏷆IteratorT􏷅􏷄last􏷃􏷀the last element of the range to examine􏶿
+􏶜m􏶝􏷆TernaryPredicateT􏷅􏷄predicate􏷃􏷀the predicate used across the range􏶿
+􏶜mr􏶝􏷆void􏷅􏷄argument1􏷃􏷀an additional argument forwarded to the action􏶿
+􏶜mr􏶝􏷆void􏷅􏷄argument2􏷃􏷀an additional argument forwarded to the action􏶿
+􏶚m􏶛􏶾IteratorT􏶽􏶼result􏶻􏶺Iterator to the first element satisfying the condition or last if no such element is found.􏶹
+􏶴
+    for (; IteratorNotEqual(&􏵶first􏵷,&􏵶last􏵷); IteratorPrefixIncrement(&􏵶first􏵷)) {
+        if ((*􏵶predicate􏵷)(IteratorRef(&􏵶first􏵷),􏵶argument1􏵷,􏵶argument2􏵷)){
+            return 􏵶first􏵷;
+        }
+    }
+    return 􏵶last􏵷;
+􏶳
+
+􏷘+􏷗􏷒find if 3􏷑
+􏷐searches for an element for which predicate p returns true􏷏
+􏶠uses predicate over range of elements􏶡
+􏶜m􏶝􏷆IteratorT􏷅􏷄first􏷃􏷀the first element of the range to examine􏶿
+􏶜m􏶝􏷆IteratorT􏷅􏷄last􏷃􏷀the last element of the range to examine􏶿
+􏶜m􏶝􏷆QuaternaryPredicateT􏷅􏷄predicate􏷃􏷀the predicate used across the range􏶿
+􏶜mr􏶝􏷆void􏷅􏷄argument1􏷃􏷀an additional argument forwarded to the action􏶿
+􏶜mr􏶝􏷆void􏷅􏷄argument2􏷃􏷀an additional argument forwarded to the action􏶿
+􏶜mr􏶝􏷆void􏷅􏷄argument3􏷃􏷀an additional argument forwarded to the action􏶿
+􏶚m􏶛􏶾IteratorT􏶽􏶼result􏶻􏶺Iterator to the first element satisfying the condition or last if no such element is found.􏶹
+􏶴
+    for (; IteratorNotEqual(&􏵶first􏵷,&􏵶last􏵷); IteratorPrefixIncrement(&􏵶first􏵷)) {
+        if ((*􏵶predicate􏵷)(IteratorRef(&􏵶first􏵷),􏵶argument1􏵷,􏵶argument2􏵷,􏵶argument3􏵷)){
+            return 􏵶first􏵷;
+        }
+    }
+    return 􏵶last􏵷;
+􏶳
+ForEach inside of object
+􏷘+􏷗􏷒obj find if􏷑
+􏷐searches for an element for which predicate p returns true􏷏
+􏶠uses predicate over range of elements􏶡
+􏶜m􏶝􏷆IteratorT􏷅􏷄first􏷃􏷀the first element of the range to examine􏶿
+􏶜m􏶝􏷆IteratorT􏷅􏷄last􏷃􏷀the last element of the range to examine􏶿
+􏶜m􏶝􏷆BinaryPredicateT􏷅􏷄predicate􏷃􏷀the predicate used across the range􏶿
+􏶜mr􏶝􏷆void􏷅􏷄self􏷃􏷀the "this" pointer of an object􏶿
+􏶚m􏶛􏶾IteratorT􏶽􏶼result􏶻􏶺Iterator to the first element satisfying the condition or last if no such element is found.􏶹
+􏶴
+    for (; IteratorNotEqual(&􏵶first􏵷,&􏵶last􏵷); IteratorPrefixIncrement(&􏵶first􏵷)) {
+        if ((*􏵶predicate􏵷)(􏵶self􏵷,IteratorRef(&􏵶first􏵷))){
+            return 􏵶first􏵷;
+        }
+    }
+    return 􏵶last􏵷;
+􏶳
+
+􏷘+􏷗􏷒obj find if 1􏷑
+􏷐searches for an element for which predicate p returns true􏷏
+􏶠uses predicate over range of elements􏶡
+􏶜m􏶝􏷆IteratorT􏷅􏷄first􏷃􏷀the first element of the range to examine􏶿
+􏶜m􏶝􏷆IteratorT􏷅􏷄last􏷃􏷀the last element of the range to examine􏶿
+􏶜m􏶝􏷆TernaryPredicateT􏷅􏷄predicate􏷃􏷀the predicate used across the range􏶿
+􏶜mr􏶝􏷆void􏷅􏷄self􏷃􏷀the "this" pointer of an object􏶿
+􏶜mr􏶝􏷆void􏷅􏷄argument1􏷃􏷀an additional argument forwarded to the action􏶿
+􏶚m􏶛􏶾IteratorT􏶽􏶼result􏶻􏶺Iterator to the first element satisfying the condition or last if no such element is found.􏶹
+􏶴
+    for (; IteratorNotEqual(&􏵶first􏵷,&􏵶last􏵷); IteratorPrefixIncrement(&􏵶first􏵷)) {
+        if ((*􏵶predicate􏵷)(􏵶self􏵷,IteratorRef(&􏵶first􏵷),􏵶argument1􏵷)){
+            return 􏵶first􏵷;
+        }
+    }
+    return 􏵶last􏵷;
+􏶳
+
+􏷘+􏷗􏷒obj find if 2􏷑
+􏷐searches for an element for which predicate p returns true􏷏
+􏶠uses predicate over range of elements􏶡
+􏶜m􏶝􏷆IteratorT􏷅􏷄first􏷃􏷀the first element of the range to examine􏶿
+􏶜m􏶝􏷆IteratorT􏷅􏷄last􏷃􏷀the last element of the range to examine􏶿
+􏶜m􏶝􏷆QuaternaryPredicateT􏷅􏷄predicate􏷃􏷀the predicate used across the range􏶿
+􏶜mr􏶝􏷆void􏷅􏷄self􏷃􏷀the "this" pointer of an object􏶿
+􏶜mr􏶝􏷆void􏷅􏷄argument1􏷃􏷀an additional argument forwarded to the action􏶿
+􏶜mr􏶝􏷆void􏷅􏷄argument2􏷃􏷀an additional argument forwarded to the action􏶿
+􏶚m􏶛􏶾IteratorT􏶽􏶼result􏶻􏶺Iterator to the first element satisfying the condition or last if no such element is found.􏶹
+􏶴
+    for (; IteratorNotEqual(&􏵶first􏵷,&􏵶last􏵷); IteratorPrefixIncrement(&􏵶first􏵷)) {
+        if ((*􏵶predicate􏵷)(􏵶self􏵷,IteratorRef(&􏵶first􏵷),􏵶argument1􏵷,􏵶argument2􏵷)){
+            return 􏵶first􏵷;
+        }
+    }
+    return 􏵶last􏵷;
+􏶳
+------------------------------------------------------------------------------------------------------------------------------
+
+􏷘+􏷗􏷒find if not􏷑
+􏷐searches for an element for which predicate q returns false􏷏
+􏶠uses predicate over range of elements􏶡
+􏶜m􏶝􏷆IteratorT􏷅􏷄first􏷃􏷀the first element of the range to examine􏶿
+􏶜m􏶝􏷆IteratorT􏷅􏷄last􏷃􏷀the last element of the range to examine􏶿
+􏶜m􏶝􏷆UnaryPredicateT􏷅􏷄predicate􏷃􏷀the unary predicate used across the range􏶿
+􏶚m􏶛􏶾IteratorT􏶽􏶼result􏶻􏶺Iterator to the first element satisfying the condition or last if no such element is found.􏶹
+􏶴
+    for (; IteratorNotEqual(&􏵶first􏵷,&􏵶last􏵷); IteratorPrefixIncrement(&􏵶first􏵷)) {
+        if (!(*􏵶predicate􏵷)(IteratorRef(&􏵶first􏵷))){
+            return 􏵶first􏵷;
+        }
+    }
+    return 􏵶last􏵷;
+􏶳
+
+TODO: find_end (relies on search)
+TODO: find_first_of (uses type operators)
+TODO: adjacent_find (uses type operators)
+TODO: (uses type operators)
+TODO: (uses type operators)

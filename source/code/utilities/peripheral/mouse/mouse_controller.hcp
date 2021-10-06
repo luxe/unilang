@@ -1,0 +1,357 @@
+class
+❪"code/utilities/graphics/x11/xdo/lib"❫
+❪"code/utilities/data_structures/point/point"❫
+❪iostream❫
+❪vector❫
+❪string❫
+❪cmath❫
+❪"code/utilities/time/sleeping/lib"❫
+❪"code/utilities/random/lib"❫
+⚯
+⚞⚟
+
+//lifetime stuff
+◀public:▶ ☀◈()
+❰
+    xdo = xdo_new(NULL);
+    if (!xdo){
+        std::cerr << "invalid xdo_new" << std::endl;
+    }
+❱
+
+◀public:▶ ☀~◈()
+❰
+    xdo_free(xdo);
+❱
+
+//moving the mouse
+◀public:▶ void ☀move_mouse_dynamically_random(Point to, const int low_budge_wait_micro_s, const int high_budge_wait_micro_s)
+❰
+    //where we are starting from
+    auto from = current_mouse_position();
+    
+    //build a mouse trajectory
+    auto trajectory = build_efficient_trajectory(from,to);
+    
+    for (auto point: trajectory){
+        jump_to_mouse_position(point);
+        auto delay_ms = RandomIntFromRange(low_budge_wait_micro_s,high_budge_wait_micro_s);
+        Sleep_For_N_Microseconds(delay_ms);
+    }
+❱
+◀public:▶ void ☀move_mouse(Point to, const int budge_wait_micro_s)
+❰
+    //where we are starting from
+    auto from = current_mouse_position();
+    
+    //build a mouse trajectory
+    auto trajectory = build_efficient_trajectory(from,to);
+    
+    for (auto point: trajectory){
+        jump_to_mouse_position(point);
+        Sleep_For_N_Microseconds(budge_wait_micro_s);
+    }
+❱
+◀public:▶ void ☀move_mouse_at_presentation_speed(Point to)
+❰
+    //where we are starting from
+    auto from = current_mouse_position();
+    
+    //build a mouse trajectory
+    auto trajectory = build_efficient_trajectory(from,to);
+    
+    for (auto point: trajectory){
+        jump_to_mouse_position(point);
+        Sleep_For_N_Microseconds(3100);
+    }
+❱
+
+◀public:▶ void ☀move_mouse_by_journey_time(Point to, const int journey_time_ms)
+❰
+    //where we are starting from
+    auto from = current_mouse_position();
+    
+    //build a mouse trajectory
+    auto trajectory = build_efficient_trajectory(from,to);
+    
+    int time_per_budge_micro_s = (journey_time_ms / trajectory.size()) * 1000;
+    
+    
+    for (auto point: trajectory){
+        jump_to_mouse_position(point);
+        Sleep_For_N_Microseconds(time_per_budge_micro_s);
+    }
+❱
+
+◀public:▶ void ☀move_mouse_immediate(Point to)
+❰
+    jump_to_mouse_position(to);
+❱
+
+//shaking the mouse
+◀public:▶ void ☀pixel_shake()
+❰
+    const int speed = 1000;
+    auto current = current_mouse_position();
+    current.x+=10;
+    current.y+=10;
+    move_mouse(current,speed);
+    Sleep_For_N_Milliseconds(500);
+    current.x-=10;
+    current.y-=10;
+    move_mouse(current,speed);
+    Sleep_For_N_Milliseconds(500);
+    current.x+=10;
+    current.y+=10;
+    move_mouse(current,speed);
+    Sleep_For_N_Milliseconds(500);
+    current.x-=10;
+    current.y-=10;
+    move_mouse(current,speed);
+    Sleep_For_N_Milliseconds(500);
+    current.x+=10;
+    current.y+=10;
+    move_mouse(current,speed);
+    Sleep_For_N_Milliseconds(500);
+    current.x-=10;
+    current.y-=10;
+    move_mouse(current,speed);
+    Sleep_For_N_Milliseconds(500);
+    current.x+=10;
+    current.y+=10;
+    move_mouse(current,speed);
+    Sleep_For_N_Milliseconds(500);
+    current.x-=10;
+    current.y-=10;
+    move_mouse(current,speed);
+    Sleep_For_N_Milliseconds(500);
+❱
+
+//clicking the mouse
+◀public:▶ void ☀click(const int millisecond_hold)❰
+    xdo_mouse_down(xdo,0,1);
+    Sleep_For_N_Milliseconds(millisecond_hold);
+    xdo_mouse_up(xdo,0,1);
+❱
+
+◀public:▶ void ☀standard_click()❰
+    xdo_mouse_down(xdo,0,1);
+    Sleep_For_N_Milliseconds(700);
+    xdo_mouse_up(xdo,0,1);
+❱
+
+◀public:▶ void ☀presentation_click()❰
+    xdo_mouse_down(xdo,0,1);
+    Sleep_For_N_Milliseconds(150);
+    xdo_mouse_up(xdo,0,1);
+❱
+
+//dragging the mouse
+◀public:▶ void ☀drag_mouse_dynamically_random(Point to, const int low_budge_wait_micro_s, const int high_budge_wait_micro_s)
+❰
+    hold_left_mouse();
+    move_mouse_dynamically_random(to,low_budge_wait_micro_s,high_budge_wait_micro_s);
+    let_go_left_mouse();
+❱
+◀public:▶ void ☀drag_mouse(Point to, const int budge_wait_micro_s)
+❰
+    hold_left_mouse();
+    move_mouse(to,budge_wait_micro_s);
+    let_go_left_mouse();
+❱
+◀public:▶ void ☀drag_mouse_at_presentation_speed(Point to)
+❰
+    hold_left_mouse();
+    move_mouse_at_presentation_speed(to);
+    let_go_left_mouse();
+❱
+◀public:▶ void ☀drag_mouse_by_journey_time(Point to, const int journey_time_ms)
+❰
+    hold_left_mouse();
+    move_mouse_by_journey_time(to,journey_time_ms);
+    let_go_left_mouse();
+❱
+◀public:▶ void ☀drag_mouse_immediate(Point to)
+❰
+    hold_left_mouse();
+    move_mouse_immediate(to);
+    let_go_left_mouse();
+❱
+
+
+//holding/letting go of mouse buttons
+◀public:▶ void ☀hold_left_mouse()❰
+    xdo_mouse_down(xdo,0,1);
+❱
+◀public:▶ void ☀hold_right_mouse()❰
+    xdo_mouse_down(xdo,0,3);
+❱
+◀public:▶ void ☀let_go_left_mouse()❰
+    xdo_mouse_up(xdo,0,1);
+❱
+◀public:▶ void ☀let_go_right_mouse()❰
+    xdo_mouse_up(xdo,0,3);
+❱
+
+//oops.  not actually a mouse.  possibly move elsewhere
+◀public:▶ void ☀type_something_at_presentation_speed(std::string const& str)❰
+    xdo_enter_text_window(xdo,0,str.c_str(),120000);
+    //xdo_send_keysequence_window(xdo,0,str.c_str(),5000);
+    //for (auto const& c : str){
+        //xdo_send_keysequence_window_down(xdo,0,c,1);
+        //xdo_send_keysequence_window_up(xdo,0,c,1);
+        //Sleep_For_N_Milliseconds(700);
+    //}
+❱
+
+
+
+//implementation
+◀private:▶ std::vector<Point> ☀build_efficient_trajectory(Point from, const Point & to)
+❰
+    //find out the distance between the coordinates
+    auto distances = get_coordinate_distances(from,to);
+    
+    //find out how many points are in our trajectory
+    auto iterations = std::max(distances.x,distances.y);
+    
+    //figure out x and y direction
+    bool x_moves_positively = should_x_move_positively(from,to);
+    bool y_moves_positively = should_y_move_positively(from,to);
+    
+    //find out which coordinate will change every trajectory point
+    bool x_always_changes = true;
+    if (distances.y > distances.x){
+        x_always_changes = false;
+    }
+    
+    //get how many times the non-always moving coordinate needs to nudge
+    int non_always_nudge_interval = calculate_nudge_interval(from,to);
+    
+    //create trajectory
+    std::vector<Point> traj;
+    for (int i = 0; i < iterations; ++i){
+        
+        //move always moving coordinate
+        if (x_always_changes){
+            nudge_coordinate(from.x,x_moves_positively);
+            
+            //move sometimes moving coordinate
+            if (should_nudge(i,non_always_nudge_interval)){
+                nudge_coordinate(from.y,y_moves_positively);
+            }
+        }
+        else{
+            nudge_coordinate(from.y,y_moves_positively);
+            
+            //move sometimes moving coordinate
+            if (should_nudge(i,non_always_nudge_interval)){
+                nudge_coordinate(from.x,x_moves_positively);
+            }
+        }
+        
+        non_always_nudge_interval = calculate_nudge_interval(from,to);
+        
+        
+        traj.emplace_back(from);
+    }
+    return traj;
+❱
+
+
+◀private:▶ bool ☀should_nudge(const int iteration, const int non_always_nudge_interval)❰
+    if (non_always_nudge_interval <= 0){
+        return false;
+    }
+    
+    return iteration % non_always_nudge_interval == 0;
+❱
+
+◀private:▶ int ☀calculate_nudge_interval(const Point & from, const Point & to)❰
+
+    //find out the distance between the coordinates
+    auto distances = get_coordinate_distances(from,to);
+    
+    //find out how many points are in our trajectory
+    auto iterations = std::max(distances.x,distances.y);
+    
+    //find out which coordinate will change every trajectory point
+    bool x_always_changes = true;
+    if (distances.y > distances.x){
+        x_always_changes = false;
+    }
+    
+    //get how many times the non-always moving coordinate needs to nudge
+    float non_always_nudge_interval_f = 0;
+    if (x_always_changes){
+        non_always_nudge_interval_f = static_cast<float>(iterations) / distances.y;
+    }
+    else{
+        non_always_nudge_interval_f = static_cast<float>(iterations) / distances.x;
+    }
+    
+    int non_always_nudge_interval = std::round(non_always_nudge_interval_f);
+    
+    if (non_always_nudge_interval <= 0){
+        non_always_nudge_interval = 0;
+    }
+    return non_always_nudge_interval;
+❱
+
+◀private:▶ Point ☀get_coordinate_distances(const Point & from, const Point & to)❰
+    Point distances;
+    distances.x = std::abs(from.x - to.x);
+    distances.y = std::abs(from.y - to.y);
+    return distances;
+❱
+◀private:▶ bool ☀should_x_move_positively(const Point & from, const Point & to)❰
+    bool x_moves_positively = true;
+    if (from.x > to.x){
+        x_moves_positively = false;
+    }
+    return x_moves_positively;
+❱
+◀private:▶ bool ☀should_y_move_positively(const Point & from, const Point & to)❰
+    bool y_moves_positively = true;
+    if (from.y > to.y){
+        y_moves_positively = false;
+    }
+    return y_moves_positively;
+❱
+
+
+
+//nudge coordinate
+◀private:▶ void ☀nudge_coordinate(int & coordinate, bool positiviely)
+❰
+    if (positiviely){
+        coordinate +=1;
+    }
+    else{
+        coordinate -=1;
+    }
+❱
+
+//xdo wrappers
+◀private:▶ void ☀jump_to_mouse_position(const Point & point)
+❰
+    auto result = xdo_move_mouse(xdo,point.x,point.y,0);
+    if (result){
+        std::cerr << "failed to move mouse" << std::endl;
+    }
+❱
+
+◀public:▶ Point ☀current_mouse_position()
+❰
+    Point point;
+    auto result = xdo_get_mouse_location(xdo,&point.x,&point.y,nullptr);
+    if (result){
+        std::cerr << "failed to get mouse" << std::endl;
+    }
+    return point;
+❱
+
+
+◀private:
+    xdo_t *xdo;
+▶

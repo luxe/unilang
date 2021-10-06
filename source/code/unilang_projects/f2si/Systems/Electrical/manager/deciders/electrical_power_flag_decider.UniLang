@@ -1,0 +1,482 @@
+􏶞g􏶟
+􏷲Sets the "Is Powered" flags based off the "Can be powered" flags as well as graph state
+The "Power Flag Decider", bridges the gap between electrical system power knowledge, and other system power knowledge.
+If the graph is expansive enough, the power flag name should match the device name in the graph.  
+This is not always the case, and instead the power flag must be mapped to breakers/buses.􏷱
+􏷰These flags are set and used by all of the other systems􏷯
+􏷮Electrical_System􏷭 􏷮Power_Flag_Decider􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦ElectricalPowerFlags􏷥􏴓d􏴔􏴑SystemPowerFlagsT􏴒
+􏷤􏷣􏷦DCPowerSystem􏷥􏴓d􏴔􏴑DCPowerSystemT􏴒
+􏶔s􏶕􏶒stddef􏶓􏴏d􏴐􏴍size_t􏴎
+􏶔􏶕􏶒Defs􏶓􏴏d􏴐􏴍BOOL􏴎
+􏶔􏶕􏶒vector􏶓􏴏d􏴐􏴍VectorT􏴎
+􏶔􏶕􏶒power_flag_binding􏶓􏴏d􏴐􏴍PowerFlagBindingT􏴎
+
+􏵺calls function while forwarding string name of variable􏵻􏵸􏵹
+􏵐-􏵑􏵾BIND_POWER_FLAG(BINDINGS,FLAG,ID)􏵿􏵖􏵗􏵼BindPowerFlag(BINDINGS,FLAG,ID,#ID)􏵽
+
+􏷘+􏷗􏷒decide power flags for other systems􏷑
+􏷐Decides on "Can be powered flags" for all system flags􏷏
+􏶠The results of this function are the flags that get sent back to the other systems􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀the DC power system containing all of the graph nodes􏶿
+􏶜r􏶝􏷆SystemPowerFlagsT􏷅􏷄can be powered􏷃􏷀all of the "can be powered" flags􏶿
+􏶜mr􏶝􏷆SystemPowerFlagsT􏷅􏷄is powered􏷃􏷀all of the "is powered" flags􏶿
+􏶴
+  􏶲start, by mirroring what the systems say􏶱
+  􏶲if the system says that something can be powered, start by assuming that is powered􏶱
+  􏶲if the system says that something CANNOT be powered, start by assuming that is NOT powered􏶱
+  *􏵶is powered􏵷 = *􏵶can be powered􏵷;
+  
+  􏶲At the moment, the "is powered" flag is just an assumption.􏶱
+  􏶲Its not until we actually look at the graph to decide if they indeed have power.􏶱
+  􏶲one thing is certain though, if a system says that something "cannot be powered",􏶱
+  􏶲we know that it also "won't have power".  We still need to apply that "can be powered" knowledge to the graph,􏶱
+  􏶲as the node may currently be powered from a previous traversal.􏶱
+  􏶲It's also important to do this, because it will ensure that the node does not get power after the next traversal.􏶱
+  􏶲And we want that for accurate amp draws and graph depiction.􏶱
+  􏵲decide each power flag based according to the current graph􏵳􏵶dc system􏵷,􏵶is powered􏵷);
+􏶳
+
+􏷘+􏷗􏷒decide each power flag based according to the current graph􏷑
+􏷐Applies electrical power flags to the electrical graph triggered from the IOS data􏷏
+􏶠These power flags will turn off flow for the particular graph nodes.􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀the DC power system containing all of the graph nodes􏶿
+􏶜mr􏶝􏷆SystemPowerFlagsT􏷅􏷄is powered assumptions􏷃􏷀all of the "is powered" assumption flags that need resolved􏶿
+􏶴
+    􏶲create vector of mpower flag bindings􏶱
+    VectorT tBindings = ConstructVector(SPECIALIZE_UNMANAGED(PowerFlagBindingT),128);
+    􏵲build power flag mapping􏵳&tBindings,􏵶dc system􏵷,􏵶is powered assumptions􏵷);
+    
+    􏶲apply the power flags onto the graph􏶱
+    􏵲apply bindings􏵳&tBindings,􏵶dc system􏵷);
+    
+    􏶲deallocate the vector􏶱
+    DestructVectorT(&tBindings);
+􏶳
+
+􏷘-􏷗􏷒build power flag mapping􏷑
+􏷐create a vector of bindings to tie the power flags of systems and the devices of the graph together􏷏
+􏶠the bindings can be iterated and applied after􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄bindings􏷃􏷀The list of power flag bindings to apply to the DC Power System􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀the DC power system containing all of the graph nodes􏶿
+􏶜mr􏶝􏷆SystemPowerFlagsT􏷅􏷄is powered􏷃􏷀all of the "is powered" flags􏶿
+􏶴
+    
+    􏶲bind all of the power flags to the graph nodes􏶱
+    􏵲bind radio power to graph􏵳􏵶bindings􏵷,􏵶dc system􏵷,&􏵶is powered􏵷->m_tRadio);
+    􏵲bind hydraulic power to graph􏵳􏵶bindings􏵷,􏵶dc system􏵷,&􏵶is powered􏵷->m_tHydraulic);
+    􏵲bind fire power to graph􏵳􏵶bindings􏵷,􏵶dc system􏵷,&􏵶is powered􏵷->m_tFire);
+    􏵲bind lighting power to graph􏵳􏵶bindings􏵷,􏵶dc system􏵷,&􏵶is powered􏵷-> m_tLighting);
+    􏵲bind mep power to graph􏵳􏵶bindings􏵷,􏵶dc system􏵷,&􏵶is powered􏵷->m_tMissionEquipmentPackage);
+    􏵲bind flight controls power to graph􏵳􏵶bindings􏵷,􏵶dc system􏵷,&􏵶is powered􏵷->m_tFlightControls);
+    􏵲bind avionics power to graph􏵳􏵶bindings􏵷,􏵶dc system􏵷,&􏵶is powered􏵷->m_tAvionics);
+    􏵲bind flight guidance power to graph􏵳􏵶bindings􏵷,􏵶dc system􏵷,&􏵶is powered􏵷->m_tFlightGuidance);
+    􏵲bind engine power to graph􏵳􏵶bindings􏵷,􏵶dc system􏵷,&􏵶is powered􏵷->m_tEngine);
+    􏵲bind fuel power to graph􏵳􏵶bindings􏵷,􏵶dc system􏵷,&􏵶is powered􏵷->m_tFuel);
+    􏵲bind pneumatic power to graph􏵳􏵶bindings􏵷,􏵶dc system􏵷,&􏵶is powered􏵷->m_tPneumatic);
+􏶳
+
+
+􏷘-􏷗􏷒bind radio power to graph􏷑
+􏷐binds the system's flags based on the graph state􏷏
+􏶠looks at particular graph nodes to determine if they have power􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄bindings􏷃􏷀The list of power flag bindings to apply to the DC Power System􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀the DC power system containing all of the graph nodes􏶿
+􏶜mr􏶝􏷆RadioPowerFlagsT􏷅􏷄flags􏷃􏷀the flags of the system􏶿
+􏶴
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bRadioAltimeterPower,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_uRadioAltimeter);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bWulfsbergC5000Power,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_uWulfsbergC5000);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbGarmin430WPower[AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_puGarmin430[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbNavReceiverPower[AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_puNavReceiver[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbGarmin430WPower[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_puGarmin430[AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbNavReceiverPower[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_puNavReceiver[AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bGTX330Power,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_uGtx330);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bArc231ControlPower,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_uArc231Control);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbAudioPanelBackupPower[AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_puAudioPanelBackup[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbAudioPanelBackupPower[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_puAudioPanelBackup[AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bAudioPanelPower[AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_puAudioPanel[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bAudioPanelPower[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_puAudioPanel[AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbAudioPanelICSCabinPower[AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_puAudioPanelIcsCabin[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbAudioPanelICSCabinPower[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_puAudioPanelIcsCabin[AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbAudioPanelICSpeakerPower[AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_puAudioPanelIcsSpeaker[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbAudioPanelICSpeakerPower[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_puAudioPanelIcsSpeaker[AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bMarkerBeaconPower,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_uMarkerBeacon);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbDmeReceiverPower[AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_puDmeReceiver[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbDmeReceiverPower[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_puDmeReceiver[AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbComReceiverPower[0],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_uComReceiver1); //COM 1
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbComReceiverPower[1],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_uComReceiver2); //COM 2
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbComReceiverPower[2],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_uComReceiver3); //COM 3
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbComReceiverPower[3],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_uComReceiver4); //COM 4
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbComReceiverPower[4],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_uComReceiver5); //COM 5
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bFtrPanelLights,  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_uPanelLights);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bDmeButtonLights,  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_uDmeButtonLights);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bWaasIndicatorPanelLights,  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_uWaasIndicatorPanelLights);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bNmsBacklight, 􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_uNmsBacklight);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bRemoteElectronicUnit, 􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tRadio.m_uRemoteElectronicUnit);
+􏶳
+
+􏷘-􏷗􏷒bind hydraulic power to graph􏷑
+􏷐binds the system's flags based on the graph state􏷏
+􏶠looks at particular graph nodes to determine if they have power􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄bindings􏷃􏷀The list of power flag bindings to apply to the DC Power System􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀the DC power system containing all of the graph nodes􏶿
+􏶜mr􏶝􏷆HydraulicPowerFlagsT􏷅􏷄flags􏷃􏷀the flags of the system􏶿
+􏶴
+    //􏵶flags􏵷->m_pbPressureIndicator[AVI_PILOT] ??
+    //􏵶flags􏵷->m_pbPressureIndicator[AVI_COPILOT] ??
+    //􏵶flags􏵷->m_pbSolenoidValve[AVI_PILOT] ??
+    //􏵶flags􏵷->m_pbSolenoidValve[AVI_COPILOT] ??
+􏶳
+
+􏷘-􏷗􏷒bind fire power to graph􏷑
+􏷐binds the system's flags based on the graph state􏷏
+􏶠looks at particular graph nodes to determine if they have power􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄bindings􏷃􏷀The list of power flag bindings to apply to the DC Power System􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀the DC power system containing all of the graph nodes􏶿
+􏶜mr􏶝􏷆FirePowerFlagsT􏷅􏷄flags􏷃􏷀the flags of the system􏶿
+􏶴
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbFireDetection[AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFire.m_puFireDetection[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbFireDetection[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFire.m_puFireDetection[AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbFireExtinguisher[AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFire.m_puFireExtinguisher[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbFireExtinguisher[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFire.m_puFireExtinguisher[AVI_COPILOT]);
+􏶳
+
+􏷘-􏷗􏷒bind lighting power to graph􏷑
+􏷐binds the system's flags based on the graph state􏷏
+􏶠looks at particular graph nodes to determine if they have power􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄bindings􏷃􏷀The list of power flag bindings to apply to the DC Power System􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀the DC power system containing all of the graph nodes􏶿
+􏶜mr􏶝􏷆LightingPowerFlagsT􏷅􏷄flags􏷃􏷀the flags of the system􏶿
+􏶴
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bMap,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tLighting.m_uMap);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bPosition,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tLighting.m_uPosition);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bAntiCollision,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tLighting.m_uAntiCollision);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bLanding,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tLighting.m_uLanding);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bLandingSearch,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tLighting.m_uLandingSearch);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bStandbyHorizon,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tLighting.m_uStandbyHorizon);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bPilotLsControls,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tLighting.m_uPilotLsControls);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bCopilotLsControls,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tLighting.m_uCopilotLsControls);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bInstrumentsOn,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tLighting.m_uInstrumentsOn);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bInstrumentsNVG,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tLighting.m_uInstrumentsNvg);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bInstrumentLights,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tLighting.m_uInstrumentLights);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bEmergencyExit,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tLighting.m_uEmergencyExit);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bLs16Searchlight,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tLighting.m_uLs16SearchLight);
+    BIND_POWER_FLAG(ptBindings, &ptFlags->m_bLs16Controller, ptDcSystem->m_tCircuit.m_tSystemDevices.m_tLighting.m_uLs16Controller);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bMx15Camera,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tLighting.m_uMx15Camera);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bBatteryTestGreen,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tLighting.m_uBatteryTestGreen);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bBatteryTestRed,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tLighting.m_uBatteryTestRed);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bLaserArmPanel,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tLighting.m_uLaserArmPanel);
+􏶳
+
+􏷘-􏷗􏷒bind mep power to graph􏷑
+􏷐binds the system's flags based on the graph state􏷏
+􏶠looks at particular graph nodes to determine if they have power􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄bindings􏷃􏷀The list of power flag bindings to apply to the DC Power System􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀the DC power system containing all of the graph nodes􏶿
+􏶜mr􏶝􏷆MissionEquipmentPackagePowerFlagsT􏷅􏷄flags􏷃􏷀the flags of the system􏶿
+􏶴
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bMapControlUnit,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tMep.m_uMapControlUnit);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bVideoDisplayUnit[AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tMep.m_puVdu[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bVideoDisplayUnit[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tMep.m_puVdu[AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bDvrPanel,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tMep.m_uDvrPanel);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bAntennaDeployUnitPrimary,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tMep.m_uAntennaDeployUnitPrimary);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bAntennaDeployUnitSecondary,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tMep.m_uAntennaDeployUnitSecondary);
+    BIND_POWER_FLAG(ptBindings, &ptFlags->m_bAduAnnunciator, ptDcSystem->m_tCircuit.m_tSystemDevices.m_tMep.m_uAduAnnunciator);
+    
+    BIND_POWER_FLAG(ptBindings, &ptFlags->m_pbMissionBus[MISSION_BUS_DVR_AUD_REC], ptDcSystem->m_tCircuit.m_tSystemDevices.m_tMep.m_puMissionButtonLights[MISSION_BUS_DVR_AUD_REC]);
+    BIND_POWER_FLAG(ptBindings, &ptFlags->m_pbMissionBus[MISSION_BUS_SEARCHLIGHT_POWER], ptDcSystem->m_tCircuit.m_tSystemDevices.m_tMep.m_puMissionButtonLights[MISSION_BUS_SEARCHLIGHT_POWER]);
+    BIND_POWER_FLAG(ptBindings, &ptFlags->m_pbMissionBus[MISSION_BUS_MSN_BUS_POWER], ptDcSystem->m_tCircuit.m_tSystemDevices.m_tMep.m_puMissionButtonLights[MISSION_BUS_MSN_BUS_POWER]);
+    BIND_POWER_FLAG(ptBindings, &ptFlags->m_pbMissionBus[MISSION_BUS_AAUD_LINK], ptDcSystem->m_tCircuit.m_tSystemDevices.m_tMep.m_puMissionButtonLights[MISSION_BUS_AAUD_LINK]);
+    BIND_POWER_FLAG(ptBindings, &ptFlags->m_pbMissionBus[MISSION_BUS_DAUD_LINK], ptDcSystem->m_tCircuit.m_tSystemDevices.m_tMep.m_puMissionButtonLights[MISSION_BUS_DAUD_LINK]);
+    BIND_POWER_FLAG(ptBindings, &ptFlags->m_pbMissionBus[MISSION_BUS_DOWNLINK_POWER], ptDcSystem->m_tCircuit.m_tSystemDevices.m_tMep.m_puMissionButtonLights[MISSION_BUS_DOWNLINK_POWER]);
+    
+    BIND_POWER_FLAG(ptBindings, &ptFlags->m_bMissionButton, ptDcSystem->m_tCircuit.m_tSystemDevices.m_tMep.m_uMissionButton);
+    BIND_POWER_FLAG(ptBindings, &ptFlags->m_bVms, ptDcSystem->m_tCircuit.m_tSystemDevices.m_tMep.m_uVms);
+    BIND_POWER_FLAG(ptBindings, &ptFlags->m_bDwnlinkPanel, ptDcSystem->m_tCircuit.m_tSystemDevices.m_tMep.m_uDwnlinkPanel);
+􏶳
+
+􏷘-􏷗􏷒bind flight controls power to graph􏷑
+􏷐binds the system's flags based on the graph state􏷏
+􏶠looks at particular graph nodes to determine if they have power􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄bindings􏷃􏷀The list of power flag bindings to apply to the DC Power System􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀the DC power system containing all of the graph nodes􏶿
+􏶜mr􏶝􏷆FlightControlsPowerFlagsT􏷅􏷄flags􏷃􏷀the flags of the system􏶿
+􏶴
+    BIND_POWER_FLAG(ptBindings, &ptFlags->m_bCyclicBeepTrim, ptDcSystem->m_tCircuit.m_tSystemDevices.m_tFlightControl.m_uCyclicBeepTrim);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bWinch,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFlightControl.m_uWinch);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bWinchCableCutter,  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFlightControl.m_uWinchCableCutter);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bCargoHook,  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFlightControl.m_uCargoHook);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bCargoHookMirror,  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFlightControl.m_uCargoHookMirror);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bForceTrimRelease, ptDcSystem->m_tCircuit.m_tSystemDevices.m_tFlightControl.m_uForceTrimRelease);
+􏶳
+
+􏷘-􏷗􏷒bind avionics power to graph􏷑
+􏷐binds the system's flags based on the graph state􏷏
+􏶠looks at particular graph nodes to determine if they have power􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄bindings􏷃􏷀The list of power flag bindings to apply to the DC Power System􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀the DC power system containing all of the graph nodes􏶿
+􏶜mr􏶝􏷆AvionicsPowerFlagsT􏷅􏷄flags􏷃􏷀the flags of the system􏶿
+􏶴
+    
+    //should be less of a concern to avionics now:
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbAvionicsEssentialBusRelays[AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_ptSystemSide[AVI_PILOT].m_tBuses.m_uAvionicEssentialBus);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbAvionicsEssentialBusRelays[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_ptSystemSide[AVI_COPILOT].m_tBuses.m_uAvionicEssentialBus);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbAvionicsShedBusRelays[AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_ptSystemSide[AVI_PILOT].m_tBuses.m_uAvionicShedBus);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbAvionicsShedBusRelays[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_ptSystemSide[AVI_COPILOT].m_tBuses.m_uAvionicShedBus);
+    
+    
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbPFDBezels[AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puPfdBezels[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbPFDBezels[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puPfdBezels[AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbNDBezels[AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puNdBezels[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbNDBezels[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puNdBezels[AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bCADBezel,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_uCadBezel);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bVEMDBezel,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_uVemdBezel);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbICPs[AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puIcps[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbICPs[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puIcps[AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bRCU,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_uRcu);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbPitotDeicers[AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puPilotDecider[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbPitotDeicers[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puPilotDecider[AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbStaticDeicers[AVI_PILOT][AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puStaticDecider[AVI_PILOT][AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbStaticDeicers[AVI_COPILOT][AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puStaticDecider[AVI_COPILOT][AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbStaticDeicers[AVI_PILOT][AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puStaticDecider[AVI_PILOT][AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbStaticDeicers[AVI_COPILOT][AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puStaticDecider[AVI_COPILOT][AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bAvionicsDeckFan,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_uDeckFan);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bCenterInstrumentFan,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_uCenterInstrumentFan);
+    BIND_POWER_FLAG(ptBindings, &ptFlags->m_bPelicanRackFan, ptDcSystem->m_tCircuit.m_tSystemDevices.m_tAvionics.m_uPelicanRackFan);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bCADFan,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_uCadFan);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bVEMDFan,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_uVemdFan);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbRamAirTemperatureSensor[AVI_PILOT],  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puRamTemperatureSensor[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbRamAirTemperatureSensor[AVI_COPILOT],  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puRamTemperatureSensor[AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bAvionicsDeckTemperatureSensor,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_uDeckTemperatureSensor);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bCenterInstrumentTemperatureSensor,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_uCenterInstrumentTemperatureSensor);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bCenterInstrumentCoolingFanOnMicroswitch,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_uCenterInstrumentCoolingFanOnMicroswitch);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bCenterInstrumentOverheatMicroswitch,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_uCenterInstrumentOverheatMicroswitch);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bAvionicsDeckCoolingFanOnMicroswitch,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_uAionicsDeckCoolingFanOnMicroswitch);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bAvionicsDeckOverheatMicroswitch,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_uAvionicsDeckOverheatMicroswitch);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbMagnetometers[AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puMagnetometers[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbMagnetometers[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puMagnetometers[AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbAHRUs[AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puAhrus[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbAHRUs[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puAhrus[AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbFCDMs[AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puFcdms[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbFCDMs[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puFcdms[AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbADCs[AVI_PILOT],  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puAdcs[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbADCs[AVI_COPILOT],  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puAdcs[AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbPFDs[AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puPfds[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbPFDs[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puPfds[AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbNDs[AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puNds[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbNDs[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puNds[AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bVEMD,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_uVemd);
+    BIND_POWER_FLAG(ptBindings, &ptFlags->m_bVEMDLanes[AVI_PILOT], ptDcSystem->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puVemdLanes[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bVEMDLanes[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_puVemdLanes[AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bCAD,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_uCad);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bCADLane,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_uCadLane);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bWarningUnit,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_uWarningUnit);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bWetCompassLighting,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_uWetCompassLighting);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bTripleTach,  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_uTripleTach);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bStandbyArtificialHorizon,  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_uStandbyArtificialHorizon);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bNmsSelector,  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tAvionics.m_uNmsSelector);
+􏶳
+
+􏷘-􏷗􏷒bind flight guidance power to graph􏷑
+􏷐binds the system's flags based on the graph state􏷏
+􏶠looks at particular graph nodes to determine if they have power􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄bindings􏷃􏷀The list of power flag bindings to apply to the DC Power System􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀the DC power system containing all of the graph nodes􏶿
+􏶜mr􏶝􏷆FlightGuidancePowerFlagsT􏷅􏷄flags􏷃􏷀the flags of the system􏶿
+􏶴
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bAPMS,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFlightGuidance.m_uApms);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbAutopilotModules[AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFlightGuidance.m_puAutopilotModules[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbAutopilotModules[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFlightGuidance.m_puAutopilotModules[AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bPitchSAS,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFlightGuidance.m_uPitchSas);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bPitchSEMA2,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFlightGuidance.m_uPitchSema2);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bRollSAS,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFlightGuidance.m_uRollSas);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bRollSEMA2,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFlightGuidance.m_uRollSema2);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bYawSAS,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFlightGuidance.m_uYawSas);
+􏶳
+
+􏷘-􏷗􏷒bind engine power to graph􏷑
+􏷐binds the system's flags based on the graph state􏷏
+􏶠looks at particular graph nodes to determine if they have power􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄bindings􏷃􏷀The list of power flag bindings to apply to the DC Power System􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀the DC power system containing all of the graph nodes􏶿
+􏶜mr􏶝􏷆EnginePowerFlagsT􏷅􏷄flags􏷃􏷀the flags of the system􏶿
+􏶴
+
+    􏶲Essential bus (left)􏶱
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbEngineN1Sensor[ENGINE_LEFT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puEngineN1Sensor[ENGINE_LEFT]);
+    BIND_POWER_FLAG(ptBindings, &ptFlags->m_pbEngineN2Sensor[ENGINE_LEFT], ptDcSystem->m_tCircuit.m_tSystemDevices.m_tEngine.m_puEngineN2Sensor[ENGINE_LEFT]);
+    BIND_POWER_FLAG(ptBindings, &ptFlags->m_pbEngineTorqueSensor[ENGINE_LEFT], ptDcSystem->m_tCircuit.m_tSystemDevices.m_tEngine.m_puEngineTorqueSensor[ENGINE_LEFT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbTOTSensor_degc[ENGINE_LEFT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puTotSensor[ENGINE_LEFT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbEngineFailLimitSwitch[ENGINE_LEFT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puEngineFailLimitSwitch[ENGINE_LEFT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbEngineFreewheelLimitSwitch[ENGINE_LEFT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puEngineFreewheelLimitSwitch[ENGINE_LEFT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbEngineOilTemperatureSensor[ENGINE_LEFT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puEngineOilTemperatureSensor[ENGINE_LEFT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbEngineOilPressureSensor[ENGINE_LEFT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puEngineOilPressureSensor[ENGINE_LEFT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbEngineOilPressureLimitSwitch[ENGINE_LEFT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puEngineOilPressureLimitSwitch[ENGINE_LEFT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbEngineOilFilterClogSwitch[ENGINE_LEFT],  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puEngineOilFilterClogSwitch[ENGINE_LEFT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbEngineOilChipDetectSwitch[ENGINE_LEFT],  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puEngineOilChipDetectSwitch[ENGINE_LEFT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bTransmissionOilTemperatureSensor,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_uTransmissionOilTemperatureSensor);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bTransmissionOilOvertemperatureLimitSwitch,  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_uTransmissionOilOverTemperatureLimitSwitch);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bTransmissionOilContaminationSwitch,  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_uTransmissionOilContaminationSwitch);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbTransmissionOilPressureSensor[ENGINE_LEFT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puTransmissionOilPressureSensor[ENGINE_LEFT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbTransmissionOilPressureLimitSwitch[ENGINE_LEFT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puTransmissionOilPressureLimitSwitch[ENGINE_LEFT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bRotorMinSpeedLimitSwitch,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_uRotorMinSpeedLimitSwitch);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bRotorMaxDrivenSpeedLimitSwitch,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_uRotorMaxDrivenSpeedLimitSwitch);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bRotorMaxFreewheelSpeedLimitSwitch,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_uRotorMaxFreewheelSpeedLimitSwitch);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bVARTOMSModeSelector,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_uVartomsModeSelector);
+    
+    􏶲Essential bus (right)􏶱
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbEngineN1Sensor[ENGINE_RIGHT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puEngineN1Sensor[ENGINE_RIGHT]);
+    BIND_POWER_FLAG(ptBindings, &ptFlags->m_pbEngineN2Sensor[ENGINE_RIGHT], ptDcSystem->m_tCircuit.m_tSystemDevices.m_tEngine.m_puEngineN2Sensor[ENGINE_RIGHT]);
+    BIND_POWER_FLAG(ptBindings, &ptFlags->m_pbEngineTorqueSensor[ENGINE_RIGHT], ptDcSystem->m_tCircuit.m_tSystemDevices.m_tEngine.m_puEngineTorqueSensor[ENGINE_RIGHT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbTOTSensor_degc[ENGINE_RIGHT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puTotSensor[ENGINE_RIGHT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbEngineFailLimitSwitch[ENGINE_RIGHT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puEngineFailLimitSwitch[ENGINE_RIGHT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbEngineFreewheelLimitSwitch[ENGINE_RIGHT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puEngineFreewheelLimitSwitch[ENGINE_RIGHT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbEngineOilTemperatureSensor[ENGINE_RIGHT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puEngineOilTemperatureSensor[ENGINE_RIGHT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbEngineOilPressureSensor[ENGINE_RIGHT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puEngineOilPressureSensor[ENGINE_RIGHT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbEngineOilPressureLimitSwitch[ENGINE_RIGHT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puEngineOilPressureLimitSwitch[ENGINE_RIGHT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbEngineOilFilterClogSwitch[ENGINE_RIGHT],  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puEngineOilFilterClogSwitch[ENGINE_RIGHT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbEngineOilChipDetectSwitch[ENGINE_RIGHT],  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puEngineOilChipDetectSwitch[ENGINE_RIGHT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbTransmissionOilPressureSensor[ENGINE_RIGHT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puTransmissionOilPressureSensor[ENGINE_RIGHT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbTransmissionOilPressureLimitSwitch[ENGINE_RIGHT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puTransmissionOilPressureLimitSwitch[ENGINE_RIGHT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bRotorSpeedSensor,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_uRotorSpeedSensor);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bMastMomentSensor,  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_uMastMomentSensor);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbIgnitor[ENGINE_LEFT],  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puIgnitor[ENGINE_LEFT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbIgnitor[ENGINE_RIGHT],  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puIgnitor[ENGINE_RIGHT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbStarterRelay[ENGINE_LEFT],  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puStarterRelay[ENGINE_LEFT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbStarterRelay[ENGINE_RIGHT],  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puStarterRelay[ENGINE_RIGHT]);
+    BIND_POWER_FLAG(ptBindings, &ptFlags->m_pbStarterHoldRelay[ENGINE_LEFT], ptDcSystem->m_tCircuit.m_tSystemDevices.m_tEngine.m_puStarterHoldRelay[ENGINE_LEFT]);
+    BIND_POWER_FLAG(ptBindings, &ptFlags->m_pbStarterHoldRelay[ENGINE_RIGHT], ptDcSystem->m_tCircuit.m_tSystemDevices.m_tEngine.m_puStarterHoldRelay[ENGINE_RIGHT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbStarterMotor[ENGINE_LEFT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puStarterMotor[ENGINE_LEFT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbStarterMotor[ENGINE_RIGHT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puStarterMotor[ENGINE_RIGHT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbOverspeedShutdownSystem[ENGINE_LEFT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puOverspeedShutdownSystem[ENGINE_LEFT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbOverspeedShutdownSystem[ENGINE_RIGHT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puOverspeedShutdownSystem[ENGINE_RIGHT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbSandFilter[ENGINE_LEFT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puSandFilter[ENGINE_LEFT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbSandFilter[ENGINE_RIGHT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puSandFilter[ENGINE_RIGHT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbSandFilterClogSwitch[ENGINE_LEFT],  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puSandFilterClogSwitch[ENGINE_LEFT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbSandFilterClogSwitch[ENGINE_RIGHT],  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puSandFilterClogSwitch[ENGINE_RIGHT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbSandFilterDoorClosedSwitch[ENGINE_LEFT],  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puSandFilterDoorClosedSwitch[ENGINE_LEFT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbSandFilterDoorClosedSwitch[ENGINE_RIGHT],  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puSandFilterDoorClosedSwitch[ENGINE_RIGHT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbEngineTrimActuators[ENGINE_LEFT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puEngineTrimActuators[ENGINE_LEFT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbEngineTrimActuators[ENGINE_RIGHT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_puEngineTrimActuators[ENGINE_RIGHT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bVARTOMSController,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tEngine.m_uVartomsController);
+    BIND_POWER_FLAG(ptBindings, &ptFlags->m_bWindshieldWipers, ptDcSystem->m_tCircuit.m_tSystemDevices.m_tEngine.m_uWindshieldWipers);
+    
+    //Torque Sensor?
+    //Starter Hold Relay?
+􏶳
+
+􏷘-􏷗􏷒bind fuel power to graph􏷑
+􏷐binds the system's flags based on the graph state􏷏
+􏶠looks at particular graph nodes to determine if they have power􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄bindings􏷃􏷀The list of power flag bindings to apply to the DC Power System􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀the DC power system containing all of the graph nodes􏶿
+􏶜mr􏶝􏷆FuelPowerFlagsT􏷅􏷄flags􏷃􏷀the flags of the system􏶿
+􏶴
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbPrimePump[ENGINE_LEFT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFuel.m_puPrimePump[ENGINE_LEFT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbPrimePump[ENGINE_RIGHT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFuel.m_puPrimePump[ENGINE_RIGHT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bFwdTransferPump,  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFuel.m_uFwdTransferPump);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bAftTransferPump,  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFuel.m_uAftTransferPump);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbSupplyTankLowFuelLimitSwitch[ENGINE_LEFT],  􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFuel.m_puSupplyTankLowFuelLimitSwitch[ENGINE_LEFT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbSupplyTankLowFuelLimitSwitch[ENGINE_RIGHT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFuel.m_puSupplyTankLowFuelLimitSwitch[ENGINE_RIGHT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bAftMainTankLowFuelIndicator,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFuel.m_uAftMainTankLowFuelIndicator);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbEmergencyShutoffValve[ENGINE_LEFT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFuel.m_puEmergencyShutOffValve[ENGINE_LEFT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbEmergencyShutoffValve[ENGINE_RIGHT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tFuel.m_puEmergencyShutOffValve[ENGINE_RIGHT]);
+􏶳
+
+􏷘-􏷗􏷒bind pneumatic power to graph􏷑
+􏷐binds the system's flags based on the graph state􏷏
+􏶠looks at particular graph nodes to determine if they have power􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄bindings􏷃􏷀The list of power flag bindings to apply to the DC Power System􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀the DC power system containing all of the graph nodes􏶿
+􏶜mr􏶝􏷆PneumaticPowerFlagsT􏷅􏷄flags􏷃􏷀the flags of the system􏶿
+􏶴
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbBleedAirShutoffValve[AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tPneumatic.m_puBleedAirShutOffValve[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbBleedAirShutoffValve[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tPneumatic.m_puBleedAirShutOffValve[AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbBleedAirMixingValve[AVI_PILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tPneumatic.m_puBleedAirMixingValve[AVI_PILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_pbBleedAirMixingValve[AVI_COPILOT],􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tPneumatic.m_puBleedAirMixingValve[AVI_COPILOT]);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bCabinVentilationValve,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tPneumatic.m_uCabinVentilationValve);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bCabinTemperatureSensor,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tPneumatic.m_uCabinTemperatureSensor);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bMixingManifoldOvertemperatureLimitSwitch,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tPneumatic.m_uMixingManifoldOverTemperatureLimitSwitch);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bReturnManifoldOvertemperatureLimitSwitch,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tPneumatic.m_uReturnManifoldOverTemperatureLimitSwitch);
+    BIND_POWER_FLAG(􏵶bindings􏵷,&􏵶flags􏵷->m_bHVACControlBox,􏵶dc system􏵷->m_tCircuit.m_tSystemDevices.m_tPneumatic.m_uHvacControlBox);
+􏶳
+
+
+
+
+
+
+􏷘-􏷗􏷒bind power flag􏷑
+􏷐bind the power flag to a graph node and store it in the binding list􏷏
+􏶠This only creates and stores the binding.  It does not effect the graph or flags.􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄bindings􏷃􏷀The list of power flag bindings to apply to the DC Power System􏶿
+􏶜m􏶝􏷆BOOL*􏷅􏷄power flag􏷃􏷀the power flag that corresponds to the graph node􏶿
+􏶜􏶝􏷆size_t􏷅􏷄id􏷃􏷀the graph node that corresponds the power flag􏶿
+􏶜m􏶝􏷆char*􏷅􏷄name􏷃􏷀the name of the binding􏶿
+􏶴
+    􏶲create a binding, and add it to the list of bindings􏶱
+    PowerFlagBindingT tBinding = ConstructPowerFlagBinding(􏵶id􏵷,􏵶power flag􏵷,􏵶name􏵷);
+    VectorPushBack(􏵶bindings􏵷,&tBinding);
+􏶳
+
+􏷘-􏷗􏷒apply bindings􏷑
+􏷐Perform actions to the graph based on all power flag bindings􏷏
+􏶠The list will contain the appropriate actions each power flag should take􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄bindings􏷃􏷀The list of power flag bindings to apply to the DC Power System􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄system􏷃􏷀The DC Power system that will be effected by the power flag bindings􏶿
+􏶴
+  􏶲iterate over all of the registered graph power flags􏶱
+  􏶲perform graph actions based on each of the power flags􏶱
+  VectorForEach1(􏵶bindings􏵷,(BinaryActionT)ApplyBinding,􏵶system􏵷);
+􏶳
+
+
+􏷘-􏷗􏷒apply binding􏷑
+􏷐perform any actions warranted by the power flags􏷏
+􏶠actions may take place based on the power flags sent from other systems and the current state of the graph nodes they bind to􏶡
+􏶜mr􏶝􏷆PowerFlagBindingT􏷅􏷄binding􏷃􏷀A registered power flag binding􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄system􏷃􏷀The DC Power system that will be effected by the power flag bindings􏶿
+􏶴
+    􏶲if the ID we binded is actually in the graph􏶱
+    if (􏵲graph node exists􏵳􏵶system􏵷,􏵶binding􏵷->m_uId,􏵶binding􏵷->m_szName)){
+    
+        􏶲if the system says that the node "CAN'T be powered", ensure that the graph node reflects this􏶱
+        􏶲if it can't be powered, we also know that it doesn't have power􏶱
+        if (*(􏵶binding􏵷->m_pbPowerFlag) == FALSE){
+            NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵶system􏵷->m_tCircuit.m_tGraph,􏵶binding􏵷->m_uId),FALSE);
+        }else{
+        
+            􏶲if it can be powered, reflect this in the node􏶱
+            􏶲we won't get the power confirmation until the next traversal (assuming it stays "can be powered")􏶱
+            NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵶system􏵷->m_tCircuit.m_tGraph,􏵶binding􏵷->m_uId),TRUE);
+        }
+        
+        􏶲now we decide the actual power result.􏶱
+        􏶲We do this by looking at the node that we may or may not have disabled power on􏶱
+        􏶲if we didn't disable power on it, it will still conditionally have power based on the graph traversal􏶱
+        *􏵶binding􏵷->m_pbPowerFlag = NodeHasPower(ElectricalGraphGetCircuitComponent(&􏵶system􏵷->m_tCircuit.m_tGraph,􏵶binding􏵷->m_uId));
+    }
+􏶳
+
+
+
+􏷘-􏷗􏷒graph node exists􏷑
+􏷐checks that the graph node exists in the electrical graph􏷏
+􏶠if it doesn't, and error is emitted.  This should never error􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀the DC power system containing the graph􏶿
+􏶜􏶝􏷆size_t􏷅􏷄id􏷃􏷀the graph id to check against􏶿
+􏶜􏶝􏷆char[]􏷅􏷄id name􏷃􏷀the name of the id􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼valid􏶻􏶺whether the node id passed in is valid􏶹
+􏶴
+    􏶲this should never happen, but we check anyway to catch any unintended consequences􏶱
+    if (ElectricalGraphGetCircuitComponent(&􏵶dc system􏵷->m_tCircuit.m_tGraph,􏵶id􏵷) == NULL){
+        fprintf(stderr,"electrical graph id %d is invalid for %s\n",􏵶id􏵷,􏵶id name􏵷);
+        return FALSE;
+    }
+    return TRUE;
+􏶳
+
+
+

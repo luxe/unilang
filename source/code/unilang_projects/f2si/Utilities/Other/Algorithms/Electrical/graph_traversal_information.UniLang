@@ -1,0 +1,45 @@
+􏶞p􏶟
+􏷲Information used and accumulated through an electrical traversal􏷱
+􏷰Information related to the power sources, number of jumps, and ground connections.  
+We use this accumulated information when deciding what to do at each step of a traversal􏷯
+􏷮Algorithms􏷭􏷮Graph􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦stdioLib􏷥􏴓d􏴔􏴑BOOL􏴒
+􏷤􏷣􏷦ElectricalPowerSource􏷥􏴓d􏴔􏴑ElectricalPowerSourceT􏴒
+
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be in an invalid state until initialized􏶡
+􏶜􏶝􏷆ElectricalPowerSourceT􏷅􏷄power source􏷃􏵘􏵙􏷀the power source to traverse from􏶿
+􏶴
+  􏶲Set the power source to traverse from􏶱
+  􏵴power source􏵵 = 􏵶power source􏵷;
+  
+  􏶲When supplying power, we start sending out current from a power source.􏶱
+  􏶲We have no way of knowing whether that path connects back to ground until we've traversed it􏶱
+  􏶲We assume conventional current flow (not actual electron flow).􏶱
+  􏶲So we start out with no confirmation on whether we are grounded, but apply power anyway.􏶱
+  􏶲Later, if we reach a leaf that's not connected to ground, we can remove power where needed as we unroll􏶱
+  􏵴found common ground􏵵 = FALSE;
+  
+  􏶲we start with no wattage,􏶱
+  􏶲but expect to accumulate it as we traverse􏶱
+  􏵴accumulated wattage􏵵 = 0;
+􏶳
+
+􏶨power source being used as the traversal starting point􏶧
+􏶦contains the id of the power source node and its distribution voltage􏶥
+􏶘-g􏶙􏶮ElectricalPowerSourceT􏶭􏶬power source􏶫􏵚􏵛􏶪􏶩
+
+􏶨A flag that's observed by the node whose child has just finished being traversed.  
+It signifies whether the child has some kind of connection (direct or indirect) to common ground.􏶧
+􏶦if we are sending out direct current, we will be adding power to the nodes as we DFS. 
+We expect the final leaf to be grounded.  That would signify a closed circuit.
+However, if we don't find a common ground, we need to change our mind about our power assumptions as we unroll.􏶥
+􏶘-g􏶙􏶮BOOL􏶭􏶬found common ground􏶫􏶪􏶩
+
+􏶨wattage accumulated via a traversal􏶧
+􏶦only gathers wattage of devices that have power
+other systems may chose to change their wattage􏶥
+􏶘-g􏶙􏶮float􏶭􏶬accumulated wattage􏶫􏵚watts􏵛􏶪􏶩

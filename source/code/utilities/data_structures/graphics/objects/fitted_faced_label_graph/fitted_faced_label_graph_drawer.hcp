@@ -1,0 +1,183 @@
+class
+⚯
+⚞⚟
+
+
+◀public: static▶ Frame_Elements ☀Full_Draw(Character_Maps const& font_chars, Positioned_Fitted_Faced_Label_Graph const& x, Pc_Input_State const& pc_input)
+❰
+    return Full_Draw(font_chars,x.state,x.pos,pc_input);
+❱
+
+◀public: static▶ Frame_Elements ☀Full_Draw(Character_Maps const& font_chars, Fitted_Faced_Label_Graph_State const& x, Position pos, Pc_Input_State const& pc_input)
+❰
+    Frame_Elements elements;
+    
+    auto drawable_labels = Create_Drawable_Nodes(x,pos);
+    
+    
+    //now that we have all the nodes to draw, draw them
+    for (auto & it: drawable_labels){
+        elements.types += Faced_Label_Drawer::Draw(font_chars,it,pc_input.mouse).types;
+    }
+    
+    
+    elements.types += Draw_Connections(font_chars,x,drawable_labels,pc_input).types;
+    
+    return elements;
+❱
+
+
+
+
+◀private: static▶ Frame_Elements ☀Draw_Connections(Character_Maps const& font_chars, Fitted_Faced_Label_Graph_State const& x, std::vector<Positioned_Faced_Label> const& labels, Pc_Input_State const& pc_input)
+❰
+    Frame_Elements elements;
+    
+    for (auto const& it: x.concept.edges){
+        
+        
+        //skip drawing if node names are invalid
+        if (!Node_Exists(labels,it.from) || !Node_Exists(labels,it.to)){
+            continue;
+        }
+        auto node_from = Get_Node_By_Name(labels,it.from);
+        auto node_to = Get_Node_By_Name(labels,it.to);
+        
+        
+        //build an arrow
+        Arrow arrow;
+        
+        //make we sure we draw line left-to-right
+        if (node_from.pos.x >= node_to.pos.x){
+            std::swap(node_from,node_to);
+            arrow.direction = Arrow_Direction::START;
+        }
+        else{
+            arrow.direction = Arrow_Direction::END;
+        }
+        
+        
+        auto start_pos = node_from.pos;
+        start_pos.y += 8;
+        start_pos.x += Faced_Label_Dimension_Getter::Get(node_from).x;
+        arrow.points.emplace_back(start_pos);
+        
+        auto end_pos = node_to.pos;
+        end_pos.y += 8;
+        arrow.points.emplace_back(end_pos);
+        
+        
+        //draw arrow
+        elements.types += Arrow_Drawer::Draw(arrow).types;
+    }
+    
+    
+    
+    return elements;
+❱
+
+◀private: static▶ std::vector<Positioned_Faced_Label> ☀Create_Drawable_Nodes(Fitted_Faced_Label_Graph_State const& x, Position pos)❰
+
+    int height_buffer = 20;
+    int width_buffer = 20;
+
+    //find biggest pos.x (so we know when were done)
+    int max_pos_x = Get_Conceptual_Max_Pos_X(x);
+
+
+    //construct individually positioned nodes based on their conceptual layout but with their actual pixel layout
+    std::vector<Positioned_Faced_Label> drawable_labels;
+    for (size_t column = 0; column < max_pos_x+1; ++column){
+        
+        
+        //add all the column nodes
+        auto column_nodes = Get_Concept_Nodes_By_Column(x,column);
+        for (auto const& column_node: column_nodes){
+            
+            Positioned_Faced_Label temp;
+            temp.state = column_node.state;
+            temp.pos = pos;
+            temp.pos.y += column_node.pos.y * height_buffer;
+            drawable_labels.emplace_back(temp);
+        }
+        
+        
+        //calculate the width of this newly filled column
+        //and adjust the positioning for the next column
+        int new_column_width = 0;
+        for (auto const& column_node: column_nodes){
+            new_column_width = std::max(new_column_width,Faced_Label_Dimension_Getter::Get(column_node).x);
+        }
+        
+        pos.x += new_column_width + width_buffer;
+        
+    }
+    
+    return drawable_labels;
+❱
+
+
+
+
+
+
+
+
+
+◀private: static▶ int ☀Get_Conceptual_Max_Pos_X(Fitted_Faced_Label_Graph_State const& x)❰
+
+    int result = 0;
+    for (auto const& it: x.concept.nodes){
+        result = std::max(result,it.pos.x);
+    }
+    return result;
+❱
+
+◀private: static▶ std::vector<Positioned_Faced_Label>  ☀Get_Concept_Nodes_By_Column(Fitted_Faced_Label_Graph_State const& x, int column)❰
+
+    std::vector<Positioned_Faced_Label> labels;
+    
+    //found concept node
+    for (auto const& it: x.concept.nodes){
+        if (it.pos.x == column){
+            
+            //found corresponding real node
+            for (auto const& it2: x.nodes){
+                if (Faced_Label_First_Name::Get(it2) == it.name){
+                    
+                    //Return positioned real node
+                    Positioned_Faced_Label temp;
+                    temp.state = it2.state;
+                    temp.pos = it.pos;
+                    labels.emplace_back(temp);
+                    break;
+                }
+            }
+        }
+    }
+    return labels;
+❱
+
+
+◀private: static▶ Positioned_Faced_Label ☀Get_Node_By_Name(std::vector<Positioned_Faced_Label> const& labels, std::string const& name)❰
+    for (auto const& it: labels){
+        if (Faced_Label_First_Name::Get(it) == name){
+            return it;
+        }
+    }
+    
+    //couldn't find
+    Positioned_Faced_Label x;
+    return x;
+❱
+
+◀private: static▶ bool ☀Node_Exists(std::vector<Positioned_Faced_Label> const& labels, std::string const& name)❰
+    for (auto const& it: labels){
+        if (Faced_Label_First_Name::Get(it) == name){
+            return true;
+        }
+    }
+    
+    return false;
+❱
+

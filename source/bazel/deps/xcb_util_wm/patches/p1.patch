@@ -1,0 +1,4186 @@
+diff --git a/config.h b/config.h
+new file mode 100644
+index 0000000..497afad
+--- /dev/null
++++ b/config.h
+@@ -0,0 +1,71 @@
++/* config.h.  Generated from config.h.in by configure.  */
++/* config.h.in.  Generated from configure.ac by autoheader.  */
++
++/* Define to 1 if you have the <dlfcn.h> header file. */
++#define HAVE_DLFCN_H 1
++
++/* Define to 1 if you have the <inttypes.h> header file. */
++#define HAVE_INTTYPES_H 1
++
++/* Define to 1 if you have the <memory.h> header file. */
++#define HAVE_MEMORY_H 1
++
++/* Define to 1 if you have the <stdint.h> header file. */
++#define HAVE_STDINT_H 1
++
++/* Define to 1 if you have the <stdlib.h> header file. */
++#define HAVE_STDLIB_H 1
++
++/* Define to 1 if you have the <strings.h> header file. */
++#define HAVE_STRINGS_H 1
++
++/* Define to 1 if you have the <string.h> header file. */
++#define HAVE_STRING_H 1
++
++/* Define to 1 if you have the <sys/stat.h> header file. */
++#define HAVE_SYS_STAT_H 1
++
++/* Define to 1 if you have the <sys/types.h> header file. */
++#define HAVE_SYS_TYPES_H 1
++
++/* Define to 1 if you have the <unistd.h> header file. */
++#define HAVE_UNISTD_H 1
++
++/* Define to the sub-directory where libtool stores uninstalled libraries. */
++#define LT_OBJDIR ".libs/"
++
++/* Name of package */
++#define PACKAGE "xcb-util-wm"
++
++/* Define to the address where bug reports for this package should be sent. */
++#define PACKAGE_BUGREPORT "https://bugs.freedesktop.org/enter_bug.cgi?product=xcb&component=Utils"
++
++/* Define to the full name of this package. */
++#define PACKAGE_NAME "xcb-util-wm"
++
++/* Define to the full name and version of this package. */
++#define PACKAGE_STRING "xcb-util-wm 0.4.1"
++
++/* Define to the one symbol short name of this package. */
++#define PACKAGE_TARNAME "xcb-util-wm"
++
++/* Define to the home page for this package. */
++#define PACKAGE_URL ""
++
++/* Define to the version of this package. */
++#define PACKAGE_VERSION "0.4.1"
++
++/* Major version of this package */
++#define PACKAGE_VERSION_MAJOR 0
++
++/* Minor version of this package */
++#define PACKAGE_VERSION_MINOR 4
++
++/* Patch version of this package */
++#define PACKAGE_VERSION_PATCHLEVEL 1
++
++/* Define to 1 if you have the ANSI C header files. */
++#define STDC_HEADERS 1
++
++/* Version number of package */
++#define VERSION "0.4.1"
+diff --git a/xcb/ewmh.c b/xcb/ewmh.c
+new file mode 100644
+index 0000000..4fdb127
+--- /dev/null
++++ b/xcb/ewmh.c
+@@ -0,0 +1,1641 @@
++/*
++ * Copyright © 2009-2011 Arnaud Fontaine <arnau@debian.org>
++ *
++ * Permission  is  hereby  granted,  free  of charge,  to  any  person
++ * obtaining  a copy  of  this software  and associated  documentation
++ * files   (the  "Software"),   to  deal   in  the   Software  without
++ * restriction, including without limitation  the rights to use, copy,
++ * modify, merge, publish,  distribute, sublicense, and/or sell copies
++ * of  the Software, and  to permit  persons to  whom the  Software is
++ * furnished to do so, subject to the following conditions:
++ *
++ * The  above copyright  notice and  this permission  notice  shall be
++ * included in all copies or substantial portions of the Software.
++ *
++ * THE SOFTWARE  IS PROVIDED  "AS IS", WITHOUT  WARRANTY OF  ANY KIND,
++ * EXPRESS OR IMPLIED, INCLUDING BUT  NOT LIMITED TO THE WARRANTIES OF
++ * MERCHANTABILITY,   FITNESS    FOR   A   PARTICULAR    PURPOSE   AND
++ * NONINFRINGEMENT. IN  NO EVENT SHALL  THE AUTHORS BE LIABLE  FOR ANY
++ * CLAIM,  DAMAGES  OR  OTHER  LIABILITY,  WHETHER  IN  AN  ACTION  OF
++ * CONTRACT, TORT OR OTHERWISE, ARISING  FROM, OUT OF OR IN CONNECTION
++ * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
++ *
++ * Except as  contained in  this notice, the  names of the  authors or
++ * their institutions shall not be used in advertising or otherwise to
++ * promote the  sale, use or  other dealings in this  Software without
++ * prior written authorization from the authors.
++ */
++
++
++#ifdef HAVE_CONFIG_H
++#include "config.h"
++#endif
++
++#include "xcb_ewmh.h"
++
++#include <string.h>
++#include <limits.h>
++#include <stdlib.h>
++#include <stdio.h>
++#include <assert.h>
++#include <stddef.h>
++
++#include <xcb/xcb.h>
++#include <xcb/xproto.h>
++
++#include <sys/types.h>
++
++#define ssizeof(foo)            (ssize_t)sizeof(foo)
++#define countof(foo)            (ssizeof(foo) / ssizeof(foo[0]))
++
++/**
++ * @brief The  structure used  on screen initialization  including the
++ * atoms name and its length
++ */
++typedef struct {
++  /** The Atom name length */
++  uint8_t name_len;
++  /** The Atom name string */
++  const char *name;
++  size_t m_offset;
++} ewmh_atom_t;
++
++
++
++/**
++ * @brief List  of atoms where each  entry contains the  Atom name and
++ * its length
++ */
++static ewmh_atom_t ewmh_atoms[] = {  
++  { sizeof("_NET_SUPPORTED") - 1, "_NET_SUPPORTED", offsetof(xcb_ewmh_connection_t, _NET_SUPPORTED) },
++  { sizeof("_NET_CLIENT_LIST") - 1, "_NET_CLIENT_LIST", offsetof(xcb_ewmh_connection_t, _NET_CLIENT_LIST) },
++  { sizeof("_NET_CLIENT_LIST_STACKING") - 1, "_NET_CLIENT_LIST_STACKING", offsetof(xcb_ewmh_connection_t, _NET_CLIENT_LIST_STACKING) },
++  { sizeof("_NET_NUMBER_OF_DESKTOPS") - 1, "_NET_NUMBER_OF_DESKTOPS", offsetof(xcb_ewmh_connection_t, _NET_NUMBER_OF_DESKTOPS) },
++  { sizeof("_NET_DESKTOP_GEOMETRY") - 1, "_NET_DESKTOP_GEOMETRY", offsetof(xcb_ewmh_connection_t, _NET_DESKTOP_GEOMETRY) },
++  { sizeof("_NET_DESKTOP_VIEWPORT") - 1, "_NET_DESKTOP_VIEWPORT", offsetof(xcb_ewmh_connection_t, _NET_DESKTOP_VIEWPORT) },
++  { sizeof("_NET_CURRENT_DESKTOP") - 1, "_NET_CURRENT_DESKTOP", offsetof(xcb_ewmh_connection_t, _NET_CURRENT_DESKTOP) },
++  { sizeof("_NET_DESKTOP_NAMES") - 1, "_NET_DESKTOP_NAMES", offsetof(xcb_ewmh_connection_t, _NET_DESKTOP_NAMES) },
++  { sizeof("_NET_ACTIVE_WINDOW") - 1, "_NET_ACTIVE_WINDOW", offsetof(xcb_ewmh_connection_t, _NET_ACTIVE_WINDOW) },
++  { sizeof("_NET_WORKAREA") - 1, "_NET_WORKAREA", offsetof(xcb_ewmh_connection_t, _NET_WORKAREA) },
++  { sizeof("_NET_SUPPORTING_WM_CHECK") - 1, "_NET_SUPPORTING_WM_CHECK", offsetof(xcb_ewmh_connection_t, _NET_SUPPORTING_WM_CHECK) },
++  { sizeof("_NET_VIRTUAL_ROOTS") - 1, "_NET_VIRTUAL_ROOTS", offsetof(xcb_ewmh_connection_t, _NET_VIRTUAL_ROOTS) },
++  { sizeof("_NET_DESKTOP_LAYOUT") - 1, "_NET_DESKTOP_LAYOUT", offsetof(xcb_ewmh_connection_t, _NET_DESKTOP_LAYOUT) },
++  { sizeof("_NET_SHOWING_DESKTOP") - 1, "_NET_SHOWING_DESKTOP", offsetof(xcb_ewmh_connection_t, _NET_SHOWING_DESKTOP) },
++  { sizeof("_NET_CLOSE_WINDOW") - 1, "_NET_CLOSE_WINDOW", offsetof(xcb_ewmh_connection_t, _NET_CLOSE_WINDOW) },
++  { sizeof("_NET_MOVERESIZE_WINDOW") - 1, "_NET_MOVERESIZE_WINDOW", offsetof(xcb_ewmh_connection_t, _NET_MOVERESIZE_WINDOW) },
++  { sizeof("_NET_WM_MOVERESIZE") - 1, "_NET_WM_MOVERESIZE", offsetof(xcb_ewmh_connection_t, _NET_WM_MOVERESIZE) },
++  { sizeof("_NET_RESTACK_WINDOW") - 1, "_NET_RESTACK_WINDOW", offsetof(xcb_ewmh_connection_t, _NET_RESTACK_WINDOW) },
++  { sizeof("_NET_REQUEST_FRAME_EXTENTS") - 1, "_NET_REQUEST_FRAME_EXTENTS", offsetof(xcb_ewmh_connection_t, _NET_REQUEST_FRAME_EXTENTS) },
++  { sizeof("_NET_WM_NAME") - 1, "_NET_WM_NAME", offsetof(xcb_ewmh_connection_t, _NET_WM_NAME) },
++  { sizeof("_NET_WM_VISIBLE_NAME") - 1, "_NET_WM_VISIBLE_NAME", offsetof(xcb_ewmh_connection_t, _NET_WM_VISIBLE_NAME) },
++  { sizeof("_NET_WM_ICON_NAME") - 1, "_NET_WM_ICON_NAME", offsetof(xcb_ewmh_connection_t, _NET_WM_ICON_NAME) },
++  { sizeof("_NET_WM_VISIBLE_ICON_NAME") - 1, "_NET_WM_VISIBLE_ICON_NAME", offsetof(xcb_ewmh_connection_t, _NET_WM_VISIBLE_ICON_NAME) },
++  { sizeof("_NET_WM_DESKTOP") - 1, "_NET_WM_DESKTOP", offsetof(xcb_ewmh_connection_t, _NET_WM_DESKTOP) },
++  { sizeof("_NET_WM_WINDOW_TYPE") - 1, "_NET_WM_WINDOW_TYPE", offsetof(xcb_ewmh_connection_t, _NET_WM_WINDOW_TYPE) },
++  { sizeof("_NET_WM_STATE") - 1, "_NET_WM_STATE", offsetof(xcb_ewmh_connection_t, _NET_WM_STATE) },
++  { sizeof("_NET_WM_ALLOWED_ACTIONS") - 1, "_NET_WM_ALLOWED_ACTIONS", offsetof(xcb_ewmh_connection_t, _NET_WM_ALLOWED_ACTIONS) },
++  { sizeof("_NET_WM_STRUT") - 1, "_NET_WM_STRUT", offsetof(xcb_ewmh_connection_t, _NET_WM_STRUT) },
++  { sizeof("_NET_WM_STRUT_PARTIAL") - 1, "_NET_WM_STRUT_PARTIAL", offsetof(xcb_ewmh_connection_t, _NET_WM_STRUT_PARTIAL) },
++  { sizeof("_NET_WM_ICON_GEOMETRY") - 1, "_NET_WM_ICON_GEOMETRY", offsetof(xcb_ewmh_connection_t, _NET_WM_ICON_GEOMETRY) },
++  { sizeof("_NET_WM_ICON") - 1, "_NET_WM_ICON", offsetof(xcb_ewmh_connection_t, _NET_WM_ICON) },
++  { sizeof("_NET_WM_PID") - 1, "_NET_WM_PID", offsetof(xcb_ewmh_connection_t, _NET_WM_PID) },
++  { sizeof("_NET_WM_HANDLED_ICONS") - 1, "_NET_WM_HANDLED_ICONS", offsetof(xcb_ewmh_connection_t, _NET_WM_HANDLED_ICONS) },
++  { sizeof("_NET_WM_USER_TIME") - 1, "_NET_WM_USER_TIME", offsetof(xcb_ewmh_connection_t, _NET_WM_USER_TIME) },
++  { sizeof("_NET_WM_USER_TIME_WINDOW") - 1, "_NET_WM_USER_TIME_WINDOW", offsetof(xcb_ewmh_connection_t, _NET_WM_USER_TIME_WINDOW) },
++  { sizeof("_NET_FRAME_EXTENTS") - 1, "_NET_FRAME_EXTENTS", offsetof(xcb_ewmh_connection_t, _NET_FRAME_EXTENTS) },
++  { sizeof("_NET_WM_PING") - 1, "_NET_WM_PING", offsetof(xcb_ewmh_connection_t, _NET_WM_PING) },
++  { sizeof("_NET_WM_SYNC_REQUEST") - 1, "_NET_WM_SYNC_REQUEST", offsetof(xcb_ewmh_connection_t, _NET_WM_SYNC_REQUEST) },
++  { sizeof("_NET_WM_SYNC_REQUEST_COUNTER") - 1, "_NET_WM_SYNC_REQUEST_COUNTER", offsetof(xcb_ewmh_connection_t, _NET_WM_SYNC_REQUEST_COUNTER) },
++  { sizeof("_NET_WM_FULLSCREEN_MONITORS") - 1, "_NET_WM_FULLSCREEN_MONITORS", offsetof(xcb_ewmh_connection_t, _NET_WM_FULLSCREEN_MONITORS) },
++  { sizeof("_NET_WM_FULL_PLACEMENT") - 1, "_NET_WM_FULL_PLACEMENT", offsetof(xcb_ewmh_connection_t, _NET_WM_FULL_PLACEMENT) },
++  { sizeof("UTF8_STRING") - 1, "UTF8_STRING", offsetof(xcb_ewmh_connection_t, UTF8_STRING) },
++  { sizeof("WM_PROTOCOLS") - 1, "WM_PROTOCOLS", offsetof(xcb_ewmh_connection_t, WM_PROTOCOLS) },
++  { sizeof("MANAGER") - 1, "MANAGER", offsetof(xcb_ewmh_connection_t, MANAGER) },
++  { sizeof("_NET_WM_WINDOW_TYPE_DESKTOP") - 1, "_NET_WM_WINDOW_TYPE_DESKTOP", offsetof(xcb_ewmh_connection_t, _NET_WM_WINDOW_TYPE_DESKTOP) },
++  { sizeof("_NET_WM_WINDOW_TYPE_DOCK") - 1, "_NET_WM_WINDOW_TYPE_DOCK", offsetof(xcb_ewmh_connection_t, _NET_WM_WINDOW_TYPE_DOCK) },
++  { sizeof("_NET_WM_WINDOW_TYPE_TOOLBAR") - 1, "_NET_WM_WINDOW_TYPE_TOOLBAR", offsetof(xcb_ewmh_connection_t, _NET_WM_WINDOW_TYPE_TOOLBAR) },
++  { sizeof("_NET_WM_WINDOW_TYPE_MENU") - 1, "_NET_WM_WINDOW_TYPE_MENU", offsetof(xcb_ewmh_connection_t, _NET_WM_WINDOW_TYPE_MENU) },
++  { sizeof("_NET_WM_WINDOW_TYPE_UTILITY") - 1, "_NET_WM_WINDOW_TYPE_UTILITY", offsetof(xcb_ewmh_connection_t, _NET_WM_WINDOW_TYPE_UTILITY) },
++  { sizeof("_NET_WM_WINDOW_TYPE_SPLASH") - 1, "_NET_WM_WINDOW_TYPE_SPLASH", offsetof(xcb_ewmh_connection_t, _NET_WM_WINDOW_TYPE_SPLASH) },
++  { sizeof("_NET_WM_WINDOW_TYPE_DIALOG") - 1, "_NET_WM_WINDOW_TYPE_DIALOG", offsetof(xcb_ewmh_connection_t, _NET_WM_WINDOW_TYPE_DIALOG) },
++  { sizeof("_NET_WM_WINDOW_TYPE_DROPDOWN_MENU") - 1, "_NET_WM_WINDOW_TYPE_DROPDOWN_MENU", offsetof(xcb_ewmh_connection_t, _NET_WM_WINDOW_TYPE_DROPDOWN_MENU) },
++  { sizeof("_NET_WM_WINDOW_TYPE_POPUP_MENU") - 1, "_NET_WM_WINDOW_TYPE_POPUP_MENU", offsetof(xcb_ewmh_connection_t, _NET_WM_WINDOW_TYPE_POPUP_MENU) },
++  { sizeof("_NET_WM_WINDOW_TYPE_TOOLTIP") - 1, "_NET_WM_WINDOW_TYPE_TOOLTIP", offsetof(xcb_ewmh_connection_t, _NET_WM_WINDOW_TYPE_TOOLTIP) },
++  { sizeof("_NET_WM_WINDOW_TYPE_NOTIFICATION") - 1, "_NET_WM_WINDOW_TYPE_NOTIFICATION", offsetof(xcb_ewmh_connection_t, _NET_WM_WINDOW_TYPE_NOTIFICATION) },
++  { sizeof("_NET_WM_WINDOW_TYPE_COMBO") - 1, "_NET_WM_WINDOW_TYPE_COMBO", offsetof(xcb_ewmh_connection_t, _NET_WM_WINDOW_TYPE_COMBO) },
++  { sizeof("_NET_WM_WINDOW_TYPE_DND") - 1, "_NET_WM_WINDOW_TYPE_DND", offsetof(xcb_ewmh_connection_t, _NET_WM_WINDOW_TYPE_DND) },
++  { sizeof("_NET_WM_WINDOW_TYPE_NORMAL") - 1, "_NET_WM_WINDOW_TYPE_NORMAL", offsetof(xcb_ewmh_connection_t, _NET_WM_WINDOW_TYPE_NORMAL) },
++  { sizeof("_NET_WM_STATE_MODAL") - 1, "_NET_WM_STATE_MODAL", offsetof(xcb_ewmh_connection_t, _NET_WM_STATE_MODAL) },
++  { sizeof("_NET_WM_STATE_STICKY") - 1, "_NET_WM_STATE_STICKY", offsetof(xcb_ewmh_connection_t, _NET_WM_STATE_STICKY) },
++  { sizeof("_NET_WM_STATE_MAXIMIZED_VERT") - 1, "_NET_WM_STATE_MAXIMIZED_VERT", offsetof(xcb_ewmh_connection_t, _NET_WM_STATE_MAXIMIZED_VERT) },
++  { sizeof("_NET_WM_STATE_MAXIMIZED_HORZ") - 1, "_NET_WM_STATE_MAXIMIZED_HORZ", offsetof(xcb_ewmh_connection_t, _NET_WM_STATE_MAXIMIZED_HORZ) },
++  { sizeof("_NET_WM_STATE_SHADED") - 1, "_NET_WM_STATE_SHADED", offsetof(xcb_ewmh_connection_t, _NET_WM_STATE_SHADED) },
++  { sizeof("_NET_WM_STATE_SKIP_TASKBAR") - 1, "_NET_WM_STATE_SKIP_TASKBAR", offsetof(xcb_ewmh_connection_t, _NET_WM_STATE_SKIP_TASKBAR) },
++  { sizeof("_NET_WM_STATE_SKIP_PAGER") - 1, "_NET_WM_STATE_SKIP_PAGER", offsetof(xcb_ewmh_connection_t, _NET_WM_STATE_SKIP_PAGER) },
++  { sizeof("_NET_WM_STATE_HIDDEN") - 1, "_NET_WM_STATE_HIDDEN", offsetof(xcb_ewmh_connection_t, _NET_WM_STATE_HIDDEN) },
++  { sizeof("_NET_WM_STATE_FULLSCREEN") - 1, "_NET_WM_STATE_FULLSCREEN", offsetof(xcb_ewmh_connection_t, _NET_WM_STATE_FULLSCREEN) },
++  { sizeof("_NET_WM_STATE_ABOVE") - 1, "_NET_WM_STATE_ABOVE", offsetof(xcb_ewmh_connection_t, _NET_WM_STATE_ABOVE) },
++  { sizeof("_NET_WM_STATE_BELOW") - 1, "_NET_WM_STATE_BELOW", offsetof(xcb_ewmh_connection_t, _NET_WM_STATE_BELOW) },
++  { sizeof("_NET_WM_STATE_DEMANDS_ATTENTION") - 1, "_NET_WM_STATE_DEMANDS_ATTENTION", offsetof(xcb_ewmh_connection_t, _NET_WM_STATE_DEMANDS_ATTENTION) },
++  { sizeof("_NET_WM_ACTION_MOVE") - 1, "_NET_WM_ACTION_MOVE", offsetof(xcb_ewmh_connection_t, _NET_WM_ACTION_MOVE) },
++  { sizeof("_NET_WM_ACTION_RESIZE") - 1, "_NET_WM_ACTION_RESIZE", offsetof(xcb_ewmh_connection_t, _NET_WM_ACTION_RESIZE) },
++  { sizeof("_NET_WM_ACTION_MINIMIZE") - 1, "_NET_WM_ACTION_MINIMIZE", offsetof(xcb_ewmh_connection_t, _NET_WM_ACTION_MINIMIZE) },
++  { sizeof("_NET_WM_ACTION_SHADE") - 1, "_NET_WM_ACTION_SHADE", offsetof(xcb_ewmh_connection_t, _NET_WM_ACTION_SHADE) },
++  { sizeof("_NET_WM_ACTION_STICK") - 1, "_NET_WM_ACTION_STICK", offsetof(xcb_ewmh_connection_t, _NET_WM_ACTION_STICK) },
++  { sizeof("_NET_WM_ACTION_MAXIMIZE_HORZ") - 1, "_NET_WM_ACTION_MAXIMIZE_HORZ", offsetof(xcb_ewmh_connection_t, _NET_WM_ACTION_MAXIMIZE_HORZ) },
++  { sizeof("_NET_WM_ACTION_MAXIMIZE_VERT") - 1, "_NET_WM_ACTION_MAXIMIZE_VERT", offsetof(xcb_ewmh_connection_t, _NET_WM_ACTION_MAXIMIZE_VERT) },
++  { sizeof("_NET_WM_ACTION_FULLSCREEN") - 1, "_NET_WM_ACTION_FULLSCREEN", offsetof(xcb_ewmh_connection_t, _NET_WM_ACTION_FULLSCREEN) },
++  { sizeof("_NET_WM_ACTION_CHANGE_DESKTOP") - 1, "_NET_WM_ACTION_CHANGE_DESKTOP", offsetof(xcb_ewmh_connection_t, _NET_WM_ACTION_CHANGE_DESKTOP) },
++  { sizeof("_NET_WM_ACTION_CLOSE") - 1, "_NET_WM_ACTION_CLOSE", offsetof(xcb_ewmh_connection_t, _NET_WM_ACTION_CLOSE) },
++  { sizeof("_NET_WM_ACTION_ABOVE") - 1, "_NET_WM_ACTION_ABOVE", offsetof(xcb_ewmh_connection_t, _NET_WM_ACTION_ABOVE) },
++  { sizeof("_NET_WM_ACTION_BELOW") - 1, "_NET_WM_ACTION_BELOW", offsetof(xcb_ewmh_connection_t, _NET_WM_ACTION_BELOW) }
++};
++
++#define NB_EWMH_ATOMS countof(ewmh_atoms)
++
++/**
++ * Common functions and macro
++ */
++
++#define DO_GET_PROPERTY(fname, property, type, length)                  \
++  xcb_get_property_cookie_t                                             \
++  xcb_ewmh_get_##fname(xcb_ewmh_connection_t *ewmh,                     \
++                       xcb_window_t window)                             \
++  {                                                                     \
++    return xcb_get_property(ewmh->connection, 0, window,                \
++                            ewmh->property, type, 0, length);           \
++  }                                                                     \
++                                                                        \
++  xcb_get_property_cookie_t                                             \
++  xcb_ewmh_get_##fname##_unchecked(xcb_ewmh_connection_t *ewmh,         \
++                                   xcb_window_t window)                 \
++  {                                                                     \
++    return xcb_get_property_unchecked(ewmh->connection, 0, window,      \
++                                      ewmh->property, type, 0, length); \
++  }
++
++#define DO_GET_ROOT_PROPERTY(fname, property, atype, length)            \
++  xcb_get_property_cookie_t                                             \
++  xcb_ewmh_get_##fname(xcb_ewmh_connection_t *ewmh,                     \
++                       int screen_nbr)                                  \
++  {                                                                     \
++    return xcb_get_property(ewmh->connection, 0,                        \
++                            ewmh->screens[screen_nbr]->root,            \
++                            ewmh->property, atype, 0, length);          \
++  }                                                                     \
++                                                                        \
++  xcb_get_property_cookie_t                                             \
++  xcb_ewmh_get_##fname##_unchecked(xcb_ewmh_connection_t *ewmh,         \
++                                   int screen_nbr)                      \
++  {                                                                     \
++    return xcb_get_property_unchecked(ewmh->connection, 0,              \
++                                      ewmh->screens[screen_nbr]->root,  \
++                                      ewmh->property, atype, 0,         \
++                                      length);                          \
++  }
++
++/**
++ * Generic  function for  EWMH atoms  with  a single  value which  may
++ * actually be either WINDOW or CARDINAL
++ *
++ * _NET_NUMBER_OF_DESKTOPS, CARDINAL/32
++ * _NET_CURRENT_DESKTOP desktop, CARDINAL/32
++ * _NET_ACTIVE_WINDOW, WINDOW/32
++ * _NET_SUPPORTING_WM_CHECK, WINDOW/32
++ * _NET_SHOWING_DESKTOP desktop, CARDINAL/32
++ * _NET_WM_DESKTOP desktop, CARDINAL/32
++ * _NET_WM_PID CARDINAL/32
++ * _NET_WM_USER_TIME CARDINAL/32
++ * _NET_WM_USER_TIME_WINDOW WINDOW/32
++ */
++
++/**
++ * Macro defining  a generic function  for reply with a  single value,
++ * considering that the  value is 32-bit long (actually  only used for
++ * WINDOW and CARDINAL)
++ */
++#define DO_REPLY_SINGLE_VALUE(fname, atype, ctype)                      \
++  uint8_t                                                               \
++  xcb_ewmh_get_##fname##_from_reply(ctype *atom_value,                  \
++                                    xcb_get_property_reply_t *r)        \
++  {                                                                     \
++    if(!r || r->type != atype || r->format != 32 ||                     \
++       xcb_get_property_value_length(r) != sizeof(ctype))               \
++      return 0;                                                         \
++                                                                        \
++    *atom_value = *((ctype *) xcb_get_property_value(r));               \
++    return 1;                                                           \
++  }                                                                     \
++                                                                        \
++  uint8_t                                                               \
++  xcb_ewmh_get_##fname##_reply(xcb_ewmh_connection_t *ewmh,             \
++                               xcb_get_property_cookie_t cookie,        \
++                               ctype *atom_value,                       \
++                               xcb_generic_error_t **e)                 \
++  {                                                                     \
++    xcb_get_property_reply_t *r =                                       \
++      xcb_get_property_reply(ewmh->connection,                          \
++                             cookie, e);                                \
++                                                                        \
++    const uint8_t ret = xcb_ewmh_get_##fname##_from_reply(atom_value, r); \
++                                                                        \
++    free(r);                                                            \
++    return ret;                                                         \
++  }
++
++/** Define reply functions for common WINDOW Atom */
++DO_REPLY_SINGLE_VALUE(window, XCB_ATOM_WINDOW, xcb_window_t)
++
++/** Define reply functions for common CARDINAL Atom */
++DO_REPLY_SINGLE_VALUE(cardinal, XCB_ATOM_CARDINAL, uint32_t)
++
++#define DO_SINGLE_VALUE(fname, property, atype, ctype)                  \
++  DO_GET_PROPERTY(fname, property, atype, 1L)                           \
++                                                                        \
++  xcb_void_cookie_t                                                     \
++  xcb_ewmh_set_##fname##_checked(xcb_ewmh_connection_t *ewmh,           \
++                                 xcb_window_t window,                   \
++                                 ctype value)                           \
++  {                                                                     \
++    return xcb_change_property_checked(ewmh->connection,                \
++                                       XCB_PROP_MODE_REPLACE,           \
++                                       window, ewmh->property,          \
++                                       atype, 32, 1, &value);           \
++  }                                                                     \
++                                                                        \
++  xcb_void_cookie_t                                                     \
++  xcb_ewmh_set_##fname(xcb_ewmh_connection_t *ewmh,                     \
++                       xcb_window_t window,                             \
++                       ctype value)                                     \
++  {                                                                     \
++    return xcb_change_property(ewmh->connection, XCB_PROP_MODE_REPLACE, \
++                               window, ewmh->property, atype, 32, 1,    \
++                               &value);                                 \
++  }
++
++#define DO_ROOT_SINGLE_VALUE(fname, property, atype, ctype)             \
++  DO_GET_ROOT_PROPERTY(fname, property, atype, 1L)                      \
++                                                                        \
++  xcb_void_cookie_t                                                     \
++  xcb_ewmh_set_##fname##_checked(xcb_ewmh_connection_t *ewmh,           \
++                                 int screen_nbr,                        \
++                                 ctype value)                           \
++  {                                                                     \
++    return xcb_change_property_checked(ewmh->connection,                \
++                                       XCB_PROP_MODE_REPLACE,           \
++                                       ewmh->screens[screen_nbr]->root, \
++                                       ewmh->property, atype, 32, 1,    \
++                                       &value);                         \
++  }                                                                     \
++                                                                        \
++  xcb_void_cookie_t                                                     \
++  xcb_ewmh_set_##fname(xcb_ewmh_connection_t *ewmh,                     \
++                       int screen_nbr,                                  \
++                       ctype value)                                     \
++  {                                                                     \
++    return xcb_change_property(ewmh->connection, XCB_PROP_MODE_REPLACE, \
++                               ewmh->screens[screen_nbr]->root,         \
++                               ewmh->property, atype,                   \
++                               32, 1, &value);                          \
++  }
++
++/**
++ * Generic function for EWMH atoms with  a list of values which may be
++ * actually WINDOW or ATOM.
++ *
++ * _NET_SUPPORTED, ATOM[]/32
++ * _NET_CLIENT_LIST, WINDOW[]/32
++ * _NET_CLIENT_LIST_STACKING, WINDOW[]/32
++ * _NET_VIRTUAL_ROOTS, WINDOW[]/32
++ * _NET_WM_WINDOW_TYPE, ATOM[]/32
++ * _NET_WM_ALLOWED_ACTIONS, ATOM[]
++ */
++
++/**
++ * Macro defining  a generic function  for reply containing a  list of
++ * values and also defines a function to wipe the reply.
++ */
++#define DO_REPLY_LIST_VALUES(fname, atype, ctype)                       \
++  uint8_t                                                               \
++  xcb_ewmh_get_##fname##_from_reply(xcb_ewmh_get_##fname##_reply_t *data, \
++                                    xcb_get_property_reply_t *r)        \
++  {                                                                     \
++    if(!r || r->type != atype || r->format != 32)                       \
++      return 0;                                                         \
++                                                                        \
++    data->_reply = r;                                                   \
++    data->fname##_len = xcb_get_property_value_length(data->_reply) /   \
++      sizeof(ctype);                                                    \
++                                                                        \
++    data->fname = (ctype *) xcb_get_property_value(data->_reply);       \
++    return 1;                                                           \
++  }                                                                     \
++                                                                        \
++  uint8_t                                                               \
++  xcb_ewmh_get_##fname##_reply(xcb_ewmh_connection_t *ewmh,             \
++                               xcb_get_property_cookie_t cookie,        \
++                               xcb_ewmh_get_##fname##_reply_t *data,    \
++                               xcb_generic_error_t **e)                 \
++  {                                                                     \
++    xcb_get_property_reply_t *r =                                       \
++      xcb_get_property_reply(ewmh->connection,                          \
++                             cookie, e);                                \
++                                                                        \
++    const uint8_t ret = xcb_ewmh_get_##fname##_from_reply(data, r);     \
++                                                                        \
++    /* If the  last call  was not successful  (ret equals to  0), then  \
++       just free the reply as the data value is not consistent */       \
++    if(!ret)                                                            \
++      free(r);                                                          \
++                                                                        \
++    return ret;                                                         \
++  }                                                                     \
++                                                                        \
++  void                                                                  \
++  xcb_ewmh_get_##fname##_reply_wipe(xcb_ewmh_get_##fname##_reply_t *data) \
++  {                                                                     \
++    free(data->_reply);                                                 \
++  }
++
++#define DO_ROOT_LIST_VALUES(fname, property, atype, ctype)              \
++  DO_GET_ROOT_PROPERTY(fname, property, atype, UINT_MAX)                \
++                                                                        \
++  xcb_void_cookie_t                                                     \
++  xcb_ewmh_set_##fname##_checked(xcb_ewmh_connection_t *ewmh,           \
++                                 int screen_nbr,                        \
++                                 uint32_t list_len,                     \
++                                 ctype *list)                           \
++  {                                                                     \
++    return xcb_change_property_checked(ewmh->connection,                \
++                                       XCB_PROP_MODE_REPLACE,           \
++                                       ewmh->screens[screen_nbr]->root, \
++                                       ewmh->property, atype, 32,       \
++                                       list_len * (sizeof(ctype) >> 2), \
++                                       list);                           \
++  }                                                                     \
++                                                                        \
++  xcb_void_cookie_t                                                     \
++  xcb_ewmh_set_##fname(xcb_ewmh_connection_t *ewmh,                     \
++                       int screen_nbr,                                  \
++                       uint32_t list_len,                               \
++                       ctype *list)                                     \
++  {                                                                     \
++    return xcb_change_property(ewmh->connection, XCB_PROP_MODE_REPLACE, \
++                               ewmh->screens[screen_nbr]->root,         \
++                               ewmh->property, atype, 32,               \
++                               list_len * (sizeof(ctype) >> 2),         \
++                               list);                                   \
++  }
++
++#define DO_LIST_VALUES(fname, property, atype, kind)                    \
++  DO_GET_PROPERTY(fname, property, atype, UINT_MAX)                     \
++                                                                        \
++  xcb_void_cookie_t                                                     \
++  xcb_ewmh_set_##fname##_checked(xcb_ewmh_connection_t *ewmh,           \
++                                 xcb_window_t window,                   \
++                                 uint32_t list_len,                     \
++                                 xcb_##kind##_t *list)                  \
++  {                                                                     \
++    return xcb_change_property_checked(ewmh->connection,                \
++                                       XCB_PROP_MODE_REPLACE, window,   \
++                                       ewmh->property, atype, 32,       \
++                                       list_len, list);                 \
++  }                                                                     \
++                                                                        \
++  xcb_void_cookie_t                                                     \
++  xcb_ewmh_set_##fname(xcb_ewmh_connection_t *ewmh,                     \
++                       xcb_window_t window,                             \
++                       uint32_t list_len,                               \
++                       xcb_##kind##_t *list)                            \
++  {                                                                     \
++    return xcb_change_property(ewmh->connection, XCB_PROP_MODE_REPLACE, \
++                               window, ewmh->property, atype, 32,       \
++                               list_len, list);                         \
++  }                                                                     \
++                                                                        \
++  uint8_t                                                               \
++  xcb_ewmh_get_##fname##_from_reply(xcb_ewmh_get_##kind##s_reply_t *name, \
++                                    xcb_get_property_reply_t *r)        \
++  {                                                                     \
++    return xcb_ewmh_get_##kind##s_from_reply(name, r);                  \
++  }                                                                     \
++                                                                        \
++  uint8_t                                                               \
++  xcb_ewmh_get_##fname##_reply(xcb_ewmh_connection_t *ewmh,             \
++                               xcb_get_property_cookie_t cookie,        \
++                               xcb_ewmh_get_##kind##s_reply_t *name,    \
++                               xcb_generic_error_t **e)                 \
++  {                                                                     \
++    return xcb_ewmh_get_##kind##s_reply(ewmh, cookie, name, e);         \
++  }
++
++#define DO_REPLY_STRUCTURE(fname, ctype)                                \
++  uint8_t                                                               \
++  xcb_ewmh_get_##fname##_from_reply(ctype *out,                         \
++                                    xcb_get_property_reply_t *r)        \
++  {                                                                     \
++    if(!r || r->type != XCB_ATOM_CARDINAL || r->format != 32 ||         \
++       xcb_get_property_value_length(r) != sizeof(ctype))               \
++      return 0;                                                         \
++                                                                        \
++    memcpy(out, xcb_get_property_value(r),                              \
++           xcb_get_property_value_length(r));                           \
++                                                                        \
++    return 1;                                                           \
++  }                                                                     \
++                                                                        \
++  uint8_t                                                               \
++  xcb_ewmh_get_##fname##_reply(xcb_ewmh_connection_t *ewmh,             \
++                               xcb_get_property_cookie_t cookie,        \
++                               ctype *out,                              \
++                               xcb_generic_error_t **e)                 \
++  {                                                                     \
++    xcb_get_property_reply_t *r =                                       \
++      xcb_get_property_reply(ewmh->connection, cookie, e);              \
++                                                                        \
++    const uint8_t ret = xcb_ewmh_get_##fname##_from_reply(out, r);      \
++    free(r);                                                            \
++    return ret;                                                         \
++  }
++
++/**
++ * UTF8_STRING handling
++ */
++
++uint8_t
++xcb_ewmh_get_utf8_strings_from_reply(xcb_ewmh_connection_t *ewmh,
++                                     xcb_ewmh_get_utf8_strings_reply_t *data,
++                                     xcb_get_property_reply_t *r)
++{
++  if(!r || r->type != ewmh->UTF8_STRING || r->format != 8)
++    return 0;
++
++  data->_reply = r;
++  data->strings_len = xcb_get_property_value_length(data->_reply);
++  data->strings = (char *) xcb_get_property_value(data->_reply);
++
++  return 1;
++}
++
++uint8_t
++xcb_ewmh_get_utf8_strings_reply(xcb_ewmh_connection_t *ewmh,
++                                xcb_get_property_cookie_t cookie,
++                                xcb_ewmh_get_utf8_strings_reply_t *data,
++                                xcb_generic_error_t **e)
++{
++  xcb_get_property_reply_t *r = xcb_get_property_reply(ewmh->connection,
++                                                       cookie, e);
++
++  const uint8_t ret = xcb_ewmh_get_utf8_strings_from_reply(ewmh, data, r);
++
++  /* If the last call was not  successful (ret equals to 0), then just
++     free the reply as the data value is not consistent */
++  if(!ret)
++    free(r);
++
++  return ret;
++}
++
++void
++xcb_ewmh_get_utf8_strings_reply_wipe(xcb_ewmh_get_utf8_strings_reply_t *data)
++{
++  free(data->_reply);
++}
++
++#define DO_ROOT_UTF8_STRING(fname, property)                            \
++  DO_GET_ROOT_PROPERTY(fname, property, 0, UINT_MAX)                    \
++                                                                        \
++  xcb_void_cookie_t                                                     \
++  xcb_ewmh_set_##fname(xcb_ewmh_connection_t *ewmh,                     \
++                       int screen_nbr,                                  \
++                       uint32_t strings_len,                            \
++                       const char *strings)                             \
++  {                                                                     \
++    return xcb_change_property(ewmh->connection, XCB_PROP_MODE_REPLACE, \
++                               ewmh->screens[screen_nbr]->root,         \
++                               ewmh->property, ewmh->UTF8_STRING, 8,    \
++                               strings_len, strings);                   \
++  }                                                                     \
++                                                                        \
++  xcb_void_cookie_t                                                     \
++  xcb_ewmh_set_##fname##_checked(xcb_ewmh_connection_t *ewmh,           \
++                                 int screen_nbr,                        \
++                                 uint32_t strings_len,                  \
++                                 const char *strings)                   \
++  {                                                                     \
++    return xcb_change_property_checked(ewmh->connection,                \
++                                       XCB_PROP_MODE_REPLACE,           \
++                                       ewmh->screens[screen_nbr]->root, \
++                                       ewmh->property,                  \
++                                       ewmh->UTF8_STRING, 8,            \
++                                       strings_len, strings);           \
++  }
++
++#define DO_UTF8_STRING(fname, property)                                 \
++  DO_GET_PROPERTY(fname, property, 0, UINT_MAX)                         \
++                                                                        \
++  xcb_void_cookie_t                                                     \
++  xcb_ewmh_set_##fname(xcb_ewmh_connection_t *ewmh,                     \
++                       xcb_window_t window,                             \
++                       uint32_t strings_len,                            \
++                       const char *strings)                             \
++  {                                                                     \
++    return xcb_change_property(ewmh->connection, XCB_PROP_MODE_REPLACE, \
++                               window, ewmh->property,                  \
++                               ewmh->UTF8_STRING, 8, strings_len,       \
++                               strings);                                \
++  }                                                                     \
++                                                                        \
++  xcb_void_cookie_t                                                     \
++  xcb_ewmh_set_##fname##_checked(xcb_ewmh_connection_t *ewmh,           \
++                                 xcb_window_t window,                   \
++                                 uint32_t strings_len,                  \
++                                 const char *strings)                   \
++  {                                                                     \
++    return xcb_change_property_checked(ewmh->connection,                \
++                                       XCB_PROP_MODE_REPLACE,           \
++                                       window, ewmh->property,          \
++                                       ewmh->UTF8_STRING, 8,            \
++                                       strings_len, strings);           \
++  }
++
++/**
++ * ClientMessage generic function
++ */
++xcb_void_cookie_t
++xcb_ewmh_send_client_message(xcb_connection_t *c,
++                             xcb_window_t window,
++                             xcb_window_t dest,
++                             xcb_atom_t atom,
++                             uint32_t data_len,
++                             const uint32_t *data)
++{
++  xcb_client_message_event_t ev;
++  memset(&ev, 0, sizeof(xcb_client_message_event_t));
++
++  ev.response_type = XCB_CLIENT_MESSAGE;
++  ev.window = window;
++  ev.format = 32;
++  ev.type = atom;
++
++  assert(data_len <= (5 * sizeof(uint32_t)));
++
++  memcpy(ev.data.data32, data, data_len);
++
++  return xcb_send_event(c, 0, dest, XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
++                        XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT,
++                        (char *) &ev);
++}
++
++DO_REPLY_LIST_VALUES(windows, XCB_ATOM_WINDOW, xcb_window_t)
++DO_REPLY_LIST_VALUES(atoms, XCB_ATOM_ATOM, xcb_atom_t)
++
++/**
++ * Atoms initialisation
++ */
++
++xcb_intern_atom_cookie_t *
++xcb_ewmh_init_atoms(xcb_connection_t *c,
++                    xcb_ewmh_connection_t *ewmh)
++{
++  int screen_nbr, atom_nbr;
++
++  ewmh->connection = c;
++
++  const xcb_setup_t *setup = xcb_get_setup(c);
++
++  ewmh->nb_screens = xcb_setup_roots_length(setup);
++  if(!ewmh->nb_screens)
++    return NULL;
++
++  /* Allocate the data structures depending of the number of screens */
++  ewmh->screens = malloc(sizeof(xcb_screen_t *) * ewmh->nb_screens);
++  ewmh->_NET_WM_CM_Sn = malloc(sizeof(xcb_atom_t) * ewmh->nb_screens);
++
++  xcb_screen_iterator_t screen_iter = xcb_setup_roots_iterator(setup);
++  for(screen_iter = xcb_setup_roots_iterator(setup), screen_nbr = 0; screen_iter.rem;
++      xcb_screen_next(&screen_iter))
++    ewmh->screens[screen_nbr++] = screen_iter.data;
++
++  /* _NET_WM_CM_Sn atoms  will be treated differently,  by adding them
++     at the end  of this array, than other atoms as  it depends on the
++     number of screens */
++  xcb_intern_atom_cookie_t *ewmh_cookies = malloc(sizeof(xcb_intern_atom_cookie_t) *
++                                                  (NB_EWMH_ATOMS + ewmh->nb_screens));
++
++  /* First, send InternAtom request for all Atoms except _NET_WM_CM_Sn */
++  for(atom_nbr = 0; atom_nbr < NB_EWMH_ATOMS; atom_nbr++)
++    ewmh_cookies[atom_nbr] = xcb_intern_atom(ewmh->connection, 0,
++                                             ewmh_atoms[atom_nbr].name_len,
++                                             ewmh_atoms[atom_nbr].name);
++
++  /* Then,  send  InternAtom requests  for  _NET_WM_CM_Sn and  compute
++     _NET_WM_CM_Sn according to the screen number 'n' */
++  for(screen_nbr = 0; screen_nbr < ewmh->nb_screens; screen_nbr++)
++    {
++      char wm_cm_sn[32];
++
++      const int wm_cm_sn_len = snprintf(wm_cm_sn, 32, "_NET_WM_CM_S%d",
++                                        screen_nbr);
++
++      assert(wm_cm_sn_len > 0 && wm_cm_sn_len < 32);
++
++      ewmh_cookies[atom_nbr++] = xcb_intern_atom(ewmh->connection, 0,
++                                                 wm_cm_sn_len,
++                                                 wm_cm_sn);
++    }
++
++  return ewmh_cookies;
++}
++
++uint8_t
++xcb_ewmh_init_atoms_replies(xcb_ewmh_connection_t *ewmh,
++                            xcb_intern_atom_cookie_t *ewmh_cookies,
++                            xcb_generic_error_t **e)
++{
++  int atom_nbr;
++  int screen_nbr = 0;
++  uint8_t ret = 1;
++  xcb_intern_atom_reply_t *reply;
++
++  for(atom_nbr = 0; atom_nbr < NB_EWMH_ATOMS + ewmh->nb_screens; atom_nbr++)
++    if((reply = xcb_intern_atom_reply(ewmh->connection, ewmh_cookies[atom_nbr], e)))
++      {
++        if(ret)
++          {
++            if(atom_nbr < NB_EWMH_ATOMS)
++              *((xcb_atom_t *) (((char *) ewmh) + ewmh_atoms[atom_nbr].m_offset)) = reply->atom;
++            else
++              ewmh->_NET_WM_CM_Sn[screen_nbr++] = reply->atom;
++          }
++
++        free(reply);
++      }
++    else
++      ret = 0;
++
++  if(!ret)
++    xcb_ewmh_connection_wipe(ewmh);
++
++  free(ewmh_cookies);
++  return ret;
++}
++
++/**
++ * _NET_SUPPORTED
++ */
++
++DO_ROOT_LIST_VALUES(supported, _NET_SUPPORTED, XCB_ATOM_ATOM, xcb_atom_t)
++
++/**
++ * _NET_CLIENT_LIST
++ * _NET_CLIENT_LIST_STACKING
++ */
++
++DO_ROOT_LIST_VALUES(client_list, _NET_CLIENT_LIST, XCB_ATOM_WINDOW, xcb_window_t)
++
++DO_ROOT_LIST_VALUES(client_list_stacking, _NET_CLIENT_LIST_STACKING,
++                    XCB_ATOM_WINDOW, xcb_window_t)
++
++/**
++ * _NET_NUMBER_OF_DESKTOPS
++ */
++
++DO_ROOT_SINGLE_VALUE(number_of_desktops, _NET_NUMBER_OF_DESKTOPS,
++                     XCB_ATOM_CARDINAL, uint32_t)
++
++/**
++ * _NET_DESKTOP_GEOMETRY
++ */
++
++DO_GET_ROOT_PROPERTY(desktop_geometry, _NET_DESKTOP_GEOMETRY,
++                     XCB_ATOM_CARDINAL, 2L)
++
++xcb_void_cookie_t
++xcb_ewmh_set_desktop_geometry(xcb_ewmh_connection_t *ewmh, int screen_nbr,
++                              uint32_t new_width, uint32_t new_height)
++{
++  const uint32_t data[] = { new_width, new_height };
++
++  return xcb_change_property(ewmh->connection, XCB_PROP_MODE_REPLACE,
++                             ewmh->screens[screen_nbr]->root,
++                             ewmh->_NET_DESKTOP_GEOMETRY, XCB_ATOM_CARDINAL,
++                             32, 2, data);
++}
++
++xcb_void_cookie_t
++xcb_ewmh_set_desktop_geometry_checked(xcb_ewmh_connection_t *ewmh,
++                                      int screen_nbr, uint32_t new_width,
++                                      uint32_t new_height)
++{
++  const uint32_t data[] = { new_width, new_height };
++
++  return xcb_change_property_checked(ewmh->connection, XCB_PROP_MODE_REPLACE,
++                                     ewmh->screens[screen_nbr]->root,
++                                     ewmh->_NET_DESKTOP_GEOMETRY,
++                                     XCB_ATOM_CARDINAL, 32, 2, data);
++}
++
++xcb_void_cookie_t
++xcb_ewmh_request_change_desktop_geometry(xcb_ewmh_connection_t *ewmh,
++                                         int screen_nbr, uint32_t new_width,
++                                         uint32_t new_height)
++{
++  const uint32_t data[] = { new_width, new_height };
++
++  return xcb_ewmh_send_client_message(ewmh->connection,
++                                      ewmh->screens[screen_nbr]->root,
++                                      ewmh->screens[screen_nbr]->root,
++                                      ewmh->_NET_DESKTOP_GEOMETRY,
++                                      sizeof(data), data);
++}
++
++uint8_t
++xcb_ewmh_get_desktop_geometry_from_reply(uint32_t *width, uint32_t *height,
++                                         xcb_get_property_reply_t *r)
++{
++  if(!r || r->type != XCB_ATOM_CARDINAL || r->format != 32 ||
++     xcb_get_property_value_length(r) != (sizeof(uint32_t) * 2))
++    return 0;
++
++  uint32_t *value = (uint32_t *) xcb_get_property_value(r);
++
++  *width = value[0];
++  *height = value[1];
++
++  return 1;
++}
++
++uint8_t
++xcb_ewmh_get_desktop_geometry_reply(xcb_ewmh_connection_t *ewmh,
++                                    xcb_get_property_cookie_t cookie,
++                                    uint32_t *width, uint32_t *height,
++                                    xcb_generic_error_t **e)
++{
++  xcb_get_property_reply_t *r = xcb_get_property_reply(ewmh->connection, cookie, e);
++  const uint8_t ret = xcb_ewmh_get_desktop_geometry_from_reply(width, height, r);
++  free(r);
++  return ret;
++}
++
++/**
++ * _NET_DESKTOP_VIEWPORT
++ */
++
++DO_ROOT_LIST_VALUES(desktop_viewport, _NET_DESKTOP_VIEWPORT, XCB_ATOM_CARDINAL,
++                    xcb_ewmh_coordinates_t)
++
++DO_REPLY_LIST_VALUES(desktop_viewport, XCB_ATOM_CARDINAL,
++                     xcb_ewmh_coordinates_t)
++
++xcb_void_cookie_t
++xcb_ewmh_request_change_desktop_viewport(xcb_ewmh_connection_t *ewmh,
++                                         int screen_nbr, uint32_t x,
++                                         uint32_t y)
++{
++  const uint32_t data[] = { x, y };
++
++  return xcb_ewmh_send_client_message(ewmh->connection,
++                                      ewmh->screens[screen_nbr]->root,
++                                      ewmh->screens[screen_nbr]->root,
++                                      ewmh->_NET_DESKTOP_VIEWPORT,
++                                      sizeof(data), data);
++}
++
++/**
++ * _NET_CURRENT_DESKTOP
++ */
++
++DO_ROOT_SINGLE_VALUE(current_desktop, _NET_CURRENT_DESKTOP, XCB_ATOM_CARDINAL,
++                     uint32_t)
++
++xcb_void_cookie_t
++xcb_ewmh_request_change_current_desktop(xcb_ewmh_connection_t *ewmh,
++                                        int screen_nbr, uint32_t new_desktop,
++                                        xcb_timestamp_t timestamp)
++{
++  const uint32_t data[] = { new_desktop, timestamp };
++
++  return xcb_ewmh_send_client_message(ewmh->connection,
++                                      ewmh->screens[screen_nbr]->root,
++                                      ewmh->screens[screen_nbr]->root,
++                                      ewmh->_NET_CURRENT_DESKTOP,
++                                      sizeof(data), data);
++}
++
++/**
++ * _NET_DESKTOP_NAMES
++ */
++DO_ROOT_UTF8_STRING(desktop_names, _NET_DESKTOP_NAMES)
++
++/**
++ * _NET_ACTIVE_WINDOW
++ */
++
++DO_ROOT_SINGLE_VALUE(active_window, _NET_ACTIVE_WINDOW, XCB_ATOM_WINDOW,
++                     xcb_window_t)
++
++xcb_void_cookie_t
++xcb_ewmh_request_change_active_window(xcb_ewmh_connection_t *ewmh,
++                                      int screen_nbr,
++                                      xcb_window_t window_to_activate,
++                                      xcb_ewmh_client_source_type_t source_indication,
++                                      xcb_timestamp_t timestamp,
++                                      xcb_window_t current_active_window)
++{
++  const uint32_t data[] = { source_indication, timestamp, current_active_window };
++
++  return xcb_ewmh_send_client_message(ewmh->connection, window_to_activate,
++                                      ewmh->screens[screen_nbr]->root,
++                                      ewmh->_NET_ACTIVE_WINDOW, sizeof(data),
++                                      data);
++}
++
++/**
++ * _NET_WORKAREA
++ */
++
++DO_ROOT_LIST_VALUES(workarea, _NET_WORKAREA, XCB_ATOM_CARDINAL,
++                    xcb_ewmh_geometry_t)
++
++DO_REPLY_LIST_VALUES(workarea, XCB_ATOM_CARDINAL, xcb_ewmh_geometry_t)
++
++/**
++ * _NET_SUPPORTING_WM_CHECK
++ */
++
++DO_SINGLE_VALUE(supporting_wm_check, _NET_SUPPORTING_WM_CHECK,
++                XCB_ATOM_WINDOW, xcb_window_t)
++
++/**
++ * _NET_VIRTUAL_ROOTS
++ */
++
++DO_ROOT_LIST_VALUES(virtual_roots, _NET_VIRTUAL_ROOTS, XCB_ATOM_WINDOW,
++                    xcb_window_t)
++
++/**
++ * _NET_DESKTOP_LAYOUT
++ */
++
++DO_GET_ROOT_PROPERTY(desktop_layout, _NET_DESKTOP_LAYOUT, XCB_ATOM_CARDINAL, 4)
++DO_REPLY_STRUCTURE(desktop_layout, xcb_ewmh_get_desktop_layout_reply_t)
++
++xcb_void_cookie_t
++xcb_ewmh_set_desktop_layout(xcb_ewmh_connection_t *ewmh, int screen_nbr,
++                            xcb_ewmh_desktop_layout_orientation_t orientation,
++                            uint32_t columns, uint32_t rows,
++                            xcb_ewmh_desktop_layout_starting_corner_t starting_corner)
++{
++  const uint32_t data[] = { orientation, columns, rows, starting_corner };
++
++  return xcb_change_property(ewmh->connection, XCB_PROP_MODE_REPLACE,
++                             ewmh->screens[screen_nbr]->root,
++                             ewmh->_NET_DESKTOP_LAYOUT, XCB_ATOM_CARDINAL, 32,
++                             countof(data), data);
++}
++
++xcb_void_cookie_t
++xcb_ewmh_set_desktop_layout_checked(xcb_ewmh_connection_t *ewmh, int screen_nbr,
++                                    xcb_ewmh_desktop_layout_orientation_t orientation,
++                                    uint32_t columns, uint32_t rows,
++                                    xcb_ewmh_desktop_layout_starting_corner_t starting_corner)
++{
++  const uint32_t data[] = { orientation, columns, rows, starting_corner };
++
++  return xcb_change_property_checked(ewmh->connection, XCB_PROP_MODE_REPLACE,
++                                     ewmh->screens[screen_nbr]->root,
++                                     ewmh->_NET_DESKTOP_LAYOUT,
++                                     XCB_ATOM_CARDINAL, 32, countof(data),
++                                     data);
++}
++
++/**
++ * _NET_SHOWING_DESKTOP
++ */
++
++DO_ROOT_SINGLE_VALUE(showing_desktop, _NET_SHOWING_DESKTOP, XCB_ATOM_CARDINAL,
++                     uint32_t)
++
++/**
++ * _NET_CLOSE_WINDOW
++ */
++
++xcb_void_cookie_t
++xcb_ewmh_request_close_window(xcb_ewmh_connection_t *ewmh, int screen_nbr,
++                              xcb_window_t window_to_close,
++                              xcb_timestamp_t timestamp,
++                              xcb_ewmh_client_source_type_t source_indication)
++{
++  const uint32_t data[] = { timestamp, source_indication };
++
++  return xcb_ewmh_send_client_message(ewmh->connection, window_to_close,
++                                      ewmh->screens[screen_nbr]->root,
++                                      ewmh->_NET_CLOSE_WINDOW, sizeof(data),
++                                      data);
++}
++
++/**
++ * _NET_MOVERESIZE_WINDOW
++ */
++
++/* x, y, width, height may be equal to -1 */
++xcb_void_cookie_t
++xcb_ewmh_request_moveresize_window(xcb_ewmh_connection_t *ewmh, int screen_nbr,
++                                   xcb_window_t moveresize_window,
++                                   xcb_gravity_t gravity,
++                                   xcb_ewmh_client_source_type_t source_indication,
++                                   xcb_ewmh_moveresize_window_opt_flags_t flags,
++                                   uint32_t x, uint32_t y,
++                                   uint32_t width, uint32_t height)
++{
++  const uint32_t data[] = { (gravity | flags | source_indication << 12),
++                            x, y, width, height };
++
++  return xcb_ewmh_send_client_message(ewmh->connection, moveresize_window,
++                                      ewmh->screens[screen_nbr]->root,
++                                      ewmh->_NET_MOVERESIZE_WINDOW,
++                                      sizeof(data), data);
++}
++
++/**
++ * _NET_WM_MOVERESIZE
++ */
++
++xcb_void_cookie_t
++xcb_ewmh_request_wm_moveresize(xcb_ewmh_connection_t *ewmh, int screen_nbr,
++                               xcb_window_t moveresize_window,
++                               uint32_t x_root, uint32_t y_root,
++                               xcb_ewmh_moveresize_direction_t direction,
++                               xcb_button_index_t button,
++                               xcb_ewmh_client_source_type_t source_indication)
++{
++  const uint32_t data[] = { x_root, y_root, direction, button, source_indication };
++
++  return xcb_ewmh_send_client_message(ewmh->connection, moveresize_window,
++                                      ewmh->screens[screen_nbr]->root,
++                                      ewmh->_NET_WM_MOVERESIZE, sizeof(data),
++                                      data);
++}
++
++/**
++ * _NET_RESTACK_WINDOW
++ */
++
++xcb_void_cookie_t
++xcb_ewmh_request_restack_window(xcb_ewmh_connection_t *ewmh, int screen_nbr,
++                                xcb_window_t window_to_restack,
++                                xcb_window_t sibling_window,
++                                xcb_stack_mode_t detail)
++{
++  const uint32_t data[] = { XCB_EWMH_CLIENT_SOURCE_TYPE_OTHER, sibling_window,
++                            detail };
++
++  return xcb_ewmh_send_client_message(ewmh->connection, window_to_restack,
++                                      ewmh->screens[screen_nbr]->root,
++                                      ewmh->_NET_RESTACK_WINDOW, sizeof(data),
++                                      data);
++}
++
++/**
++ * _NET_WM_NAME
++ */
++
++DO_UTF8_STRING(wm_name, _NET_WM_NAME)
++
++/**
++ * _NET_WM_VISIBLE_NAME
++ */
++
++DO_UTF8_STRING(wm_visible_name, _NET_WM_VISIBLE_NAME)
++
++/**
++ * _NET_WM_ICON_NAME
++ */
++
++DO_UTF8_STRING(wm_icon_name, _NET_WM_ICON_NAME)
++
++/**
++ * _NET_WM_VISIBLE_ICON_NAME
++ */
++
++DO_UTF8_STRING(wm_visible_icon_name, _NET_WM_VISIBLE_ICON_NAME)
++
++/**
++ * _NET_WM_DESKTOP
++ */
++
++DO_SINGLE_VALUE(wm_desktop, _NET_WM_DESKTOP, XCB_ATOM_CARDINAL, uint32_t)
++
++xcb_void_cookie_t
++xcb_ewmh_request_change_wm_desktop(xcb_ewmh_connection_t *ewmh, int screen_nbr,
++                                   xcb_window_t client_window,
++                                   uint32_t new_desktop,
++                                   xcb_ewmh_client_source_type_t source_indication)
++{
++  const uint32_t data[] = { new_desktop, source_indication };
++
++  return xcb_ewmh_send_client_message(ewmh->connection, client_window,
++                                      ewmh->screens[screen_nbr]->root,
++                                      ewmh->_NET_WM_DESKTOP, sizeof(data),
++                                      data);
++}
++
++/**
++ * _NET_WM_WINDOW_TYPE
++ *
++ * TODO: check possible atoms?
++ */
++
++DO_LIST_VALUES(wm_window_type, _NET_WM_WINDOW_TYPE, XCB_ATOM_ATOM, atom)
++
++/**
++ * _NET_WM_STATE
++ *
++ * TODO: check possible atoms?
++ */
++
++DO_LIST_VALUES(wm_state, _NET_WM_STATE, XCB_ATOM_ATOM, atom)
++
++xcb_void_cookie_t
++xcb_ewmh_request_change_wm_state(xcb_ewmh_connection_t *ewmh, int screen_nbr,
++                                 xcb_window_t client_window,
++                                 xcb_ewmh_wm_state_action_t action,
++                                 xcb_atom_t first_property,
++                                 xcb_atom_t second_property,
++                                 xcb_ewmh_client_source_type_t source_indication)
++{
++  const uint32_t data[] = { action, first_property, second_property,
++                            source_indication };
++
++  return xcb_ewmh_send_client_message(ewmh->connection, client_window,
++                                      ewmh->screens[screen_nbr]->root,
++                                      ewmh->_NET_WM_STATE, sizeof(data), data);
++}
++
++/**
++ * _NET_WM_ALLOWED_ACTIONS
++ *
++ * TODO: check possible atoms?
++ */
++
++DO_LIST_VALUES(wm_allowed_actions, _NET_WM_ALLOWED_ACTIONS, XCB_ATOM_ATOM, atom)
++
++/**
++ * _NET_WM_STRUT
++ */
++
++xcb_void_cookie_t
++xcb_ewmh_set_wm_strut(xcb_ewmh_connection_t *ewmh,
++                      xcb_window_t window,
++                      uint32_t left, uint32_t right,
++                      uint32_t top, uint32_t bottom)
++{
++  const uint32_t data[] = { left, right, top, bottom };
++
++  return xcb_change_property(ewmh->connection, XCB_PROP_MODE_REPLACE, window,
++                             ewmh->_NET_WM_STRUT, XCB_ATOM_CARDINAL, 32,
++                             countof(data), data);
++}
++
++xcb_void_cookie_t
++xcb_ewmh_set_wm_strut_checked(xcb_ewmh_connection_t *ewmh,
++                              xcb_window_t window,
++                              uint32_t left, uint32_t right,
++                              uint32_t top, uint32_t bottom)
++{
++  const uint32_t data[] = { left, right, top, bottom };
++
++  return xcb_change_property_checked(ewmh->connection, XCB_PROP_MODE_REPLACE,
++                                     window, ewmh->_NET_WM_STRUT,
++                                     XCB_ATOM_CARDINAL, 32, countof(data),
++                                     data);
++}
++
++DO_GET_PROPERTY(wm_strut, _NET_WM_STRUT, XCB_ATOM_CARDINAL, 4)
++DO_REPLY_STRUCTURE(wm_strut, xcb_ewmh_get_extents_reply_t)
++
++/*
++ * _NET_WM_STRUT_PARTIAL
++ */
++
++xcb_void_cookie_t
++xcb_ewmh_set_wm_strut_partial(xcb_ewmh_connection_t *ewmh,
++                              xcb_window_t window,
++                              xcb_ewmh_wm_strut_partial_t wm_strut)
++{
++  return xcb_change_property(ewmh->connection, XCB_PROP_MODE_REPLACE, window,
++                             ewmh->_NET_WM_STRUT_PARTIAL, XCB_ATOM_CARDINAL, 32,
++                             12, &wm_strut);
++}
++
++xcb_void_cookie_t
++xcb_ewmh_set_wm_strut_partial_checked(xcb_ewmh_connection_t *ewmh,
++                                      xcb_window_t window,
++                                      xcb_ewmh_wm_strut_partial_t wm_strut)
++{
++  return xcb_change_property_checked(ewmh->connection, XCB_PROP_MODE_REPLACE,
++                                     window, ewmh->_NET_WM_STRUT_PARTIAL,
++                                     XCB_ATOM_CARDINAL, 32, 12, &wm_strut);
++}
++
++DO_GET_PROPERTY(wm_strut_partial, _NET_WM_STRUT_PARTIAL, XCB_ATOM_CARDINAL, 12)
++DO_REPLY_STRUCTURE(wm_strut_partial, xcb_ewmh_wm_strut_partial_t)
++
++/**
++ * _NET_WM_ICON_GEOMETRY
++ */
++
++xcb_void_cookie_t
++xcb_ewmh_set_wm_icon_geometry_checked(xcb_ewmh_connection_t *ewmh,
++                                      xcb_window_t window,
++                                      uint32_t left, uint32_t right,
++                                      uint32_t top, uint32_t bottom)
++{
++  const uint32_t data[] = { left, right, top, bottom };
++
++  return xcb_change_property_checked(ewmh->connection, XCB_PROP_MODE_REPLACE,
++                                     window, ewmh->_NET_WM_ICON_GEOMETRY,
++                                     XCB_ATOM_CARDINAL, 32, countof(data),
++                                     data);
++}
++
++xcb_void_cookie_t
++xcb_ewmh_set_wm_icon_geometry(xcb_ewmh_connection_t *ewmh,
++                              xcb_window_t window,
++                              uint32_t left, uint32_t right,
++                              uint32_t top, uint32_t bottom)
++{
++  const uint32_t data[] = { left, right, top, bottom };
++
++  return xcb_change_property(ewmh->connection, XCB_PROP_MODE_REPLACE, window,
++                             ewmh->_NET_WM_ICON_GEOMETRY, XCB_ATOM_CARDINAL, 32,
++                             countof(data), data);
++}
++
++DO_GET_PROPERTY(wm_icon_geometry, _NET_WM_ICON_GEOMETRY, XCB_ATOM_CARDINAL, 4)
++DO_REPLY_STRUCTURE(wm_icon_geometry, xcb_ewmh_geometry_t)
++
++/**
++ * _NET_WM_ICON
++ */
++
++static inline void
++set_wm_icon_data(uint32_t data[], uint32_t width, uint32_t height,
++                 uint32_t img_len, uint32_t *img)
++{
++  data[0] = width;
++  data[1] = height;
++
++  memcpy(data + 2, img, img_len);
++}
++
++xcb_void_cookie_t
++xcb_ewmh_append_wm_icon_checked(xcb_ewmh_connection_t *ewmh,
++                                xcb_window_t window,
++                                uint32_t width, uint32_t height,
++                                uint32_t img_len, uint32_t *img)
++{
++  const uint32_t data_len = img_len + 2;
++  uint32_t data[data_len];
++
++  set_wm_icon_data(data, width, height, img_len, img);
++
++  return xcb_ewmh_set_wm_icon_checked(ewmh, XCB_PROP_MODE_APPEND, window,
++                                      data_len, data);
++}
++
++xcb_void_cookie_t
++xcb_ewmh_append_wm_icon(xcb_ewmh_connection_t *ewmh,
++                        xcb_window_t window,
++                        uint32_t width, uint32_t height,
++                        uint32_t img_len, uint32_t *img)
++{
++  const uint32_t data_len = img_len + 2;
++  uint32_t data[data_len];
++
++  set_wm_icon_data(data, width, height, img_len, img);
++
++  return xcb_ewmh_set_wm_icon(ewmh, XCB_PROP_MODE_APPEND, window,
++                              data_len, data);
++}
++
++DO_GET_PROPERTY(wm_icon, _NET_WM_ICON, XCB_ATOM_CARDINAL, UINT_MAX)
++
++uint8_t
++xcb_ewmh_get_wm_icon_from_reply(xcb_ewmh_get_wm_icon_reply_t *wm_icon,
++                                xcb_get_property_reply_t *r)
++{
++  if(!r || r->type != XCB_ATOM_CARDINAL || r->format != 32)
++    return 0;
++
++  uint32_t r_value_len = xcb_get_property_value_length(r);
++  uint32_t *r_value = (uint32_t *) xcb_get_property_value(r);
++
++  /* Find the number of icons in the reply. */
++  wm_icon->num_icons = 0;
++  while(r_value_len > (sizeof(uint32_t) * 2) && r_value && r_value[0] && r_value[1])
++  {
++    /* Check that the property is as long as it should be (in bytes),
++       handling integer overflow. "+2" to handle the width and height
++       fields. */
++    const uint64_t expected_len = (r_value[0] * (uint64_t) r_value[1] + 2) * 4;
++    if(expected_len > r_value_len)
++      break;
++
++    wm_icon->num_icons++;
++
++    /* Find pointer to next icon in the reply. */
++    r_value_len -= expected_len;
++    r_value = (uint32_t *) (((uint8_t *) r_value) + expected_len);
++  }
++
++  if(!wm_icon->num_icons)
++    return 0;
++
++  wm_icon->_reply = r;
++
++  return 1;
++}
++
++uint8_t
++xcb_ewmh_get_wm_icon_reply(xcb_ewmh_connection_t *ewmh,
++                           xcb_get_property_cookie_t cookie,
++                           xcb_ewmh_get_wm_icon_reply_t *wm_icon,
++                           xcb_generic_error_t **e)
++{
++  xcb_get_property_reply_t *r = xcb_get_property_reply(ewmh->connection, cookie, e);
++  const uint8_t ret = xcb_ewmh_get_wm_icon_from_reply(wm_icon, r);
++  if(!ret)
++    free(r);
++
++  return ret;
++}
++
++void
++xcb_ewmh_get_wm_icon_reply_wipe(xcb_ewmh_get_wm_icon_reply_t *wm_icon)
++{
++  free(wm_icon->_reply);
++}
++
++xcb_ewmh_wm_icon_iterator_t
++xcb_ewmh_get_wm_icon_iterator(const xcb_ewmh_get_wm_icon_reply_t *wm_icon)
++{
++  xcb_ewmh_wm_icon_iterator_t ret;
++
++  ret.width = 0;
++  ret.height = 0;
++  ret.data = NULL;
++  ret.rem = wm_icon->num_icons;
++  ret.index = 0;
++
++  if(ret.rem > 0)
++  {
++    uint32_t *r_value = (uint32_t *) xcb_get_property_value(wm_icon->_reply);
++    ret.width = r_value[0];
++    ret.height = r_value[1];
++    ret.data = &r_value[2];
++  }
++
++  return ret;
++}
++
++unsigned int xcb_ewmh_get_wm_icon_length(const xcb_ewmh_get_wm_icon_reply_t *wm_icon)
++{
++  return wm_icon->num_icons;
++}
++
++void xcb_ewmh_get_wm_icon_next(xcb_ewmh_wm_icon_iterator_t *iterator)
++{
++  if(iterator->rem <= 1)
++  {
++    iterator->index += iterator->rem;
++    iterator->rem = 0;
++    iterator->width = 0;
++    iterator->height = 0;
++    iterator->data = NULL;
++    return;
++  }
++
++  uint64_t icon_len = iterator->width * (uint64_t) iterator->height;
++  uint32_t *data = iterator->data + icon_len;
++
++  iterator->rem--;
++  iterator->index++;
++  iterator->width = data[0];
++  iterator->height = data[1];
++  iterator->data = &data[2];
++}
++
++/**
++ * _NET_WM_PID
++ */
++
++DO_SINGLE_VALUE(wm_pid, _NET_WM_PID, XCB_ATOM_CARDINAL, uint32_t)
++
++/**
++ * _NET_WM_HANDLED_ICONS
++ */
++
++DO_SINGLE_VALUE(wm_handled_icons, _NET_WM_HANDLED_ICONS, XCB_ATOM_CARDINAL,
++                uint32_t)
++
++/**
++ * _NET_WM_USER_TIME
++ */
++
++DO_SINGLE_VALUE(wm_user_time, _NET_WM_USER_TIME, XCB_ATOM_CARDINAL, uint32_t)
++
++/**
++ * _NET_WM_USER_TIME_WINDOW
++ */
++
++DO_SINGLE_VALUE(wm_user_time_window, _NET_WM_USER_TIME_WINDOW, XCB_ATOM_CARDINAL,
++                uint32_t)
++
++/**
++ * _NET_FRAME_EXTENTS
++ */
++
++xcb_void_cookie_t
++xcb_ewmh_set_frame_extents(xcb_ewmh_connection_t *ewmh,
++                           xcb_window_t window,
++                           uint32_t left, uint32_t right,
++                           uint32_t top, uint32_t bottom)
++{
++  const uint32_t data[] = { left, right, top, bottom };
++
++  return xcb_change_property(ewmh->connection, XCB_PROP_MODE_REPLACE, window,
++                             ewmh->_NET_FRAME_EXTENTS, XCB_ATOM_CARDINAL, 32,
++                             countof(data), data);
++}
++
++xcb_void_cookie_t
++xcb_ewmh_set_frame_extents_checked(xcb_ewmh_connection_t *ewmh,
++                                   xcb_window_t window,
++                                   uint32_t left, uint32_t right,
++                                   uint32_t top, uint32_t bottom)
++{
++  const uint32_t data[] = { left, right, top, bottom };
++
++  return xcb_change_property_checked(ewmh->connection, XCB_PROP_MODE_REPLACE,
++                                     window, ewmh->_NET_FRAME_EXTENTS,
++                                     XCB_ATOM_CARDINAL, 32, countof(data),
++                                     data);
++}
++
++DO_GET_PROPERTY(frame_extents, _NET_FRAME_EXTENTS, XCB_ATOM_CARDINAL, 4)
++DO_REPLY_STRUCTURE(frame_extents, xcb_ewmh_get_extents_reply_t)
++
++/**
++ * _NET_WM_PING
++ *
++ * TODO: client resend function?
++ */
++
++xcb_void_cookie_t
++xcb_ewmh_send_wm_ping(xcb_ewmh_connection_t *ewmh,
++                      xcb_window_t window,
++                      xcb_timestamp_t timestamp)
++{
++  const uint32_t data[] = { ewmh->_NET_WM_PING, timestamp, window };
++
++  return xcb_ewmh_send_client_message(ewmh->connection, window, window,
++                                      ewmh->WM_PROTOCOLS, sizeof(data), data);
++}
++
++/**
++ * _NET_WM_SYNC_REQUEST
++ * _NET_WM_SYNC_REQUEST_COUNTER
++ */
++
++xcb_void_cookie_t
++xcb_ewmh_set_wm_sync_request_counter(xcb_ewmh_connection_t *ewmh,
++                                     xcb_window_t window,
++                                     xcb_atom_t wm_sync_request_counter_atom,
++                                     uint32_t low, uint32_t high)
++{
++  const uint32_t data[] = { low, high };
++
++  return xcb_change_property(ewmh->connection, XCB_PROP_MODE_REPLACE, window,
++                             ewmh->_NET_WM_SYNC_REQUEST_COUNTER,
++                             XCB_ATOM_CARDINAL, 32,
++                             countof(data), data);
++}
++
++xcb_void_cookie_t
++xcb_ewmh_set_wm_sync_request_counter_checked(xcb_ewmh_connection_t *ewmh,
++                                             xcb_window_t window,
++                                             xcb_atom_t wm_sync_request_counter_atom,
++                                             uint32_t low, uint32_t high)
++{
++  const uint32_t data[] = { low, high };
++
++  return xcb_change_property_checked(ewmh->connection, XCB_PROP_MODE_REPLACE,
++                                     window, ewmh->_NET_WM_SYNC_REQUEST_COUNTER,
++                                     XCB_ATOM_CARDINAL, 32, countof(data),
++                                     data);
++}
++
++DO_GET_PROPERTY(wm_sync_request_counter, _NET_WM_SYNC_REQUEST_COUNTER,
++                XCB_ATOM_CARDINAL, 2)
++
++uint8_t
++xcb_ewmh_get_wm_sync_request_counter_from_reply(uint64_t *counter,
++                                                xcb_get_property_reply_t *r)
++{
++  /* 2 cardinals? */
++  if(!r || r->type != XCB_ATOM_CARDINAL || r->format != 32 ||
++     xcb_get_property_value_length(r) != sizeof(uint64_t))
++    return 0;
++
++  uint32_t *r_value = (uint32_t *) xcb_get_property_value(r);
++  *counter = (r_value[0] | ((uint64_t) r_value[1]) << 32);
++
++  return 1;
++}
++
++uint8_t
++xcb_ewmh_get_wm_sync_request_counter_reply(xcb_ewmh_connection_t *ewmh,
++                                           xcb_get_property_cookie_t cookie,
++                                           uint64_t *counter,
++                                           xcb_generic_error_t **e)
++{
++  xcb_get_property_reply_t *r = xcb_get_property_reply(ewmh->connection, cookie, e);
++  const uint8_t ret = xcb_ewmh_get_wm_sync_request_counter_from_reply(counter, r);
++  free(r);
++  return ret;
++}
++
++xcb_void_cookie_t
++xcb_ewmh_send_wm_sync_request(xcb_ewmh_connection_t *ewmh,
++                              xcb_window_t window,
++                              xcb_atom_t wm_protocols_atom,
++                              xcb_atom_t wm_sync_request_atom,
++                              xcb_timestamp_t timestamp,
++                              uint64_t counter)
++{
++  const uint32_t data[] = { ewmh->_NET_WM_SYNC_REQUEST, timestamp, counter,
++                            counter >> 32 };
++
++  return xcb_ewmh_send_client_message(ewmh->connection, window, window,
++                                      ewmh->WM_PROTOCOLS, sizeof(data), data);
++}
++
++/**
++ * _NET_WM_FULLSCREEN_MONITORS
++ */
++
++xcb_void_cookie_t
++xcb_ewmh_set_wm_fullscreen_monitors(xcb_ewmh_connection_t *ewmh,
++                                    xcb_window_t window,
++                                    uint32_t top, uint32_t bottom,
++                                    uint32_t left, uint32_t right)
++{
++  const uint32_t data[] = { top, bottom, left, right };
++
++  return xcb_change_property(ewmh->connection, XCB_PROP_MODE_REPLACE, window,
++                             ewmh->_NET_WM_FULLSCREEN_MONITORS,
++                             XCB_ATOM_CARDINAL, 32, countof(data), data);
++}
++
++xcb_void_cookie_t
++xcb_ewmh_set_wm_fullscreen_monitors_checked(xcb_ewmh_connection_t *ewmh,
++                                            xcb_window_t window,
++                                            uint32_t top, uint32_t bottom,
++                                            uint32_t left, uint32_t right)
++{
++  const uint32_t data[] = { top, bottom, left, right };
++
++  return xcb_change_property_checked(ewmh->connection, XCB_PROP_MODE_REPLACE,
++                                     window, ewmh->_NET_WM_FULLSCREEN_MONITORS,
++                                     XCB_ATOM_CARDINAL, 32, countof(data),
++                                     data);
++}
++
++DO_GET_PROPERTY(wm_fullscreen_monitors, _NET_WM_FULLSCREEN_MONITORS,
++                XCB_ATOM_CARDINAL, 4)
++
++DO_REPLY_STRUCTURE(wm_fullscreen_monitors,
++                   xcb_ewmh_get_wm_fullscreen_monitors_reply_t)
++
++xcb_void_cookie_t
++xcb_ewmh_request_change_wm_fullscreen_monitors(xcb_ewmh_connection_t *ewmh,
++                                               int screen_nbr,
++                                               xcb_window_t window,
++                                               uint32_t top, uint32_t bottom,
++                                               uint32_t left, uint32_t right,
++                                               xcb_ewmh_client_source_type_t source_indication)
++{
++  const uint32_t data[] = { top, bottom, left, right, source_indication };
++
++  return xcb_ewmh_send_client_message(ewmh->connection, window,
++                                      ewmh->screens[screen_nbr]->root,
++                                      ewmh->_NET_WM_FULLSCREEN_MONITORS,
++                                      sizeof(data), data);
++}
++
++/**
++ * _NET_WM_FULL_PLACEMENT
++ */
++
++/**
++ * _NET_WM_CM_Sn
++ */
++
++xcb_get_selection_owner_cookie_t
++xcb_ewmh_get_wm_cm_owner(xcb_ewmh_connection_t *ewmh,
++                         int screen_nbr)
++{
++  return xcb_get_selection_owner(ewmh->connection,
++                                 ewmh->_NET_WM_CM_Sn[screen_nbr]);
++}
++
++xcb_get_selection_owner_cookie_t
++xcb_ewmh_get_wm_cm_owner_unchecked(xcb_ewmh_connection_t *ewmh,
++                                   int screen_nbr)
++{
++  return xcb_get_selection_owner_unchecked(ewmh->connection,
++                                           ewmh->_NET_WM_CM_Sn[screen_nbr]);
++}
++
++uint8_t
++xcb_ewmh_get_wm_cm_owner_from_reply(xcb_window_t *owner,
++                                    xcb_get_selection_owner_reply_t *r)
++{
++  if(!r)
++    return 0;
++
++  *owner = r->owner;
++  free(r);
++  return 1;
++}
++
++uint8_t
++xcb_ewmh_get_wm_cm_owner_reply(xcb_ewmh_connection_t *ewmh,
++                               xcb_get_selection_owner_cookie_t cookie,
++                               xcb_window_t *owner,
++                               xcb_generic_error_t **e)
++{
++  xcb_get_selection_owner_reply_t *r =
++    xcb_get_selection_owner_reply(ewmh->connection, cookie, e);
++
++  return xcb_ewmh_get_wm_cm_owner_from_reply(owner, r);
++}
++
++/* TODO: section 2.1, 2.2 */
++static xcb_void_cookie_t
++set_wm_cm_owner_client_message(xcb_ewmh_connection_t *ewmh,
++                               int screen_nbr,
++                               xcb_window_t owner,
++                               xcb_timestamp_t timestamp,
++                               uint32_t selection_data1,
++                               uint32_t selection_data2)
++{
++  xcb_client_message_event_t ev;
++  memset(&ev, 0, sizeof(xcb_client_message_event_t));
++
++  ev.response_type = XCB_CLIENT_MESSAGE;
++  ev.format = 32;
++  ev.type = ewmh->MANAGER;
++  ev.data.data32[0] = timestamp;
++  ev.data.data32[1] = ewmh->_NET_WM_CM_Sn[screen_nbr];
++  ev.data.data32[2] = owner;
++  ev.data.data32[3] = selection_data1;
++  ev.data.data32[4] = selection_data2;
++
++  return xcb_send_event(ewmh->connection, 0, ewmh->screens[screen_nbr]->root,
++                        XCB_EVENT_MASK_STRUCTURE_NOTIFY,
++                        (char *) &ev);
++}
++
++/* TODO: check both */
++xcb_void_cookie_t
++xcb_ewmh_set_wm_cm_owner(xcb_ewmh_connection_t *ewmh,
++                         int screen_nbr,
++                         xcb_window_t owner,
++                         xcb_timestamp_t timestamp,
++                         uint32_t selection_data1,
++                         uint32_t selection_data2)
++{
++  xcb_set_selection_owner(ewmh->connection, owner,
++                          ewmh->_NET_WM_CM_Sn[screen_nbr], 0);
++
++  return set_wm_cm_owner_client_message(ewmh, screen_nbr, owner, timestamp,
++                                        selection_data1, selection_data2);
++}
++
++xcb_void_cookie_t
++xcb_ewmh_set_wm_cm_owner_checked(xcb_ewmh_connection_t *ewmh,
++                                 int screen_nbr,
++                                 xcb_window_t owner,
++                                 xcb_timestamp_t timestamp,
++                                 uint32_t selection_data1,
++                                 uint32_t selection_data2)
++{
++  xcb_set_selection_owner_checked(ewmh->connection, owner,
++                                  ewmh->_NET_WM_CM_Sn[screen_nbr], 0);
++
++  return set_wm_cm_owner_client_message(ewmh, screen_nbr, owner, timestamp,
++                                        selection_data1, selection_data2);
++}
+diff --git a/xcb/xcb_ewmh.h b/xcb/xcb_ewmh.h
+new file mode 100644
+index 0000000..78f38f8
+--- /dev/null
++++ b/xcb/xcb_ewmh.h
+@@ -0,0 +1,2456 @@
++#ifndef __XCB_EWMH_H__
++#define __XCB_EWMH_H__
++
++/*
++ * Copyright (C) 2009-2011 Arnaud Fontaine <arnau@debian.org>
++ *
++ * Permission  is  hereby  granted,  free  of charge,  to  any  person
++ * obtaining  a copy  of  this software  and associated  documentation
++ * files   (the  "Software"),   to  deal   in  the   Software  without
++ * restriction, including without limitation  the rights to use, copy,
++ * modify, merge, publish,  distribute, sublicense, and/or sell copies
++ * of  the Software, and  to permit  persons to  whom the  Software is
++ * furnished to do so, subject to the following conditions:
++ *
++ * The  above copyright  notice and  this permission  notice  shall be
++ * included in all copies or substantial portions of the Software.
++ *
++ * THE SOFTWARE  IS PROVIDED  "AS IS", WITHOUT  WARRANTY OF  ANY KIND,
++ * EXPRESS OR IMPLIED, INCLUDING BUT  NOT LIMITED TO THE WARRANTIES OF
++ * MERCHANTABILITY,   FITNESS    FOR   A   PARTICULAR    PURPOSE   AND
++ * NONINFRINGEMENT. IN  NO EVENT SHALL  THE AUTHORS BE LIABLE  FOR ANY
++ * CLAIM,  DAMAGES  OR  OTHER  LIABILITY,  WHETHER  IN  AN  ACTION  OF
++ * CONTRACT, TORT OR OTHERWISE, ARISING  FROM, OUT OF OR IN CONNECTION
++ * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
++ *
++ * Except as  contained in  this notice, the  names of the  authors or
++ * their institutions shall not be used in advertising or otherwise to
++ * promote the  sale, use or  other dealings in this  Software without
++ * prior written authorization from the authors.
++ */
++
++/**
++ * @defgroup xcb__ewmh_t XCB EWMH Functions
++ *
++ * These functions  allow easy handling  of the protocol  described in
++ * the Extended Window Manager  Hints specification. The list of Atoms
++ * is stored as an M4 file  (atomlist.m4) where each Atom is stored as
++ * a variable defined in the header.
++ *
++ * Replies of requests generating a  list of pointers (such as list of
++ * windows, atoms and UTF-8 strings)  are simply stored as a structure
++ * holding  the XCB  reply which  should (usually)  never  be accessed
++ * directly and has  to be wipe afterwards. This  structure provides a
++ * convenient access to the list given in the reply itself.
++ *
++ * @{
++ */
++
++#include <xcb/xcb.h>
++#include <stdlib.h>
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++/**
++ * @brief Hold EWMH information specific to a screen
++ */
++typedef struct {
++  /** The X connection */
++  xcb_connection_t *connection;
++  /** The screens on this connection */
++  xcb_screen_t **screens;
++  int nb_screens;
++  /** _NET_WM_CM_Sn atoms depending on the number of screens */
++  xcb_atom_t *_NET_WM_CM_Sn;
++  /** The EWMH atoms of this connection */    
++  xcb_atom_t _NET_SUPPORTED;
++  xcb_atom_t _NET_CLIENT_LIST;
++  xcb_atom_t _NET_CLIENT_LIST_STACKING;
++  xcb_atom_t _NET_NUMBER_OF_DESKTOPS;
++  xcb_atom_t _NET_DESKTOP_GEOMETRY;
++  xcb_atom_t _NET_DESKTOP_VIEWPORT;
++  xcb_atom_t _NET_CURRENT_DESKTOP;
++  xcb_atom_t _NET_DESKTOP_NAMES;
++  xcb_atom_t _NET_ACTIVE_WINDOW;
++  xcb_atom_t _NET_WORKAREA;
++  xcb_atom_t _NET_SUPPORTING_WM_CHECK;
++  xcb_atom_t _NET_VIRTUAL_ROOTS;
++  xcb_atom_t _NET_DESKTOP_LAYOUT;
++  xcb_atom_t _NET_SHOWING_DESKTOP;
++  xcb_atom_t _NET_CLOSE_WINDOW;
++  xcb_atom_t _NET_MOVERESIZE_WINDOW;
++  xcb_atom_t _NET_WM_MOVERESIZE;
++  xcb_atom_t _NET_RESTACK_WINDOW;
++  xcb_atom_t _NET_REQUEST_FRAME_EXTENTS;
++  xcb_atom_t _NET_WM_NAME;
++  xcb_atom_t _NET_WM_VISIBLE_NAME;
++  xcb_atom_t _NET_WM_ICON_NAME;
++  xcb_atom_t _NET_WM_VISIBLE_ICON_NAME;
++  xcb_atom_t _NET_WM_DESKTOP;
++  xcb_atom_t _NET_WM_WINDOW_TYPE;
++  xcb_atom_t _NET_WM_STATE;
++  xcb_atom_t _NET_WM_ALLOWED_ACTIONS;
++  xcb_atom_t _NET_WM_STRUT;
++  xcb_atom_t _NET_WM_STRUT_PARTIAL;
++  xcb_atom_t _NET_WM_ICON_GEOMETRY;
++  xcb_atom_t _NET_WM_ICON;
++  xcb_atom_t _NET_WM_PID;
++  xcb_atom_t _NET_WM_HANDLED_ICONS;
++  xcb_atom_t _NET_WM_USER_TIME;
++  xcb_atom_t _NET_WM_USER_TIME_WINDOW;
++  xcb_atom_t _NET_FRAME_EXTENTS;
++  xcb_atom_t _NET_WM_PING;
++  xcb_atom_t _NET_WM_SYNC_REQUEST;
++  xcb_atom_t _NET_WM_SYNC_REQUEST_COUNTER;
++  xcb_atom_t _NET_WM_FULLSCREEN_MONITORS;
++  xcb_atom_t _NET_WM_FULL_PLACEMENT;
++  xcb_atom_t UTF8_STRING;
++  xcb_atom_t WM_PROTOCOLS;
++  xcb_atom_t MANAGER;
++  xcb_atom_t _NET_WM_WINDOW_TYPE_DESKTOP;
++  xcb_atom_t _NET_WM_WINDOW_TYPE_DOCK;
++  xcb_atom_t _NET_WM_WINDOW_TYPE_TOOLBAR;
++  xcb_atom_t _NET_WM_WINDOW_TYPE_MENU;
++  xcb_atom_t _NET_WM_WINDOW_TYPE_UTILITY;
++  xcb_atom_t _NET_WM_WINDOW_TYPE_SPLASH;
++  xcb_atom_t _NET_WM_WINDOW_TYPE_DIALOG;
++  xcb_atom_t _NET_WM_WINDOW_TYPE_DROPDOWN_MENU;
++  xcb_atom_t _NET_WM_WINDOW_TYPE_POPUP_MENU;
++  xcb_atom_t _NET_WM_WINDOW_TYPE_TOOLTIP;
++  xcb_atom_t _NET_WM_WINDOW_TYPE_NOTIFICATION;
++  xcb_atom_t _NET_WM_WINDOW_TYPE_COMBO;
++  xcb_atom_t _NET_WM_WINDOW_TYPE_DND;
++  xcb_atom_t _NET_WM_WINDOW_TYPE_NORMAL;
++  xcb_atom_t _NET_WM_STATE_MODAL;
++  xcb_atom_t _NET_WM_STATE_STICKY;
++  xcb_atom_t _NET_WM_STATE_MAXIMIZED_VERT;
++  xcb_atom_t _NET_WM_STATE_MAXIMIZED_HORZ;
++  xcb_atom_t _NET_WM_STATE_SHADED;
++  xcb_atom_t _NET_WM_STATE_SKIP_TASKBAR;
++  xcb_atom_t _NET_WM_STATE_SKIP_PAGER;
++  xcb_atom_t _NET_WM_STATE_HIDDEN;
++  xcb_atom_t _NET_WM_STATE_FULLSCREEN;
++  xcb_atom_t _NET_WM_STATE_ABOVE;
++  xcb_atom_t _NET_WM_STATE_BELOW;
++  xcb_atom_t _NET_WM_STATE_DEMANDS_ATTENTION;
++  xcb_atom_t _NET_WM_ACTION_MOVE;
++  xcb_atom_t _NET_WM_ACTION_RESIZE;
++  xcb_atom_t _NET_WM_ACTION_MINIMIZE;
++  xcb_atom_t _NET_WM_ACTION_SHADE;
++  xcb_atom_t _NET_WM_ACTION_STICK;
++  xcb_atom_t _NET_WM_ACTION_MAXIMIZE_HORZ;
++  xcb_atom_t _NET_WM_ACTION_MAXIMIZE_VERT;
++  xcb_atom_t _NET_WM_ACTION_FULLSCREEN;
++  xcb_atom_t _NET_WM_ACTION_CHANGE_DESKTOP;
++  xcb_atom_t _NET_WM_ACTION_CLOSE;
++  xcb_atom_t _NET_WM_ACTION_ABOVE;
++  xcb_atom_t _NET_WM_ACTION_BELOW;
++} xcb_ewmh_connection_t;
++
++/**
++ * @brief Hold a GetProperty reply containing a list of Atoms
++ */
++typedef struct {
++  /** The number of Atoms */
++  uint32_t atoms_len;
++  /** The list of Atoms */
++  xcb_atom_t *atoms;
++  /** The actual GetProperty reply */
++  xcb_get_property_reply_t *_reply;
++} xcb_ewmh_get_atoms_reply_t;
++
++/**
++ * @brief Hold a GetProperty reply containing a list of Windows
++ */
++typedef struct {
++  /** The number of Windows */
++  uint32_t windows_len;
++  /** The list of Windows */
++  xcb_window_t *windows;
++  /** The actual GetProperty reply */
++  xcb_get_property_reply_t *_reply;
++} xcb_ewmh_get_windows_reply_t;
++
++/**
++ * @brief Hold a GetProperty reply containg a list of UTF-8 strings
++ */
++typedef struct {
++  /** The number of UTF-8 strings */
++  uint32_t strings_len;
++  /** The list of UTF-8 strings */
++  char *strings;
++  /** The actual GetProperty reply */
++  xcb_get_property_reply_t *_reply;
++} xcb_ewmh_get_utf8_strings_reply_t;
++
++/**
++ * @brief Coordinates Property values
++ */
++typedef struct {
++  /** The x coordinate */
++  uint32_t x;
++  /** The y coordinate */
++  uint32_t y;
++} xcb_ewmh_coordinates_t;
++
++/**
++ * @brief Hold reply of _NET_DESKTOP_VIEWPORT GetProperty
++ */
++typedef struct {
++  /** The number of desktop viewports */
++  uint32_t desktop_viewport_len;
++  /** The desktop viewports */
++  xcb_ewmh_coordinates_t *desktop_viewport;
++  /** The actual GetProperty reply */
++  xcb_get_property_reply_t *_reply;
++} xcb_ewmh_get_desktop_viewport_reply_t;
++
++/**
++ * @brief Geometry Property values
++ */
++typedef struct {
++  /** The x coordinate */
++  uint32_t x;
++  /** The y coordinate */
++  uint32_t y;
++  /** The width */
++  uint32_t width;
++  /** The height */
++  uint32_t height;
++} xcb_ewmh_geometry_t;
++
++/**
++ * @brief Hold reply of a _NET_WORKAREA GetProperty
++ */
++typedef struct {
++  /** The number of desktop workarea */
++  uint32_t workarea_len;
++  /** The list of desktop workarea */
++  xcb_ewmh_geometry_t *workarea;
++  /** The actual GetProperty reply */
++  xcb_get_property_reply_t *_reply;
++} xcb_ewmh_get_workarea_reply_t;
++
++/**
++ * @brief Source indication in requests
++ */
++typedef enum {
++  /** No source at all (for clients supporting an older version of
++      EWMH specification) */
++  XCB_EWMH_CLIENT_SOURCE_TYPE_NONE = 0,
++  /** Normal application */
++  XCB_EWMH_CLIENT_SOURCE_TYPE_NORMAL = 1,
++  /** Pagers and other clients that represent direct user actions */
++  XCB_EWMH_CLIENT_SOURCE_TYPE_OTHER = 2
++} xcb_ewmh_client_source_type_t;
++
++/**
++ * @brief _NET_DESKTOP_LAYOUT orientation
++ */
++typedef enum {
++  /** Horizontal orientation (desktops laid out in rows) */
++  XCB_EWMH_WM_ORIENTATION_HORZ = 0,
++  /** Vertical orientation (desktops laid out in columns) */
++  XCB_EWMH_WM_ORIENTATION_VERT = 1
++} xcb_ewmh_desktop_layout_orientation_t;
++
++/**
++ * @brief _NET_DESKTOP_LAYOUT starting corner
++ */
++typedef enum {
++  /** Starting corner on the top left */
++  XCB_EWMH_WM_TOPLEFT = 0,
++  /** Starting corner on the top right */
++  XCB_EWMH_WM_TOPRIGHT = 1,
++  /** Starting corner on the bottom right */
++  XCB_EWMH_WM_BOTTOMRIGHT = 2,
++  /** Starting corner on the bottom left */
++  XCB_EWMH_WM_BOTTOMLEFT = 3
++} xcb_ewmh_desktop_layout_starting_corner_t;
++
++/**
++ * @brief Hold reply of a _NET_DESKTOP_LAYOUT GetProperty
++ * @see xcb_ewmh_desktop_layout_orientation_t
++ * @see xcb_ewmh_desktop_layout_starting_corner_t
++ */
++typedef struct {
++  /** The desktops orientation */
++  uint32_t orientation;
++  /** The number of columns */
++  uint32_t columns;
++  /** The number of rows */
++  uint32_t rows;
++  /** The desktops starting corner */
++  uint32_t starting_corner;
++} xcb_ewmh_get_desktop_layout_reply_t;
++
++/**
++ * @brief _NET_WM_MOVERESIZE value when moving via keyboard
++ * @see xcb_ewmh_moveresize_direction_t
++ */
++typedef enum {
++  /** The window x coordinate */
++  XCB_EWMH_MOVERESIZE_WINDOW_X = (1 << 8),
++  /** The window y coordinate */
++  XCB_EWMH_MOVERESIZE_WINDOW_Y = (1 << 9),
++  /** The window width */
++  XCB_EWMH_MOVERESIZE_WINDOW_WIDTH = (1 << 10),
++  /** The window height */
++  XCB_EWMH_MOVERESIZE_WINDOW_HEIGHT = (1 << 11)
++} xcb_ewmh_moveresize_window_opt_flags_t;
++
++/**
++ * @brief _NET_WM_MOVERESIZE window movement or resizing
++ */
++typedef enum {
++  /** Resizing applied on the top left edge */
++  XCB_EWMH_WM_MOVERESIZE_SIZE_TOPLEFT = 0,
++  /** Resizing applied on the top edge */
++  XCB_EWMH_WM_MOVERESIZE_SIZE_TOP = 1,
++  /** Resizing applied on the top right edge */
++  XCB_EWMH_WM_MOVERESIZE_SIZE_TOPRIGHT = 2,
++  /** Resizing applied on the right edge */
++  XCB_EWMH_WM_MOVERESIZE_SIZE_RIGHT = 3,
++  /** Resizing applied on the bottom right edge */
++  XCB_EWMH_WM_MOVERESIZE_SIZE_BOTTOMRIGHT = 4,
++  /** Resizing applied on the bottom edge */
++  XCB_EWMH_WM_MOVERESIZE_SIZE_BOTTOM = 5,
++  /** Resizing applied on the bottom left edge */
++  XCB_EWMH_WM_MOVERESIZE_SIZE_BOTTOMLEFT = 6,
++  /** Resizing applied on the left edge */
++  XCB_EWMH_WM_MOVERESIZE_SIZE_LEFT = 7,
++  /* Movement only */
++  XCB_EWMH_WM_MOVERESIZE_MOVE = 8,
++  /* Size via keyboard */
++  XCB_EWMH_WM_MOVERESIZE_SIZE_KEYBOARD = 9,
++  /* Move via keyboard */
++  XCB_EWMH_WM_MOVERESIZE_MOVE_KEYBOARD = 10,
++  /* Cancel operation */
++  XCB_EWMH_WM_MOVERESIZE_CANCEL = 11
++} xcb_ewmh_moveresize_direction_t;
++
++/**
++ * @brief Action on the _NET_WM_STATE property
++ */
++typedef enum {
++  /* Remove/unset property */
++  XCB_EWMH_WM_STATE_REMOVE = 0,
++  /* Add/set property */
++  XCB_EWMH_WM_STATE_ADD = 1,
++  /* Toggle property  */
++  XCB_EWMH_WM_STATE_TOGGLE = 2
++} xcb_ewmh_wm_state_action_t;
++
++/**
++ * @brief Hold reply of _NET_WM_STRUT_PARTIAL GetProperty
++ */
++typedef struct {
++  /** Reserved space on the left border of the screen */
++  uint32_t left;
++  /** Reserved space on the right border of the screen */
++  uint32_t right;
++  /** Reserved space on the top border of the screen */
++  uint32_t top;
++  /** Reserved space on the bottom border of the screen */
++  uint32_t bottom;
++  /** Beginning y coordinate of the left strut */
++  uint32_t left_start_y;
++  /** Ending y coordinate of the left strut */
++  uint32_t left_end_y;
++  /** Beginning y coordinate of the right strut */
++  uint32_t right_start_y;
++  /** Ending y coordinate of the right strut */
++  uint32_t right_end_y;
++  /** Beginning x coordinate of the top strut */
++  uint32_t top_start_x;
++  /** Ending x coordinate of the top strut */
++  uint32_t top_end_x;
++  /** Beginning x coordinate of the bottom strut */
++  uint32_t bottom_start_x;
++  /** Ending x coordinate of the bottom strut */
++  uint32_t bottom_end_x;
++} xcb_ewmh_wm_strut_partial_t;
++
++/**
++ * @brief Hold a single icon from reply of _NET_WM_ICON GetProperty
++ */
++typedef struct {
++  /** Icon width */
++  uint32_t width;
++  /** Icon height */
++  uint32_t height;
++  /** Rows, left to right and top to bottom of the CARDINAL ARGB */
++  uint32_t *data;
++  /** Number of icons remaining */
++  unsigned int rem;
++  /** Index of the current icon in the array of icons */
++  unsigned int index;
++} xcb_ewmh_wm_icon_iterator_t;
++
++/**
++ * @brief Hold reply of _NET_WM_ICON GetProperty
++ */
++typedef struct {
++  /** Number of icons */
++  unsigned int num_icons;
++  /** The actual GetProperty reply */
++  xcb_get_property_reply_t *_reply;
++} xcb_ewmh_get_wm_icon_reply_t;
++
++/**
++ * @brief Hold reply of _NET_REQUEST_FRAME_EXTENTS GetProperty
++ */
++typedef struct {
++  /** Width of the left border */
++  uint32_t left;
++  /** Width of the right border */
++  uint32_t right;
++  /** Width of the top border */
++  uint32_t top;
++  /** Width of the bottom border */
++  uint32_t bottom;
++} xcb_ewmh_get_extents_reply_t;
++
++/**
++ * @brief Hold reply of _NET_WM_FULLSCREEN_MONITORS GetProperty
++ */
++typedef struct {
++  /** Monitor whose top edge defines the top edge of the fullscreen
++      window */
++  uint32_t top;
++  /** Monitor whose bottom edge defines the bottom edge of the
++      fullscreen window */
++  uint32_t bottom;
++  /** Monitor whose left edge defines the left edge of the fullscreen
++      window */
++  uint32_t left;
++  /** Monitor whose right edge defines the right edge of the
++      fullscreen window */
++  uint32_t right;
++} xcb_ewmh_get_wm_fullscreen_monitors_reply_t;
++
++/**
++ * @brief Send InternAtom requests for the EWMH atoms and its required atoms
++ *
++ * @param c The connection to the X server
++ * @param ewmh The information relative to EWMH
++ * @param screen_nbr The screen number
++ * @return The cookies corresponding to EWMH atoms
++ */
++xcb_intern_atom_cookie_t *xcb_ewmh_init_atoms(xcb_connection_t *c,
++                                              xcb_ewmh_connection_t *ewmh);
++
++/**
++ * @brief Process  the replies  to the screen  initialisation requests
++ * previously sent
++ *
++ * @param emwh The information relative to EWMH
++ * @param ewmh_cookies The cookies corresponding to EWMH atoms
++ * @param e Error if any
++ * @return Return 1 on success, 0 otherwise
++ */
++uint8_t xcb_ewmh_init_atoms_replies(xcb_ewmh_connection_t *ewmh,
++                                    xcb_intern_atom_cookie_t *ewmh_cookies,
++                                    xcb_generic_error_t **e);
++
++static inline void
++xcb_ewmh_connection_wipe(xcb_ewmh_connection_t *ewmh)
++{
++  free(ewmh->screens);
++  free(ewmh->_NET_WM_CM_Sn);
++}
++
++/**
++ * @brief Send a SendEvent request containing a ClientMessage event
++ *
++ * This  function is  called  by all  the xcb_ewmh_request*  functions
++ * whose should be used instead of calling directly this function
++ *
++ * @param c The X connection
++ * @param window The window where the action will be applied
++ * @param dest The destination window (usually the root window)
++ * @param atom The type of the message
++ * @param data_len The length of data to be sent
++ * @param data The data to be sent
++ * @return The cookie associated with the SendEvent request
++ */
++xcb_void_cookie_t xcb_ewmh_send_client_message(xcb_connection_t *c,
++                                               xcb_window_t window,
++                                               xcb_window_t dest,
++                                               xcb_atom_t atom,
++                                               uint32_t data_len,
++                                               const uint32_t *data);
++
++uint8_t xcb_ewmh_get_window_from_reply(xcb_window_t *window,
++                                       xcb_get_property_reply_t *r);
++
++uint8_t xcb_ewmh_get_window_reply(xcb_ewmh_connection_t *ewmh,
++                                  xcb_get_property_cookie_t cookie,
++                                  xcb_window_t *window,
++                                  xcb_generic_error_t **e);
++
++uint8_t xcb_ewmh_get_cardinal_from_reply(uint32_t *cardinal,
++                                         xcb_get_property_reply_t *r);
++
++uint8_t xcb_ewmh_get_cardinal_reply(xcb_ewmh_connection_t *ewmh,
++                                    xcb_get_property_cookie_t cookie,
++                                    uint32_t *cardinal,
++                                    xcb_generic_error_t **e);
++
++/**
++ * @brief Get  a list  of atoms from  a given GetProperty  reply whose
++ * type is ATOM
++ *
++ * This  function  is  called  by  all  the  xcb_ewmh_get_*_from_reply
++ * functions  whose should  be used  instead of  calling  it directly.
++ * Indeed,  The GetProperty request  has been  previously sent  by the
++ * corresponding xcb_ewmh_get_*.
++ *
++ * @param atoms The atoms list
++ * @param r The reply to get the atoms list from
++ * @return Return 1 on success, 0 otherwise
++ */
++uint8_t xcb_ewmh_get_atoms_from_reply(xcb_ewmh_get_atoms_reply_t *atoms,
++                                      xcb_get_property_reply_t *r);
++
++/**
++ * @brief Get a list of atoms  from the reply of a GetProperty request
++ * whose type is ATOM
++ *
++ * This function  is called by all  the xcb_ewmh_get_*_reply functions
++ * whose  should   be  used  instead  of  calling   it  directly.  The
++ * GetProperty request  has been previously sent  by the corresponding
++ * xcb_ewmh_get_*.
++ *
++ * @param ewmh The per-screen EWMH specific information
++ * @param cookie The GetProperty cookie
++ * @param atoms The atoms list
++ * @param e The error if any
++ * @return Return 1 on success, 0 otherwise
++ */
++uint8_t xcb_ewmh_get_atoms_reply(xcb_ewmh_connection_t *ewmh,
++                                 xcb_get_property_cookie_t cookie,
++                                 xcb_ewmh_get_atoms_reply_t *atoms,
++                                 xcb_generic_error_t **e);
++
++/**
++ * @brief Wipe the Atoms list reply
++ *
++ * This function must be called to free the memory allocated for atoms
++ * when the reply is requested in *_reply functions.
++ *
++ * @param data The X reply to be freed
++ */
++void xcb_ewmh_get_atoms_reply_wipe(xcb_ewmh_get_atoms_reply_t *data);
++
++/**
++ * @brief Get  a list  of atoms from  a given GetProperty  reply whose
++ * type is WINDOW
++ *
++ * This  function  is  called  by  all  the  xcb_ewmh_get_*_from_reply
++ * functions  whose should  be used  instead of  calling  it directly.
++ * Indeed,  The GetProperty request  has been  previously sent  by the
++ * corresponding xcb_ewmh_get_*.
++ *
++ * @param atoms The atoms list
++ * @param r The reply to get the atoms list from
++ * @return Return 1 on success, 0 otherwise
++ */
++uint8_t xcb_ewmh_get_windows_from_reply(xcb_ewmh_get_windows_reply_t *atoms,
++                                        xcb_get_property_reply_t *r);
++
++uint8_t xcb_ewmh_get_utf8_strings_from_reply(xcb_ewmh_connection_t *ewmh,
++                                             xcb_ewmh_get_utf8_strings_reply_t *data,
++                                             xcb_get_property_reply_t *r);
++
++uint8_t xcb_ewmh_get_utf8_strings_reply(xcb_ewmh_connection_t *ewmh,
++                                        xcb_get_property_cookie_t cookie,
++                                        xcb_ewmh_get_utf8_strings_reply_t *data,
++                                        xcb_generic_error_t **e);
++
++/**
++ * @brief Get a list of atoms  from the reply of a GetProperty request
++ * whose type is WINDOW
++ *
++ * This function  is called by all  the xcb_ewmh_get_*_reply functions
++ * whose  should   be  used  instead  of  calling   it  directly.  The
++ * GetProperty request  has been previously sent  by the corresponding
++ * xcb_ewmh_get_*.
++ *
++ * @param ewmh The per-screen EWMH specific information
++ * @param cookie The GetProperty cookie
++ * @param atoms The atoms list
++ * @param e The error if any
++ * @return Return 1 on success, 0 otherwise
++ */
++uint8_t xcb_ewmh_get_windows_reply(xcb_ewmh_connection_t *ewmh,
++                                   xcb_get_property_cookie_t cookie,
++                                   xcb_ewmh_get_windows_reply_t *atoms,
++                                   xcb_generic_error_t **e);
++
++/**
++ * @brief Wipe the windows list reply
++ *
++ * This function must  be called to the free  the memory allocated for
++ * windows when the reply is requested in '_reply' functions.
++ *
++ * @param data The X reply to be freed
++ */
++void xcb_ewmh_get_windows_reply_wipe(xcb_ewmh_get_windows_reply_t *data);
++
++/**
++ * @brief Wipe the UTF-8 strings list reply
++ *
++ * This function must  be called to the free  the memory allocated for
++ * UTF-8 strings when the reply is requested in '_reply' functions.
++ *
++ * @param data The X reply to be freed
++ */
++void xcb_ewmh_get_utf8_strings_reply_wipe(xcb_ewmh_get_utf8_strings_reply_t *data);
++
++/**
++ * @brief Send a ChangeProperty request for _NET_SUPPORTED
++ *
++ * _NET_SUPPORTED, ATOM[]/32
++ *
++ * @param ewmh The per-screen EWMH information
++ * @param screen_nbr The screen number
++ * @param list_len The number of Atoms supported by the WM
++ * @param list The Atoms supported by the WM
++ * @return Cookie associated with the ChangeProperty _NET_SUPPORTED request
++ */
++xcb_void_cookie_t xcb_ewmh_set_supported(xcb_ewmh_connection_t *ewmh,
++                                         int screen_nbr,
++                                         uint32_t list_len,
++                                         xcb_atom_t *list);
++
++/**
++ * @see xcb_ewmh_set_supported
++ */
++xcb_void_cookie_t xcb_ewmh_set_supported_checked(xcb_ewmh_connection_t *ewmh,
++                                                 int screen_nbr,
++                                                 uint32_t list_len,
++                                                 xcb_atom_t *list);
++
++/**
++ * @brief Send  GetProperty request to get  _NET_SUPPORTED root window
++ *        property
++ *
++ * _NET_SUPPORTED, ATOM[]/32
++ *
++ * This property MUST  be set by the Window  Manager to indicate which
++ * hints it supports. For example: considering _NET_WM_STATE both this
++ * atom   and   all   supported  states   e.g.    _NET_WM_STATE_MODAL,
++ * _NET_WM_STATE_STICKY, would be  listed. This assumes that backwards
++ * incompatible changes will  not be made to the  hints (without being
++ * renamed).
++ *
++ * This form can be used only if  the request will cause a reply to be
++ * generated. Any returned error will be placed in the event queue.
++ *
++ * @param ewmh The information relative to EWMH
++ * @param screen_nbr The screen number
++ * @return The _NET_SUPPORTED cookie of the GetProperty request
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_supported_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                           int screen_nbr);
++
++/**
++ * @see xcb_ewmh_get_supported_unchecked
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_supported(xcb_ewmh_connection_t *ewmh,
++                                                 int screen_nbr);
++
++/**
++ * @brief Get the list of supported atoms
++ *
++ * @param supported The list of atoms contained in the reply
++ * @param r GetProperty _NET_SUPPORTED reply
++ */
++static inline uint8_t
++xcb_ewmh_get_supported_from_reply(xcb_ewmh_get_atoms_reply_t *supported,
++                                  xcb_get_property_reply_t *r)
++{
++  return xcb_ewmh_get_atoms_from_reply(supported, r);
++}
++
++/**
++ * @brief Get reply from the GetProperty _NET_SUPPORTED cookie
++ *
++ * The  parameter  e  supplied  to  this  function  must  be  NULL  if
++ * xcb_get_window_supported_unchecked() is used.  Otherwise, it stores
++ * the error if any.
++ *
++ * @param ewmh The information relative to EWMH
++ * @param cookie The _NET_SUPPORTED GetProperty request cookie
++ * @param supported The reply to be filled
++ * @param The xcb_generic_error_t supplied
++ * @return Return 1 on success, 0 otherwise
++ */
++static inline uint8_t
++xcb_ewmh_get_supported_reply(xcb_ewmh_connection_t *ewmh,
++                             xcb_get_property_cookie_t cookie,
++                             xcb_ewmh_get_atoms_reply_t *supported,
++                             xcb_generic_error_t **e)
++{
++  return xcb_ewmh_get_atoms_reply(ewmh, cookie, supported, e);
++}
++
++/**
++ * @brief Send a ChangeProperty request for _NET_CLIENT_LIST
++ *
++ * _NET_CLIENT_LIST, WINDOW[]/32
++ *
++ * @param ewmh The per-screen EWMH information
++ * @param screen_nbr The screen number
++ * @param list_len The number of Atoms supported by the WM
++ * @param list The Atoms supported by the WM
++ * @return Cookie associated with the ChangeProperty _NET_CLIENT_LIST request
++ */
++xcb_void_cookie_t xcb_ewmh_set_client_list(xcb_ewmh_connection_t *ewmh,
++                                           int screen_nbr,
++                                           uint32_t list_len,
++                                           xcb_window_t *list);
++
++/**
++ * @see xcb_ewmh_set_client_list
++ */
++xcb_void_cookie_t xcb_ewmh_set_client_list_checked(xcb_ewmh_connection_t *ewmh,
++                                                   int screen_nbr,
++                                                   uint32_t list_len,
++                                                   xcb_window_t *list);
++
++/**
++ * @brief Send GetProperty request to get _NET_CLIENT_LIST root window
++ *        property
++ *
++ * This  array   contains  all  X   Windows  managed  by   the  Window
++ * Manager. _NET_CLIENT_LIST has  initial mapping order, starting with
++ * the oldest window.  This property SHOULD be set  and updated by the
++ * Window Manager.
++ *
++ * @param ewmh The information relative to EWMH.
++ * @return The _NET_CLIENT_LIST cookie of the GetProperty request.
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_client_list_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                             int screen_nbr);
++
++/**
++ * @brief Send GetProperty request to get _NET_CLIENT_LIST root window
++ *        property
++ *
++ * @see xcb_ewmh_get_client_list_unchecked
++ * @param ewmh The information relative to EWMH.
++ * @return The _NET_CLIENT_LIST cookie of the GetProperty request.
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_client_list(xcb_ewmh_connection_t *ewmh,
++                                                   int screen_nbr);
++
++/**
++ * @brief  Get   the  list  of  client  windows   from  a  GetProperty
++ * _NET_CLIENT_LIST reply
++ *
++ * @param clients The list of clients contained in the reply
++ * @param r GetProperty _NET_CLIENT_LIST reply
++ */
++static inline uint8_t
++xcb_ewmh_get_client_list_from_reply(xcb_ewmh_get_windows_reply_t *clients,
++                                    xcb_get_property_reply_t *r)
++{
++  return xcb_ewmh_get_windows_from_reply(clients, r);
++}
++
++/**
++ * @brief Get reply from the GetProperty _NET_CLIENT_LIST cookie
++ *
++ * The  parameter  e  supplied  to  this  function  must  be  NULL  if
++ * xcb_get_window_client_list_unchecked()  is   used.   Otherwise,  it
++ * stores the error if any.
++ *
++ * @param ewmh The information relative to EWMH
++ * @param cookie The _NET_CLIENT_LIST GetProperty request cookie
++ * @param clients The list of clients to be filled
++ * @param The xcb_generic_error_t supplied
++ * @return Return 1 on success, 0 otherwise
++ */
++static inline uint8_t
++xcb_ewmh_get_client_list_reply(xcb_ewmh_connection_t *ewmh,
++                               xcb_get_property_cookie_t cookie,
++                               xcb_ewmh_get_windows_reply_t *clients,
++                               xcb_generic_error_t **e)
++{
++  return xcb_ewmh_get_windows_reply(ewmh, cookie, clients, e);
++}
++
++/**
++ * @brief Send a ChangeProperty request for _NET_CLIENT_LIST_STACKING
++ *
++ * _NET_CLIENT_LIST_STACKING, WINDOW[]/32
++ *
++ * @param ewmh The per-screen EWMH information
++ * @param screen_nbr The screen number
++ * @param list_len The number of Atoms supported by the WM
++ * @param list The Atoms supported by the WM
++ * @return Cookie associated with the ChangeProperty _NET_CLIENT_LIST_STACKING request
++ */
++xcb_void_cookie_t xcb_ewmh_set_client_list_stacking(xcb_ewmh_connection_t *ewmh,
++                                                    int screen_nbr,
++                                                    uint32_t list_len,
++                                                    xcb_window_t *list);
++
++/**
++ * @see xcb_ewmh_set_client_list_stacking
++ */
++xcb_void_cookie_t xcb_ewmh_set_client_list_stacking_checked(xcb_ewmh_connection_t *ewmh,
++                                                            int screen_nbr,
++                                                            uint32_t list_len,
++                                                            xcb_window_t *list);
++
++/**
++ * @brief  Send GetProperty  request to  get _NET_CLIENT_LIST_STACKING
++ *        root window property
++ *
++ * This  array   contains  all  X   Windows  managed  by   the  Window
++ * Manager.  _NET_CLIENT_LIST_STACKING   has  initial  mapping  order,
++ * starting with the  oldest window.  This property SHOULD  be set and
++ * updated by the Window Manager.
++ *
++ * @param ewmh The information relative to EWMH
++ * @return The _NET_CLIENT_LIST_STACKING cookie of the GetProperty request
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_client_list_stacking_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                                      int screen_nbr);
++
++/**
++ * @see xcb_ewmh_get_client_list_unchecked
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_client_list_stacking(xcb_ewmh_connection_t *ewmh,
++                                                            int screen_nbr);
++
++/**
++ * @brief  Get   the  list  of  client  windows   from  a  GetProperty
++ * _NET_CLIENT_LIST_STACKING reply
++ *
++ * @param clients The list of clients contained in the reply
++ * @param r GetProperty _NET_CLIENT_LIST_STACKING reply
++ */
++static inline uint8_t
++xcb_ewmh_get_client_list_stacking_from_reply(xcb_ewmh_get_windows_reply_t *clients,
++                                             xcb_get_property_reply_t *r)
++{
++  return xcb_ewmh_get_windows_from_reply(clients, r);
++}
++
++/**
++ * @brief  Get reply  from  the GetProperty  _NET_CLIENT_LIST_STACKING
++ * cookie
++ *
++ * The  parameter  e  supplied  to  this  function  must  be  NULL  if
++ * xcb_get_window_client_list_stacking_unchecked()       is      used.
++ * Otherwise, it stores the error if any.
++ *
++ * @param ewmh The information relative to EWMH
++ * @param cookie The _NET_CLIENT_LIST_STACKING GetProperty request cookie
++ * @param clients The list of clients to be filled
++ * @param The xcb_generic_error_t supplied
++ * @return Return 1 on success, 0 otherwise
++ */
++static inline uint8_t
++xcb_ewmh_get_client_list_stacking_reply(xcb_ewmh_connection_t *ewmh,
++                                        xcb_get_property_cookie_t cookie,
++                                        xcb_ewmh_get_windows_reply_t *clients,
++                                        xcb_generic_error_t **e)
++{
++  return xcb_ewmh_get_windows_reply(ewmh, cookie, clients, e);
++}
++
++/**
++ * @brief Send a ChangeProperty request for _NET_NUMBER_OF_DESKTOPS
++ *
++ * _NET_NUMBER_OF_DESKTOPS? CARDINAL/32
++ *
++ * @param ewmh The per-screen EWMH information
++ * @param screen_nbr The screen number
++ * @param number_of_desktops The number of desktops
++ * @return Cookie associated with the ChangeProperty _NET_NUMBER_OF_DESKTOPS request
++ */
++xcb_void_cookie_t xcb_ewmh_set_number_of_desktops(xcb_ewmh_connection_t *ewmh,
++                                                  int screen_nbr,
++                                                  uint32_t number_of_desktops);
++
++/**
++ * @see xcb_ewmh_set_number_of_desktops
++ */
++xcb_void_cookie_t xcb_ewmh_set_number_of_desktops_checked(xcb_ewmh_connection_t *ewmh,
++                                                          int screen_nbr,
++                                                          uint32_t number_of_desktops);
++
++/**
++ * @brief Send GetProperty request to get _NET_NUMBER_OF_DESKTOPS root
++ *        window property
++ *
++ * @param ewmh The information relative to EWMH
++ * @param screen_nbr The screen number
++ * @return The _NET_NUMBER_OF_DESKTOPS cookie of the GetProperty request.
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_number_of_desktops_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                                    int screen_nbr);
++
++/**
++ * @see xcb_ewmh_get_number_of_desktops_unchecked
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_number_of_desktops(xcb_ewmh_connection_t *ewmh,
++                                                          int screen_nbr);
++
++/**
++ * @brief  Get   the  list  of  client  windows   from  a  GetProperty
++ * _NET_NUMBER_OF_DESKTOPS reply
++ *
++ * @param clients The list of clients contained in the reply
++ * @param r GetProperty _NET_NUMBER_OF_DESKTOPS reply
++ * @return Return 1 on success, 0 otherwise
++ */
++static inline uint8_t
++xcb_ewmh_get_number_of_desktops_from_reply(uint32_t *number_of_desktops,
++                                           xcb_get_property_reply_t *r)
++{
++  return xcb_ewmh_get_cardinal_from_reply(number_of_desktops, r);
++}
++
++/**
++ * @brief Get reply from the GetProperty _NET_NUMBER_OF_DESKTOPS cookie
++ *
++ * The  parameter  e  supplied  to  this  function  must  be  NULL  if
++ * xcb_get_window_number_of_desktops_unchecked()  is used.  Otherwise,
++ * it stores the error if any.
++ *
++ * @param ewmh The information relative to EWMH
++ * @param cookie The _NET_NUMBER_OF_DESKTOPS GetProperty request cookie
++ * @param supported The reply to be filled
++ * @param The xcb_generic_error_t supplied
++ * @return Return 1 on success, 0 otherwise
++ */
++static inline uint8_t
++xcb_ewmh_get_number_of_desktops_reply(xcb_ewmh_connection_t *ewmh,
++                                      xcb_get_property_cookie_t cookie,
++                                      uint32_t *number_of_desktops,
++                                      xcb_generic_error_t **e)
++{
++  return xcb_ewmh_get_cardinal_reply(ewmh, cookie, number_of_desktops, e);
++}
++
++static inline xcb_void_cookie_t
++xcb_ewmh_request_change_number_of_desktops(xcb_ewmh_connection_t *ewmh,
++                                           int screen_nbr,
++                                           uint32_t new_number_of_desktops)
++{
++  return xcb_ewmh_send_client_message(ewmh->connection, XCB_NONE,
++                                      ewmh->screens[screen_nbr]->root,
++                                      ewmh->_NET_NUMBER_OF_DESKTOPS,
++                                      sizeof(new_number_of_desktops),
++                                      &new_number_of_desktops);
++}
++
++/**
++ * @brief Send a ChangeProperty request for _NET_DESKTOP_GEOMETRY
++ *
++ * _NET_DESKTOP_GEOMETRY width, height, CARDINAL[2]/32
++ *
++ * @param ewmh The per-screen EWMH information
++ * @param screen_nbr The screen number
++ * @param new_width The new desktop width
++ * @param new_height The new desktop height
++ * @return Cookie associated with the ChangeProperty _NET_DESKTOP_GEOMETRY request
++ */
++xcb_void_cookie_t xcb_ewmh_set_desktop_geometry(xcb_ewmh_connection_t *ewmh,
++                                                int screen_nbr,
++                                                uint32_t new_width,
++                                                uint32_t new_height);
++
++/**
++ * @see xcb_ewmh_set_desktop_geometry
++ */
++xcb_void_cookie_t xcb_ewmh_set_desktop_geometry_checked(xcb_ewmh_connection_t *ewmh,
++                                                        int screen_nbr,
++                                                        uint32_t new_width,
++                                                        uint32_t new_height);
++
++/**
++ * @brief Send  GetProperty request to  get _NET_DESKTOP_GEOMETRY root
++ *        window property
++ *
++ * @param ewmh The information relative to EWMH
++ * @param screen_nbr The screen number
++ * @return The _NET_DESKTOP_GEOMETRY cookie of the GetProperty request
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_desktop_geometry_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                                  int screen_nbr);
++
++/**
++ * @see xcb_ewmh_get_desktop_geometry_unchecked
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_desktop_geometry(xcb_ewmh_connection_t *ewmh,
++                                                        int screen_nbr);
++
++/**
++ * @brief Send ClientMessage requesting to change the _NET_DESKTOP_GEOMETRY
++ *
++ * @param ewmh The per-screen EWMH information
++ * @param screen_nbr The screen number
++ * @param new_width The new desktop width
++ * @param new_height The new desktop height
++ * @return The SendEvent cookie
++ */
++xcb_void_cookie_t xcb_ewmh_request_change_desktop_geometry(xcb_ewmh_connection_t *ewmh,
++                                                           int screen_nbr,
++                                                           uint32_t new_width,
++                                                           uint32_t new_height);
++
++/**
++ * @brief    Get   the   desktop    geometry   from    a   GetProperty
++ * _NET_DESKTOP_GEOMETRY reply
++ *
++ * @param width The current desktop width
++ * @param height The current desktop height
++ * @param r GetProperty _NET_DESKTOP_GEOMETRY reply
++ * @return Return 1 on success, 0 otherwise
++ */
++uint8_t xcb_ewmh_get_desktop_geometry_from_reply(uint32_t *width,
++                                                 uint32_t *height,
++                                                 xcb_get_property_reply_t *r);
++
++/**
++ * @brief Get reply from the GetProperty _NET_DESKTOP_GEOMETRY cookie
++ *
++ * The  parameter  e  supplied  to  this  function  must  be  NULL  if
++ * xcb_get_desktop_geometry_unchecked() is used.  Otherwise, it stores
++ * the error if any.
++ *
++ * @param ewmh The information relative to EWMH
++ * @param cookie The _NET_DESKTOP_GEOMETRY GetProperty request cookie
++ * @param width The current desktop width
++ * @param width The current desktop height
++ * @param The xcb_generic_error_t supplied
++ * @return Return 1 on success, 0 otherwise
++ */
++uint8_t xcb_ewmh_get_desktop_geometry_reply(xcb_ewmh_connection_t *ewmh,
++                                            xcb_get_property_cookie_t cookie,
++                                            uint32_t *width, uint32_t *height,
++                                            xcb_generic_error_t **e);
++
++/**
++ * @brief Send a ChangeProperty request for _NET_DESKTOP_VIEWPORT
++ *
++ * _NET_DESKTOP_VIEWPORT x, y, CARDINAL[][2]/32
++ *
++ * @param ewmh The per-screen EWMH information
++ * @param screen_nbr The screen number
++ * @param list_len The number of desktop viewports
++ * @param list The desktop viewports
++ * @return Cookie associated with the ChangeProperty _NET_DESKTOP_VIEWPORT request
++ */
++xcb_void_cookie_t xcb_ewmh_set_desktop_viewport(xcb_ewmh_connection_t *ewmh,
++                                                int screen_nbr,
++                                                uint32_t list_len,
++                                                xcb_ewmh_coordinates_t *list);
++
++/**
++ * @see xcb_ewmh_set_desktop_viewport
++ */
++xcb_void_cookie_t xcb_ewmh_set_desktop_viewport_checked(xcb_ewmh_connection_t *ewmh,
++                                                        int screen_nbr,
++                                                        uint32_t list_len,
++                                                        xcb_ewmh_coordinates_t *list);
++
++/**
++ * @brief Send  GetProperty request to  get _NET_DESKTOP_VIEWPORT root
++ *        window property
++ *
++ * @param ewmh The information relative to EWMH
++ * @param screen_nbr The screen number
++ * @return The _NET_DESKTOP_VIEWPORT cookie of the GetProperty request
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_desktop_viewport_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                                  int screen_nbr);
++
++/**
++ * @see xcb_ewmh_get_desktop_viewport_unchecked
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_desktop_viewport(xcb_ewmh_connection_t *ewmh,
++                                                        int screen_nbr);
++
++/**
++ * @brief Send ClientMessage requesting to change the _NET_DESKTOP_VIEWPORT
++ *
++ * @param ewmh The per-screen EWMH information
++ * @param screen_nbr The screen number
++ * @param new_x The new x coordinate
++ * @param new_y The new y coordinate
++ * @return The SendEvent cookie
++ */
++xcb_void_cookie_t xcb_ewmh_request_change_desktop_viewport(xcb_ewmh_connection_t *ewmh,
++                                                           int screen_nbr,
++                                                           uint32_t x, uint32_t y);
++
++/**
++ * @brief    Get   the   desktop    geometry   from    a   GetProperty
++ * _NET_DESKTOP_VIEWPORT reply
++ *
++ * @param vp The  current desktop viewports
++ * @param r GetProperty _NET_DESKTOP_VIEWPORT reply
++ * @return Return 1 on success, 0 otherwise
++ */
++uint8_t xcb_ewmh_get_desktop_viewport_from_reply(xcb_ewmh_get_desktop_viewport_reply_t *vp,
++                                                 xcb_get_property_reply_t *r);
++
++/**
++ * @brief Get reply from the GetProperty _NET_DESKTOP_VIEWPORT cookie
++ *
++ * The  parameter  e  supplied  to  this  function  must  be  NULL  if
++ * xcb_get_desktop_viewport_unchecked() is used.  Otherwise, it stores
++ * the error if any.
++ *
++ * @param ewmh The information relative to EWMH
++ * @param cookie The _NET_DESKTOP_VIEWPORT GetProperty request cookie
++ * @param vp The current desktop viewports
++ * @param The xcb_generic_error_t supplied
++ * @return Return 1 on success, 0 otherwise
++ */
++uint8_t xcb_ewmh_get_desktop_viewport_reply(xcb_ewmh_connection_t *ewmh,
++                                            xcb_get_property_cookie_t cookie,
++                                            xcb_ewmh_get_desktop_viewport_reply_t *vp,
++                                            xcb_generic_error_t **e);
++
++/**
++ * @brief Wipe the desktop viewports list reply
++ *
++ * This function must be called to free the memory allocated for atoms
++ * when the reply  is requested in xcb_ewmh_get_desktop_viewport_reply
++ * function.
++ *
++ * @param r The X reply to be freed
++ */
++void xcb_ewmh_get_desktop_viewport_reply_wipe(xcb_ewmh_get_desktop_viewport_reply_t *r);
++
++/**
++ * @brief Send a ChangeProperty request for _NET_CURRENT_DESKTOP
++ *
++ * _NET_CURRENT_DESKTOP desktop, CARDINAL/32
++ *
++ * @param ewmh The per-screen EWMH information
++ * @param screen_nbr The screen number
++ * @param new_current_desktop The new current desktop
++ * @return Cookie associated with the ChangeProperty _NET_CURRENT_DESKTOP request
++ */
++xcb_void_cookie_t xcb_ewmh_set_current_desktop(xcb_ewmh_connection_t *ewmh,
++                                               int screen_nbr,
++                                               uint32_t new_current_desktop);
++
++/**
++ * @see xcb_ewmh_set_current_desktop
++ */
++xcb_void_cookie_t xcb_ewmh_set_current_desktop_checked(xcb_ewmh_connection_t *ewmh,
++                                                       int screen_nbr,
++                                                       uint32_t new_current_desktop);
++
++/**
++ * @brief  Send GetProperty request  to get  _NET_CURRENT_DESKTOP root
++ *        window property
++ *
++ * @param ewmh The information relative to EWMH
++ * @param screen_nbr The screen number
++ * @return The _NET_CURRENT_DESKTOP cookie of the GetProperty request
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_current_desktop_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                                 int screen_nbr);
++
++/**
++ * @see xcb_ewmh_get_current_desktop_unchecked
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_current_desktop(xcb_ewmh_connection_t *ewmh,
++                                                       int screen_nbr);
++
++/**
++ * @brief Send ClientMessage requesting to change the _NET_CURRENT_DESKTOP
++ *
++ * @param ewmh The per-screen EWMH information
++ * @param screen_nbr The screen number
++ * @param new_desktop The new current desktop
++ * @param timestamp The request timestamp
++ * @return The SendEvent cookie
++ */
++xcb_void_cookie_t xcb_ewmh_request_change_current_desktop(xcb_ewmh_connection_t *ewmh,
++                                                          int screen_nbr,
++                                                          uint32_t new_desktop,
++                                                          xcb_timestamp_t timestamp);
++
++/**
++ * @brief    Get   the   desktop    geometry   from    a   GetProperty
++ * _NET_CURRENT_DESKTOP reply
++ *
++ * @param current_desktop The  current desktop
++ * @param r GetProperty _NET_CURRENT_DESKTOP reply
++ * @return Return 1 on success, 0 otherwise
++ */
++static inline uint8_t
++xcb_ewmh_get_current_desktop_from_reply(uint32_t *current_desktop,
++                                        xcb_get_property_reply_t *r)
++{
++  return xcb_ewmh_get_cardinal_from_reply(current_desktop, r);
++}
++
++/**
++ * @brief Get reply from the GetProperty _NET_CURRENT_DESKTOP cookie
++ *
++ * The  parameter  e  supplied  to  this  function  must  be  NULL  if
++ * xcb_get_current_desktop_unchecked() is  used.  Otherwise, it stores
++ * the error if any.
++ *
++ * @param ewmh The information relative to EWMH
++ * @param cookie The _NET_CURRENT_DESKTOP GetProperty request cookie
++ * @param vp The current desktop
++ * @param The xcb_generic_error_t supplied
++ * @return Return 1 on success, 0 otherwise
++ */
++static inline uint8_t
++xcb_ewmh_get_current_desktop_reply(xcb_ewmh_connection_t *ewmh,
++                                   xcb_get_property_cookie_t cookie,
++                                   uint32_t *current_desktop,
++                                   xcb_generic_error_t **e)
++{
++  return xcb_ewmh_get_cardinal_reply(ewmh, cookie, current_desktop, e);
++}
++
++/**
++ * @brief Send a ChangeProperty request for _NET_DESKTOP_NAMES
++ *
++ * _NET_DESKTOP_NAMES, UTF8_STRING[]
++ *
++ * @param ewmh The per-screen EWMH information
++ * @param screen_nbr The screen number
++ * @param strings_len The number of desktop names
++ * @param strings The desktop names
++ * @return Cookie associated with the ChangeProperty _NET_DESKTOP_NAMES request
++ */
++xcb_void_cookie_t xcb_ewmh_set_desktop_names(xcb_ewmh_connection_t *ewmh,
++                                             int screen_nbr,
++                                             uint32_t strings_len,
++                                             const char *strings);
++
++/**
++ * @see xcb_ewmh_set_desktop_names
++ */
++xcb_void_cookie_t xcb_ewmh_set_desktop_names_checked(xcb_ewmh_connection_t *ewmh,
++                                                     int screen_nbr,
++                                                     uint32_t strings_len,
++                                                     const char *strings);
++
++/**
++ * @brief  Send  GetProperty request  to  get _NET_DESKTOP_NAMES  root
++ *        window property
++ *
++ * @param ewmh The information relative to EWMH
++ * @return The _NET_DESKTOP_NAMES cookie of the GetProperty request
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_desktop_names_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                               int screen_nbr);
++
++/**
++ * @see xcb_ewmh_get_desktop_names_unchecked
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_desktop_names(xcb_ewmh_connection_t *ewmh,
++                                                     int screen_nbr);
++
++/**
++ * @brief    Get   the   desktop    geometry   from    a   GetProperty
++ * _NET_DESKTOP_NAMES reply
++ *
++ * @param ewmh The information relative to EWMH
++ * @param names The desktop names
++ * @param r GetProperty _NET_DESKTOP_NAMES reply
++ * @return Return 1 on success, 0 otherwise
++ */
++static inline uint8_t
++xcb_ewmh_get_desktop_names_from_reply(xcb_ewmh_connection_t *ewmh,
++                                      xcb_ewmh_get_utf8_strings_reply_t *names,
++                                      xcb_get_property_reply_t *r)
++{
++  return xcb_ewmh_get_utf8_strings_from_reply(ewmh, names, r);
++}
++
++/**
++ * @brief Get reply from the GetProperty _NET_DESKTOP_NAMES cookie
++ *
++ * The  parameter  e  supplied  to  this  function  must  be  NULL  if
++ * xcb_get_desktop_names_unchecked()  is used.   Otherwise,  it stores
++ * the error if any.
++ *
++ * @param ewmh The information relative to EWMH
++ * @param cookie The _NET_DESKTOP_NAMES GetProperty request cookie
++ * @param names The desktop names
++ * @param The xcb_generic_error_t supplied
++ * @return Return 1 on success, 0 otherwise
++ */
++static inline uint8_t
++xcb_ewmh_get_desktop_names_reply(xcb_ewmh_connection_t *ewmh,
++                                 xcb_get_property_cookie_t cookie,
++                                 xcb_ewmh_get_utf8_strings_reply_t *names,
++                                 xcb_generic_error_t **e)
++{
++  return xcb_ewmh_get_utf8_strings_reply(ewmh, cookie, names, e);
++}
++
++/**
++ * @brief Send a ChangeProperty request for _NET_ACTIVE_WINDOW
++ *
++ * _NET_ACTIVE_WINDOW, WINDOW/32
++ *
++ * @param ewmh The per-screen EWMH information
++ * @param screen_nbr The screen number
++ * @param new_active_window The window to make active
++ * @return Cookie associated with the ChangeProperty _NET_ACTIVE_WINDOW request
++ */
++xcb_void_cookie_t xcb_ewmh_set_active_window(xcb_ewmh_connection_t *ewmh,
++                                             int screen_nbr,
++                                             xcb_window_t new_active_window);
++
++/**
++ * @see xcb_ewmh_set_active_window
++ */
++xcb_void_cookie_t xcb_ewmh_set_active_window_checked(xcb_ewmh_connection_t *ewmh,
++                                                     int screen_nbr,
++                                                     xcb_window_t new_active_window);
++
++/**
++ * @brief Send ClientMessage requesting to change the _NET_ACTIVE_WINDOW
++ *
++ * The window ID  of the currently active window or  None if no window
++ * has  the focus.  This  is a  read-only property  set by  the Window
++ * Manager. If a Client wants to activate another window, it MUST send
++ * a  _NET_ACTIVE_WINDOW  client  message  to  the  root  window.  The
++ * timestamp is Client's  last user activity timestamp at  the time of
++ * the request, and the currently active window is the Client's active
++ * toplevel window, if any (the Window Manager may be e.g. more likely
++ * to obey  the request  if it will  mean transferring focus  from one
++ * active window to another).
++ *
++ * @see xcb_ewmh_client_source_type_t
++ * @param ewmh The information relative to EWMH
++ * @param screen_nbr The screen number
++ * @param window_to_active The window ID to activate
++ * @param source_indication The source indication
++ * @param timestamp The client's last user activity timestamp
++ * @param current_active_window The currently active window or None
++ */
++xcb_void_cookie_t xcb_ewmh_request_change_active_window(xcb_ewmh_connection_t *ewmh,
++                                                        int screen_nbr,
++                                                        xcb_window_t window_to_activate,
++                                                        xcb_ewmh_client_source_type_t source_indication,
++                                                        xcb_timestamp_t timestamp,
++                                                        xcb_window_t current_active_window);
++
++/**
++ * @brief  Send  GetProperty request  to  get _NET_ACTIVE_WINDOW  root
++ *        window property
++ *
++ * The window ID  of the currently active window or  None if no window
++ * has  the focus.  This is  a read-only  property set  by  the Window
++ * Manager.  This property  SHOULD be  set and  updated by  the Window
++ * Manager.
++ *
++ * This form can be used only if  the request will cause a reply to be
++ * generated. Any returned error will be placed in the event queue.
++ *
++ * @param ewmh The information relative to EWMH
++ * @param screen_nbr The screen number
++ * @return The _NET_ACTIVE_WINDOW cookie of the GetProperty request
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_active_window_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                               int screen_nbr);
++
++/**
++ * @brief  Send  GetProperty request  to  get _NET_ACTIVE_WINDOW  root
++ *        window property
++ *
++ * @see xcb_ewmh_get_active_window_unchecked
++ * @param ewmh The information relative to EWMH
++ * @param screen_nbr The screen number
++ * @return The _NET_ACTIVE_WINDOW cookie of the GetProperty request
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_active_window(xcb_ewmh_connection_t *ewmh,
++                                                     int screen_nbr);
++
++/**
++ * @brief  Get   the  list  of  client  windows   from  a  GetProperty
++ * _NET_ACTIVE_WINDOW reply
++ *
++ * @param active_window The current active window
++ * @param r GetProperty _NET_ACTIVE_WINDOW_OF_DESKTOPS reply
++ * @return Return 1 on success, 0 otherwise
++ */
++static inline uint8_t
++xcb_ewmh_get_active_window_from_reply(xcb_window_t *active_window,
++                                      xcb_get_property_reply_t *r)
++{
++  return xcb_ewmh_get_window_from_reply(active_window, r);
++}
++
++/**
++ * @brief Get reply from the GetProperty _NET_ACTIVE_WINDOW cookie
++ *
++ * The  parameter  e  supplied  to  this  function  must  be  NULL  if
++ * xcb_get_active_window_unchecked()  is used.   Otherwise,  it stores
++ * the error if any.
++ *
++ * @param ewmh The information relative to EWMH.
++ * @param cookie The _NET_ACTIVE_WINDOW GetProperty request cookie.
++ * @param active_window The reply to be filled.
++ * @param The xcb_generic_error_t supplied.
++ * @return Return 1 on success, 0 otherwise.
++ */
++static inline uint8_t
++xcb_ewmh_get_active_window_reply(xcb_ewmh_connection_t *ewmh,
++                                 xcb_get_property_cookie_t cookie,
++                                 xcb_window_t *active_window,
++                                 xcb_generic_error_t **e)
++{
++  return xcb_ewmh_get_window_reply(ewmh, cookie, active_window, e);
++}
++
++/**
++ * @brief Send a ChangeProperty request for _NET_WORKAREA
++ *
++ * _NET_WORKAREA, x, y, width, height CARDINAL[][4]/32
++ *
++ * @param ewmh The per-screen EWMH information
++ * @param screen_nbr The screen number
++ * @param list_len The number of desktops workareas
++ * @param list The desktops workareas
++ * @return Cookie associated with the ChangeProperty _NET_WORKAREA request
++ */
++xcb_void_cookie_t xcb_ewmh_set_workarea(xcb_ewmh_connection_t *ewmh,
++                                        int screen_nbr,
++                                        uint32_t list_len,
++                                        xcb_ewmh_geometry_t *list);
++
++/**
++ * @see xcb_ewmh_set_workarea
++ */
++xcb_void_cookie_t xcb_ewmh_set_workarea_checked(xcb_ewmh_connection_t *ewmh,
++                                                int screen_nbr,
++                                                uint32_t list_len,
++                                                xcb_ewmh_geometry_t *list);
++
++/**
++ * @brief  Send  GetProperty request  to  get _NET_WORKAREA  root
++ *        window property
++ *
++ * @param ewmh The information relative to EWMH
++ * @param screen_nbr The screen number
++ * @return The _NET_WORKAREA cookie of the GetProperty request
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_workarea_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                          int screen_nbr);
++
++/**
++ * @see xcb_ewmh_get_virtual_roots_unchecked
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_workarea(xcb_ewmh_connection_t *ewmh,
++                                                int screen_nbr);
++
++/**
++ * @brief Get  the desktop  geometry from a  GetProperty _NET_WORKAREA
++ * reply
++ *
++ * @param wa The  current workarea
++ * @param r GetProperty _NET_WORKAREA reply
++ * @return Return 1 on success, 0 otherwise
++ */
++uint8_t xcb_ewmh_get_workarea_from_reply(xcb_ewmh_get_workarea_reply_t *wa,
++                                         xcb_get_property_reply_t *r);
++
++/**
++ * @brief Get reply from the GetProperty _NET_WORKAREA cookie
++ *
++ * The  parameter  e  supplied  to  this  function  must  be  NULL  if
++ * xcb_get_workarea_unchecked()  is used.   Otherwise,  it stores  the
++ * error if any.
++ *
++ * @param ewmh The information relative to EWMH
++ * @param cookie The _NET_WORKAREA GetProperty request cookie
++ * @param wa The current workareas of desktops
++ * @param The xcb_generic_error_t supplied
++ * @return Return 1 on success, 0 otherwise
++ */
++uint8_t xcb_ewmh_get_workarea_reply(xcb_ewmh_connection_t *ewmh,
++                                    xcb_get_property_cookie_t cookie,
++                                    xcb_ewmh_get_workarea_reply_t *wa,
++                                    xcb_generic_error_t **e);
++
++/**
++ * @brief Wipe the workarea list reply
++ *
++ * This function must be called to free the memory allocated for atoms
++ * when   the  reply   is  requested   in  xcb_ewmh_get_workarea_reply
++ * function.
++ *
++ * @param r The X reply to be freed
++ */
++void xcb_ewmh_get_workarea_reply_wipe(xcb_ewmh_get_workarea_reply_t *r);
++
++/**
++ * @brief Send a ChangeProperty request for _NET_SUPPORTING_WM_CHECK
++ *
++ * _NET_SUPPORTING_WM_CHECK, WINDOW/32
++ *
++ * @param ewmh The per-screen EWMH information
++ * @param parent_window The root window or child window created by the WM
++ * @param child_window The child window created by the WM
++ * @return Cookie associated with the ChangeProperty _NET_SUPPORTING_WM_CHECK request
++ */
++xcb_void_cookie_t xcb_ewmh_set_supporting_wm_check(xcb_ewmh_connection_t *ewmh,
++                                                   xcb_window_t parent_window,
++                                                   xcb_window_t child_window);
++
++/**
++ * @see xcb_ewmh_set_supporting_wm_check
++ */
++xcb_void_cookie_t xcb_ewmh_set_supporting_wm_check_checked(xcb_ewmh_connection_t *ewmh,
++                                                           xcb_window_t parent_window,
++                                                           xcb_window_t child_window);
++
++/**
++ * @brief  Send GetProperty  request  to get  _NET_SUPPORTING_WM_CHECK
++ *        root window property
++ *
++ * @param ewmh The information relative to EWMH
++ * @param screen_nbr The screen number
++ * @return The _NET_SUPPORTING_WM_CHECK cookie of the GetProperty request
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_supporting_wm_check_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                                     xcb_window_t window);
++
++/**
++ * @see xcb_ewmh_get_supporting_wm_check_unchecked
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_supporting_wm_check(xcb_ewmh_connection_t *ewmh,
++                                                           xcb_window_t window);
++
++/**
++ * @brief  Get   the  list  of  client  windows   from  a  GetProperty
++ * _NET_SUPPORTING_WM_CHECK reply
++ *
++ * @param window The child window created by the WM
++ * @param r GetProperty _NET_SUPPORTING_WM_CHECK reply
++ * @return Return 1 on success, 0 otherwise
++ */
++static inline uint8_t
++xcb_ewmh_get_supporting_wm_check_from_reply(xcb_window_t *window,
++                                            xcb_get_property_reply_t *r)
++{
++  return xcb_ewmh_get_window_from_reply(window, r);
++}
++
++/**
++ * @brief  Get  reply  from the  GetProperty  _NET_SUPPORTING_WM_CHECK
++ * cookie
++ *
++ * The  parameter  e  supplied  to  this  function  must  be  NULL  if
++ * xcb_get_supporting_wm_check_unchecked()  is  used.   Otherwise,  it
++ * stores the error if any.
++ *
++ * @param ewmh The information relative to EWMH
++ * @param cookie The _NET_SUPPORTING_WM_CHECK GetProperty request cookie
++ * @param window The reply to be filled
++ * @param The xcb_generic_error_t supplied
++ * @return Return 1 on success, 0 otherwise
++ */
++static inline uint8_t
++xcb_ewmh_get_supporting_wm_check_reply(xcb_ewmh_connection_t *ewmh,
++                                       xcb_get_property_cookie_t cookie,
++                                       xcb_window_t *window,
++                                       xcb_generic_error_t **e)
++{
++  return xcb_ewmh_get_window_reply(ewmh, cookie, window, e);
++}
++
++/**
++ * @brief Send a ChangeProperty request for _NET_VIRTUAL_ROOTS
++ *
++ * _NET_VIRTUAL_ROOTS, WINDOW[]/32
++ *
++ * @param ewmh The per-screen EWMH information
++ * @param screen_nbr The screen number
++ * @param list_len The number of virtual root windows
++ * @param list The virtual root windows
++ * @return Cookie associated with the ChangeProperty _NET_VIRTUAL_ROOTS request
++ */
++xcb_void_cookie_t xcb_ewmh_set_virtual_roots(xcb_ewmh_connection_t *ewmh,
++                                             int screen_nbr,
++                                             uint32_t list_len,
++                                             xcb_window_t *list);
++
++/**
++ * @see xcb_ewmh_set_virtual_roots
++ */
++xcb_void_cookie_t xcb_ewmh_set_virtual_roots_checked(xcb_ewmh_connection_t *ewmh,
++                                                     int screen_nbr,
++                                                     uint32_t list_len,
++                                                     xcb_window_t *list);
++
++/**
++ * @brief  Send  GetProperty request  to  get _NET_VIRTUAL_ROOTS  root
++ *        window property
++ *
++ * @param ewmh The information relative to EWMH
++ * @param screen_nbr The screen number
++ * @return The _NET_VIRTUAL_ROOTS cookie of the GetProperty request
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_virtual_roots_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                               int screen_nbr);
++
++/**
++ * @see xcb_ewmh_get_virtual_roots_unchecked
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_virtual_roots(xcb_ewmh_connection_t *ewmh,
++                                                     int screen_nbr);
++
++/**
++ * @brief Get  the desktop  geometry from a  GetProperty _NET_WORKAREA
++ * reply
++ *
++ * @param virtual_roots The current virtual root windows
++ * @param r GetProperty _NET_VIRTUAL_ROOTS reply
++ * @return Return 1 on success, 0 otherwise
++ */
++static inline uint8_t
++xcb_ewmh_get_virtual_roots_from_reply(xcb_ewmh_get_windows_reply_t *virtual_roots,
++                                      xcb_get_property_reply_t *r)
++{
++  return xcb_ewmh_get_windows_from_reply(virtual_roots, r);
++}
++
++/**
++ * @brief Get reply from the GetProperty _NET_VIRTUAL_ROOTS cookie
++ *
++ * The  parameter  e  supplied  to  this  function  must  be  NULL  if
++ * xcb_get_virtual_roots_unchecked()  is used.   Otherwise,  it stores
++ * the error if any.
++ *
++ * @param ewmh The information relative to EWMH
++ * @param cookie The _NET_VIRTUAL_ROOTS GetProperty request cookie
++ * @param virtual_roots The current virtual root windows
++ * @param The xcb_generic_error_t supplied
++ * @return Return 1 on success, 0 otherwise
++ */
++static inline uint8_t
++xcb_ewmh_get_virtual_roots_reply(xcb_ewmh_connection_t *ewmh,
++                                 xcb_get_property_cookie_t cookie,
++                                 xcb_ewmh_get_windows_reply_t *virtual_roots,
++                                 xcb_generic_error_t **e)
++{
++  return xcb_ewmh_get_windows_reply(ewmh, cookie, virtual_roots, e);
++}
++
++xcb_void_cookie_t xcb_ewmh_set_desktop_layout(xcb_ewmh_connection_t *ewmh,
++                                              int screen_nbr,
++                                              xcb_ewmh_desktop_layout_orientation_t orientation,
++                                              uint32_t columns, uint32_t rows,
++                                              xcb_ewmh_desktop_layout_starting_corner_t starting_corner);
++
++xcb_void_cookie_t xcb_ewmh_set_desktop_layout_checked(xcb_ewmh_connection_t *ewmh,
++                                                      int screen_nbr,
++                                                      xcb_ewmh_desktop_layout_orientation_t orientation,
++                                                      uint32_t columns, uint32_t rows,
++                                                      xcb_ewmh_desktop_layout_starting_corner_t starting_corner);
++
++/**
++ * @brief  Send GetProperty  request to  get  _NET_DESKTOP_LAYOUT root
++ *        window property
++ *
++ * @param ewmh The information relative to EWMH
++ * @param screen_nbr The screen number
++ * @return The _NET_DESKTOP_LAYOUT cookie of the GetProperty request
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_desktop_layout_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                                int screen_nbr);
++
++/**
++ * @see xcb_ewmh_get_desktop_layout_unchecked
++ */
++xcb_get_property_cookie_t xcb_ewmh_get_desktop_layout(xcb_ewmh_connection_t *ewmh,
++                                                      int screen_nbr);
++
++uint8_t xcb_ewmh_get_desktop_layout_from_reply(xcb_ewmh_get_desktop_layout_reply_t *desktop_layouts,
++                                               xcb_get_property_reply_t *r);
++
++uint8_t xcb_ewmh_get_desktop_layout_reply(xcb_ewmh_connection_t *ewmh,
++                                          xcb_get_property_cookie_t cookie,
++                                          xcb_ewmh_get_desktop_layout_reply_t *desktop_layouts,
++                                          xcb_generic_error_t **e);
++
++xcb_void_cookie_t xcb_ewmh_set_showing_desktop(xcb_ewmh_connection_t *ewmh,
++                                               int screen_nbr,
++                                               uint32_t desktop);
++
++xcb_void_cookie_t xcb_ewmh_set_showing_desktop_checked(xcb_ewmh_connection_t *ewmh,
++                                                       int screen_nbr,
++                                                       uint32_t desktop);
++
++xcb_get_property_cookie_t xcb_ewmh_get_showing_desktop_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                                 int screen_nbr);
++
++xcb_get_property_cookie_t xcb_ewmh_get_showing_desktop(xcb_ewmh_connection_t *ewmh,
++                                                       int screen_nbr);
++
++static inline uint8_t
++xcb_ewmh_get_showing_desktop_from_reply(uint32_t *desktop,
++                                        xcb_get_property_reply_t *r)
++{
++  return xcb_ewmh_get_cardinal_from_reply(desktop, r);
++}
++
++static inline uint8_t
++xcb_ewmh_get_showing_desktop_reply(xcb_ewmh_connection_t *ewmh,
++                                   xcb_get_property_cookie_t cookie,
++                                   uint32_t *desktop,
++                                   xcb_generic_error_t **e)
++{
++  return xcb_ewmh_get_cardinal_reply(ewmh, cookie, desktop, e);
++}
++
++static inline xcb_void_cookie_t
++xcb_ewmh_request_change_showing_desktop(xcb_ewmh_connection_t *ewmh,
++                                        int screen_nbr,
++                                        uint32_t enter)
++{
++  return xcb_ewmh_send_client_message(ewmh->connection, XCB_NONE,
++                                      ewmh->screens[screen_nbr]->root,
++                                      ewmh->_NET_SHOWING_DESKTOP,
++                                      sizeof(enter), &enter);
++}
++
++xcb_void_cookie_t xcb_ewmh_request_close_window(xcb_ewmh_connection_t *ewmh,
++                                                int screen_nbr,
++                                                xcb_window_t window_to_close,
++                                                xcb_timestamp_t timestamp,
++                                                xcb_ewmh_client_source_type_t source_indication);
++
++xcb_void_cookie_t xcb_ewmh_request_moveresize_window(xcb_ewmh_connection_t *ewmh,
++                                                     int screen_nbr,
++                                                     xcb_window_t moveresize_window,
++                                                     xcb_gravity_t gravity,
++                                                     xcb_ewmh_client_source_type_t source_indication,
++                                                     xcb_ewmh_moveresize_window_opt_flags_t flags,
++                                                     uint32_t x, uint32_t y,
++                                                     uint32_t width, uint32_t height);
++
++xcb_void_cookie_t xcb_ewmh_request_wm_moveresize(xcb_ewmh_connection_t *ewmh,
++                                                 int screen_nbr,
++                                                 xcb_window_t moveresize_window,
++                                                 uint32_t x_root, uint32_t y_root,
++                                                 xcb_ewmh_moveresize_direction_t direction,
++                                                 xcb_button_index_t button,
++                                                 xcb_ewmh_client_source_type_t source_indication);
++
++xcb_void_cookie_t xcb_ewmh_request_restack_window(xcb_ewmh_connection_t *ewmh,
++                                                  int screen_nbr,
++                                                  xcb_window_t window_to_restack,
++                                                  xcb_window_t sibling_window,
++                                                  xcb_stack_mode_t detail);
++
++static inline xcb_void_cookie_t
++xcb_ewmh_request_frame_extents(xcb_ewmh_connection_t *ewmh,
++                               int screen_nbr,
++                               xcb_window_t client_window)
++{
++  return xcb_ewmh_send_client_message(ewmh->connection, client_window,
++                                      ewmh->screens[screen_nbr]->root,
++                                      ewmh->_NET_REQUEST_FRAME_EXTENTS, 0, NULL);
++}
++
++xcb_void_cookie_t xcb_ewmh_set_wm_name(xcb_ewmh_connection_t *ewmh,
++                                       xcb_window_t window,
++                                       uint32_t strings_len,
++                                       const char *strings);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_name_checked(xcb_ewmh_connection_t *ewmh,
++                                               xcb_window_t window,
++                                               uint32_t strings_len,
++                                               const char *strings);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_name_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                         xcb_window_t window);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_name(xcb_ewmh_connection_t *ewmh,
++                                               xcb_window_t window);
++
++static inline uint8_t
++xcb_ewmh_get_wm_name_from_reply(xcb_ewmh_connection_t *ewmh,
++                                xcb_ewmh_get_utf8_strings_reply_t *data,
++                                xcb_get_property_reply_t *r)
++{
++  return xcb_ewmh_get_utf8_strings_from_reply(ewmh, data, r);
++}
++
++static inline uint8_t
++xcb_ewmh_get_wm_name_reply(xcb_ewmh_connection_t *ewmh,
++                           xcb_get_property_cookie_t cookie,
++                           xcb_ewmh_get_utf8_strings_reply_t *data,
++                           xcb_generic_error_t **e)
++{
++  return xcb_ewmh_get_utf8_strings_reply(ewmh, cookie, data, e);
++}
++
++xcb_void_cookie_t xcb_ewmh_set_wm_visible_name(xcb_ewmh_connection_t *ewmh,
++                                               xcb_window_t window,
++                                               uint32_t strings_len,
++                                               const char *strings);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_visible_name_checked(xcb_ewmh_connection_t *ewmh,
++                                                       xcb_window_t window,
++                                                       uint32_t strings_len,
++                                                       const char *strings);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_visible_name_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                                 xcb_window_t window);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_visible_name(xcb_ewmh_connection_t *ewmh,
++                                                       xcb_window_t window);
++
++static inline uint8_t
++xcb_ewmh_get_wm_visible_name_from_reply(xcb_ewmh_connection_t *ewmh,
++                                        xcb_ewmh_get_utf8_strings_reply_t *data,
++                                        xcb_get_property_reply_t *r)
++{
++  return xcb_ewmh_get_utf8_strings_from_reply(ewmh, data, r);
++}
++
++static inline uint8_t
++xcb_ewmh_get_wm_visible_name_reply(xcb_ewmh_connection_t *ewmh,
++                                   xcb_get_property_cookie_t cookie,
++                                   xcb_ewmh_get_utf8_strings_reply_t *data,
++                                   xcb_generic_error_t **e)
++{
++  return xcb_ewmh_get_utf8_strings_reply(ewmh, cookie, data, e);
++}
++
++xcb_void_cookie_t xcb_ewmh_set_wm_icon_name(xcb_ewmh_connection_t *ewmh,
++                                            xcb_window_t window,
++                                            uint32_t strings_len,
++                                            const char *strings);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_icon_name_checked(xcb_ewmh_connection_t *ewmh,
++                                                    xcb_window_t window,
++                                                    uint32_t strings_len,
++                                                    const char *strings);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_icon_name_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                              xcb_window_t window);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_icon_name(xcb_ewmh_connection_t *ewmh,
++                                                    xcb_window_t window);
++
++static inline uint8_t
++xcb_ewmh_get_wm_icon_name_from_reply(xcb_ewmh_connection_t *ewmh,
++                                     xcb_ewmh_get_utf8_strings_reply_t *data,
++                                     xcb_get_property_reply_t *r)
++{
++  return xcb_ewmh_get_utf8_strings_from_reply(ewmh, data, r);
++}
++
++static inline uint8_t
++xcb_ewmh_get_wm_icon_name_reply(xcb_ewmh_connection_t *ewmh,
++                                xcb_get_property_cookie_t cookie,
++                                xcb_ewmh_get_utf8_strings_reply_t *data,
++                                xcb_generic_error_t **e)
++{
++  return xcb_ewmh_get_utf8_strings_reply(ewmh, cookie, data, e);
++}
++
++xcb_void_cookie_t xcb_ewmh_set_wm_visible_icon_name(xcb_ewmh_connection_t *ewmh,
++                                                    xcb_window_t window,
++                                                    uint32_t strings_len,
++                                                    const char *strings);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_visible_icon_name_checked(xcb_ewmh_connection_t *ewmh,
++                                                            xcb_window_t window,
++                                                            uint32_t strings_len,
++                                                            const char *strings);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_visible_icon_name_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                                      xcb_window_t window);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_visible_icon_name(xcb_ewmh_connection_t *ewmh,
++                                                            xcb_window_t window);
++
++static inline uint8_t
++xcb_ewmh_get_wm_visible_icon_name_from_reply(xcb_ewmh_connection_t *ewmh,
++                                             xcb_ewmh_get_utf8_strings_reply_t *data,
++                                             xcb_get_property_reply_t *r)
++{
++  return xcb_ewmh_get_utf8_strings_from_reply(ewmh, data, r);
++}
++
++static inline uint8_t
++xcb_ewmh_get_wm_visible_icon_name_reply(xcb_ewmh_connection_t *ewmh,
++                                        xcb_get_property_cookie_t cookie,
++                                        xcb_ewmh_get_utf8_strings_reply_t *data,
++                                        xcb_generic_error_t **e)
++{
++  return xcb_ewmh_get_utf8_strings_reply(ewmh, cookie, data, e);
++}
++
++xcb_void_cookie_t xcb_ewmh_set_wm_desktop(xcb_ewmh_connection_t *ewmh,
++                                          xcb_window_t window,
++                                          uint32_t desktop);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_desktop_checked(xcb_ewmh_connection_t *ewmh,
++                                                  xcb_window_t window,
++                                                  uint32_t desktop);
++
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_desktop_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                            xcb_window_t window);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_desktop(xcb_ewmh_connection_t *ewmh,
++                                                  xcb_window_t window);
++
++static inline uint8_t
++xcb_ewmh_get_wm_desktop_from_reply(uint32_t *desktop,
++                                   xcb_get_property_reply_t *r)
++{
++  return xcb_ewmh_get_cardinal_from_reply(desktop, r);
++}
++
++static inline uint8_t
++xcb_ewmh_get_wm_desktop_reply(xcb_ewmh_connection_t *ewmh,
++                              xcb_get_property_cookie_t cookie,
++                              uint32_t *desktop,
++                              xcb_generic_error_t **e)
++{
++  return xcb_ewmh_get_cardinal_reply(ewmh, cookie, desktop, e);
++}
++
++xcb_void_cookie_t xcb_ewmh_request_change_wm_desktop(xcb_ewmh_connection_t *ewmh,
++                                                     int screen_nbr,
++                                                     xcb_window_t client_window,
++                                                     uint32_t new_desktop,
++                                                     xcb_ewmh_client_source_type_t source_indication);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_window_type(xcb_ewmh_connection_t *ewmh,
++                                              xcb_window_t window,
++                                              uint32_t list_len,
++                                              xcb_atom_t *list);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_window_type_checked(xcb_ewmh_connection_t *ewmh,
++                                                      xcb_window_t window,
++                                                      uint32_t list_len,
++                                                      xcb_atom_t *list);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_window_type_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                                xcb_window_t window);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_window_type(xcb_ewmh_connection_t *ewmh,
++                                                      xcb_window_t window);
++
++uint8_t xcb_ewmh_get_wm_window_type_from_reply(xcb_ewmh_get_atoms_reply_t *wtypes,
++                                               xcb_get_property_reply_t *r);
++
++uint8_t xcb_ewmh_get_wm_window_type_reply(xcb_ewmh_connection_t *ewmh,
++                                          xcb_get_property_cookie_t cookie,
++                                          xcb_ewmh_get_atoms_reply_t *name,
++                                          xcb_generic_error_t **e);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_state(xcb_ewmh_connection_t *ewmh,
++                                        xcb_window_t window,
++                                        uint32_t list_len,
++                                        xcb_atom_t *list);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_state_checked(xcb_ewmh_connection_t *ewmh,
++                                                xcb_window_t window,
++                                                uint32_t list_len,
++                                                xcb_atom_t *list);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_state_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                          xcb_window_t window);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_state(xcb_ewmh_connection_t *ewmh,
++                                                xcb_window_t window);
++
++uint8_t xcb_ewmh_get_wm_state_from_reply(xcb_ewmh_get_atoms_reply_t *wtypes,
++                                         xcb_get_property_reply_t *r);
++
++uint8_t xcb_ewmh_get_wm_state_reply(xcb_ewmh_connection_t *ewmh,
++                                    xcb_get_property_cookie_t cookie,
++                                    xcb_ewmh_get_atoms_reply_t *name,
++                                    xcb_generic_error_t **e);
++
++xcb_void_cookie_t xcb_ewmh_request_change_wm_state(xcb_ewmh_connection_t *ewmh,
++                                                   int screen_nbr,
++                                                   xcb_window_t client_window,
++                                                   xcb_ewmh_wm_state_action_t action,
++                                                   xcb_atom_t first_property,
++                                                   xcb_atom_t second_property,
++                                                   xcb_ewmh_client_source_type_t source_indication);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_allowed_actions(xcb_ewmh_connection_t *ewmh,
++                                                  xcb_window_t window,
++                                                  uint32_t list_len,
++                                                  xcb_atom_t *list);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_allowed_actions_checked(xcb_ewmh_connection_t *ewmh,
++                                                          xcb_window_t window,
++                                                          uint32_t list_len,
++                                                          xcb_atom_t *list);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_allowed_actions_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                                    xcb_window_t window);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_allowed_actions(xcb_ewmh_connection_t *ewmh,
++                                                          xcb_window_t window);
++
++uint8_t xcb_ewmh_get_wm_allowed_actions_from_reply(xcb_ewmh_get_atoms_reply_t *wtypes,
++                                                   xcb_get_property_reply_t *r);
++
++uint8_t xcb_ewmh_get_wm_allowed_actions_reply(xcb_ewmh_connection_t *ewmh,
++                                              xcb_get_property_cookie_t cookie,
++                                              xcb_ewmh_get_atoms_reply_t *name,
++                                              xcb_generic_error_t **e);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_strut(xcb_ewmh_connection_t *ewmh,
++                                        xcb_window_t window,
++                                        uint32_t left, uint32_t right,
++                                        uint32_t top, uint32_t bottom);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_strut_checked(xcb_ewmh_connection_t *ewmh,
++                                                xcb_window_t window,
++                                                uint32_t left, uint32_t right,
++                                                uint32_t top, uint32_t bottom);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_strut_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                          xcb_window_t window);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_strut(xcb_ewmh_connection_t *ewmh,
++                                                xcb_window_t window);
++
++uint8_t xcb_ewmh_get_wm_strut_from_reply(xcb_ewmh_get_extents_reply_t *struts,
++                                         xcb_get_property_reply_t *r);
++
++uint8_t xcb_ewmh_get_wm_strut_reply(xcb_ewmh_connection_t *ewmh,
++                                    xcb_get_property_cookie_t cookie,
++                                    xcb_ewmh_get_extents_reply_t *struts,
++                                    xcb_generic_error_t **e);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_strut_partial(xcb_ewmh_connection_t *ewmh,
++                                                xcb_window_t window,
++                                                xcb_ewmh_wm_strut_partial_t wm_strut);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_strut_partial_checked(xcb_ewmh_connection_t *ewmh,
++                                                        xcb_window_t window,
++                                                        xcb_ewmh_wm_strut_partial_t wm_strut);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_strut_partial_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                                  xcb_window_t window);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_strut_partial(xcb_ewmh_connection_t *ewmh,
++                                                        xcb_window_t window);
++
++uint8_t xcb_ewmh_get_wm_strut_partial_from_reply(xcb_ewmh_wm_strut_partial_t *struts,
++                                                 xcb_get_property_reply_t *r);
++
++uint8_t xcb_ewmh_get_wm_strut_partial_reply(xcb_ewmh_connection_t *ewmh,
++                                            xcb_get_property_cookie_t cookie,
++                                            xcb_ewmh_wm_strut_partial_t *struts,
++                                            xcb_generic_error_t **e);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_icon_geometry(xcb_ewmh_connection_t *ewmh,
++                                                xcb_window_t window,
++                                                uint32_t left, uint32_t right,
++                                                uint32_t top, uint32_t bottom);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_icon_geometry_checked(xcb_ewmh_connection_t *ewmh,
++                                                        xcb_window_t window,
++                                                        uint32_t left, uint32_t right,
++                                                        uint32_t top, uint32_t bottom);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_icon_geometry_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                                  xcb_window_t window);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_icon_geometry(xcb_ewmh_connection_t *ewmh,
++                                                        xcb_window_t window);
++
++uint8_t xcb_ewmh_get_wm_icon_geometry_from_reply(xcb_ewmh_geometry_t *icons,
++                                                 xcb_get_property_reply_t *r);
++
++uint8_t xcb_ewmh_get_wm_icon_geometry_reply(xcb_ewmh_connection_t *ewmh,
++                                            xcb_get_property_cookie_t cookie,
++                                            xcb_ewmh_geometry_t *icons,
++                                            xcb_generic_error_t **e);
++
++/**
++ * @brief Send ChangeProperty request to set _NET_WM_ICON window
++ *        property. The given data is considered to be already
++ *        prepared, namely that it is an array such as: WIDTH1,
++ *        HEIGHT1, IMG1, WIDTH2, HEIGHT2, IMG2.
++ *
++ *        If you only want to add or append a single icon, you may
++ *        consider using xcb_ewmh_append_wm_icon_checked which is far
++ *        easier to use.
++ *
++ * _NET_WM_ICON CARDINAL[][2+n]/32
++ *
++ * @param ewmh The information relative to EWMH
++ * @param mode ChangeProperty mode (xcb_prop_mode_t)
++ * @param window The window to set the property on
++ * @param data_len Length of the data
++ * @param data The data
++ */
++static inline xcb_void_cookie_t
++xcb_ewmh_set_wm_icon_checked(xcb_ewmh_connection_t *ewmh,
++                             uint8_t mode,
++                             xcb_window_t window,
++                             uint32_t data_len, uint32_t *data)
++{
++  return xcb_change_property_checked(ewmh->connection, mode,
++                                     window, ewmh->_NET_WM_ICON,
++                                     XCB_ATOM_CARDINAL, 32, data_len, data);
++}
++
++/**
++ * @see xcb_ewmh_set_wm_icon_checked
++ */
++static inline xcb_void_cookie_t
++xcb_ewmh_set_wm_icon(xcb_ewmh_connection_t *ewmh,
++                     uint8_t mode,
++                     xcb_window_t window,
++                     uint32_t data_len, uint32_t *data)
++{
++  return xcb_change_property(ewmh->connection, mode, window,
++                             ewmh->_NET_WM_ICON, XCB_ATOM_CARDINAL, 32,
++                             data_len, data);
++}
++
++xcb_void_cookie_t xcb_ewmh_append_wm_icon_checked(xcb_ewmh_connection_t *ewmh,
++                                                  xcb_window_t window,
++                                                  uint32_t width, uint32_t height,
++                                                  uint32_t img_len, uint32_t *img);
++
++xcb_void_cookie_t xcb_ewmh_append_wm_icon(xcb_ewmh_connection_t *ewmh,
++                                          xcb_window_t window,
++                                          uint32_t width, uint32_t height,
++                                          uint32_t img_len, uint32_t *img);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_icon_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                         xcb_window_t window);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_icon(xcb_ewmh_connection_t *ewmh,
++                                               xcb_window_t window);
++
++uint8_t xcb_ewmh_get_wm_icon_from_reply(xcb_ewmh_get_wm_icon_reply_t *wm_icon,
++                                        xcb_get_property_reply_t *r);
++
++uint8_t xcb_ewmh_get_wm_icon_reply(xcb_ewmh_connection_t *ewmh,
++                                   xcb_get_property_cookie_t cookie,
++                                   xcb_ewmh_get_wm_icon_reply_t *wm_icon,
++                                   xcb_generic_error_t **e);
++
++xcb_ewmh_wm_icon_iterator_t xcb_ewmh_get_wm_icon_iterator(const xcb_ewmh_get_wm_icon_reply_t *wm_icon);
++
++unsigned int xcb_ewmh_get_wm_icon_length(const xcb_ewmh_get_wm_icon_reply_t *wm_icon);
++
++void xcb_ewmh_get_wm_icon_next(xcb_ewmh_wm_icon_iterator_t *iterator);
++
++void xcb_ewmh_get_wm_icon_reply_wipe(xcb_ewmh_get_wm_icon_reply_t *wm_icon);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_pid(xcb_ewmh_connection_t *ewmh,
++                                      xcb_window_t window,
++                                      uint32_t pid);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_pid_checked(xcb_ewmh_connection_t *ewmh,
++                                              xcb_window_t window,
++                                              uint32_t pid);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_pid_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                        xcb_window_t window);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_pid(xcb_ewmh_connection_t *ewmh,
++                                              xcb_window_t window);
++
++static inline uint8_t
++xcb_ewmh_get_wm_pid_from_reply(uint32_t *pid,
++                               xcb_get_property_reply_t *r)
++{
++  return xcb_ewmh_get_cardinal_from_reply(pid, r);
++}
++
++static inline uint8_t
++xcb_ewmh_get_wm_pid_reply(xcb_ewmh_connection_t *ewmh,
++                          xcb_get_property_cookie_t cookie,
++                          uint32_t *pid,
++                          xcb_generic_error_t **e)
++{
++  return xcb_ewmh_get_cardinal_reply(ewmh, cookie, pid, e);
++}
++
++xcb_void_cookie_t xcb_ewmh_set_wm_handled_icons(xcb_ewmh_connection_t *ewmh,
++                                                xcb_window_t window,
++                                                uint32_t handled_icons);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_handled_icons_checked(xcb_ewmh_connection_t *ewmh,
++                                                        xcb_window_t window,
++                                                        uint32_t handled_icons);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_handled_icons_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                                  xcb_window_t window);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_handled_icons(xcb_ewmh_connection_t *ewmh,
++                                                        xcb_window_t window);
++
++static inline uint8_t
++xcb_ewmh_get_wm_handled_icons_from_reply(uint32_t *handled_icons,
++                                         xcb_get_property_reply_t *r)
++{
++  return xcb_ewmh_get_cardinal_from_reply(handled_icons, r);
++}
++
++static inline uint8_t
++xcb_ewmh_get_wm_handled_icons_reply(xcb_ewmh_connection_t *ewmh,
++                                    xcb_get_property_cookie_t cookie,
++                                    uint32_t *handled_icons,
++                                    xcb_generic_error_t **e)
++{
++  return xcb_ewmh_get_cardinal_reply(ewmh, cookie, handled_icons, e);
++}
++
++xcb_void_cookie_t xcb_ewmh_set_wm_user_time(xcb_ewmh_connection_t *ewmh,
++                                            xcb_window_t window,
++                                            uint32_t xtime);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_user_time_checked(xcb_ewmh_connection_t *ewmh,
++                                                    xcb_window_t window,
++                                                    uint32_t pid);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_user_time_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                              xcb_window_t window);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_user_time(xcb_ewmh_connection_t *ewmh,
++                                                    xcb_window_t window);
++
++static inline uint8_t
++xcb_ewmh_get_wm_user_time_from_reply(uint32_t *xtime,
++                                     xcb_get_property_reply_t *r)
++{
++  return xcb_ewmh_get_cardinal_from_reply(xtime, r);
++}
++
++static inline uint8_t
++xcb_ewmh_get_wm_user_time_reply(xcb_ewmh_connection_t *ewmh,
++                                xcb_get_property_cookie_t cookie,
++                                uint32_t *xtime,
++                                xcb_generic_error_t **e)
++{
++  return xcb_ewmh_get_cardinal_reply(ewmh, cookie, xtime, e);
++}
++
++xcb_void_cookie_t xcb_ewmh_set_wm_user_time_window(xcb_ewmh_connection_t *ewmh,
++                                                   xcb_window_t window,
++                                                   uint32_t xtime);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_user_time_window_checked(xcb_ewmh_connection_t *ewmh,
++                                                           xcb_window_t window,
++                                                           uint32_t pid);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_user_time_window_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                                     xcb_window_t window);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_user_time_window(xcb_ewmh_connection_t *ewmh,
++                                                           xcb_window_t window);
++
++static inline uint8_t
++xcb_ewmh_get_wm_user_time_window_from_reply(uint32_t *xtime,
++                                            xcb_get_property_reply_t *r)
++{
++  return xcb_ewmh_get_cardinal_from_reply(xtime, r);
++}
++
++static inline uint8_t
++xcb_ewmh_get_wm_user_time_window_reply(xcb_ewmh_connection_t *ewmh,
++                                       xcb_get_property_cookie_t cookie,
++                                       uint32_t *xtime,
++                                       xcb_generic_error_t **e)
++{
++  return xcb_ewmh_get_cardinal_reply(ewmh, cookie, xtime, e);
++}
++
++xcb_void_cookie_t xcb_ewmh_set_frame_extents(xcb_ewmh_connection_t *ewmh,
++                                             xcb_window_t window,
++                                             uint32_t left, uint32_t right,
++                                             uint32_t top, uint32_t bottom);
++
++xcb_void_cookie_t xcb_ewmh_set_frame_extents_checked(xcb_ewmh_connection_t *ewmh,
++                                                     xcb_window_t window,
++                                                     uint32_t left, uint32_t right,
++                                                     uint32_t top, uint32_t bottom);
++
++xcb_get_property_cookie_t xcb_ewmh_get_frame_extents_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                               xcb_window_t window);
++
++xcb_get_property_cookie_t xcb_ewmh_get_frame_extents(xcb_ewmh_connection_t *ewmh,
++                                                     xcb_window_t window);
++
++uint8_t xcb_ewmh_get_frame_extents_from_reply(xcb_ewmh_get_extents_reply_t *frame_extents,
++                                              xcb_get_property_reply_t *r);
++
++uint8_t xcb_ewmh_get_frame_extents_reply(xcb_ewmh_connection_t *ewmh,
++                                         xcb_get_property_cookie_t cookie,
++                                         xcb_ewmh_get_extents_reply_t *frame_extents,
++                                         xcb_generic_error_t **e);
++
++xcb_void_cookie_t xcb_ewmh_send_wm_ping(xcb_ewmh_connection_t *ewmh,
++                                        xcb_window_t window,
++                                        xcb_timestamp_t timestamp);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_sync_request_counter(xcb_ewmh_connection_t *ewmh,
++                                                       xcb_window_t window,
++                                                       xcb_atom_t wm_sync_request_counter_atom,
++                                                       uint32_t low, uint32_t high);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_sync_request_counter_checked(xcb_ewmh_connection_t *ewmh,
++                                                               xcb_window_t window,
++                                                               xcb_atom_t wm_sync_request_counter_atom,
++                                                               uint32_t low, uint32_t high);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_sync_request_counter_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                                         xcb_window_t window);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_sync_request_counter(xcb_ewmh_connection_t *ewmh,
++                                                               xcb_window_t window);
++
++uint8_t xcb_ewmh_get_wm_sync_request_counter_from_reply(uint64_t *counter,
++                                                        xcb_get_property_reply_t *r);
++
++uint8_t xcb_ewmh_get_wm_sync_request_counter_reply(xcb_ewmh_connection_t *ewmh,
++                                                   xcb_get_property_cookie_t cookie,
++                                                   uint64_t *counter,
++                                                   xcb_generic_error_t **e);
++
++xcb_void_cookie_t xcb_ewmh_send_wm_sync_request(xcb_ewmh_connection_t *ewmh,
++                                                xcb_window_t window,
++                                                xcb_atom_t wm_protocols_atom,
++                                                xcb_atom_t wm_sync_request_atom,
++                                                xcb_timestamp_t timestamp,
++                                                uint64_t counter);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_fullscreen_monitors(xcb_ewmh_connection_t *ewmh,
++                                                      xcb_window_t window,
++                                                      uint32_t top, uint32_t bottom,
++                                                      uint32_t left, uint32_t right);
++
++xcb_void_cookie_t xcb_ewmh_set_wm_fullscreen_monitors_checked(xcb_ewmh_connection_t *ewmh,
++                                                              xcb_window_t window,
++                                                              uint32_t top, uint32_t bottom,
++                                                              uint32_t left, uint32_t right);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_fullscreen_monitors_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                                        xcb_window_t window);
++
++xcb_get_property_cookie_t xcb_ewmh_get_wm_fullscreen_monitors(xcb_ewmh_connection_t *ewmh,
++                                                              xcb_window_t window);
++
++uint8_t xcb_ewmh_get_wm_fullscreen_monitors_from_reply(xcb_ewmh_get_wm_fullscreen_monitors_reply_t *monitors,
++                                                       xcb_get_property_reply_t *r);
++
++uint8_t xcb_ewmh_get_wm_fullscreen_monitors_reply(xcb_ewmh_connection_t *ewmh,
++                                                  xcb_get_property_cookie_t cookie,
++                                                  xcb_ewmh_get_wm_fullscreen_monitors_reply_t *monitors,
++                                                  xcb_generic_error_t **e);
++
++
++xcb_void_cookie_t xcb_ewmh_request_change_wm_fullscreen_monitors(xcb_ewmh_connection_t *ewmh,
++                                                                 int screen_nbr,
++                                                                 xcb_window_t window,
++                                                                 uint32_t top, uint32_t bottom,
++                                                                 uint32_t left, uint32_t right,
++                                                                 xcb_ewmh_client_source_type_t source_indication);
++
++/**
++ * @brief Set _NET_WM_CM_Sn ownership to the given window
++ *
++ * For  each  screen they  manage,  compositing  manager MUST  acquire
++ * ownership of a selection named _NET_WM_CM_Sn, where n is the screen
++ * number.
++ *
++ * @param ewmh The information relative to EWMH
++ * @param screen_nbr The screen number
++ * @param owner The new owner of _NET_WM_CM_Sn selection
++ * @param timestamp The client's last user activity timestamp
++ * @param selection_data1 Optional data described by ICCCM
++ * @param selection_data2 Optional data described by ICCCM
++ */
++xcb_void_cookie_t xcb_ewmh_set_wm_cm_owner(xcb_ewmh_connection_t *ewmh,
++                                           int screen_nbr,
++                                           xcb_window_t owner,
++                                           xcb_timestamp_t timestamp,
++                                           uint32_t selection_data1,
++                                           uint32_t selection_data2);
++
++/**
++ * @see xcb_ewmh_set_wm_cm_owner
++ */
++xcb_void_cookie_t xcb_ewmh_set_wm_cm_owner_checked(xcb_ewmh_connection_t *ewmh,
++                                                   int screen_nbr,
++                                                   xcb_window_t owner,
++                                                   xcb_timestamp_t timestamp,
++                                                   uint32_t selection_data1,
++                                                   uint32_t selection_data2);
++
++/**
++ * @brief   Send  GetSelectOwner   request   to  get   the  owner   of
++ *        _NET_WM_CM_Sn root window property
++ *
++ * @param ewmh The information relative to EWMH
++ * @param screen_nbr The screen number
++ * @return The _NET_WM_CM_Sn cookie of the GetSelectionOwner request
++ */
++xcb_get_selection_owner_cookie_t xcb_ewmh_get_wm_cm_owner_unchecked(xcb_ewmh_connection_t *ewmh,
++                                                                    int screen_nbr);
++
++/**
++ * @see xcb_ewmh_get_wm_cm_owner_unchecked
++ */
++xcb_get_selection_owner_cookie_t xcb_ewmh_get_wm_cm_owner(xcb_ewmh_connection_t *ewmh,
++                                                          int screen_nbr);
++
++uint8_t xcb_ewmh_get_wm_cm_owner_from_reply(xcb_window_t *owner,
++                                            xcb_get_selection_owner_reply_t *r);
++
++/**
++ * @brief Get reply from the GetProperty _NET_CLIENT_LIST cookie
++ *
++ * The  parameter  e  supplied  to  this  function  must  be  NULL  if
++ * xcb_get_window_client_list_unchecked()  is   used.   Otherwise,  it
++ * stores the error if any.
++ *
++ * @param ewmh The information relative to EWMH.
++ * @param cookie The _NET_WM_CM_Sn GetSelectionOwner request cookie.
++ * @param owner The window ID which owns the selection or None.
++ * @param The xcb_generic_error_t supplied.
++ * @return Return 1 on success, 0 otherwise.
++ */
++uint8_t xcb_ewmh_get_wm_cm_owner_reply(xcb_ewmh_connection_t *ewmh,
++                                       xcb_get_selection_owner_cookie_t cookie,
++                                       xcb_window_t *owner,
++                                       xcb_generic_error_t **e);
++
++#ifdef __cplusplus
++}
++#endif
++
++/**
++ * @}
++ */
++
++#endif /* __XCB_EWMH_H__ */

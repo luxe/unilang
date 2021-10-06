@@ -1,0 +1,484 @@
+class
+
+
+❪"code/utilities/linguistics/grammar/settings/comment_grammar_settings"❫
+❪vector❫
+❪iostream❫
+❪"dictionary.hxx"❫
+❪"finder.hxx"❫
+⚯
+❪"code/utilities/types/strings/observers/splitting/words_deriver"❫
+❪"code/utilities/types/strings/transformers/trimming/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/linguistics/dictionary/dictionary_getter"❫
+❪"code/utilities/linguistics/dictionary/dictionary_spellcheck"❫
+❪"code/utilities/output/printers/lib"❫
+❪"code/utilities/web/url/url_identifier"❫
+⚞⚟
+
+◀public: static▶ std::string ☀Get_Adjusted(std::string comment_text, Comment_Grammar_Settings const& grammar)❰
+
+    //get trimmed text
+    std::string str = comment_text;
+    trim(str);
+    
+    //make entire sentence adjustments
+    std::vector<std::string> warnings;
+    warnings += Possibly_Fix_Setences_Ending_In_A_Preposition(str,grammar);
+    warnings += Possibly_Fix_Setences_That_Use_Cliche(str,grammar);
+    warnings += Possibly_Fix_Setences_That_Use_Sarcasm_Or_Exageration(str,grammar);
+    
+    //get a dictionary that we may need for various analysis
+    auto dictionary = Dictionary_Getter::Get();
+  
+    //deconstruct sentence and perform actions on each word.
+    //make single word adjustments.
+    auto words = Words_Deriver::Derive(comment_text);
+    for (auto & word: words){
+        warnings += Potentially_Spellcheck_Word(word,grammar,dictionary);
+        warnings += Potentially_Sensor_Bad_Words(word,grammar);
+        warnings += Potentially_Auto_Correct_Words(word,grammar);
+        warnings += Potentially_Auto_Retaste_Words(word,grammar);
+        warnings += Potentially_Auto_Fix_Already_Correct_Words(word,grammar);
+        warnings += Potentially_Auto_Capitalize_Words(word,grammar);
+        warnings += Potentially_Auto_Full_Caps_Words(word,grammar);
+        warnings += Potentially_Fix_NonEnglish_Words(word,grammar);
+        warnings += Potentially_Fix_Filler_Words(word,grammar);
+        
+        
+        //SID:
+        //1. Short.
+        //2. Intuitive (read naturally as close to human speech as possible)
+        //3. Descriptive (a name must reflect what it does/possesses in the most efficient way
+        
+        //Avoid Contractions:
+        //onItmClk = onItemClick
+        
+        //Avoid Context Duplication:
+        //handleMenuItemClick = handleClick (assuming the context is menuItem)
+        
+        //Naming functions:
+          //A/HC/LC Pattern:
+          //prefix? + action (A) + high context (HC) + low context? (LC)
+
+          //EXAMPLE:
+          // Name                  Prefix  Action (A)         High context (HC)  Low context (LC)
+          // getUser                       get                User  
+          // getUserMessages               get                User               Messages
+          // handleClickOutside            handle             Click              Outside
+          // shouldDisplayMessage  should  Display            Message 
+        
+          //Action names: get,set,reset,fetch,remove,delete,compose,handle
+          //Prefixes: is,has,should,min/max,prev/next,
+        
+        
+      //Correct use of singular/plural
+        
+    }
+    
+    //reconstruct back into a sentence
+    str = Put_Words_Into_A_Sentence(words);
+    
+    //make more entire sentence adjustments
+    warnings += Potentially_Fix_Redundancy(str,grammar);
+    warnings += Potentially_Fix_Political_Correctness(str,grammar);
+    Potentially_Capitalize(str,grammar);
+    Potentially_Punctuate(str,grammar);
+    
+    
+    //print the warnings
+    for (auto & it: warnings){
+      std::cerr << it << std::endl;
+    }
+    
+    return str;
+❱
+
+◀private: static▶ std::vector<std::string> ☀Potentially_Spellcheck_Word(std::string & word, Comment_Grammar_Settings const& grammar, nuspell::Dictionary const& dictionary)❰
+  std::vector<std::string> warnings;
+  
+  if (grammar.spellcheck.warn_about_misspellings){
+    auto fixed_word = As_Chars_Removed(word,".?-\",;");
+    auto results = Dictionary_Spellcheck::Check(dictionary,fixed_word);
+    if (!results.spelled_correctly){
+      std::string warning;
+      warning += fixed_word;
+      warning += " => spelled wrong";
+      warning += " => analyzed as => ";
+      warning += word;
+      warning += " => suggestions: ";
+      warning += Stream_Str(results.suggestions);
+      Add_Warning(warnings,warning);
+    }
+  }
+  
+  return warnings;
+❱
+
+◀private: static▶ std::vector<std::string> ☀Potentially_Fix_Redundancy(std::string & word, Comment_Grammar_Settings const& grammar)❰
+  std::vector<std::string> warnings;
+  //TODO: https://github.com/tygerpatch/BetaGama/blob/master/pythonpath/redundancy.py
+  return warnings;
+❱
+◀private: static▶ std::vector<std::string> ☀Potentially_Fix_NonEnglish_Words(std::string & word, Comment_Grammar_Settings const& grammar)❰
+  //amigos = friends
+  //primer = first
+
+  //TODO
+  std::vector<std::string> warnings;
+  return warnings;
+❱
+◀private: static▶ std::vector<std::string> ☀Potentially_Fix_Filler_Words(std::string & word, Comment_Grammar_Settings const& grammar)❰
+
+
+  std::vector<std::string> warnings;
+  
+  
+  for (auto const& bad_word : grammar.filler_words){
+    if (bad_word == word){
+      
+      if (grammar.warn_filler_words){
+        Add_Warning(warnings,"filler word found: " + word);
+      }
+    }
+  }
+  return warnings;
+❱
+
+
+
+◀private: static▶ std::vector<std::string> ☀Potentially_Fix_Political_Correctness(std::string & word, Comment_Grammar_Settings const& grammar)❰
+  std::vector<std::string> warnings;
+  //whitelist allowlist
+  //blacklist denylist
+  //master/slave      leader/follower primary/replica  primary/standby
+  //grandfathered / legacy status
+  //gendered pronouns (guys)       folks, people, you all, y'all
+  //he/him/hist    they/them/their
+  //man hours  //person hours / engineer hours
+  //sanity check      quick check/confidency check, coherence check
+  //dummy value      placeholder value / sample value
+  
+  return warnings;
+❱
+
+
+
+◀private: static▶ std::vector<std::string> ☀Possibly_Fix_Setences_That_Use_Cliche(std::string & sentence, Comment_Grammar_Settings const& grammar)❰
+  std::vector<std::string> warnings;
+  if (grammar.cliches.warn_about_cliches){
+    for (auto cliche: grammar.cliches.cliches){
+      if (Contains_Substring(sentence,cliche)){
+        Add_Warning(warnings,"sentence has a cliche: " + cliche);
+      }
+    }
+  }
+  
+  return warnings;
+❱
+
+◀private: static▶ std::vector<std::string> ☀Possibly_Fix_Setences_That_Use_Sarcasm_Or_Exageration(std::string & sentence, Comment_Grammar_Settings const& grammar)❰
+  std::vector<std::string> warnings;
+  if (grammar.sarcasm.warn_about_sarcasm){
+    for (auto sarcasm: grammar.sarcasm.phrases){
+      if (Contains_Substring(sentence,sarcasm)){
+        Add_Warning(warnings,"sentence has a sarcasm or exaggeration: " + sarcasm);
+      }
+    }
+  }
+  
+  return warnings;
+❱
+
+◀private: static▶ std::vector<std::string> ☀Possibly_Fix_Setences_Ending_In_A_Preposition(std::string & sentence, Comment_Grammar_Settings const& grammar)❰
+
+  std::vector<std::string> warnings;
+  if (grammar.prepositions.warn_about_sentences_ending_in_preposition){
+    if (Sentence_Ends_In_A_Preposition(sentence,grammar)){
+      //TODO: I don't know how to fix sentences that end in prepositions
+      //I'm guessing the entire grammar of the sentence needs restructured
+      //there ought to be grammar fixing tools out there to learn from
+      //at the very least, we can warn about it
+        Add_Warning(warnings,"sentence ends in a preposition: \"" + sentence + "\"");
+      }
+  }
+  
+  //TODO: not currently not handling 2 word/ 3 word preposition phrases
+  return warnings;
+❱
+
+◀private: static▶ bool ☀Sentence_Ends_In_A_Preposition(std::string const& sentence, Comment_Grammar_Settings const& grammar)❰
+  
+  //split into words
+  auto words = Words_Deriver::Derive(sentence);
+  if (!words.empty()){
+    
+    //get the last word of the sentence
+    auto last_word = Last_Element(words);
+    Strip_Off_Puncuation(last_word,grammar);
+    
+    //check if the word is a preposition
+    if (Is_A_Preposition(last_word,grammar)){
+      return true;
+    }
+  }
+  
+  return false;
+❱
+
+◀private: static▶ bool ☀Is_A_Preposition(std::string const& word, Comment_Grammar_Settings const& grammar)❰
+
+  if (Contains(grammar.prepositions.prepositions,word)){
+    return true;
+  }
+  return false;
+❱
+
+
+◀private: static▶ void ☀Potentially_Capitalize(std::string & comment_text, Comment_Grammar_Settings const& grammar)❰
+
+  
+  if (Url_Identifier::Looks_Like_Url(comment_text)){
+    return;
+  }
+  
+  
+  if (grammar.puncuation.auto_capitalize_comments){
+    CapitalizeFirstChar(comment_text);
+    
+    //might need to capitalize a sentence that is actually a quote
+    if (comment_text.size() >= 2){
+      if (comment_text[0] == '"'){
+        CapitalizeCharIndex(comment_text,1);
+      }
+    }
+    
+    
+  }
+❱
+◀private: static▶ void ☀Potentially_Punctuate(std::string & comment_text, Comment_Grammar_Settings const& grammar)❰
+
+  if (Url_Identifier::Looks_Like_Url(comment_text)){
+    return;
+  }
+  
+  if (grammar.puncuation.auto_puncuate_comments){
+    
+      //ends with a quote. We need to put in the punctuation inside the quotes
+      if (Ends_With(comment_text,"\"")){
+        Quoted_Puncuate(comment_text,grammar);
+      }
+      else{
+        Non_Quoted_Puncuate(comment_text,grammar);
+      }
+  }
+❱
+
+◀private: static▶ void ☀Quoted_Puncuate(std::string & comment_text, Comment_Grammar_Settings const& grammar)❰
+
+    Remove_Last_Char(comment_text);
+    Non_Quoted_Puncuate(comment_text,grammar);
+    comment_text += '"';
+❱
+
+◀private: static▶ void ☀Non_Quoted_Puncuate(std::string & comment_text, Comment_Grammar_Settings const& grammar)❰
+
+    //decide whether there is currently puncuation at the end of the comment
+    bool puncuation_found = Has_Punctuation(comment_text,grammar);
+    
+    //add punctuation if there isn't already any
+    if (!puncuation_found){
+      comment_text += grammar.puncuation.default_puncuation;
+    }
+❱
+
+◀private: static▶ bool ☀Has_Punctuation(std::string const& sentence, Comment_Grammar_Settings const& grammar)❰
+	for (auto it: grammar.puncuation.puncuations){
+		if (Ends_With(sentence,it)){
+			return true;
+		}
+	}
+	return false;
+❱
+◀private: static▶ std::string ☀Strip_Off_Puncuation(std::string & word, Comment_Grammar_Settings const& grammar)❰
+	for (auto it: grammar.puncuation.puncuations){
+		if (Ends_With(word,it)){
+			Remove_Last_N_Chars(word,it.size());
+			return it;
+		}
+	}
+	return "";
+❱
+
+
+◀private: static▶ std::string ☀Strip_Off_Non_Word_Puncuation_From_End(std::string & word, Comment_Grammar_Settings const& grammar)❰
+	for (auto it: grammar.puncuation.non_word_puncuations){
+		if (Ends_With(word,it)){
+			Remove_Last_N_Chars(word,it.size());
+			return it;
+		}
+	}
+	return "";
+❱
+◀private: static▶ std::string ☀Strip_Off_Non_Word_Puncuation_From_Front(std::string & word, Comment_Grammar_Settings const& grammar)❰
+	for (auto it: grammar.puncuation.non_word_puncuations){
+		if (Begins_With(word,it)){
+			Remove_First_N_Chars(word,it.size());
+			return it;
+		}
+	}
+	return "";
+❱
+
+◀private: static▶ std::vector<std::string> ☀Potentially_Sensor_Bad_Words(std::string & word, Comment_Grammar_Settings const& grammar)❰
+  std::vector<std::string> warnings;
+  for (auto const& bad_word : grammar.bad_words.bad_words){
+    if (bad_word == word){
+      
+      //warn about it
+      if (grammar.bad_words.warn_bad_words){
+        Add_Warning(warnings,"bad word found: " + word);
+      }
+      
+      //fix it
+      if (grammar.bad_words.auto_sensor_bad_words){
+        word = grammar.bad_words.sensor_pattern;
+      }
+      
+      
+    }
+  }
+  return warnings;
+❱
+◀private: static▶ std::vector<std::string> ☀Potentially_Auto_Correct_Words(std::string & word, Comment_Grammar_Settings const& grammar)❰
+  std::vector<std::string> warnings;
+  
+  for (auto const& to_from : grammar.auto_corrects){
+    if (to_from.first == word){
+      
+      //warn about it
+      if (grammar.warn_about_auto_corrects){
+          Add_Warning(warnings,"did you mean " + to_from.second + " instead of " + to_from.first + "?");
+      }
+      
+      //fix it
+      if (grammar.use_auto_corrects){
+          word = to_from.second;
+      }
+      
+      
+    }
+  }
+  return warnings;
+❱
+◀private: static▶ std::vector<std::string> ☀Potentially_Auto_Retaste_Words(std::string & word, Comment_Grammar_Settings const& grammar)❰
+  std::vector<std::string> warnings;
+  
+  for (auto const& to_from : grammar.taste_corrections){
+    if (to_from.first == word){
+      
+      //warn about it
+      if (grammar.warn_about_taste_suggestion){
+        Add_Warning(warnings,"people would prefer " + to_from.second + " over " + to_from.first);
+      }
+      
+      //fix it
+      if (grammar.auto_retaste_words){
+        word = to_from.second;
+      }
+      
+      
+    }
+  }
+  return warnings;
+❱
+◀private: static▶ std::vector<std::string> ☀Potentially_Auto_Fix_Already_Correct_Words(std::string & word, Comment_Grammar_Settings const& grammar)❰
+  std::vector<std::string> warnings;
+  
+  for (auto const& to_from : grammar.correctly_spelled_mistypes){
+    if (to_from.first == word){
+      
+      //warn about it
+      if (grammar.warn_correctly_spelled_typo){
+          Add_Warning(warnings,to_from.first + " is valid, but did you maybe mean " + to_from.second + "?");
+      }
+      
+      //fix it
+      if (grammar.fix_correctly_spelled_typo){
+        word = to_from.second;
+      }
+      
+      
+    }
+  }
+  
+  return warnings;
+❱
+◀private: static▶ std::vector<std::string> ☀Potentially_Auto_Capitalize_Words(std::string & word, Comment_Grammar_Settings const& grammar)❰
+  std::vector<std::string> warnings;
+    for (auto const& capital_word : grammar.capitalize_words){
+      if (capital_word == word){
+        
+        //warn about it
+        if (grammar.warn_about_uncapitalized_words){
+          Add_Warning(warnings,word + " should be capitalized");
+        }
+        
+        //fix it
+        if (grammar.auto_capitalize_certain_words){
+          CapitalizeFirstChar(word);
+        }
+        
+      }
+    }
+  return warnings;
+❱
+
+
+◀private: static▶ void ☀Add_Warning(std::vector<std::string> & warnings, std::string const& warning)❰
+  warnings.emplace_back(warning);
+❱
+
+
+
+◀private: static▶ std::vector<std::string> ☀Potentially_Auto_Full_Caps_Words(std::string & word, Comment_Grammar_Settings const& grammar)❰
+  std::vector<std::string> warnings;
+  if (grammar.auto_full_caps_certain_words){
+      Possibly_Caps_A_Possibly_Puncuated_Word(word,grammar);
+  }
+  return warnings;
+❱
+
+◀private: static▶ void ☀Possibly_Caps_A_Possibly_Puncuated_Word(std::string & word, Comment_Grammar_Settings const& grammar)❰
+	std::string word_copy = word;
+
+    auto front_punc = Strip_Off_Non_Word_Puncuation_From_Front(word_copy,grammar);
+    auto end_punc = Strip_Off_Non_Word_Puncuation_From_End(word_copy,grammar);
+
+    Lowercase(word_copy);
+    for (auto const& it: grammar.full_caps_words){
+		if (it == word_copy){
+			Uppercase(word_copy);
+            word = front_punc + word_copy + end_punc;
+			break;
+		}
+	}
+	
+❱
+
+◀private: static▶ std::string ☀Put_Words_Into_A_Sentence(std::vector<std::string> const& words)❰
+
+     //put words back into the sentence
+	std::string comment_text = "";
+	for (auto const& word: words){
+		comment_text += word;
+        comment_text += " ";
+	}
+    rtrim(comment_text);
+    return comment_text;
+❱

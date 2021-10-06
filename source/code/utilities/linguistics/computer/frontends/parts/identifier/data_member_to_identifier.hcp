@@ -1,0 +1,148 @@
+class
+❪"code/utilities/linguistics/computer/frontends/parts/module_settings"❫
+❪"code/utilities/code/concept_static_tree_structs"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+⚯
+❪"code/utilities/code/query/data_member_mutability"❫
+❪"code/utilities/code/query/data_member_storage_specifier"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/types/vectors/converters/lib"❫
+⚞⚟
+
+//gives you the identifier name
+//including prefix (hungarian notation)
+//identifier (properly cased according to various rules)
+//suffix (units)
+//other identifier adjustments based on data member properties
+◀public: static▶ std::string ☀Derive_Name(model::DataMember const& item, Module_Settings const& settings, bool is_global, bool is_member)❰
+    
+    std::string new_identifier;
+  //     //get prefixes and suffixes
+  //     auto prefix = Data_Member_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix(data_member,settings,is_global,is_member);
+  //     auto suffix = Get_Raw_Unit_Suffix(data_member);
+      
+      
+  //     //casing settings
+       auto identifier_casing = How_To_Case_Identifier(item,settings,is_global);
+  //     //auto hungarian_casing = How_To_Case_Hungarian(data_member,settings,is_global);
+  //     auto unit_casing = How_To_Case_Units(data_member,settings,is_global);
+  //     //auto extra_type_casing = How_To_Case_Extra_Type_Info(data_member,settings,is_global);
+      
+      
+  new_identifier = First_Element_Or_Default(item.identifier).value;
+  //     new_identifier = Adjust_Based_On_Type_Info(new_identifier,data_member,settings);
+
+
+  //     //apply casing
+       new_identifier = Case_Modifier::As_Modified_Casing(identifier_casing,new_identifier);
+  //     suffix = Get_Properly_Cased_Suffix(suffix,unit_casing);
+    
+  // //print CONSTANT_LIKE_THIS
+  // if (mutability == Mutability::IMMUTABLE){
+  
+  //     Append(new_identifier,suffix);
+  // }
+  
+  // //print normal prefix with hungarian notation, and possible unit suffix
+  // else{
+  //     Possibly_Add_Identifier_Prefixes_And_Suffixes(new_identifier,settings.portion.data_member_options.notation,prefix,suffix);
+  // }
+    
+  //   //return it
+     return new_identifier;
+❱
+
+◀private: static▶ std::string ☀Adjust_Based_On_Type_Info(std::string identifier, model::DataMember const& item, Module_Settings const& options)❰
+
+    // //decide type info input
+    // Identifier_With_Type_Info data_properties;
+    // data_properties.identifier = identifier;
+    // data_properties.optional = Decide_Optional(data_member,settings);
+    // data_properties.serializable = Decide_Serializable(data_member,settings);
+    // data_properties.collection = Decide_Collection(data_member,settings);
+    // data_properties.sequence = Decide_Sequence(data_member,settings);
+    // data_properties.state = Decide_State(data_member,settings);
+
+    // identifier = Modify_Identifier_With_Extra_Type_Info::Modify(data_properties,settings.portion.data_member_options.notation.extra_type_settings);
+    // return identifier;
+return "";
+❱
+
+
+
+
+
+
+◀private: static▶ Case_Format_Style ☀How_To_Case_Identifier(model::DataMember const& data_member, Module_Settings const& settings, bool is_global)❰
+      return How_To_Case_Data_Member_Thing(data_member,settings.portion.data_member_options.casing,is_global);
+❱
+◀private: static▶ Case_Format_Style ☀How_To_Case_Data_Member_Thing(model::DataMember const& data_member, Data_Member_Casing_Settings const& settings, bool is_global)❰
+
+      //all of the different contexts/characteristics of a data member where we may want to case it differently
+      Case_Format_Style identifier_casing;
+      
+      //properties about the data member
+      auto mutability = Data_Member_Mutability::Get(data_member);
+      auto storage = Data_Member_Storage_Specifier::Get(data_member);
+      
+      
+      //TODO: describe this as a table
+      //global
+      if (is_global){
+        
+          //static
+          if (storage == Storage_Specifier::STATIC){
+            
+            //const
+            if (mutability == Mutability::IMMUTABLE){
+              identifier_casing = settings.global_static_const_casing;
+            }
+            
+            //non const
+            else{
+              identifier_casing = settings.global_static_non_const_casing;
+            }
+          }
+          
+          //non static
+          else{
+            
+            //const
+            if (mutability == Mutability::IMMUTABLE){
+              identifier_casing = settings.global_const_casing;
+            }
+            
+            //non const
+            else{
+              identifier_casing = settings.global_non_const_casing;
+            }
+          }
+      }
+      
+      //non global
+      else{
+          
+          //static
+          if (storage == Storage_Specifier::STATIC){
+            if (mutability == Mutability::IMMUTABLE){
+              identifier_casing = settings.static_const_casing;
+            }
+            else{
+              identifier_casing = settings.static_non_const_casing;
+            }
+          }
+          
+          //non static
+          else{
+            if (mutability == Mutability::IMMUTABLE){
+              identifier_casing = settings.const_casing;
+            }
+            else{
+              identifier_casing = settings.non_const_casing;
+            }
+          }
+          
+      }
+      return identifier_casing;
+❱

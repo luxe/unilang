@@ -1,0 +1,109 @@
+class
+❪vector❫
+❪string❫
+❪iostream❫
+❪fstream❫
+❪map❫
+❪"nlohmann/json"❫
+❪"code/utilities/formats/json/compression/json_compression_format"❫
+❪"code/utilities/formats/json/compression/json_compressor"❫
+❪"code/utilities/streams/filestreams/read_all/lib"❫
+❪"code/utilities/streams/filestreams/write_all/lib"❫
+❪"code/utilities/formats/json/converters/type_to_json_string"❫
+⚯
+⚞⚟
+
+
+
+//standard read/write from type
+◀public:
+template <typename T>
+static void Read_Json_From_File(T & t, std::string const& path){
+    auto str = Read_Entire_File_Into_String(path);
+    auto j = nlohmann::json::parse(str);
+    t = j.get<T>();
+}
+▶
+
+◀public:
+template <typename T>
+static void Write_Json_To_File(T const& t, std::string const& path){
+    nlohmann::json j = t;
+    auto str = j.dump(2);
+    std::ofstream outfile(path);
+    outfile << str;
+    outfile.close();
+}
+▶
+
+//compressed read/write from type
+◀public:
+template <typename T>
+static void Read_Compressed_Json_File(T & t, std::string const& path, Json_Compression_Format const& format){
+    auto bin = Read_Entire_Binary_File_Into_Byte_Vec(path);
+    auto j = Json_Compressor::Decompress_To_Json(bin,format);
+    t = j.get<T>();
+}
+▶
+◀public:
+template <typename T>
+static void Write_Compressed_Json_File(T const& t, std::string const& path, Json_Compression_Format const& format){
+    nlohmann::json j = t;
+    auto bin = Json_Compressor::Compress_To_Format(j,format);
+    Write_Byte_Vec_To_Binary_File(path,bin);
+}
+▶
+
+
+//reads unknown type
+◀public: static▶ nlohmann::json ☀Read_Compressed_Json_From_File(std::string const& path, Json_Compression_Format const& format)❰
+    auto bin = Read_Entire_Binary_File_Into_Byte_Vec(path);
+    auto j = Json_Compressor::Decompress_To_Json(bin,format);
+    return j;
+❱
+◀public: static▶ nlohmann::json ☀Read_Json_From_File(std::string const& path)❰
+    auto str = Read_Entire_File_Into_String(path);
+    auto j = nlohmann::json::parse(str);
+    return j;
+❱
+
+◀public: static▶ std::vector<std::string> ☀Read_Jsons_From_File(std::string const& path)❰
+  std::vector<std::string> results;
+  
+  std::ifstream i(path);
+  while (i){
+    try{
+      nlohmann::json j;
+      i >> j;
+      results.emplace_back(j.dump(0));
+    }catch(...){
+      return results;
+    }
+  }
+  
+  return results;
+❱
+
+//file checking
+◀public: static▶ bool ☀Is_Valid_JSON_File(std::string const& file_name)❰
+  bool valid = true;
+  try{
+    nlohmann::json::parse(Read_Entire_File_Into_String(file_name));
+  }catch(...){
+    valid = false;
+  }
+  
+  return valid;
+❱
+
+
+//terminal
+◀public:
+template <typename T>
+static void Print_Json(T const& t){
+    auto str = Type_To_Json_String::As_JSON_String(t);
+    std::cout << str << std::endl;
+}
+▶
+
+

@@ -1,0 +1,31 @@
+class
+⚯
+⚞⚟
+
+
+◀public: static▶ std::vector<std::string> ☀Get(std::string const& file_name) ❰
+
+    return Use_Existing_Owner_Tool(file_name);
+    //TODO: derive in a different way (git history / parsing file for owner tags)
+❱
+
+
+◀private: static▶ std::vector<std::string> ☀Use_Existing_Owner_Tool(std::string const& file_name) ❰
+
+    std::string command;
+    command += "./bazel run tools:get_owners ";
+    command += file_name;
+    
+    auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
+    
+    if (results.return_code != 0){
+        std::vector<std::string> failed;
+        std::cout << "failed to get owners" << std::endl;
+        return failed;
+    }
+    
+    trim(results.stdout);
+    auto result = Split_Into_Parts_From_Comma(Get_Last_Line(results.stdout));
+    std::cout << "owners: " << result << std::endl;
+    return result;
+❱

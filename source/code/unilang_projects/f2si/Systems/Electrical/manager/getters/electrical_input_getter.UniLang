@@ -1,0 +1,776 @@
+􏶞g􏶟
+􏷲Handles retrieving all of the electrical inputs from the various systems and connections􏷱
+􏷰These functions were separated out of the manager to lower the manager's dependency count.  
+The manager is then easier to read, and easier to test.  
+These functions only exist to copy all of the data from various structures,
+and put it into the electrical system's inputs.􏷯
+􏷮Electrical_System􏷭 􏷮Input_Getter􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦ElectricalData􏷥􏴓d􏴔􏴑ElectricalSystemInputsT􏴒
+􏷤􏷣􏷦ElectricalSettingsGetter􏷥􏴓d􏴔􏴑ElectricalSettingsGetter()􏴒
+􏷤􏷣􏷦PlcData􏷥􏴓d􏴔􏴑PLCInConnectionDataT􏴒
+􏷤􏷣􏷦DCPowerSystem􏷥􏴓d􏴔􏴑DCPowerSystemT􏴒
+􏷤􏷣􏷦AircraftGeneralConst􏷥􏴓d􏴔􏴑NUM_ENGINES􏴒
+􏶔􏶕􏶒OwnShip􏶓􏴏d􏴐􏴍Read functions􏴎
+􏶔􏶕􏶒AircraftGeneralConst􏶓􏴏d􏴐􏴍constants􏴎
+􏶔􏶕􏶒string􏶓􏴏d􏴐􏴍memset()􏴎
+􏶔􏶕􏶒breaker_binding􏶓􏴏d􏴐􏴍BreakerBindingT􏴎
+􏶔􏶕􏶒wattage_device_binding􏶓􏴏d􏴐􏴍WattageDeviceBindingT􏴎
+􏶔􏶕􏶒electrical_switch_states􏶓􏴏d􏴐􏴍switch states􏴎
+􏶔􏶕􏶒MissionBusPanelData􏶓􏴏d􏴐􏴍MissionBusSwitchTypeE􏴎
+
+􏷘+􏷗􏷒set electrical inputs􏷑
+􏷐Fills the electrical manager's inputs with the appropriate data􏷏
+􏶠Reads from Ownship and fills the input struct
+based on the outputs of various systems and connections􏶡
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀the electrical inputs to set from other outputs􏶿
+􏶜mr􏶝􏷆ElectricalSystemOutputsT􏷅􏷄outputs􏷃􏷀the electrical outputs. Used to bind a pointer with some of the inputs􏶿
+􏶜r􏶝􏷆DCPowerSystemT􏷅􏷄system􏷃􏷀The DC Power system which contains IDs to device nodes􏶿
+􏶜r􏶝􏷆PLCInConnectionDataT􏷅􏷄plc􏷃􏷀the plc used to set the input state of switches and circuit breakers􏶿
+􏶴
+    􏶲get the IOS data􏶱
+    IOStoHostT tIOSOutput;
+    CanMasterInConnectDataT tCanData;
+    ReadIOSData(&tIOSOutput);
+    ReadCanData(&tCanData);
+    
+    􏶲Get all of the custom settings for the system􏶱
+    􏵶inputs􏵷->m_tSettings = CollectElectricalSettings(&tIOSOutput);
+    
+    􏶲Get all the "can be powered" flags to be later turned into "has power"􏶱
+    􏵲collect can be powered flags􏵳􏵶inputs􏵷);
+    
+    􏶲Get the breaker states (incoming from IOS, and current state via PLC􏶱
+    􏵲collect breaker states􏵳􏵶inputs􏵷,􏵶outputs􏵷,􏵶system􏵷,􏵶plc􏵷,&tIOSOutput);
+    
+    􏶲IOS triggered malfunctions to affect the graph􏶱
+    􏵲collect malfunctions􏵳􏵶inputs􏵷,&tIOSOutput,􏵶plc􏵷);
+    
+    􏶲wattage changes provoked by other systems􏶱
+    􏵲collect wattage changes􏵳􏵶inputs􏵷,􏵶system􏵷);
+
+    􏶲switch states that affect the graph􏶱
+    􏵲collect switches􏵳􏵶inputs􏵷,􏵶plc􏵷, &tCanData);
+    
+    􏶲collect engine data􏶱
+    􏵲collect engine data􏵳􏵶inputs􏵷,􏵶plc􏵷);
+    
+    􏶲collect power triggers that can change the state of the EPU and battery􏶱
+    􏵲collect power triggers􏵳􏵶inputs􏵷,&tIOSOutput);
+    
+    􏶲collect ready flags for the outside sources of data􏶱
+    􏵲collect ready flags􏵳􏵶inputs􏵷);
+􏶳
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+􏷘-􏷗􏷒collect can be powered flags􏷑
+􏷐Applies inputs from the outputs of various other systems􏷏
+􏶠Uses ownship to get the various outputs from systems􏶡
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀the electrical inputs to set from other outputs􏶿
+􏶴
+    􏶲Set the inputs from the various systems􏶱
+    􏵲collect power flags avionics􏵳􏵶inputs􏵷);
+    􏵲collect power flags engine􏵳􏵶inputs􏵷);
+    􏵲collect power flags fire􏵳􏵶inputs􏵷);
+    􏵲collect power flags flight controls􏵳􏵶inputs􏵷);
+    􏵲collect power flags flight guidance􏵳􏵶inputs􏵷);
+    􏵲collect power flags fuel􏵳􏵶inputs􏵷);
+    􏵲collect power flags hydraulic􏵳􏵶inputs􏵷);
+    􏵲collect power flags lighting􏵳􏵶inputs􏵷);
+    􏵲collect power flags pneumatics􏵳􏵶inputs􏵷);
+    􏵲collect power flags radio􏵳􏵶inputs􏵷);
+    􏵲collect power flags mission equipment package􏵳􏵶inputs􏵷);
+    
+    􏶲From Aircraft General, Environmental, and Time􏶱
+    􏶲nothing needed from these systems...􏶱
+􏶳
+
+
+􏳇system􏳈        􏳅avionics􏳆􏳅engine􏳆􏳅fire􏳆􏳅flight controls􏳆􏳅flight guidance􏳆􏳅fuel􏳆􏳅hydraulic􏳆􏳅lighting􏳆􏳅pneumatics􏳆􏳅radio􏳆􏳅mission equipment package􏳆
+􏳇name􏳈          􏳅Avionics􏳆􏳅Engine􏳆􏳅Fire􏳆􏳅FlightControls􏳆􏳅FlightGuidance􏳆􏳅Fuel􏳆􏳅Hydraulic􏳆􏳅Lighting􏳆􏳅Pneumatic􏳆􏳅Radio􏳆􏳅MissionEquipmentPackage􏳆
+􏷘-􏷗􏷒collect power flags {{system}}􏷑
+􏷐Applies inputs from the outputs of the system􏷏
+􏶠Uses ownship to get the output of the system􏶡
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀the electrical inputs to set from other outputs􏶿
+􏶴
+    􏶲get the "can be powered" flags from the {{system}} outputs􏶱
+    {{name}}SystemOutputT tOutputs;
+    Read{{name}}SystemOutput(&tOutputs);
+    􏵶inputs􏵷->m_tPotentialPowerFlags.m_t{{name}} = tOutputs.m_tPowerFlags;
+􏶳
+
+􏷘-􏷗􏷒collect breaker states􏷑
+􏷐Collects circuit breakers sourced from the PLC and IOS􏷏
+􏶠􏶡
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀the electrical inputs to set from the PLC􏶿
+􏶜mr􏶝􏷆ElectricalSystemOutputsT􏷅􏷄outputs􏷃􏷀the electrical outputs. Used to bind a pointer with some of the inputs􏶿
+􏶜r􏶝􏷆DCPowerSystemT􏷅􏷄system􏷃􏷀The DC Power system which contains IDs to breakers􏶿
+􏶜r􏶝􏷆PLCInConnectionDataT􏷅􏷄plc􏷃􏷀the plc used to set the input state of switches and circuit breakers􏶿
+􏶜r􏶝􏷆IOStoHostT􏷅􏷄ios􏷃􏷀data received from the IOS􏶿
+􏶴
+    􏶲Clear the previous breaker modifiers from the last update,􏶱
+    􏶲in order to add the new modifiers for the current update.􏶱
+    VectorClear(&􏵶inputs􏵷->m_tBreakerModifiers);
+    
+    􏶲bind the PLC breakers, the IOS breakers, the Graph breakers, and the Output breakers together􏶱
+    􏶲we already scattered the same set of data all over the place.  Instead of me having a million assignment statements,􏶱
+    􏶲I'm going to bind them into the same type, and put them in a vector􏶱
+    
+    //Copilot breakers
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tStbyHorBat, ptSystem->m_tCircuit.m_tOverheadPanel.m_uStbyHorBat, ptPlc->m_tOverhead.m_bStbyHorBatCB_DI, ptIos->m_bStbyHorBatCB);                                //row 1 CB135
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tIcAmp, ptSystem->m_tCircuit.m_tOverheadPanel.m_uIcAmp, ptPlc->m_tOverhead.m_bEssBus1IcAmpCB_DI, ptIos->m_bEssBus1IcAmpCB);                                      //row 1 CB137
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tIcsCab, ptSystem->m_tCircuit.m_tOverheadPanel.m_uIcsCab, ptPlc->m_tOverhead.m_bEssBus1IcsCabCB_DI, ptIos->m_bEssBus1IcsCabCB);                                  //row 1 CB138
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tDimmTest, ptSystem->m_tCircuit.m_tOverheadPanel.m_puDimmTest[0], ptPlc->m_tOverhead.m_bEssBus1DimmTestCB_DI, ptIos->m_bEssBus1DimmTestCB);                      //row 1 CB139
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tCom4Xcvr, ptSystem->m_tCircuit.m_tOverheadPanel.m_uCom4Xcvr, ptPlc->m_tOverhead.m_bAvShedBus1Com4XcvrCB_DI, ptIos->m_bAvShedBus1Com4XcvrCB);                    //row 1 CB140
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tCom4Ctrl, ptSystem->m_tCircuit.m_tOverheadPanel.m_uCom4Ctrl, ptPlc->m_tOverhead.m_bAvShedBus1Com4CtrlCB_DI, ptIos->m_bAvShedBus1Com4CtrlCB);                    //row 1 CB141
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tVhfTx1, ptSystem->m_tCircuit.m_tOverheadPanel.m_uVhfTx1, ptPlc->m_tOverhead.m_bAvEssBus1VhfTx1CB_DI, ptIos->m_bAvEssBus1VhfTx1CB);                              //row 2 CB113
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tNms1, ptSystem->m_tCircuit.m_tOverheadPanel.m_uNms1, ptPlc->m_tOverhead.m_bAvEssBus1Nms1CB_DI, ptIos->m_bAvEssBus1Nms1CB);                                      //row 2 CB114
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tNmsBlw, ptSystem->m_tCircuit.m_tOverheadPanel.m_uNmsBlw, ptPlc->m_tOverhead.m_bAvShedBus1NmsBlwCB_DI, ptIos->m_bAvShedBus1NmsBlwCB);                            //row 2 CB115
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tLhMon, ptSystem->m_tCircuit.m_tOverheadPanel.m_uLhMon, ptPlc->m_tOverhead.m_bAvShedBus1LHMonCB_DI, ptIos->m_bAvShedBus1LHMonCB);                                //row 2 CB117
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tBambiBucket, ptSystem->m_tCircuit.m_tOverheadPanel.m_uBambiBucket, ptPlc->m_tOverhead.m_bShedBus1BambiBucketCB_DI, ptIos->m_bShedBus1BambiBucketCB);            //row 2 CB121
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tAvioMain1, ptSystem->m_tCircuit.m_tOverheadPanel.m_uAvioMain1, ptPlc->m_tOverhead.m_bShedBus1AvioMainCB_DI, ptIos->m_bShedBus1AvioMainCB);                      //row 2 CB123
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tFcds2Backup, ptSystem->m_tCircuit.m_tOverheadPanel.m_uFcds2Backup, ptPlc->m_tOverhead.m_bAvEssBus1FCDS2BackupCB_DI, ptIos->m_bAvEssBus1FCDS2BackupCB);          //row 3 CB093
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tPtStCp, ptSystem->m_tCircuit.m_tOverheadPanel.m_uPtStCp, ptPlc->m_tOverhead.m_bShedBus1PtStCpCB_DI, ptIos->m_bShedBus1PtStCpCB);                                //row 3 CB096
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tAp2, ptSystem->m_tCircuit.m_tOverheadPanel.m_uAp2, ptPlc->m_tOverhead.m_bShedBus1Ap2CB_DI, ptIos->m_bShedBus1Ap2CB);                                            //row 3 CB097
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tPwr, ptSystem->m_tCircuit.m_tOverheadPanel.m_puPwr[0], ptPlc->m_tOverhead.m_bShedBus1LoadHookPwrCB_DI, ptIos->m_bShedBus1LoadHookPwrCB);                        //row 3 CB099
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tCargoPaxLt, ptSystem->m_tCircuit.m_tOverheadPanel.m_uCargoPaxLt, ptPlc->m_tOverhead.m_bShedBus1CargoPaxLtCB_DI, ptIos->m_bShedBus1CargoPaxLtCB);                //row 3 CB100
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tCont1LsLt, ptSystem->m_tCircuit.m_tOverheadPanel.m_uCont1LsLt, ptPlc->m_tOverhead.m_bShedBus1Cont1LSLtCB_DI, ptIos->m_bShedBus1Cont1LSLtCB);                    //row 3 CB101
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tXferaPump, ptSystem->m_tCircuit.m_tOverheadPanel.m_uXferaPump, ptPlc->m_tOverhead.m_bShedBus1XferAPumpCB_DI, ptIos->m_bShedBus1XferAPumpCB);                    //row 3 CB102
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tFcdm1, ptSystem->m_tCircuit.m_tOverheadPanel.m_puFcdm[0], ptPlc->m_tOverhead.m_bAvEssBus1Fcdm1CB_DI, ptIos->m_bAvEssBus1Fcdm1CB);                               //row 4 CB073
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tNd1, ptSystem->m_tCircuit.m_tOverheadPanel.m_puNd[0], ptPlc->m_tOverhead.m_bAvEssBus1Nd1CB_DI, ptIos->m_bAvEssBus1Nd1CB);                                       //row 4 CB074
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tPfd1, ptSystem->m_tCircuit.m_tOverheadPanel.m_puPfd[0], ptPlc->m_tOverhead.m_bAvEssBus1Pfd1CB_DI, ptIos->m_bAvEssBus1Pfd1CB);                                   //row 4 CB075
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tBlwPel, ptSystem->m_tCircuit.m_tOverheadPanel.m_puBlwPel[0], ptPlc->m_tOverhead.m_bEssBus1BlwPelCB_DI, ptIos->m_bEssBus1BlwPelCB);                              //row 4 CB076
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tNms12Relay, ptSystem->m_tCircuit.m_tOverheadPanel.m_uNms12Relay, ptPlc->m_tOverhead.m_bEssBus1Nms1Over2RelayCB_DI, ptIos->m_bEssBus1Nms1Over2RelayCB);          //row 4 CB077
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tAhrs1, ptSystem->m_tCircuit.m_tOverheadPanel.m_puAhrs1[0], ptPlc->m_tOverhead.m_bEssBus1Ahrs1CB_DI, ptIos->m_bEssBus1Ahrs1CB);                                  //row 4 CB078
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tAhrs2, ptSystem->m_tCircuit.m_tOverheadPanel.m_puAhrs2[0], ptPlc->m_tOverhead.m_bEssBus1Ahrs2CB_DI, ptIos->m_bEssBus1Ahrs2CB);                                  //row 4 CB079
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tAdc, ptSystem->m_tCircuit.m_tOverheadPanel.m_puAdc[0], ptPlc->m_tOverhead.m_bEssBus1AdcCB_DI, ptIos->m_bEssBus1AdcCB);                                          //row 4 CB080
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tAvioMstr, ptSystem->m_tCircuit.m_tOverheadPanel.m_puAvioMstrFake[0], ptPlc->m_tOverhead.m_bEssBus1AvioMasterCB_DI, ptIos->m_bEssBus1AvioMasterCB);                  //row 4 CB081
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tEssAvioMain1, ptSystem->m_tCircuit.m_tOverheadPanel.m_puEssAvioMain[0], ptPlc->m_tOverhead.m_bEssBus1AvioMainCB_DI, ptIos->m_bEssBus1AvioMainCB);               //row 4 CB082
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tIcs, ptSystem->m_tCircuit.m_tOverheadPanel.m_puIcs[0], ptPlc->m_tOverhead.m_bEssBus1IcsCB_DI, ptIos->m_bEssBus1IcsCB);                                          //row 5 CB054
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tInstrLights, ptSystem->m_tCircuit.m_tOverheadPanel.m_uInstrLights, ptPlc->m_tOverhead.m_bEssBus1InstrLightsCB_DI, ptIos->m_bEssBus1InstrLightsCB);              //row 5 CB056
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tP1Sas, ptSystem->m_tCircuit.m_tOverheadPanel.m_uP1Sas, ptPlc->m_tOverhead.m_bEssBus1P1SasCB_DI, ptIos->m_bEssBus1P1SasCB);                                      //row 5 CB057
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tHtgCont, ptSystem->m_tCircuit.m_tOverheadPanel.m_uHtgCont, ptPlc->m_tOverhead.m_bEssBus1HtgContCB_DI, ptIos->m_bEssBus1HtgContCB);                              //row 5 CB059
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tCkptVent, ptSystem->m_tCircuit.m_tOverheadPanel.m_uCkptVent, ptPlc->m_tOverhead.m_bEssBus1CkptVentCB_DI, ptIos->m_bEssBus1CkptVentCB);                          //row 5 CB060
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tFtr, ptSystem->m_tCircuit.m_tOverheadPanel.m_uFtr, ptPlc->m_tOverhead.m_bEssBus1FtrCB_DI, ptIos->m_bEssBus1FtrCB);                                              //row 5 CB061
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tRoll1Sas, ptSystem->m_tCircuit.m_tOverheadPanel.m_uRoll1Sas, ptPlc->m_tOverhead.m_bEssBus1Roll1SasCB_DI, ptIos->m_bEssBus1Roll1SasCB);                          //row 5 CB062
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tCont, ptSystem->m_tCircuit.m_tOverheadPanel.m_uCont, ptPlc->m_tOverhead.m_bEssBus1WinchContCB_DI, ptIos->m_bEssBus1WinchContCB);                                //row 6 CB037
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tCcPil, ptSystem->m_tCircuit.m_tOverheadPanel.m_uCcPil, ptPlc->m_tOverhead.m_bEssBus1WinchCcPilCB_DI, ptIos->m_bEssBus1WinchCcPilCB);                            //row 6 CB038
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tBoom, ptSystem->m_tCircuit.m_tOverheadPanel.m_uBoom, ptPlc->m_tOverhead.m_bEssBus1WinchBoomCB_DI, ptIos->m_bEssBus1WinchBoomCB);                                //row 6 CB039
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tPos, ptSystem->m_tCircuit.m_tOverheadPanel.m_uPos, ptPlc->m_tOverhead.m_bEssBus1LightsPosCB_DI, ptIos->m_bEssBus1LightsPosCB);                                  //row 6 CB040
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tLdg, ptSystem->m_tCircuit.m_tOverheadPanel.m_uLdg, ptPlc->m_tOverhead.m_bEssBus1LightsLdgCB_DI, ptIos->m_bEssBus1LightsLdgCB);                                  //row 6 CB041
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tCkpt, ptSystem->m_tCircuit.m_tOverheadPanel.m_uCkpt, ptPlc->m_tOverhead.m_bEssBus1LightsCkptCB_DI, ptIos->m_bEssBus1LightsCkptCB);                              //row 6 CB042
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tVarNr, ptSystem->m_tCircuit.m_tOverheadPanel.m_uVarNr, ptPlc->m_tOverhead.m_bEssBus1VarNrCB_DI, ptIos->m_bEssBus1VarNrCB);                                      //row 6 CB043
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tSandFilt, ptSystem->m_tCircuit.m_tOverheadPanel.m_puSandFilt[0], ptPlc->m_tOverhead.m_bSandFiltCB_DI[0], ptIos->m_bSandFiltCB[0]);                              //row 7 CB017
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tWiper, ptSystem->m_tCircuit.m_tOverheadPanel.m_uWiper, ptPlc->m_tOverhead.m_bEssBus1EngWiperCB_DI, ptIos->m_bEssBus1EngWiperCB);                                //row 7 CB018
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tTqN2, ptSystem->m_tCircuit.m_tOverheadPanel.m_puTqN2[0], ptPlc->m_tOverhead.m_bEssBus1EngTqN2CB_DI, ptIos->m_bEssBus1EngTqN2CB);                                //row 7 CB019
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tOvsp, ptSystem->m_tCircuit.m_tOverheadPanel.m_puOvsp[0], ptPlc->m_tOverhead.m_bEssBus1EngOvspCB_DI, ptIos->m_bEssBus1EngOvspCB);                                //row 7 CB020
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tPrimeP, ptSystem->m_tCircuit.m_tOverheadPanel.m_puPrimeP[0], ptPlc->m_tOverhead.m_bEssBus1EngPrimePCB_DI, ptIos->m_bEssBus1EngPrimePCB);                        //row 7 CB021
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tFireD, ptSystem->m_tCircuit.m_tOverheadPanel.m_puFireD[0], ptPlc->m_tOverhead.m_bEssBus1EngFireDCB_DI, ptIos->m_bEssBus1EngFireDCB);                            //row 7 CB022
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tFuelV, ptSystem->m_tCircuit.m_tOverheadPanel.m_puFuelV[0], ptPlc->m_tOverhead.m_bEssBus1EngFuelVCB_DI, ptIos->m_bEssBus1EngFuelVCB);                            //row 7 CB023
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tIgn, ptSystem->m_tCircuit.m_tOverheadPanel.m_puIgn[0], ptPlc->m_tOverhead.m_bEssBus1EngIgnCB_DI, ptIos->m_bEssBus1EngIgnCB);                                    //row 7 CB024
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tStart, ptSystem->m_tCircuit.m_tOverheadPanel.m_puStart[0], ptPlc->m_tOverhead.m_bEssBus1EngStartCB_DI, ptIos->m_bEssBus1EngStartCB);                            //row 7 CB025
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tGen, ptSystem->m_tCircuit.m_tOverheadPanel.m_puGen[0], ptPlc->m_tOverhead.m_bEssBus1SysGenCB_DI, ptIos->m_bEssBus1SysGenCB);                                    //row 8 CB001
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tBt, ptSystem->m_tCircuit.m_tOverheadPanel.m_puBt[0], ptPlc->m_tOverhead.m_bEssBus1SysBtCB_DI, ptIos->m_bEssBus1SysBtCB);                                        //row 8 CB002
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tFireE, ptSystem->m_tCircuit.m_tOverheadPanel.m_puFireE[0], ptPlc->m_tOverhead.m_bEssBus1SysFireECB_DI, ptIos->m_bEssBus1SysFireECB);                            //row 8 CB003
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tFuelL, ptSystem->m_tCircuit.m_tOverheadPanel.m_puFuelL[0], ptPlc->m_tOverhead.m_bEssBus1SysFuelLCB_DI, ptIos->m_bEssBus1SysFuelLCB);                            //row 8 CB004
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tHydP, ptSystem->m_tCircuit.m_tOverheadPanel.m_puHydP[0], ptPlc->m_tOverhead.m_bEssBus1SysHydPCB_DI, ptIos->m_bEssBus1SysHydPCB);                                //row 8 CB005
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tWu, ptSystem->m_tCircuit.m_tOverheadPanel.m_puWu[0], ptPlc->m_tOverhead.m_bEssBus1SysWuCB_DI, ptIos->m_bEssBus1SysWuCB);                                        //row 8 CB006
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tCad, ptSystem->m_tCircuit.m_tOverheadPanel.m_puCad[0], ptPlc->m_tOverhead.m_bEssBus1SysCadCB_DI, ptIos->m_bEssBus1SysCadCB);                                    //row 8 CB007
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tCoPilot.m_tVemd, ptSystem->m_tCircuit.m_tOverheadPanel.m_puVemd[0], ptPlc->m_tOverhead.m_bEssBus1SysVemdCB_DI, ptIos->m_bEssBus1SysVemdCB);                                //row 8 CB008
+
+    //Pilot breakers
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tDimmTest2, ptSystem->m_tCircuit.m_tOverheadPanel.m_puDimmTest[1], ptPlc->m_tOverhead.m_bEssBus2DimmTest2CB_DI, ptIos->m_bEssBus2DimmTest2CB);                     //row 1 CB146
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tICSBackup, ptSystem->m_tCircuit.m_tOverheadPanel.m_uIcsBackup, ptPlc->m_tOverhead.m_bEssBus2IcsBackupCB_DI, ptIos->m_bEssBus2IcsBackupCB);                        //row 1 CB147
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tNms2, ptSystem->m_tCircuit.m_tOverheadPanel.m_uNms2, ptPlc->m_tOverhead.m_bEssBus2Nms2CB_DI, ptIos->m_bEssBus2Nms2CB);                                            //row 1 CB148
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tBatEmExLt, ptSystem->m_tCircuit.m_tOverheadPanel.m_uBatEmExLt, ptPlc->m_tOverhead.m_bBatEmExltCB_DI, ptIos->m_bBatEmExltCB);                                      //row 1 CB149
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tAvioMain2, ptSystem->m_tCircuit.m_tOverheadPanel.m_uAvioMain2, ptPlc->m_tOverhead.m_bShedBus2AvioMainCB_DI, ptIos->m_bShedBus2AvioMainCB);                        //row 2 CB124
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tEmerBat, ptSystem->m_tCircuit.m_tOverheadPanel.m_uEmerBat, ptPlc->m_tOverhead.m_bShedBus2EmerBatCB_DI, ptIos->m_bShedBus2EmerBatCB);                              //row 2 CB125
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tVideoDist, ptSystem->m_tCircuit.m_tOverheadPanel.m_uVideoDist, ptPlc->m_tOverhead.m_bAvShedBus2VideoDistCB_DI, ptIos->m_bAvShedBus2VideoDistCB);                  //row 2 CB126
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tRhMon, ptSystem->m_tCircuit.m_tOverheadPanel.m_uRhMon, ptPlc->m_tOverhead.m_bAvShedBus2RHMonCB_DI, ptIos->m_bAvShedBus2RHMonCB);                                  //row 2 CB127
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tMovMap, ptSystem->m_tCircuit.m_tOverheadPanel.m_uMovMap, ptPlc->m_tOverhead.m_bAvShedBus2MovMapCB_DI, ptIos->m_bAvShedBus2MovMapCB);                              //row 2 CB128
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tRadAlt, ptSystem->m_tCircuit.m_tOverheadPanel.m_uRadAlt, ptPlc->m_tOverhead.m_bAvShedBus2RadAltCB_DI, ptIos->m_bAvShedBus2RadAltCB);                              //row 2 CB129
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tDme, ptSystem->m_tCircuit.m_tOverheadPanel.m_uDme, ptPlc->m_tOverhead.m_bAvShedBus2DmeCB_DI, ptIos->m_bAvShedBus2DmeCB);                                          //row 2 CB130
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tCm3Ant, ptSystem->m_tCircuit.m_tOverheadPanel.m_uCm3Ant, ptPlc->m_tOverhead.m_bAvShedBus2Cm3AntCB_DI, ptIos->m_bAvShedBus2Cm3AntCB);                              //row 2 CB131
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tCm3Rt, ptSystem->m_tCircuit.m_tOverheadPanel.m_uCm3Rt, ptPlc->m_tOverhead.m_bAvShedBus2Cm3RtCB_DI, ptIos->m_bAvShedBus2Cm3RtCB);                                  //row 2 CB132
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tMkr, ptSystem->m_tCircuit.m_tOverheadPanel.m_uMkr, ptPlc->m_tOverhead.m_bAvShedBus2MkrCB_DI, ptIos->m_bAvShedBus2MkrCB);                                          //row 2 CB133
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tCom5Xcvr, ptSystem->m_tCircuit.m_tOverheadPanel.m_uCom5Xcvr, ptPlc->m_tOverhead.m_bAvShedBus2Com5XcvrCB_DI, ptIos->m_bAvShedBus2Com5XcvrCB);                      //row 2 CB134
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tHtgv, ptSystem->m_tCircuit.m_tOverheadPanel.m_uHtgv, ptPlc->m_tOverhead.m_bShedBus2HtgVCB_DI, ptIos->m_bShedBus2HtgVCB);                                          //row 3 CB103
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tInstCool, ptSystem->m_tCircuit.m_tOverheadPanel.m_uInstCool, ptPlc->m_tOverhead.m_bShedBus2InstCoolCB_DI, ptIos->m_bShedBus2InstCoolCB);                          //row 3 CB104
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tPaxBlw, ptSystem->m_tCircuit.m_tOverheadPanel.m_uPaxBlw, ptPlc->m_tOverhead.m_bShedBus2PaxBlwCB_DI, ptIos->m_bShedBus2PaxBlwCB);                                  //row 3 CB105
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tPwr, ptSystem->m_tCircuit.m_tOverheadPanel.m_puPwr[1], ptPlc->m_tOverhead.m_bShedBus2LSLightPwrCB_DI, ptIos->m_bShedBus2LSLightPwrCB);                            //row 3 CB106
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tCont2, ptSystem->m_tCircuit.m_tOverheadPanel.m_uCont2, ptPlc->m_tOverhead.m_bShedBus2LSLightCont2CB_DI, ptIos->m_bShedBus2LSLightCont2CB);                        //row 3 CB107
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tAtc, ptSystem->m_tCircuit.m_tOverheadPanel.m_uAtc, ptPlc->m_tOverhead.m_bAvEssBus2AtcCB_DI, ptIos->m_bAvEssBus2AtcCB);                                            //row 3 CB110
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tWaasRelay, ptSystem->m_tCircuit.m_tOverheadPanel.m_uWaasRelay, ptPlc->m_tOverhead.m_bAvEssBus2WaasRelayCB_DI, ptIos->m_bAvEssBus2WaasRelayCB);                    //row 3 CB111
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tEssAvioMain2, ptSystem->m_tCircuit.m_tOverheadPanel.m_puEssAvioMain[1], ptPlc->m_tOverhead.m_bEssBus2AvioMainCB_DI, ptIos->m_bEssBus2AvioMainCB);                 //row 4 CB083
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tAvioMast, ptSystem->m_tCircuit.m_tOverheadPanel.m_puAvioMstrFake[1], ptPlc->m_tOverhead.m_bEssBus2AvioMasterCB_DI, ptIos->m_bEssBus2AvioMasterCB);                    //row 4 CB084
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tAdc, ptSystem->m_tCircuit.m_tOverheadPanel.m_puAdc[1], ptPlc->m_tOverhead.m_bEssBus2AdcCB_DI, ptIos->m_bEssBus2AdcCB);                                            //row 4 CB085
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tAhrs1, ptSystem->m_tCircuit.m_tOverheadPanel.m_puAhrs1[1], ptPlc->m_tOverhead.m_bEssBus2Ahrs1CB_DI, ptIos->m_bEssBus2Ahrs1CB);                                    //row 4 CB086
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tAh2s2, ptSystem->m_tCircuit.m_tOverheadPanel.m_puAhrs2[1], ptPlc->m_tOverhead.m_bEssBus2Ahrs2CB_DI, ptIos->m_bEssBus2Ahrs2CB);                                    //row 4 CB087
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tRoll2Sema, ptSystem->m_tCircuit.m_tOverheadPanel.m_uRoll2Sema, ptPlc->m_tOverhead.m_bEssBus2Roll2SemaCB_DI, ptIos->m_bEssBus2Roll2SemaCB);                        //row 4 CB088
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tBlwPel, ptSystem->m_tCircuit.m_tOverheadPanel.m_puBlwPel[1], ptPlc->m_tOverhead.m_bEssBus2BlwPelCB_DI, ptIos->m_bEssBus2BlwPelCB);                                //row 4 CB089
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tPfd2, ptSystem->m_tCircuit.m_tOverheadPanel.m_puPfd[1], ptPlc->m_tOverhead.m_bAvEssBus2Pfd2CB_DI, ptIos->m_bAvEssBus2Pfd2CB);                                     //row 4 CB090
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tNd2, ptSystem->m_tCircuit.m_tOverheadPanel.m_puNd[1], ptPlc->m_tOverhead.m_bAvEssBus2Nd2CB_DI, ptIos->m_bAvEssBus2Nd2CB);                                         //row 4 CB091
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tFcdm2, ptSystem->m_tCircuit.m_tOverheadPanel.m_puFcdm[1], ptPlc->m_tOverhead.m_bAvEssBus2Fcdm2CB_DI, ptIos->m_bAvEssBus2Fcdm2CB);                                 //row 4 CB092
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tYawSas, ptSystem->m_tCircuit.m_tOverheadPanel.m_uYawSas, ptPlc->m_tOverhead.m_bEssBus2YawSasCB_DI, ptIos->m_bEssBus2YawSasCB);                                    //row 5 CB063
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tBeepTrim, ptSystem->m_tCircuit.m_tOverheadPanel.m_uBeepTrim, ptPlc->m_tOverhead.m_bEssBus2BeepTrimCB_DI, ptIos->m_bEssBus2BeepTrimCB);                            //row 5 CB064
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tMastMom, ptSystem->m_tCircuit.m_tOverheadPanel.m_uMastMom, ptPlc->m_tOverhead.m_bEssBus2MastMomCB_DI, ptIos->m_bEssBus2MastMomCB);                                //row 5 CB065
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tXferfPump, ptSystem->m_tCircuit.m_tOverheadPanel.m_uXferfPump, ptPlc->m_tOverhead.m_bEssBus2XferFPumpCB_DI, ptIos->m_bEssBus2XferFPumpCB);                        //row 5 CB066
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tP2Sema, ptSystem->m_tCircuit.m_tOverheadPanel.m_uP2Sema, ptPlc->m_tOverhead.m_bEssBus2P2SemaCB_DI, ptIos->m_bEssBus2P2SemaCB);                                    //row 5 CB068
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tAp1, ptSystem->m_tCircuit.m_tOverheadPanel.m_uAp1, ptPlc->m_tOverhead.m_bEssBus2Ap1CB_DI, ptIos->m_bEssBus2Ap1CB);                                                //row 5 CB069
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tAltmVibr, ptSystem->m_tCircuit.m_tOverheadPanel.m_uAltmVibr, ptPlc->m_tOverhead.m_bEssBus2AltmVibrCB_DI, ptIos->m_bEssBus2AltmVibrCB);                            //row 5 CB070
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tIcs, ptSystem->m_tCircuit.m_tOverheadPanel.m_puIcs[1], ptPlc->m_tOverhead.m_bEssBus2IcsCB_DI, ptIos->m_bEssBus2IcsCB);                                             //row 5 CB071
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tVhfTx2, ptSystem->m_tCircuit.m_tOverheadPanel.m_uVhfTx2, ptPlc->m_tOverhead.m_bEssBus2VhfTx2CB_DI, ptIos->m_bEssBus2VhfTx2CB);                                    //row 5 CB072
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tN2Trim, ptSystem->m_tCircuit.m_tOverheadPanel.m_uN2Trim, ptPlc->m_tOverhead.m_bEssBus2N2TrimCB_DI, ptIos->m_bEssBus2N2TrimCB);                                      //row 6 CB044
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tInstr, ptSystem->m_tCircuit.m_tOverheadPanel.m_uInstr, ptPlc->m_tOverhead.m_bEssBus2LightsInstrCB_DI, ptIos->m_bEssBus2LightsInstrCB);                            //row 6 CB045
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tAcol, ptSystem->m_tCircuit.m_tOverheadPanel.m_uAcol, ptPlc->m_tOverhead.m_bEssBus2LightsAcolCB_DI, ptIos->m_bEssBus2LightsAcolCB);                                //row 6 CB046
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tEmEx, ptSystem->m_tCircuit.m_tOverheadPanel.m_uEmEx, ptPlc->m_tOverhead.m_bEssBus2LightsEmExCB_DI, ptIos->m_bEssBus2LightsEmExCB);                                //row 6 CB047
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tCcPedWinch, ptSystem->m_tCircuit.m_tOverheadPanel.m_uCcPedWinch, ptPlc->m_tOverhead.m_bEssBus2CcPedWinchCB_DI, ptIos->m_bEssBus2CcPedWinchCB);                    //row 6 CB048
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tPtStPlt, ptSystem->m_tCircuit.m_tOverheadPanel.m_uPtStPlt, ptPlc->m_tOverhead.m_bEssBus2PtStPltCB_DI, ptIos->m_bEssBus2PtStPltCB);                                //row 6 CB050
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tDwnlnkAduB, ptSystem->m_tCircuit.m_tOverheadPanel.m_uDwnlnkAduB, ptPlc->m_tOverhead.m_bEssBus2DwnlnkAduBCB_DI, ptIos->m_bEssBus2DwnlnkAduBCB);                    //row 6 CB052
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tStart, ptSystem->m_tCircuit.m_tOverheadPanel.m_puStart[1], ptPlc->m_tOverhead.m_bEssBus2EngStartCB_DI, ptIos->m_bEssBus2EngStartCB);                              //row 7 CB026
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tIgn, ptSystem->m_tCircuit.m_tOverheadPanel.m_puIgn[1], ptPlc->m_tOverhead.m_bEssBus2EngIgnCB_DI, ptIos->m_bEssBus2EngIgnCB);                                      //row 7 CB027
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tFuelV, ptSystem->m_tCircuit.m_tOverheadPanel.m_puFuelV[1], ptPlc->m_tOverhead.m_bEssBus2EngFuelVCB_DI, ptIos->m_bEssBus2EngFuelVCB);                              //row 7 CB028
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tFireD, ptSystem->m_tCircuit.m_tOverheadPanel.m_puFireD[1], ptPlc->m_tOverhead.m_bEssBus2EngFireDCB_DI, ptIos->m_bEssBus2EngFireDCB);                              //row 7 CB029
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tPrimeP, ptSystem->m_tCircuit.m_tOverheadPanel.m_puPrimeP[1], ptPlc->m_tOverhead.m_bEssBus2EngPrimePCB_DI, ptIos->m_bEssBus2EngPrimePCB);                          //row 7 CB030
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tOvsp, ptSystem->m_tCircuit.m_tOverheadPanel.m_puOvsp[1], ptPlc->m_tOverhead.m_bEssBus2EngOvspCB_DI, ptIos->m_bEssBus2EngOvspCB);                                  //row 7 CB031
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tTqN2, ptSystem->m_tCircuit.m_tOverheadPanel.m_puTqN2[1], ptPlc->m_tOverhead.m_bEssBus2EngTqN2CB_DI, ptIos->m_bEssBus2EngTqN2CB);                                  //row 7 CB032
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tRotorRpm, ptSystem->m_tCircuit.m_tOverheadPanel.m_uRotorRpm, ptPlc->m_tOverhead.m_bEssBus2RotorRpmCB_DI, ptIos->m_bEssBus2RotorRpmCB);                            //row 7 CB033
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tSandFilt, ptSystem->m_tCircuit.m_tOverheadPanel.m_puSandFilt[1], ptPlc->m_tOverhead.m_bSandFiltCB_DI[1], ptIos->m_bSandFiltCB[1]);                                //row 7 CB034
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tVemd, ptSystem->m_tCircuit.m_tOverheadPanel.m_puVemd[1], ptPlc->m_tOverhead.m_bEssBus2SysVemdCB_DI, ptIos->m_bEssBus2SysVemdCB);                                  //row 8 CB009
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tCad, ptSystem->m_tCircuit.m_tOverheadPanel.m_puCad[1], ptPlc->m_tOverhead.m_bEssBus2SysCadCB_DI, ptIos->m_bEssBus2SysCadCB);                                      //row 8 CB010
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tWu, ptSystem->m_tCircuit.m_tOverheadPanel.m_puWu[1], ptPlc->m_tOverhead.m_bEssBus2SysWuCB_DI, ptIos->m_bEssBus2SysWuCB);                                          //row 8 CB011
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tHydP, ptSystem->m_tCircuit.m_tOverheadPanel.m_puHydP[1], ptPlc->m_tOverhead.m_bEssBus2SysHydPCB_DI, ptIos->m_bEssBus2SysHydPCB);                                  //row 8 CB012
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tFuelL, ptSystem->m_tCircuit.m_tOverheadPanel.m_puFuelL[1], ptPlc->m_tOverhead.m_bEssBus2SysFuelLCB_DI, ptIos->m_bEssBus2SysFuelLCB);                              //row 8 CB013
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tFireE, ptSystem->m_tCircuit.m_tOverheadPanel.m_puFireE[1], ptPlc->m_tOverhead.m_bEssBus2SysFireECB_DI, ptIos->m_bEssBus2SysFireECB);                              //row 8 CB014
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tBt, ptSystem->m_tCircuit.m_tOverheadPanel.m_puBt[1], ptPlc->m_tOverhead.m_bEssBus2SysBtCB_DI, ptIos->m_bEssBus2SysBtCB);                                          //row 8 CB015
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tPilot.m_tGen, ptSystem->m_tCircuit.m_tOverheadPanel.m_puGen[1], ptPlc->m_tOverhead.m_bEssBus2SysGenCB_DI, ptIos->m_bEssBus2SysGenCB);                                      //row 8 CB016
+
+    //floor breakers
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tLowerPanel.m_tCabinMonitor, ptSystem->m_tCircuit.m_tFloorPanel.m_uCabinMonitor, ptPlc->m_tMissionBusAssy.m_bNonEssBus1CabinMonitorCB_DI, ptIos->m_bNonEssBus1CabinMonitorCB); //CB019
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tLowerPanel.m_tDvr, ptSystem->m_tCircuit.m_tFloorPanel.m_uDvr, ptPlc->m_tMissionBusAssy.m_bNonEssBus1DvrCB_DI, ptIos->m_bNonEssBus1DvrCB);                                     //CB020
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tLowerPanel.m_tMx15Imager, ptSystem->m_tCircuit.m_tFloorPanel.m_uMx15Imager, ptPlc->m_tMissionBusAssy.m_bNonEssBus1Mx15ImagerCB_DI, ptIos->m_bNonEssBus1Mx15ImagerCB);         //CB021
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tLowerPanel.m_tLs16Cntl, ptSystem->m_tCircuit.m_tFloorPanel.m_uLs16Cntl, ptPlc->m_tMissionBusAssy.m_bNonEssBus2Ls16CntlCB_DI, ptIos->m_bNonEssBus2Ls16CntlCB);                 //CB022
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tLowerPanel.m_tDwnlnkCntl, ptSystem->m_tCircuit.m_tFloorPanel.m_uDwnlnkCntl, ptPlc->m_tMissionBusAssy.m_bNonEssBus2DwnlnkCntlCB_DI, ptIos->m_bNonEssBus2DwnlnkCntlCB);         //CB023
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tLowerPanel.m_tDwnlnkAdu, ptSystem->m_tCircuit.m_tFloorPanel.m_uDwnlnkAdu, ptPlc->m_tMissionBusAssy.m_bNonEssBus2DwnlnkAduCB_DI, ptIos->m_bNonEssBus2DwnlnkAduCB);             //CB024
+    
+    //Spares / Inactive
+    //overhead
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tInactives.m_tAvEssBus1Inactive[0]  ,ptSystem->m_tCircuit.m_tFloorPanel.m_puAvEssBus1Inactive[0], ptPlc->m_tOverhead.m_bAvEssBus1InactiveCB_DI[0], ptIos->m_bAvEssBus1InactiveCB[0]);
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tInactives.m_tAvEssBus1Inactive[1]  ,ptSystem->m_tCircuit.m_tFloorPanel.m_puAvEssBus1Inactive[1], ptPlc->m_tOverhead.m_bAvEssBus1InactiveCB_DI[1], ptIos->m_bAvEssBus1InactiveCB[1]);
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tInactives.m_tAvEssBus2Inactive[0]  ,ptSystem->m_tCircuit.m_tFloorPanel.m_puAvEssBus2Inactive[0], ptPlc->m_tOverhead.m_bAvEssBus2InactiveCB_DI[0], ptIos->m_bAvEssBus2InactiveCB[0]);
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tInactives.m_tAvEssBus2Inactive[1]  ,ptSystem->m_tCircuit.m_tFloorPanel.m_puAvEssBus2Inactive[1], ptPlc->m_tOverhead.m_bAvEssBus2InactiveCB_DI[1], ptIos->m_bAvEssBus2InactiveCB[1]);
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tInactives.m_tAvShedBus1Inactive[0] ,ptSystem->m_tCircuit.m_tFloorPanel.m_puAvShedBus1Inactive[0], ptPlc->m_tOverhead.m_bAvShedBus1InactiveCB_DI[0], ptIos->m_bAvShedBus1InactiveCB[0]);
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tInactives.m_tAvShedBus1Inactive[1] ,ptSystem->m_tCircuit.m_tFloorPanel.m_puAvShedBus1Inactive[1], ptPlc->m_tOverhead.m_bAvShedBus1InactiveCB_DI[1], ptIos->m_bAvShedBus1InactiveCB[1]);
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tInactives.m_tEssBus1Inactive       ,ptSystem->m_tCircuit.m_tFloorPanel.m_uEssBus1Inactive, ptPlc->m_tOverhead.m_bEssBus1InactiveCB_DI, ptIos->m_bEssBus1InactiveCB);
+    
+    //floor
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tInactives.m_tShedBus1Spare[0]   ,ptSystem->m_tCircuit.m_tFloorPanel.m_puShedBus1Spare[0], ptPlc->m_tMissionBusAssy.m_bShedBus1SpareCB_DI[0], ptIos->m_bShedBus1SpareCB[0]);
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tInactives.m_tShedBus1Spare[1]   ,ptSystem->m_tCircuit.m_tFloorPanel.m_puShedBus1Spare[1], ptPlc->m_tMissionBusAssy.m_bShedBus1SpareCB_DI[1], ptIos->m_bShedBus1SpareCB[1]);
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tInactives.m_tShedBus1Spare[2]   ,ptSystem->m_tCircuit.m_tFloorPanel.m_puShedBus1Spare[2], ptPlc->m_tMissionBusAssy.m_bShedBus1SpareCB_DI[2], ptIos->m_bShedBus1SpareCB[2]);
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tInactives.m_tShedBus1Spare[3]   ,ptSystem->m_tCircuit.m_tFloorPanel.m_puShedBus1Spare[3], ptPlc->m_tMissionBusAssy.m_bShedBus1SpareCB_DI[3], ptIos->m_bShedBus1SpareCB[3]);
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tInactives.m_tShedBus1Spare[4]   ,ptSystem->m_tCircuit.m_tFloorPanel.m_puShedBus1Spare[4], ptPlc->m_tMissionBusAssy.m_bShedBus1SpareCB_DI[4], ptIos->m_bShedBus1SpareCB[4]);
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tInactives.m_tShedBus2Spare[0], ptSystem->m_tCircuit.m_tFloorPanel.m_puShedBus2Spare[0], ptPlc->m_tMissionBusAssy.m_bShedBus2SpareCB_DI[0], ptIos->m_bShedBus2SpareCB[0]);
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tInactives.m_tShedBus2Spare[1], ptSystem->m_tCircuit.m_tFloorPanel.m_puShedBus2Spare[1], ptPlc->m_tMissionBusAssy.m_bShedBus2SpareCB_DI[1], ptIos->m_bShedBus2SpareCB[1]);
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tInactives.m_tShedBus2Spare[2], ptSystem->m_tCircuit.m_tFloorPanel.m_puShedBus2Spare[2], ptPlc->m_tMissionBusAssy.m_bShedBus2SpareCB_DI[2], ptIos->m_bShedBus2SpareCB[2]);
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tInactives.m_tShedBus2Spare[3], ptSystem->m_tCircuit.m_tFloorPanel.m_puShedBus2Spare[3], ptPlc->m_tMissionBusAssy.m_bShedBus2SpareCB_DI[3], ptIos->m_bShedBus2SpareCB[3]);
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tInactives.m_tShedBus2Spare[4], ptSystem->m_tCircuit.m_tFloorPanel.m_puShedBus2Spare[4], ptPlc->m_tMissionBusAssy.m_bShedBus2SpareCB_DI[4], ptIos->m_bShedBus2SpareCB[4]);
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tInactives.m_tNonEssBus1Spare[0] ,ptSystem->m_tCircuit.m_tFloorPanel.m_puNonEssBus1Spare[0], ptPlc->m_tMissionBusAssy.m_bNonEssBus1SpareCB_DI[0], ptIos->m_bNonEssBus1SpareCB[0]);
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tInactives.m_tNonEssBus1Spare[1] ,ptSystem->m_tCircuit.m_tFloorPanel.m_puNonEssBus1Spare[1], ptPlc->m_tMissionBusAssy.m_bNonEssBus1SpareCB_DI[1], ptIos->m_bNonEssBus1SpareCB[1]);
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tInactives.m_tNonEssBus2Spare[0] ,ptSystem->m_tCircuit.m_tFloorPanel.m_puNonEssBus2Spare[0], ptPlc->m_tMissionBusAssy.m_bNonEssBus2SpareCB_DI[0], ptIos->m_bNonEssBus2SpareCB[0]);
+    BindBreakerModifiers(ptInputs, &ptOutputs->m_tBreakers.m_tInactives.m_tNonEssBus2Spare[1] ,ptSystem->m_tCircuit.m_tFloorPanel.m_puNonEssBus2Spare[1], ptPlc->m_tMissionBusAssy.m_bNonEssBus2SpareCB_DI[1], ptIos->m_bNonEssBus2SpareCB[1]);
+􏶳
+
+
+􏷘-􏷗􏷒bind breaker modifiers􏷑
+􏷐bind the PLC breakers, the IOS breakers, the Graph breakers, and the Output breakers together􏷏
+􏶠stores each binding into a vector􏶡
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀the electrical inputs to set from the PLC􏶿
+􏶜mr􏶝􏷆CircuitBreakerT􏷅􏷄output breaker􏷃􏷀a pointer to store to the outputs breakers􏶿
+􏶜􏶝􏷆size_t􏷅􏷄breaker id􏷃􏷀The id of the breaker in the graph􏶿
+􏶜􏶝􏷆BOOL􏷅􏷄plc breaker􏷃􏷀The DI of the breaker from the PLC􏶿
+􏶜􏶝􏷆BOOL􏷅􏷄ios breaker􏷃􏷀The state of the breaker triggered from the IOS􏶿
+􏶴
+    􏶲a binded collection of data for a particular breaker􏶱
+    BreakerBindingT tBreakerBinding;
+    
+    􏶲create a temporary breakers􏶱
+    CircuitBreakerT tIosCircuitBreaker = ConstructCircuitBreaker();
+    CircuitBreakerT tPlcCircuitBreaker = ConstructCircuitBreaker();
+    
+    􏶲change the state of our new IOS breaker􏶱
+    CircuitBreakerChangeState(&tIosCircuitBreaker,􏵶ios breaker􏵷);
+    
+    􏶲change the state of our new PLC breaker􏶱
+    CircuitBreakerChangeState(&tPlcCircuitBreaker,􏵶plc breaker􏵷);
+    
+    􏶲use all of the known data to create a breaker binding􏶱
+    tBreakerBinding = ConstructBreakerBinding(tIosCircuitBreaker,tPlcCircuitBreaker,􏵶breaker id􏵷,􏵶output breaker􏵷);
+    
+    􏶲push back the bindings into a vector􏶱
+    􏶲this way we can iterate over them and not have to do a ton of assignment statements􏶱
+    􏶲We are dealing with the fact that the data is already scattered across different types􏶱
+    􏶲Combining them into a single type, and putting them in an iterative container,􏶱
+    􏶲will give us a consistent and easy way to process the data􏶱
+    VectorPushBack(&􏵶inputs􏵷->m_tBreakerModifiers,&tBreakerBinding);
+􏶳
+
+􏷘-􏷗􏷒collect malfunctions􏷑
+􏷐Applies input malfunctions given from the IOS􏷏
+􏶠These malfunctions will be used to cause electrical failures􏶡
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀the electrical inputs to set from the IOS􏶿
+􏶜r􏶝􏷆IOStoHostT􏷅􏷄ios􏷃􏷀data received from the IOS􏶿
+􏶜r􏶝􏷆PLCInConnectionDataT􏷅􏷄plc􏷃􏷀the plc inputs may also cause particular malfunctions􏶿
+􏶴
+    
+    􏶲read in the IOS malfunctions􏶱
+    
+    􏶲system􏶱
+    􏵶inputs􏵷->m_tMalfunctions.m_ptSystem[0].m_bShortCircuitMainBus = 􏵶ios􏵷->m_bShortCircuitMainBus1;
+    􏵶inputs􏵷->m_tMalfunctions.m_ptSystem[0].m_bBusTieFailsOpen = 􏵶ios􏵷->m_bBusTie1FailsOpen;
+    􏵶inputs􏵷->m_tMalfunctions.m_ptSystem[1].m_bShortCircuitMainBus = 􏵶ios􏵷->m_bShortCircuitMainBus2;
+    􏵶inputs􏵷->m_tMalfunctions.m_ptSystem[1].m_bBusTieFailsOpen = 􏵶ios􏵷->m_bBusTie2FailsOpen;
+    
+    􏶲avionic switch malfunction􏶱
+    􏵶inputs􏵷->m_tMalfunctions.m_ptSystem[0].m_bAvionicSwitchInoperable = ptPlc->m_tOverhead.m_bEssBus1AvioMasterCB_DI;
+    􏵶inputs􏵷->m_tMalfunctions.m_ptSystem[1].m_bAvionicSwitchInoperable = ptPlc->m_tOverhead.m_bEssBus2AvioMasterCB_DI;
+    
+    􏶲generator􏶱
+    􏵲set optional􏵳&􏵶inputs􏵷->m_tMalfunctions.m_ptGenerator[0].m_tStarterOverheat_degc,􏵶ios􏵷->m_bGenerator1StarterGeneratorOverheat,&􏵶ios􏵷->m_fGenerator1StarterGeneratorOverheat);
+    􏵲set optional􏵳&􏵶inputs􏵷->m_tMalfunctions.m_ptGenerator[0].m_tOvervoltage_v,􏵶ios􏵷->m_bGenerator1StarterGeneratorOvervoltage,&􏵶ios􏵷->m_fGenerator1StarterGeneratorOvervoltage);
+    􏵶inputs􏵷->m_tMalfunctions.m_ptGenerator[0].m_bFail = 􏵶ios􏵷->m_bGen1StarterGeneratorFail;
+    􏵲set optional􏵳&􏵶inputs􏵷->m_tMalfunctions.m_ptGenerator[1].m_tStarterOverheat_degc,􏵶ios􏵷->m_bGenerator2StarterGeneratorOverheat,&􏵶ios􏵷->m_fGenerator2StarterGeneratorOverheat);
+    􏵲set optional􏵳&􏵶inputs􏵷->m_tMalfunctions.m_ptGenerator[1].m_tOvervoltage_v,􏵶ios􏵷->m_bGenerator2StarterGeneratorOvervoltage,&􏵶ios􏵷->m_fGenerator2StarterGeneratorOvervoltage);
+    􏵶inputs􏵷->m_tMalfunctions.m_ptGenerator[1].m_bFail = 􏵶ios􏵷->m_bGen2StarterGeneratorFail;
+    
+    
+    􏶲battery􏶱
+    􏵶inputs􏵷->m_tMalfunctions.m_tBattery.m_bRelayFails = 􏵶ios􏵷->m_bBatteryRelayFails;
+    􏵶inputs􏵷->m_tMalfunctions.m_tBattery.m_bShortCircuitBus = 􏵶ios􏵷->m_bCircuitBatteryBus;
+    
+    􏶲from malfunction description􏶱
+    􏵶inputs􏵷->m_tMalfunctions.m_ptGenerator[0].m_fNewVoltageOnShortCircuit_v = 12.0f;
+    􏵶inputs􏵷->m_tMalfunctions.m_ptGenerator[1].m_fNewVoltageOnShortCircuit_v = 12.0f;
+    
+    􏶲epu related malfunction􏶱
+    􏵶inputs􏵷->m_tMalfunctions.m_tEpu.m_bDoorLeftOpen = 􏵶ios􏵷->m_bDoorsEPUOpen;
+    
+    
+􏶳
+
+􏷘-􏷗􏷒set optional􏷑
+􏷐Sets the state of the optional malfunction based on a bool and a value􏷏
+􏶠The malfunction will either have a value, or not have a value􏶡
+􏶜mr􏶝􏷆OptionalT􏷅􏷄malfunction􏷃􏷀the optional malfunction to decide if a value is available􏶿
+􏶜􏶝􏷆BOOL􏷅􏷄activate􏷃􏷀whether or not the malfunction's value should be used􏶿
+􏶜r􏶝􏷆void􏷅􏷄value􏷃􏷀the malfunction value to potentially assign􏶿
+􏶴
+    􏶲assign the optional value if it is said to be activated􏶱
+    if (􏵶activate􏵷){
+        OptionalAssign(􏵶malfunction􏵷,􏵶value􏵷);
+    }
+    
+    􏶲if it is not activated, ensure the optional type has "no value"􏶱
+    else{
+        OptionalReset(􏵶malfunction􏵷);
+    }
+􏶳
+
+􏷘-􏷗􏷒collect wattage changes􏷑
+􏷐Collects all the wattage changes provoked by other systesms􏷏
+􏶠stored into a vector and iterated over to apply all the wattage changes􏶡
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀the electrical inputs to set from the IOS􏶿
+􏶜r􏶝􏷆DCPowerSystemT􏷅􏷄system􏷃􏷀The DC Power system which contains IDs to device nodes􏶿
+􏶴
+    􏶲Clear the previous wattage changes from the last update,􏶱
+    􏶲in order to add the new wattage changes for the current update.􏶱
+    VectorClear(&􏵶inputs􏵷->m_tWattageChanges);
+    
+    􏵲collect wattage changes from lighting􏵳&􏵶inputs􏵷->m_tWattageChanges,􏵶system􏵷);
+    􏶲add other systems as necessary...􏶱
+􏶳
+
+􏷘-􏷗􏷒collect wattage changes from lighting􏷑
+􏶜mr􏶝􏷆VectorT􏷅􏷄wattage changes􏷃􏷀the collection of wattage changes􏶿
+􏶜r􏶝􏷆DCPowerSystemT􏷅􏷄system􏷃􏷀The DC Power system which contains IDs to device nodes􏶿
+􏶴
+    LightingSystemOutputT tOutputs;
+    ReadLightingSystemOutput(&tOutputs);
+    
+    􏵲bind wattage changes􏵳􏵶wattage changes􏵷,􏵶system􏵷->m_tCircuit.m_tSystemDevices.m_tLighting.m_uLandingSearch,tOutputs.m_tLandingSearch.m_nIntensity_watt);
+    􏵲bind wattage changes􏵳􏵶wattage changes􏵷,􏵶system􏵷->m_tCircuit.m_tSystemDevices.m_tLighting.m_uLs16SearchLight,tOutputs.m_tLs16Searchlight.m_nIntensity_watt);
+􏶳
+
+􏷘-􏷗􏷒bind wattage changes􏷑
+􏷐bind the wattage changes to the device􏷏
+􏶠stores each binding into a vector􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄wattage changes􏷃􏷀the collection of wattage changes􏶿
+􏶜􏶝􏷆size_t􏷅􏷄device id􏷃􏷀The id of the device in the graph􏶿
+􏶜􏶝􏷆float􏷅􏷄wattage􏷃􏷀the new wattage of the device􏶿
+􏶴
+    􏶲construct a wattage change􏶱
+    WattageDeviceBindingT tWattageChange = ConstructWattageDeviceBinding(􏵶device id􏵷,􏵶wattage􏵷);
+    
+    􏶲push back the change into a vector􏶱
+    VectorPushBack(􏵶wattage changes􏵷,&tWattageChange);
+􏶳
+
+􏷘-􏷗􏷒collect switches􏷑
+􏷐Applies circuit breakers inputs signaled from the PLC􏷏
+􏶠􏶡
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀the electrical inputs to set from the PLC􏶿
+􏶜r􏶝􏷆PLCInConnectionDataT􏷅􏷄plc􏷃􏷀the plc used to set the input state of switches􏶿
+􏶜r􏶝􏷆CanMasterInConnectDataT􏷅􏷄can􏷃􏷀Can interface data to set the input state of switches􏶿
+􏶴
+    􏶲turn PLC switch inputs into the system's input􏶱
+    
+    􏶲switches on the main switch panel􏶱
+    􏵶inputs􏵷->m_tSwitches.m_eBatteryMaster    = 􏵲get battery master state􏵳􏵶plc􏵷,􏵶can􏵷);
+    􏵶inputs􏵷->m_tSwitches.m_eEmergencyShedBus = 􏵲get emergency shed state􏵳􏵶plc􏵷);
+    􏵶inputs􏵷->m_tSwitches.m_peBusTie[0]       = 􏵲get bus tie 1 state􏵳􏵶plc􏵷);
+    􏵶inputs􏵷->m_tSwitches.m_peBusTie[1]       = 􏵲get bus tie 2 state􏵳􏵶plc􏵷);
+    􏵶inputs􏵷->m_tSwitches.m_peGenerator[0]    = 􏵲get generator 1 state􏵳􏵶plc􏵷,􏵶can􏵷);
+    􏵶inputs􏵷->m_tSwitches.m_peGenerator[1]    = 􏵲get generator 2 state􏵳􏵶plc􏵷,􏵶can􏵷);
+    􏵶inputs􏵷->m_tSwitches.m_peAvionicsMaster[0]    = 􏵲get avionics master 1 switch state􏵳􏵶plc􏵷);
+    􏵶inputs􏵷->m_tSwitches.m_peAvionicsMaster[1]    = 􏵲get avionics master 2 switch state􏵳􏵶plc􏵷);
+    􏵶inputs􏵷->m_tSwitches.m_peEngineEngage[0]      = 􏵲get engine engage 1 state􏵳􏵶plc􏵷,􏵶can􏵷);
+    􏵶inputs􏵷->m_tSwitches.m_peEngineEngage[1]      = 􏵲get engine engage 2 state􏵳􏵶plc􏵷,􏵶can􏵷);
+    􏵶inputs􏵷->m_tSwitches.m_eBatteryHorExit            = 􏵲get battery hor exit state􏵳􏵶plc􏵷);
+    
+    􏵲collect mission bus switches􏵳􏵶inputs􏵷);
+    
+􏶳
+
+􏷘-􏷗􏷒collect mission bus switches􏷑
+􏷐􏷏
+􏶠get the powered switch states from the MEP system􏶡
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀the electrical inputs to set from the PLC􏶿
+􏶴
+    MissionEquipmentPackageSystemOutputT tMEPOutput;
+    ReadMissionEquipmentPackageSystemOutput(&tMEPOutput);
+    
+    􏶲get from MEP system􏶱
+    􏵶inputs􏵷->m_tSwitches.m_eMissionBus            = 􏵲get mission bus button state􏵳&tMEPOutput);
+    􏵶inputs􏵷->m_tSwitches.m_eDownlinkPower         = 􏵲get downlink power button state􏵳&tMEPOutput);
+    􏵶inputs􏵷->m_tSwitches.m_eSearchLightPower      = 􏵲get search light power button state􏵳&tMEPOutput);
+􏶳
+
+
+􏷘-􏷗􏷒can is active and should be used􏷑
+􏷐checks whether we should source our physical inputs from out of the PLC or CAN􏷏
+􏶠returns true if the CAN is active indicating that we should source from CAN instead of PLC􏶡
+􏶜r􏶝􏷆CanMasterInConnectDataT􏷅􏷄can􏷃􏷀Can interface data to set the input state of switches􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is active􏶻􏶺whether or not the CAN device is active and should be sourced from􏶹
+􏶴
+    􏶲check active flag set internally by the CAN􏶱
+    return 􏵶can􏵷->m_bActiveSu;
+􏶳
+
+􏷘-􏷗􏷒get battery master state􏷑
+􏷐get particular switch state􏷏
+􏶠converts PLC or CAN data into switch state􏶡
+􏶜r􏶝􏷆PLCInConnectionDataT􏷅􏷄plc􏷃􏷀the plc used to set the input state of switches􏶿
+􏶜r􏶝􏷆CanMasterInConnectDataT􏷅􏷄can􏷃􏷀Can interface data to set the input state of switches􏶿
+􏶚m􏶛􏶾BatteryMasterSwitchStateE􏶽􏶼state􏶻􏶺the state of the switch􏶹
+􏶴
+    􏶲we read from CAN if it is available􏶱
+    if (􏵲can is active and should be used􏵳􏵶can􏵷))
+    {
+        return 􏵲get battery master state from can􏵳􏵶can􏵷);
+    }
+    
+    􏶲otherwise, we fall back to the PLC􏶱
+    return 􏵲get battery master state from plc􏵳􏵶plc􏵷);
+􏶳
+
+􏷘-􏷗􏷒get battery master state from plc􏷑
+􏷐get particular switch state􏷏
+􏶠converts PLC data into switch state􏶡
+􏶜r􏶝􏷆PLCInConnectionDataT􏷅􏷄plc􏷃􏷀the plc used to set the input state of switches􏶿
+􏶚m􏶛􏶾BatteryMasterSwitchStateE􏶽􏶼state􏶻􏶺the state of the switch􏶹
+􏶴
+    if (􏵶plc􏵷->m_tMainSwitchPanel.m_bBatMstrEngageSW_DI)
+    {
+        return BATTERY_MASTER_SWITCH_STATE_ENGAGE;
+    }
+    else if (􏵶plc􏵷->m_tMainSwitchPanel.m_bBatMstrOffSW_DI)
+    {
+        return BATTERY_MASTER_SWITCH_STATE_OFF;
+    }
+    return BATTERY_MASTER_SWITCH_STATE_ON;
+􏶳
+
+􏷘-􏷗􏷒get battery master state from can􏷑
+􏷐get particular switch state􏷏
+􏶠converts CAN data into switch state􏶡
+􏶜r􏶝􏷆CanMasterInConnectDataT􏷅􏷄can􏷃􏷀Can interface data to set the input state of switches􏶿
+􏶚m􏶛􏶾BatteryMasterSwitchStateE􏶽􏶼state􏶻􏶺the state of the switch􏶹
+􏶴
+    if (􏵶can􏵷->m_bSuBatEngage)
+    {
+        return BATTERY_MASTER_SWITCH_STATE_ENGAGE;
+    }
+    else if (􏵶can􏵷->m_bSuBatOff)
+    {
+        return BATTERY_MASTER_SWITCH_STATE_OFF;
+    }
+    return BATTERY_MASTER_SWITCH_STATE_ON;
+􏶳
+
+􏷘-􏷗􏷒get emergency shed state􏷑
+􏷐get particular switch state􏷏
+􏶠converts PLC data into switch state􏶡
+􏶜r􏶝􏷆PLCInConnectionDataT􏷅􏷄plc􏷃􏷀the plc used to set the input state of switches􏶿
+􏶚m􏶛􏶾EmergencyShedBusSwitchStateE􏶽􏶼state􏶻􏶺the state of the switch􏶹
+􏶴
+    if (􏵶plc􏵷->m_tOverhead.m_bEmShedBusOnSW_DI){
+        return EMERGENCY_SHED_BUS_SWITCH_STATE_ON;
+    }
+    return EMERGENCY_SHED_BUS_SWITCH_STATE_NORM;
+􏶳
+
+
+􏳇side􏳈􏳅1􏳆􏳅2􏳆
+􏷘-􏷗􏷒get bus tie {{side}} state􏷑
+􏷐get particular switch state􏷏
+􏶠converts PLC data into switch state􏶡
+􏶜r􏶝􏷆PLCInConnectionDataT􏷅􏷄plc􏷃􏷀the plc used to set the input state of switches􏶿
+􏶚m􏶛􏶾BusTieSwitchStateE􏶽􏶼state􏶻􏶺the state of the switch􏶹
+􏶴
+    if (􏵶plc􏵷->m_tOverhead.m_bBusTie{{side}}OffSW_DI){
+        return BUS_TIE_SWITCH_STATE_OFF;
+    }
+    else if (􏵶plc􏵷->m_tOverhead.m_bBusTie{{side}}ResSW_DI){
+        return BUS_TIE_SWITCH_STATE_RESET;
+    }
+    
+    return BUS_TIE_SWITCH_STATE_NORM;
+􏶳
+
+􏳇side􏳈􏳅1􏳆􏳅2􏳆
+􏷘-􏷗􏷒get generator {{side}} state􏷑
+􏷐get particular switch state􏷏
+􏶠converts PLC or CAN data into switch state􏶡
+􏶜r􏶝􏷆PLCInConnectionDataT􏷅􏷄plc􏷃􏷀the plc used to set the input state of switches􏶿
+􏶜r􏶝􏷆CanMasterInConnectDataT􏷅􏷄can􏷃􏷀Can interface data to set the input state of switches􏶿
+􏶚m􏶛􏶾GeneratorSwitchStateE􏶽􏶼state􏶻􏶺the state of the switch􏶹
+􏶴
+    􏶲we read from CAN if it is available􏶱
+    if (􏵲can is active and should be used􏵳􏵶can􏵷))
+    {
+        return 􏵲get generator {{side}} state from can􏵳􏵶can􏵷);
+    }
+    
+    􏶲otherwise, we fall back to the PLC􏶱
+    return 􏵲get generator {{side}} state from plc􏵳􏵶plc􏵷);
+􏶳
+
+􏳇side􏳈􏳅1􏳆􏳅2􏳆
+􏷘-􏷗􏷒get generator {{side}} state from can􏷑
+􏷐get particular switch state􏷏
+􏶠converts CAN data into switch state􏶡
+􏶜r􏶝􏷆CanMasterInConnectDataT􏷅􏷄can􏷃􏷀Can interface data to set the input state of switches􏶿
+􏶚m􏶛􏶾GeneratorSwitchStateE􏶽􏶼state􏶻􏶺the state of the switch􏶹
+􏶴
+    if (ptCan->m_bSuGen{{side}}Reset)
+    {
+        return GENERATOR_SWITCH_STATE_RESET;
+    }
+    else if (ptCan->m_bSuGen{{side}}Off)
+    {
+        return GENERATOR_SWITCH_STATE_OFF;
+    }
+    return GENERATOR_SWITCH_STATE_NORM;
+􏶳
+
+􏳇side􏳈􏳅1􏳆􏳅2􏳆
+􏷘-􏷗􏷒get generator {{side}} state from plc􏷑
+􏷐get particular switch state􏷏
+􏶠converts PLC data into switch state􏶡
+􏶜r􏶝􏷆PLCInConnectionDataT􏷅􏷄plc􏷃􏷀the plc used to set the input state of switches􏶿
+􏶚m􏶛􏶾GeneratorSwitchStateE􏶽􏶼state􏶻􏶺the state of the switch􏶹
+􏶴
+    if (ptPlc->m_tMainSwitchPanel.m_bGen{{side}}ResetSW_DI)
+    {
+        return GENERATOR_SWITCH_STATE_RESET;
+    }
+    else if (ptPlc->m_tMainSwitchPanel.m_bGen{{side}}OffSW_DI)
+    {
+        return GENERATOR_SWITCH_STATE_OFF;
+    }
+    return GENERATOR_SWITCH_STATE_NORM;
+􏶳
+
+
+􏳇side􏳈􏳅1􏳆􏳅2􏳆
+􏳇index􏳈􏳅0􏳆􏳅1􏳆
+􏷘-􏷗􏷒get avionics master {{side}} switch state􏷑
+􏷐get particular switch state􏷏
+􏶠converts PLC data into switch state􏶡
+􏶜r􏶝􏷆PLCInConnectionDataT􏷅􏷄plc􏷃􏷀the plc used to set the input state of switches􏶿
+􏶚m􏶛􏶾AvionicsMasterSwitchStateE􏶽􏶼state􏶻􏶺the state of the switch􏶹
+􏶴
+    if (􏵶plc􏵷->m_tOverhead.m_bAvionicsMasterOnSW_DI[{{index}}]){
+        return AVIONICS_MASTER_SWITCH_STATE_ON;
+    }
+    return AVIONICS_MASTER_SWITCH_STATE_OFF;
+􏶳
+
+􏷘-􏷗􏷒get mission bus button state􏷑
+􏷐get particular button state􏷏
+􏶠converts PLC data into button state􏶡
+􏶜r􏶝􏷆MissionEquipmentPackageSystemOutputT􏷅􏷄mep􏷃􏷀the mep system is used to set the input state of button􏶿
+􏶚m􏶛􏶾MissionBusButtonStateE􏶽􏶼state􏶻􏶺the state of the button􏶹
+􏶴
+    if (􏵶mep􏵷->m_tMissionBusPanel.m_pbSwitchOnState[MISSION_BUS_MSN_BUS_POWER]){
+        return MISSION_BUS_BUTTON_STATE_ON;
+    }
+    return MISSION_BUS_BUTTON_STATE_OFF;
+􏶳
+
+
+􏷘-􏷗􏷒get downlink power button state􏷑
+􏷐get particular button state􏷏
+􏶠converts PLC data into button state􏶡
+􏶜r􏶝􏷆MissionEquipmentPackageSystemOutputT􏷅􏷄mep􏷃􏷀the mep system is used to set the input state of button􏶿
+􏶚m􏶛􏶾DownlinkPowerButtonStateE􏶽􏶼state􏶻􏶺the state of the button􏶹
+􏶴
+    if (􏵶mep􏵷->m_tMissionBusPanel.m_pbSwitchOnState[MISSION_BUS_DOWNLINK_POWER]){
+        return DOWNLINK_POWER_BUTTON_STATE_ON;
+    }
+    return DOWNLINK_POWER_BUTTON_STATE_OFF;
+􏶳
+
+􏷘-􏷗􏷒get search light power button state􏷑
+􏷐get particular button state􏷏
+􏶠converts PLC data into button state􏶡
+􏶜r􏶝􏷆MissionEquipmentPackageSystemOutputT􏷅􏷄mep􏷃􏷀the mep system is used to set the input state of button􏶿
+􏶚m􏶛􏶾SearchLightPowerButtonStateE􏶽􏶼state􏶻􏶺the state of the button􏶹
+􏶴
+    if (􏵶mep􏵷->m_tMissionBusPanel.m_pbSwitchOnState[MISSION_BUS_SEARCHLIGHT_POWER]){
+        return SEARCH_LIGHT_POWER_BUTTON_STATE_ON;
+    }
+    return SEARCH_LIGHT_POWER_BUTTON_STATE_OFF;
+􏶳
+
+􏳇side􏳈􏳅1􏳆􏳅2􏳆
+􏷘-􏷗􏷒get engine engage {{side}} state􏷑
+􏷐get particular switch state􏷏
+􏶠converts PLC or CAN data into switch state􏶡
+􏶜r􏶝􏷆PLCInConnectionDataT􏷅􏷄plc􏷃􏷀the plc used to set the input state of switch􏶿
+􏶜r􏶝􏷆CanMasterInConnectDataT􏷅􏷄can􏷃􏷀Can interface data to set the input state of switches􏶿
+􏶚m􏶛􏶾EngineEngageSwitchStateE􏶽􏶼state􏶻􏶺the state of the switch􏶹
+􏶴
+    􏶲we read from CAN if it is available􏶱
+    if (􏵲can is active and should be used􏵳􏵶can􏵷))
+    {
+        return 􏵲get engine engage {{side}} state from can􏵳􏵶can􏵷);
+    }
+    
+    􏶲otherwise, we fall back to the PLC􏶱
+    return 􏵲get engine engage {{side}} state from plc􏵳􏵶plc􏵷);
+􏶳
+
+
+􏳇side􏳈􏳅1􏳆􏳅2􏳆
+􏷘-􏷗􏷒get engine engage {{side}} state from can􏷑
+􏷐get particular switch state􏷏
+􏶠converts CAN data into switch state􏶡
+􏶜r􏶝􏷆CanMasterInConnectDataT􏷅􏷄can􏷃􏷀Can interface data to set the input state of switches􏶿
+􏶚m􏶛􏶾EngineEngageSwitchStateE􏶽􏶼state􏶻􏶺the state of the switch􏶹
+􏶴
+    if (ptCan->m_bSuEng{{side}}Start)
+    {
+        return ENGINE_ENGAGE_SWITCH_STATE_START;
+    }
+    return ENGINE_ENGAGE_SWITCH_STATE_NORM;
+􏶳
+
+􏳇side􏳈􏳅1􏳆􏳅2􏳆
+􏷘-􏷗􏷒get engine engage {{side}} state from plc􏷑
+􏷐get particular switch state􏷏
+􏶠converts PLC data into switch state􏶡
+􏶜r􏶝􏷆PLCInConnectionDataT􏷅􏷄plc􏷃􏷀the plc used to set the input state of switch􏶿
+􏶚m􏶛􏶾EngineEngageSwitchStateE􏶽􏶼state􏶻􏶺the state of the switch􏶹
+􏶴
+    if (ptPlc->m_tMainSwitchPanel.m_bEng{{side}}StartSW_DI)
+    {
+        return ENGINE_ENGAGE_SWITCH_STATE_START;
+    }
+    return ENGINE_ENGAGE_SWITCH_STATE_NORM;
+􏶳
+
+􏷘-􏷗􏷒get battery hor exit state􏷑
+􏷐get particular switch state􏷏
+􏶠converts PLC data into switch state􏶡
+􏶜r􏶝􏷆PLCInConnectionDataT􏷅􏷄plc􏷃􏷀the plc used to set the input state of switch􏶿
+􏶚m􏶛􏶾BatteryHorExitSwitchStateE􏶽􏶼state􏶻􏶺the state of the switch􏶹
+􏶴
+    if (􏵶plc􏵷->m_tOverhead.m_bTestBatHorExTestSW_DI){
+        return BATTERY_HOR_EXIT_SWITCH_STATE_TEST;
+    }
+    return BATTERY_HOR_EXIT_SWITCH_STATE_NORM;
+􏶳
+
+
+􏷘-􏷗􏷒collect power triggers􏷑
+􏷐Collects power triggers from the IOS􏷏
+􏶠The power triggers will affect the EPU usage and battery charge􏶡
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀the electrical inputs to set from the IOS􏶿
+􏶜r􏶝􏷆IOStoHostT􏷅􏷄ios􏷃􏷀data received from the IOS􏶿
+􏶴
+    􏵶inputs􏵷->m_tPowerTriggers.m_bEpuConnected =        􏵶ios􏵷->m_bEpu;
+    􏵶inputs􏵷->m_tPowerTriggers.m_bFullyChargeBattery =  􏵶ios􏵷->m_bChargeBattery;
+􏶳
+
+􏷘-􏷗􏷒collect engine data􏷑
+􏷐Collects engine data relevant to the electrical system􏷏
+􏶠The engines affect the state of the DC power system􏶡
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀the electrical inputs to set from the IOS􏶿
+􏶜r􏶝􏷆PLCInConnectionDataT􏷅􏷄plc􏷃􏷀the current state of the PLC􏶿
+􏶴
+    􏶲get engine data from ownship􏶱
+    EngineSystemOutputT tEngineOutput;
+    ReadEngineSystemOutput(&tEngineOutput);
+    
+    􏶲get N1 percent for each engine􏶱
+    􏵶inputs􏵷->m_tEngine.m_pfN1_pct[ENGINE_LEFT] = tEngineOutput.m_tPerformance.m_pfEngineN1_pct[ENGINE_LEFT];
+    􏵶inputs􏵷->m_tEngine.m_pfN1_pct[ENGINE_RIGHT] = tEngineOutput.m_tPerformance.m_pfEngineN1_pct[ENGINE_RIGHT];
+    
+    􏶲decide whether engines are venting􏶱
+    􏵶inputs􏵷->m_tEngine.m_pbVenting[ENGINE_LEFT] = 􏵶plc􏵷->m_tOverhead.m_bControlEng1VentOnSW_DI;
+    􏵶inputs􏵷->m_tEngine.m_pbVenting[ENGINE_RIGHT] = 􏵶plc􏵷->m_tOverhead.m_bControlEng2VentOnSW_DI;
+􏶳
+
+􏷘-􏷗􏷒collect ready flags􏷑
+􏷐Collects engine data relevant to the electrical system􏷏
+􏶠The engines affect the state of the DC power system􏶡
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀the electrical inputs to set from the IOS􏶿
+􏶴
+    􏶲connections are setting global flags as to whether sourced data is ready or not􏶱
+    􏶲they do this by setting the global flag to true after data has been soured one􏶱
+    􏶲we'll take these flags and know whether or not the particular data we care about is ready􏶱
+    􏶲This helps avoid initial problems such as immediately popping breakers, are performing unwarranted switch operations􏶱
+    􏵶inputs􏵷->m_tSourceStatuses.m_bBreakerDataIsReady = g_bIOSFirstTimeCompleted;
+    􏵶inputs􏵷->m_tSourceStatuses.m_bSwitchDataIsReady = g_bPLCFirstTimeCompleted;
+    􏵶inputs􏵷->m_tSourceStatuses.m_bPowerTriggerDataIsReady = g_bIOSFirstTimeCompleted;
+    􏵶inputs􏵷->m_tSourceStatuses.m_bMalfunctionDataIsReady = g_bIOSFirstTimeCompleted;
+􏶳

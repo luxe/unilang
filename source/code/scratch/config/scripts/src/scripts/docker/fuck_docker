@@ -1,0 +1,56 @@
+#!/usr/bin/env zsh
+
+docker_rmi_dependants
+docker_rm_dangling
+docker images
+echo "---"
+docker container ls --size
+
+#prune everything
+docker system prune --all --volumes -f
+
+#Stop all containers
+docker kill $(docker ps -q)
+
+# Delete all containers
+docker rm $(docker ps -a -q)
+
+# Delete all images
+docker rmi $(docker images -q)
+
+
+#sometimes the above still doesn't work
+#here are some other attempts with disabling apparmor
+
+# Error example: 
+# ERROR: for redis cannot stop container: 16028f9: 
+# Cannot kill container 16028f9: unknown error after kill: docker-runc did not terminate sucessfully: 
+# container_linux.go:393: signaling init process caused "permission denied"
+#
+# This error was caused by AppArmor service in Ubuntu
+# It was not working normally due to some unknown issues.
+# Run following commands to fix it.
+
+# Check AppArmor status
+sudo aa-status
+
+# Shutdown apparmor and prevent it from restarting
+sudo systemctl disable apparmor.service --now
+
+# Unload AppArmor profiles
+sudo service apparmor teardown
+
+# Re-check AppArmor status
+sudo aa-status
+
+# Try to re-stop containers
+docker-compose down
+
+
+#sometimes the above is still doesn't work.
+#here is another attempt
+sudo aa-remove-unknown;
+sudo systemctl restart docker.service
+
+#if you still have data in "docker image ls" or "docker container ls"
+#just restart your machine I guess.

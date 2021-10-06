@@ -1,0 +1,71 @@
+class
+⚯
+⚞⚟
+
+◀public: static▶ void ☀Add(Doxygen_Data & data, model::Module const& structure, model::Function const& method, Module_Settings const& options)❰
+    
+    auto brief = Potentially_Derive_Brief_Statement(structure,method,options);
+    auto details = Potentially_Derive_Details_Statement(structure,method,options);
+    
+    Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,"brief",brief,options.portion.method_options.comment.grammar);
+    Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,"details",details,options.portion.method_options.comment.grammar);
+❱
+
+
+
+◀private: static▶ std::string ☀Potentially_Derive_Brief_Statement(model::Module const& structure, model::Function const& method, Module_Settings const& options)❰
+    
+    auto comment = Get_Brief_Sentences(structure,method,options);
+    
+    //use the provided one
+    if (!comment.empty()){
+        return comment;
+    }
+    
+    
+    //user didn't provide one.  lets make it up instead
+    auto function_name = First_Element_Or_Default(method.name).value;
+    if (options.portion.method_options.derive_brief_comment){
+      return function_name;
+    }
+    
+    return "";
+❱
+
+
+◀private: static▶ std::string ☀Potentially_Derive_Details_Statement(model::Module const& structure, model::Function const& method, Module_Settings const& options)❰
+    
+    auto comment = Get_Detail_Sentences(structure,method,options);
+    
+    //use the provided one
+    if (!comment.empty()){
+        return comment;
+    }
+    
+    
+    //user didn't provide one.  lets make it up instead
+    auto function_name = First_Element_Or_Default(method.name).value;
+    if (options.portion.method_options.derive_details_comment){
+      return function_name;
+    }
+    
+    return "";
+❱
+
+
+◀private: static▶ std::string ☀Get_Brief_Sentences(model::Module const& structure, model::Function const& item, Module_Settings const& options)❰
+    std::string str;
+    
+   auto sentences = Method_Description_Resolver::Resolve_Brief_Sentences(structure,item);
+   auto final_text = Sentences_Fixer::Fix_Up_Sentences(sentences,options.general.comment);
+   
+    return final_text;
+❱
+◀private: static▶ std::string ☀Get_Detail_Sentences(model::Module const& structure, model::Function const& item, Module_Settings const& options)❰
+    std::string str;
+    
+   auto sentences = Method_Description_Resolver::Resolve_Detail_Sentences(structure,item);
+   auto final_text = Sentences_Fixer::Fix_Up_Sentences(sentences,options.general.comment);
+   
+    return final_text;
+❱

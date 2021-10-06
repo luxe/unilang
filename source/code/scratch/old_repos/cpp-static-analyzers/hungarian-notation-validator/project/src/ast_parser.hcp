@@ -1,0 +1,363 @@
+class
+❪"systems"❫
+❪"utilities"❫
+❪"decl"❫
+❪"ast_line"❫
+⚯
+❪"error_printer"❫
+⚞⚟
+
+◀public: static▶ std::vector<Decl> ☀Parse_AST_For_Relevant_Decl_Structs(std::vector<std::string> ast) ❰
+
+    //clang-check indents the ast with little tick and bar marks, and spaces
+    //we are trying to parse the already parsed ast, so let's start by getting
+    //rid of this tree stuff, and having a flat ast listing
+    Strip_Out_Tree_Junk(ast);
+    
+    auto ast_with_lines = Get_The_AST_With_The_Line_Number_On_Each_Node(ast);
+    
+    //for (auto it: ast_with_lines){std::cout << "[" << it.line_number << "]["  << it.file_name << "]" << std::endl;}
+
+    //the C/C++ language grammars are more complicated than many other languages.
+    //Due to header files, macros, typedefs, automatic type conversions, just weird quarks of the language 
+    //it's very difficult for even clang to be to show the ast in a reasonable fashion.  
+    //As such, we start by just filtering down to Decl statements.  
+    //we also remove things that are tagged as invalid.
+    //I assume invalidity happens when a header file can't be found so clang-format just guesses certain properties of the ast.
+    //There is also this <<invalid sloc>> thing.  I think that means it can't even accurately tell you the line number of where
+    //something is derived.  Either way, I'll just wipe that stuff away, because it most likely will not be relevant to the code
+    //we actually want to check the notation on.
+    Apply_Some_Initial_Filters(ast_with_lines);
+
+    //convert the Decl clang strings into our own data structures
+    auto decls = Get_As_Decls(ast_with_lines);
+
+    //apply some additional filters on things we don't care about.
+    //if certain things are empty, we'll assume they aren't decls we care about anyway.
+    //Some of these filters may clear things due to a problem in the way the decls were created,
+    //but that can always be revisited it later.  If there are problems related to how the decls were parsed,
+    //I assume they are edge cases that would be better found in testing and practice.
+    Apply_Some_Structure_Filters(decls);
+    
+    return decls;
+❱
+
+◀private: static▶ void ☀Strip_Out_Tree_Junk(std::vector<std::string> & ast)❰
+for (auto & it: ast){
+        Remove_All_Beginning_Characters_That_Match_Any_Of_The_Following_Characters(it,"| `-");
+    }
+❱
+
+◀private: static▶ std::vector<Ast_Line> ☀Get_The_AST_With_The_Line_Number_On_Each_Node(std::vector<std::string> const& ast) ❰
+    std::vector<Ast_Line> ast_lines;
+    std::string found_line="?";
+    std::string found_file_name="?";
+    
+    for (auto const& it: ast){
+        
+        //strip out important data
+        auto file_name = Strip_Out_File_Name(it);
+        auto line_number = Strip_Out_Line_Number(it,file_name);
+        
+        //set the important data if it exists.
+        //if it doesn't exist, we just use the old values again.
+        if (!file_name.empty()){
+            found_file_name = file_name;
+        }
+        if (!line_number.empty()){
+            found_line = line_number;
+        }
+        
+        //restore the line along with the additional info
+        Ast_Line new_item;
+        new_item.content = it;
+        new_item.line_number = found_line;
+        new_item.file_name = found_file_name;
+        ast_lines.push_back(new_item);
+    }
+    
+    return ast_lines;
+❱
+
+
+◀private: static▶ std::string ☀Strip_Out_File_Name(std::string line)❰
+    std::string found;
+    
+    auto brackets = Get_Substring_Found_Between_First_Instance_Of_Two_Characters(line, '<', '>');
+    auto vec = Split_Into_Parts_From_Delimiter(brackets,',');
+    for (auto & it: vec){trim(it);}
+        
+    if (!vec.empty()){
+        auto line = vec[0];
+        if (Contains_Character(line,':')){
+            auto items = Split_Into_Parts_From_Delimiter(line,':');
+            //std::cout << items << std::endl;
+            
+            if (!items.empty()){
+                if (items[0] != "line" && items[0] != "col"){
+                    found = items[0];
+                    //std::cout << found << std::endl;
+                }
+            }
+        }
+    }
+    
+    
+    return found;
+❱
+◀private: static▶ std::string ☀Strip_Out_Line_Number(std::string line, std::string file_name)❰
+    std::string found_line;
+    
+    size_t found = line.rfind("line:");
+    if (found != std::string::npos){
+        for (int i = found+5; i < line.size(); ++i){
+            if(line[i] == ':'){
+                break;
+            }
+            found_line+=line[i];
+        }
+    }
+    
+    
+    //if we didn't find the last line number, try to strip it from
+    if (!file_name.empty()){
+            auto brackets = Get_Substring_Found_Between_First_Instance_Of_Two_Characters(line, '<', '>');
+            auto vec = Split_Into_Parts_From_Delimiter(brackets,',');
+            for (auto & it: vec){trim(it);}
+            auto line = vec[0];
+            if (Contains_Character(line,':')){
+                auto items = Split_Into_Parts_From_Delimiter(line,':');
+                if (items.size() >= 2){
+                    found_line=items[1];
+                }
+            }
+    }
+    
+    return found_line;
+❱
+
+◀private: static▶ void ☀Apply_Some_Initial_Filters(std::vector<Ast_Line> & ast)❰
+    //get just the type decelerations
+    ast = Filter(ast, [&](Ast_Line i){
+        return !Begins_With(i.content,"TypedefDecl") 
+        &&     !Begins_With(i.content,"FieldDecl")
+        &&     !Begins_With(i.content,"EnumDecl")
+        &&     !Begins_With(i.content,"EnumConstantDecl")
+        &&     !Begins_With(i.content,"VarDecl")
+        &&     !Begins_With(i.content,"ParmVarDecl")
+        &&     !Begins_With(i.content,"RecordDecl");
+        
+    });
+
+    //filter out invalid slocs
+    ast = Filter(ast, [&](Ast_Line i){
+        return Contains_Substring(i.content,"<<invalid sloc>>");
+    });
+
+    //filter out invalids (probably because of missing header files)
+    ast = Filter(ast, [&](Ast_Line i){
+        return Contains_Substring(i.content," invalid ");
+    });
+❱
+
+◀private: static▶ void ☀Apply_Some_Structure_Filters(std::vector<Decl> & decls)❰
+    //filter out identifiers that start with an underscore
+    //(hopefully get rid of most of the system stuff
+    decls = Filter(decls, [&](Decl const& i){
+        return Begins_With(i.identifier,"_");
+    });
+    
+    //filter out base_types that start with an underscore
+    //(again, hopefully get rid of most of the system stuff)
+    decls = Filter(decls, [&](Decl const& i){
+        return Begins_With(i.base_type,"_");
+    });
+
+    //filter out empties
+    decls = Filter(decls, [&](Decl const& i){
+        return i.identifier.empty() || i.base_type.empty();
+    });
+    
+    //there are some types that come from the system headers that we just want to ignore entirely:
+    decls = Filter(decls, [&](Decl const& i){
+        return i.identifier == "ptrdiff_t"
+        || i.identifier == "size_t"
+        || i.identifier == "wchar_t"
+        || i.identifier == "max_align_t"
+        || i.identifier == "sys_nerr"
+        || i.identifier == "sys_errlist"
+        || i.identifier == "BOOL"
+        || i.identifier == "BYTE"
+        || i.identifier == "WORD"
+        || i.identifier == "DWORD"
+    ;});
+
+    
+    //hmmm, at least for right now, if the identifier is in all caps, we'll assume its a constant an doesn't apply
+    decls = Filter(decls, [&](Decl const& i){
+        if (Has_Only_Uppercase_Letters_Numbers_And_Underscores(i.identifier)){
+            
+            //if it's in all caps, it better have const, or be an enum constant
+            if (i.decl_type != Declaration_Type::ENUMCONST){
+                if(!i.is_const){
+                    Error_Printer::Print_Notation_Error(i,"Assumes constant but it is neither an enum constant nor does it contain a const qualifier.");
+                }
+            }
+            
+            return true;
+        }
+        
+        
+        return false;
+    });
+    
+❱
+
+
+◀private: static▶ std::vector<Decl> ☀Get_As_Decls(std::vector<Ast_Line> & o)❰
+    std::vector<Decl> all;
+    
+    
+    for (auto pair: o){
+        
+        Decl temp;
+        temp.full_line = pair.content;
+        temp.line = pair.line_number;
+        temp.file_name = pair.file_name;
+        
+        //save my self some pain
+        std::string it = pair.content;
+        
+        
+        //make assumptions about beginning
+        if (Begins_With(it,"FieldDecl")){
+            temp.is_member = true;
+            temp.decl_type=Declaration_Type::FIELD;
+            
+        }
+        else if(Begins_With(it,"TypedefDecl")){temp.decl_type=Declaration_Type::TYPEDEF;}
+        else if(Begins_With(it,"EnumDecl")){temp.decl_type=Declaration_Type::ENUM;}
+        else if(Begins_With(it,"EnumConstantDecl")){temp.decl_type=Declaration_Type::ENUMCONST;}
+        else if(Begins_With(it,"VarDecl")){temp.decl_type=Declaration_Type::VAR;}
+        else if(Begins_With(it,"ParmVarDecl")){temp.decl_type=Declaration_Type::PARAM;}
+        else if(Begins_With(it,"RecordDecl")){temp.decl_type=Declaration_Type::RECORD;}
+        
+        
+        
+        //gobble up first part
+        Remove_All_Chars_From_Front_Until_Char_Is_Seen(it,' ');ltrim(it);
+        
+        //gobble up random hex thing
+        Remove_All_Chars_From_Front_Until_Char_Is_Seen(it,' ');ltrim(it);
+        
+        //other potential trash
+        if (Begins_With(it,"prev")){
+            Remove_All_Chars_From_Front_Until_Char_Is_Seen(it,' ');ltrim(it);
+            Remove_All_Chars_From_Front_Until_Char_Is_Seen(it,' ');ltrim(it);
+        }
+        //std::cout << it << std::endl;
+        temp.column = Strip_Out_From_Front_Until_Char_Is_Found(it,' ');
+        //std::cout << temp.column << std::endl;
+        Remove_First_Char(temp.column);
+        Remove_Last_Char(temp.column);
+        temp.column.erase(0,4);
+        
+       //gobble up first location
+        Remove_All_Chars_From_Front_Until_Char_Is_Seen(it,' ');ltrim(it);
+        
+        //TODO: fix
+        Temporary_Gobble_Due_To_Bad_Folder_Design(it);
+        
+       //gobble up 2nd location
+        Remove_All_Chars_From_Front_Until_Char_Is_Seen(it,' ');ltrim(it);
+        
+        //TODO: fix
+        Temporary_Gobble_Due_To_Bad_Folder_Design(it);
+        
+       //gobble up 3rd location
+        Remove_All_Chars_From_Front_Until_Char_Is_Seen(it,' ');ltrim(it);
+        
+        //TODO: fix
+        Temporary_Gobble_Due_To_Bad_Folder_Design(it);
+        
+        
+        //get rid of weird occasional messages in front
+        if (Begins_With(it,"referenced ")){
+                    Remove_All_Chars_From_Front_Until_Char_Is_Seen(it,' ');ltrim(it);
+        }
+        else if (Begins_With(it,"implicit referenced ")){
+            Remove_All_Chars_From_Front_Until_Char_Is_Seen(it,' ');ltrim(it);
+            Remove_All_Chars_From_Front_Until_Char_Is_Seen(it,' ');ltrim(it);
+        }
+        else if (Begins_With(it,"implicit ")){
+            Remove_All_Chars_From_Front_Until_Char_Is_Seen(it,' ');ltrim(it);
+        }
+        else if (Begins_With(it,"used ")){
+            Remove_All_Chars_From_Front_Until_Char_Is_Seen(it,' ');ltrim(it);
+        }
+        
+        temp.identifier = Strip_Out_From_Front_Until_Char_Is_Found(it,' ');
+        Remove_All_Chars_From_Front_Until_Char_Is_Seen(it,' ');ltrim(it);
+        
+        temp.full_type = it;
+        all.push_back(temp);
+        
+    }
+    
+    //find base type / deduce other bools...
+    for (auto & it: all){
+        std::string work = it.full_type;
+        work = Strip_Out_Data_Between_First_Set_Of_Single_Quotes(work);
+        it.first_type = work;
+        
+        //decide if const
+        if (Begins_With(work,"const ")){
+            Remove_All_Chars_From_Front_Until_Char_Is_Seen(work,' ');ltrim(work);
+            it.is_const = true;
+        }
+        
+        //decide if enum
+        if (Begins_With(work,"enum ")){
+            Remove_All_Chars_From_Front_Until_Char_Is_Seen(work,' ');ltrim(work);
+            it.is_enum = true;
+        }
+        
+        //decide if struct
+        if (Begins_With(work,"struct ")){
+            Remove_All_Chars_From_Front_Until_Char_Is_Seen(work,' ');ltrim(work);
+            it.is_struct = true;
+        }
+        
+        //decide if an array
+        trim(work);
+        auto array_part = Strip_Out_Data_Between_First_Set_Of_Square_Brackets(work);
+        it.is_array = true;
+        if (array_part.empty()){
+            it.is_array = false;
+        }
+        
+        //decide if pointer
+        trim(work);
+        it.is_pointer = true;
+        if (Begins_Or_Ends_With(work,"&")){ Remove_Match_Found_At_Beginning_Or_End(work,"&"); }
+        else if(Ends_With(work,"*const")){ Remove_Match_Found_At_End(work,"*const"); }
+        else if(Ends_With(work,"*")){ Remove_Match_Found_At_End(work,"*"); }
+        else{ it.is_pointer = false;}
+        
+        
+        trim(work);
+        it.base_type = work;
+        
+    }
+    
+    
+    return all;
+❱
+
+◀private: static▶ void ☀Temporary_Gobble_Due_To_Bad_Folder_Design(std::string & it)❰
+
+    //damn spaces in folder names...
+    if (Begins_With(it,"VME/Src")){
+        Remove_All_Chars_From_Front_Until_Char_Is_Seen(it,' ');ltrim(it);
+    }
+❱

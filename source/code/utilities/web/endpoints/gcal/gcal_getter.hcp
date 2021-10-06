@@ -1,0 +1,134 @@
+class
+❪string❫
+❪iostream❫
+❪set❫
+❪"code/utilities/web/endpoints/gcal/gcal_credentials"❫
+❪"code/utilities/web/endpoints/gcal/data/gcal_room"❫
+❪"code/utilities/web/endpoints/gcal/data/gcal_rooms"❫
+⚯
+❪"code/utilities/program/call/lib"❫
+❪"code/utilities/web/lib"❫
+❪"code/utilities/program/common_actions/exits/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/web/endpoints/gcal/gcal_query"❫
+⚞⚟
+
+
+
+//Get calendars that we subscribe to.
+//This is essentially what people see on the side of their google calendar where they can toggle the visibility
+//when user's spy on people, they are using these calendars.  Meeting rooms themselves are represented as calendars
+//I had to manually add a ton of calendars for every room (and then disable their visibility so it was still useable in the browser).  
+//Since I've added these room calendars, they are accessible through the API (regardless of whether they are visible in my browser)
+//These functions returns those rooms in different ways
+◀public: static▶ std::set<nlohmann::json> ☀Get_Pittsburgh_Rooms(Gcal_Credentials & creds)❰
+    return Get_Cals_Whose_Description_Starts_With(creds,"PIT");
+❱
+◀public: static▶ std::set<nlohmann::json> ☀Get_San_Francisco_Rooms(Gcal_Credentials & creds)❰
+    return Get_Cals_Whose_Description_Starts_With(creds,"SFO");
+❱
+
+
+//Given a calendar ID (which could be retrieved from getting all specific rooms),
+//we can query all of the events that took place in this calendar.
+//if its a user calendar this would tell use every meeting they've gone to.
+//if its a room calendar this would tell us every meeting that took place there (and who attended it)
+◀public: static▶ Gcal_Rooms ☀Get_All_Pittsburgh_Room_Events(Gcal_Credentials & creds)❰
+    
+    //get all pit room names
+    auto pit_rooms = Get_Pittsburgh_Rooms(creds);
+    std::cout << "got pit rooms" << std::endl;
+    
+    //get events from all of these events
+    Gcal_Rooms all;
+    for (auto const& it: pit_rooms){
+        auto room = Get_All_Events_Of_Calendar(creds, it["id"]);
+        all.rooms.emplace_back(room);
+    }
+    return all;
+❱
+
+◀public: static▶ Gcal_Room ☀Get_All_Events_Of_Calendar(Gcal_Credentials & creds, std::string const& cal_id)❰
+    std::string url = "https://www.googleapis.com/calendar/v3/calendars/";
+    url += cal_id;
+    url += "/events?maxResults=250&showDeleted=True&showHiddenInvitations=True&singleEvents=False";
+    Gcal_Room room;
+    
+    //do all pagination
+    std::cout << "getting pages" << std::endl;
+    auto x = Query_All_Pages(url,creds);
+    std::cout << "got pages" << std::endl;
+    
+    //extract events as individual json
+    if (!x.empty()){
+        
+        if (x[0].find("summary") != x[0].end()){
+            room.summary = x[0]["summary"];
+        }
+        if (x[0].find("timeZone") != x[0].end()){
+            room.timeZone = x[0]["timeZone"];
+        }
+        if (x[0].find("updated") != x[0].end()){
+            room.updated = x[0]["updated"];
+        }
+        for (auto const& it: x){
+            if (it.find("items") != it.end()){
+                for (auto const& e: it["items"]){
+                    room.events.emplace_back(e);
+                }
+            }
+        }
+    }
+    return room;
+❱
+
+◀private: static▶ std::set<nlohmann::json> ☀Get_Cals_Whose_Description_Starts_With(Gcal_Credentials & creds, std::string const& prefix)❰
+
+    std::string url = "https://www.googleapis.com/calendar/v3/users/me/calendarList?maxResults=250&showDeleted=True&showHidden=True";
+    
+    //get all of the calendars we subscribe to
+    auto results = Query_All_Pages(url,creds);
+    
+    //filter them by the prefix
+    std::set<nlohmann::json> rooms;
+    for (auto const& it: results){
+        Insert_Rooms_That_Start_With(rooms,it,prefix);
+    }
+    
+    return rooms;
+❱
+
+◀private: static▶ std::vector<nlohmann::json> ☀Query_All_Pages(std::string const& url, Gcal_Credentials & creds)❰
+    std::vector<nlohmann::json> results;
+    auto j = Gcal_Query::Token_Refreshing_Query(url,creds);
+    results.emplace_back(j);
+    while (j.find("nextPageToken") != j.end()) {
+        Html_Fetch_Settings settings;
+        settings.url = url;
+        settings.url += "&pageToken=";
+        settings.url += j["nextPageToken"];
+        j = Gcal_Query::Token_Refreshing_Query(settings.url,creds);
+        results.emplace_back(j);
+    }
+    return results;
+❱
+
+
+◀private: static▶ void ☀Insert_Rooms_That_Start_With(std::set<nlohmann::json> & rooms, nlohmann::json const& j, std::string const& prefix)❰
+    for (auto const& it: j["items"]){
+        if (Begins_With(it["summary"],prefix)){
+            rooms.insert(it);
+        }
+    }
+❱
+
+// acl:
+// curl 'https://www.googleapis.com/calendar/v3/calendars/thickey@uber.com/acl?access_token=X'
+// curl 'https://www.googleapis.com/calendar/v3/calendars/uber.com_4141524161626f756c6576617264656e33373574683230304f4b50686f6e65726f6f6d31706572736f6e2d393932363933@resource.calendar.google.com/acl?access_token=x'
+
+
+// get events of cal
+// curl 'https://www.googleapis.com/calendar/v3/calendars/thickey@uber.com/events?access_token=X'
+
+// settings
+// curl 'https://www.googleapis.com/calendar/v3/users/me/settings?access_token=x'

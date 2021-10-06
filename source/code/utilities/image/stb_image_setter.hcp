@@ -1,0 +1,73 @@
+class
+❪string❫
+❪iostream❫
+❪algorithm❫
+❪"code/utilities/data_structures/graphics/image/positioned_image_data"❫
+❪"code/utilities/image/stb_image_set_settings"❫
+⚯
+❪"code/utilities/image/stb_image"❫
+❪"code/utilities/image/texture_loader"❫
+⚞⚟
+
+◀public: static▶ void ☀Set(Positioned_Image_Data & data)❰
+
+        
+        Load_Image(data);
+        
+        Texture_Loader::Load(data.texture,data.img_data,data.width,data.height);
+❱
+
+◀private: static▶ void ☀Load_Image(Positioned_Image_Data & data)❰
+
+    Stb_Image_Set_Settings settings;
+
+
+    //we don't need to load the file if we've already saved and serialized it in memory
+    if (Maybe_Load_From_Serialized_Memory(data,settings.attempt_loading_from_serialized_in_memory)){
+        return;
+    }
+    
+    //however, if it was not saved and serialized to memory, we will instead load it from the file_name given
+    Load_Image_From_Filename(data);
+    
+    //decide whether to save the image in memory for serialization
+    if (settings.save_image_in_memory_for_serialization){
+        Save_To_Serializable_Memory(data);
+    }
+    
+    std::cout << "loaded" << std::endl;
+❱
+
+◀private: static▶ bool ☀Maybe_Load_From_Serialized_Memory(Positioned_Image_Data & data, bool const& should_load)❰
+
+    if (should_load){
+        if (!data.seralizable_image.empty()){
+            std::cout << "loading image from encoded memory" << std::endl;
+            data.img_data = reinterpret_cast<unsigned char*>(data.seralizable_image.data());
+            return true;
+        }
+        else{
+            std::cout << "you wanted to load image from serialized memory, but nothing was serialized" << std::endl;
+        }
+    }
+    
+    return false;
+❱
+
+◀private: static▶ void ☀Load_Image_From_Filename(Positioned_Image_Data & data)❰
+
+    std::cout << "loading image from file name: " << data.orign_filepath << std::endl;
+    data.img_data = stbi_load(data.orign_filepath.c_str(), &data.width, &data.height, &data.rows, 4);
+    if (data.img_data == nullptr){
+        std::cerr << "unable to read in image" << std::endl;
+        exit(-1);
+    }
+❱
+
+◀private: static▶ void ☀Save_To_Serializable_Memory(Positioned_Image_Data & data)❰
+
+    //https://github.com/nothings/stb/issues/855
+    int total_bytes = data.width*data.height*data.rows;
+    data.seralizable_image.clear();
+    std::copy(data.img_data, data.img_data+total_bytes, std::back_inserter(data.seralizable_image)); 
+❱

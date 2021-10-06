@@ -1,0 +1,1 @@
+This is your Chrome extension that converts acronyms to their definitions

@@ -1,0 +1,48 @@
+class
+⚯
+⚞⚟
+
+◀public: static▶ Frame_Elements ☀Draw(Character_Maps const& font_chars, Positioned_Button_Face_Tree & tree, Pc_Input_State const& pc_input, Schema_Path_Settings const& settings)❰
+    
+    Frame_Elements elements;
+    
+    //create traversal range
+    Button_Face_Tree_Range range = Button_Face_Tree_Range_Getter::Full_Range(tree);
+    
+    Button_Tree_Global_Navigation::Handle_User_Events     (font_chars,elements,pc_input,tree.pos,tree.nodes,tree.nodes.begin(),tree.nodes.end());
+    Draw_Tree(font_chars,elements,pc_input,tree.pos,tree.nodes,tree.draw_settings,range,settings);
+    return elements;
+❱
+◀public: static▶ Frame_Elements ☀Draw(Character_Maps const& font_chars, Button_Face_Tree & tree, Position const& pos, Pc_Input_State const& pc_input, Schema_Path_Settings const& settings)❰
+    
+    Frame_Elements elements;
+    
+    //create traversal range
+    Button_Face_Tree_Range range = Button_Face_Tree_Range_Getter::Full_Range(tree);
+    
+    Button_Tree_Global_Navigation::Handle_User_Events     (font_chars,elements,pc_input,pos,tree.nodes,tree.nodes.begin(),tree.nodes.end());
+    Draw_Tree(font_chars,elements,pc_input,pos,tree.nodes,tree.draw_settings,range,settings);
+    return elements;
+❱
+
+
+◀private: static▶ void ☀Draw_Tree(Character_Maps const& font_chars, Frame_Elements & elements, Pc_Input_State const& pc_input, Position const& pos, const tree<Buttoned_Faced_Label>& tr, Button_Face_Tree_Draw_Settings const& draw_settings, Button_Face_Tree_Range const& range, Schema_Path_Settings const& settings)❰
+    
+    
+    elements.types += Build_Branches_And_Button_Labels(font_chars,pc_input,pos,tr,draw_settings,range,settings).types;
+    elements.types += Button_Face_Tree_Connection_Drawer::Draw(font_chars,pc_input,pos,tr,range,settings.references).types;
+    
+❱
+
+
+◀private: static▶ Frame_Elements  ☀Build_Branches_And_Button_Labels(Character_Maps const& font_chars, Pc_Input_State const& pc_input, Position const& pos, const tree<Buttoned_Faced_Label>& tr, Button_Face_Tree_Draw_Settings const& draw_settings, Button_Face_Tree_Range const& range, Schema_Path_Settings const& settings)❰
+    
+    
+    if (draw_settings.draw_strategy == Draw_Strategy::REGULAR_TREE) {
+        return Button_Face_Tree_Drawer_Regular::Draw(font_chars,pc_input,pos,tr,draw_settings,settings,range);
+    }
+    else if (draw_settings.draw_strategy == Draw_Strategy::WIDE_TREE){
+        return Button_Face_Tree_Drawer_Wide::Draw(font_chars,pc_input,pos,tr,draw_settings,settings,range);
+    }
+    
+❱

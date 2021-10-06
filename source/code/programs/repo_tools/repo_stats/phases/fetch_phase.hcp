@@ -1,0 +1,115 @@
+class
+❪iostream❫
+❪fstream❫
+❪"code/programs/repo_tools/repo_stats/program_options/program_options"❫
+❪"code/utilities/build/build_repo_establisher/build_repo_establisher"❫
+❪"code/utilities/program/wrappers/bazel/fetch/fetch_results"❫
+❪"code/utilities/data_structures/endpoint/endpoint"❫
+⚯
+❪"code/utilities/program/wrappers/bazel/query/bazel_aquery_runner"❫
+❪"code/utilities/program/wrappers/bazel/query/bazel_cquery_runner"❫
+❪"code/utilities/program/wrappers/bazel/query/bazel_query_runner"❫
+❪"code/utilities/program/wrappers/bazel/fetch/bazel_fetch_runner"❫
+❪"code/utilities/program/wrappers/bazel/clean/bazel_clean_runner"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
+❪"code/utilities/output/printers/lib"❫
+❪"code/utilities/formats/json/converters/type_to_json_string"❫
+❪"code/utilities/web/statsd/statsd_nc_poster"❫
+❪"code/utilities/data_structures/counters/unique_counter/unique_counter"❫
+❪"code/utilities/types/strings/observers/counters/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/strings/observers/path/lib"❫
+❪"code/utilities/metrics/metrics_publisher"❫
+❪"code/programs/repo_tools/repo_stats/phases/bes_metrics_getter"❫
+❪"code/programs/repo_tools/repo_stats/phases/workspace_metrics_getter"❫
+❪"code/utilities/filesystem/files/size/get_dir_size"❫
+❪"code/utilities/filesystem/files/size/get_total_file_count"❫
+⚞⚟
+
+
+
+◀public: static▶ void ☀Perform(Build_Repo_Settings const& repo_context, std::vector<Endpoint> const& endpoints) ❰
+
+    //let's make sure the repo is completely empty
+    std::cout << "cleaning..." << std::endl;
+    Bazel_Clean_Runner::Clean_Everything(repo_context.program_to_run_build);
+
+
+    std::cout << "getting fetch results..." << std::endl;
+    auto fetch_result = Bazel_Fetch_Runner::Run(repo_context.program_to_run_build,"deps(//...)");
+    // if (fetch_result.spawn_results.results.return_code != 0){
+    //     std::cerr << fetch_result.spawn_results.results.stdout << std::endl;
+    //     exit(-1);
+    // }
+    
+    
+    std::cout << "publishing fetch metrics..." << std::endl;
+    std::string phase_prefix = "fetch_phase_";
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "fetch_time_return_code",std::to_string(fetch_result.spawn_results.results.return_code));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "fetch_time_stdout_line_count",std::to_string(Count_Newlines(fetch_result.spawn_results.results.stdout)));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "fetch_time_stderr_line_count",std::to_string(Count_Newlines(fetch_result.spawn_results.results.stderr)));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "fetch_time_stdout_line_size",std::to_string(fetch_result.spawn_results.results.stdout.size()));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "fetch_time_stderr_line_size",std::to_string(fetch_result.spawn_results.results.stderr.size()));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "fetch_time_stderr_errors",std::to_string(countSubstring(fetch_result.spawn_results.results.stderr,"ERROR:")));
+    
+    
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "fetch_time",std::to_string(fetch_result.spawn_results.time_s.count()));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "bes_deserialization_time_ms",std::to_string(fetch_result.bes_deserialization_time_ms));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "bes_file_size",std::to_string(fetch_result.bes_file_size));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "workspace_deserialization_time_ms",std::to_string(fetch_result.workspace_deserialization_time_ms));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "workspace_file_size",std::to_string(fetch_result.workspace_file_size));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "resolved_repos_deserialization_time_ms",std::to_string(fetch_result.resolved_repos_deserialization_time_ms));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "resolved_repos_file_size",std::to_string(fetch_result.resolved_repos_file_size));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "profile_deserialization_time_ms",std::to_string(fetch_result.profile_deserialization_time_ms));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "profile_file_size",std::to_string(fetch_result.profile_file_size));
+    
+    
+    
+    //bes metrics
+    auto bes_metrics = Bes_Metrics_Getter::Get(fetch_result.build_events);
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "bes_events_count",std::to_string(bes_metrics.total));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "bes_event_count","event_type",bes_metrics.event_breakdown);
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "abort_type",bes_metrics.abort_type);
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "abort_desc","1","text",bes_metrics.abort_desc);
+    
+    
+    
+    //workspace metrics
+    auto workspace_metrics = Workspace_Metrics_Getter::Get(fetch_result.workspace_events);
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "workspace_events_count",std::to_string(workspace_metrics.total));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "workspace_event_count","event_type",workspace_metrics.event_breakdown);
+    Metrics_Publisher::Publish(endpoints,"c",phase_prefix + "download_and_extract_url","url",workspace_metrics.download_and_extract_urls);
+    Metrics_Publisher::Publish(endpoints,"c",phase_prefix + "download_url","url",workspace_metrics.download_urls);
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "executed_program","program",workspace_metrics.executed_programs);
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "which_program","program",workspace_metrics.which_programs);
+    
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "good_urls",std::to_string(workspace_metrics.urls_good));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "bad_urls",std::to_string(workspace_metrics.urls_bad));
+    
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "first_good_urls",std::to_string(workspace_metrics.first_urls_good));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "first_bad_urls",std::to_string(workspace_metrics.first_urls_bad));
+    Metrics_Publisher::Publish(endpoints,"c",phase_prefix + "first_bad_urls_list","url",workspace_metrics.first_urls_bad_list);
+    
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "deps_with_sha",std::to_string(workspace_metrics.urls_have_sha));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "deps_without_sha",std::to_string(workspace_metrics.urls_not_have_sha));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "urls_missing_sha","url",workspace_metrics.urls_missing_sha);
+    
+    //now that things have been fetched, let's get some file metrics about the fetched data
+    auto deps_folder = execute(repo_context.program_to_run_build + " info output_base") + "/external";
+    auto external_dir_size_bytes = Get_Dir_Size::Calculate_Size_Of_Dir_In_Bytes(deps_folder);
+    auto external_total_file_count  = Get_Total_File_Count::Get(deps_folder);
+    
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "external_dir_size_bytes",external_dir_size_bytes);
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "external_total_file_count",external_total_file_count);
+
+❱
+
+
+
+
+
+
+
+
+

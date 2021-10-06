@@ -1,0 +1,85 @@
+
+
+◀private: static▶ std::string ☀Derive_Comment_Pair_Comment(std::vector<Key_Value_Pair> comment_pair, C_Export_Settings const& options)❰
+    std::string comment;
+    
+    bool non_empty = false;
+    for (auto const& it: comment_pair){
+        if (!as_string(it.key.value).empty() && !as_string(it.value.value).empty()){
+            non_empty = true;
+            break;
+        }
+    }
+    
+    //print key values if we have any:
+    if (non_empty){
+        auto key = Derive_Pair_Key(comment_pair,options);
+        auto value = Derive_Pair_Value(comment_pair,options);
+        comment = key + ": " + value;
+    }
+    
+    return comment;
+❱
+◀private: static▶ std::string ☀Derive_Pair_Key(std::vector<Key_Value_Pair> comment_pair, C_Export_Settings const& options)❰
+    std::string str;
+    
+    Call_Function_On_All_Elements_Except_Last_Element_Then_Call_Function_On_Last_Element(comment_pair,[&](Key_Value_Pair const& p){
+        
+        str += as_string(p.key.value) + " / ";
+        return;},
+    [&](Key_Value_Pair const& p){
+        
+        str += as_string(p.key.value);
+        return;});
+    
+    
+    return str;
+❱
+◀private: static▶ std::string ☀Derive_Pair_Value(std::vector<Key_Value_Pair> comment_pair, C_Export_Settings const& options)❰
+    std::string str;
+    
+    bool all_true=true;
+    for (auto const& it: comment_pair){
+        if (as_string(it.value.value) != "TRUE"){
+            all_true = false;
+        }
+    }
+    
+    bool all_false=true;
+    for (auto const& it: comment_pair){
+        if (as_string(it.value.value) != "FALSE"){
+            all_false = false;
+        }
+    }
+    
+    //what to print when they are all true
+    if (all_true){
+        if (comment_pair.size() == 2){
+            str = "Both";
+        }
+        else{
+            str = "All";
+        }
+    }
+    
+    //what to print when they are all false
+    else if (all_false){
+        if (comment_pair.size() == 2){
+            str = "Neither";
+        }
+        else{
+            str = "None";
+        }
+        
+    //what to print if there is no true/false consistency
+    }else{
+        
+        for (auto const& it: comment_pair){
+            if (as_string(it.value.value) == "TRUE"){
+                str += as_string(it.key.value) + " ";
+            }
+        }
+    }
+    
+    return str;
+❱

@@ -1,0 +1,82 @@
+class
+
+❪fstream❫
+❪iostream❫
+❪"code/utilities/contributor/contributor"❫
+❪"code/utilities/code/concept_static_tree_structs"❫
+❪"code/utilities/linguistics/computer/frontends/java/settings/java_settings"❫
+
+⚯
+❪"code/utilities/comments/doxygen/maker/doxygen_block_printer"❫
+❪"code/utilities/linguistics/computer/keywords/visibility/visibility_keyword_getter"❫
+❪"code/utilities/linguistics/computer/keywords/storage/storage_keyword_getter"❫
+❪"code/utilities/linguistics/computer/keywords/mutability/mutability_keyword_getter"❫
+❪"code/utilities/linguistics/computer/keywords/reassignment/reassignment_keyword_getter"❫
+❪"code/utilities/code/query/data_member_mutability"❫
+❪"code/utilities/code/query/data_member_reassignability"❫
+❪"code/utilities/code/query/data_member_visibility"❫
+❪"code/utilities/code/query/data_member_storage_specifier"❫
+❪"code/utilities/code/query/data_member_type_getter"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/types/vectors/converters/lib"❫
+❪"code/utilities/linguistics/computer/types/generic/unilang_type_to_language_type_converter"❫
+❪"code/utilities/linguistics/computer/frontends/parts/identifier/data_member_to_identifier"❫
+❪"code/utilities/linguistics/computer/types/default_initialize/default_initialize_getter"❫
+⚞⚟
+
+◀public: static▶ std::string ☀Get(model::Module const& structure, std::vector<Contributor> const& contributors, Java_Settings const& settings)❰
+    std::string x;
+    
+    
+    for (auto const& it: First_Element_Or_Default(structure.data_members).data_member){
+        x += Doxygen_Block_Printer::Get_Indented_Block(structure,it,settings.module,4);
+        x += "\n";
+        x += "    ";
+        x += Get_Visibility_Specifiers(it);
+        x += " ";
+        x += Posibily_Get_Static_Specifier(it);
+        x += " ";
+        x += Posibily_Get_Final_Specifier(it);
+        x += " ";
+        x += Get_Real_Type(it);
+        x += " ";
+        x += Get_Type_Specializations(it);
+        x += " ";
+        x += Data_Member_To_Identifier::Derive_Name(it,settings.module,false,true);
+        x += Default_Initialize_Getter::Possibly_Get_Default_Value(it,Source_Language::JAVA);
+        x += ";\n\n";
+
+    }
+    
+    return x;
+❱
+◀private: static▶ std::string ☀Get_Type_Specializations(model::DataMember const& mem)❰
+    return "";
+❱
+
+◀private: static▶ std::string ☀Get_Real_Type(model::DataMember const& mem)❰
+    return Data_Member_Type_Getter::Get_Real_Type(mem,Source_Language::JAVA);
+❱
+◀private: static▶ std::string ☀Get_Visibility_Specifiers(model::DataMember const& mem)❰
+    auto x = Data_Member_Visibility::Get(mem);
+    return Visibility_Keyword_Getter::Get(x,Source_Language::JAVA);
+❱
+◀private: static▶ std::string ☀Posibily_Get_Final_Specifier(model::DataMember const& mem)❰
+
+    //check for "final" through immutability first
+    auto x = Data_Member_Mutability::Get(mem);
+    if (x == Mutability::IMMUTABLE){
+        return Mutability_Keyword_Getter::Get(x,Source_Language::JAVA);
+    }
+    
+    //then check for "final" through "re-assign-ability"
+    auto y = Data_Member_Reassignability::Get(mem);
+    return Reassignment_Keyword_Getter::Get(y,Source_Language::JAVA);
+    
+    
+❱
+◀private: static▶ std::string ☀Posibily_Get_Static_Specifier(model::DataMember const& mem)❰
+    auto x = Data_Member_Storage_Specifier::Get(mem);
+    return Storage_Keyword_Getter::Get(x,Source_Language::JAVA);
+❱

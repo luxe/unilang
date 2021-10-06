@@ -1,0 +1,207 @@
+􏶞p􏶟
+􏷲Type to hold a copy of any type􏷱
+􏷰There are a lot of places I'd like to use templates.
+Faking templates is not very feasible in C.  Its messy and relies on dense macros.
+Nonetheless, how can I write normal software without them?
+How can I have normal data structures that can store any type?
+
+Templates are to statically deduced types as "any" is to dynamically deduced types.
+I'm doing it at run-time with void pointers.
+
+It's not type safe (just like everything else in C), 
+but it will handle the allocations/deallocations when storing copied values.
+
+http://www.boost.org/doc/libs/1_61_0/doc/html/any.html
+http://en.cppreference.com/w/cpp/experimental/any
+
+Apart from describing intent, the real purpose of this is to:
+ - abstract away the memory management with familiar life time calls
+ - tie the size along with the pointer.  This makes copying a behavior of the type, and cleans up interfaces
+ - holds pointers to the type's copy constructor/destructor so that it can be copied/destructed from within
+
+This abstraction over void pointers gives us value semantics, instead of pointer semantics.
+􏷯
+􏷮Data Structure􏷭􏷮Any􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤s􏷣􏷦stdioLib􏷥􏴓d􏴔􏴑BOOL􏴒
+􏷤􏷣􏷦type_information􏷥􏴓1􏴔􏴑TypeInformationT􏴒
+􏶔􏶕􏶒allocator􏶓􏴏d􏴐􏴍Allocate()􏴎􏴏d􏴐􏴍Deallocate()􏴎
+􏶔s􏶕􏶒strLib.h􏶓􏴏d􏴐􏴍memcpy()􏴎
+
+
+MEMORY MANAGEMENT:
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be created storing a copy of the value passed in􏶡
+􏶜r􏶝􏷆void􏷅􏷄value􏷃􏷀the value to be stored in the type􏶿
+􏶜􏶝􏷆TypeInformationT􏷅􏷄type info􏷃􏷀type information to specialize 􏶐􏶿
+􏶴
+    􏶲store the type information􏶱
+    􏵴type info􏵵 = 􏵶type info􏵷;
+
+    􏶲store the value passed in􏶱
+    􏶲this will handle any value including the empty value null􏶱
+    􏵲store value􏵳􏵶value􏵷);
+􏶳
+
+􏷘+􏷗􏷒^􏶐􏷑
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆void􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    􏶲implicit forward casting􏶱
+    􏶲this is only going to work in C where things are unsafe􏶱
+    􏵲copy􏵳􏵶self􏵷);
+􏶳
+
+􏷘-􏷗􏷒copy􏷑
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆􏶐T􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    􏶲initialize 􏶐 using the passed in 􏶐􏶱
+    Initialize􏶐(pt􏶐,􏵶self􏵷->m_tLocals.m_ptData,􏵶self􏵷->m_tLocals.m_tTypeInfo);
+􏶳
+
+􏷘+􏷗􏷒~􏶐􏷑
+􏷐Destruct the 􏶐 type􏷏
+􏶠This function must be called to free the internal allocated memory before 􏶐 goes out of scope.􏶡
+􏶴
+    􏶲implicit forward casting􏶱
+    􏶲this is only going to work in C where things are unsafe􏶱
+    􏵲destruct data􏵳);
+    
+    􏶲we don't set the pointer to null afterward, because the type is no longer suppose to be used􏶱
+􏶳
+
+􏷘-􏷗􏷒destruct data􏷑
+􏷐Destructs the internal data􏷏
+􏶠This does invalidate the Any type itself.  It just clears it.􏶡
+􏶴
+    􏶲call the destructor if the underlying type has one􏶱
+    if (􏵴type info􏵵.m_tDestructorCall){
+        (*􏵴type info􏵵.m_tDestructorCall)(􏵴data􏵵);
+    }
+    
+    􏶲it would be UB to delete a void pointer􏶱
+    􏶲it's not UB to free a void pointer􏶱
+    􏶲From C99 section 7.20.3.2: the free function􏶱
+    􏶲If ptr is a null pointer, no action occurs.􏶱
+    􏶲Then free the actual data􏶱
+    Deallocate(􏵴data􏵵);
+􏶳
+
+
+
+
+
+
+
+
+􏷘+c􏷗􏷒size􏷑
+􏷐the size of the type􏷏
+􏶠the amount of memory in bytes that the data is allocated for􏶡
+􏶚m􏶛􏶾size_t􏶽􏶼size􏶻􏶺the size of the allocated memory of data􏶹
+􏶴
+    􏶲returns the size of the data􏶱
+    return 􏵴type info􏵵.m_uSize;
+􏶳
+
+􏷘+c􏷗􏷒get􏷑
+􏷐get a pointer to the data􏷏
+􏶠a void pointer to the allocated block of memory􏶡
+􏶚m􏶛􏶾void*􏶽􏶼data􏶻􏶺a pointer to the data􏶹
+􏶴
+    􏶲returns a pointer to the data􏶱
+    return 􏵴data􏵵;
+􏶳
+
+􏷘+c􏷗􏷒is empty􏷑
+􏷐checks to see if the any type is empty􏷏
+􏶠an empty type is a type not allocating any memory, and accessing its value will give you NULL􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is empty􏶻􏶺whether the type is empty or not􏶹
+􏶴
+    􏶲if the pointer to data is not null, then the type is not empty􏶱
+    if (􏵴data􏵵){
+        return FALSE;
+    }
+    
+    􏶲if the pointer is not null, then the type is empty􏶱
+    return TRUE;
+􏶳
+
+􏷘+􏷗􏷒clear􏷑
+􏷐destroys contained object􏷏
+􏶠this will make the type empty􏶡
+􏶴
+    􏶲delete any allocated memory and ensure the data is pointing to null􏶱
+    􏶲pointing to null will indicate that the type is empty􏶱
+    􏵲destruct data􏵳);
+    􏵴data􏵵 = NULL;
+􏶳
+
+􏷘+􏷗􏷒assign􏷑
+􏷐assigns a new value to the type􏷏
+􏶠this will handle any necessary deallocation/reallocation.  
+This can be done whether the type is empty or not􏶡
+􏶜r􏶝􏷆void􏷅􏷄value􏷃􏷀the value to be stored in the type􏶿
+􏶜􏶝􏷆TypeInformationT􏷅􏷄type info􏷃􏷀type information to specialize 􏶐􏶿
+􏶴
+    􏶲store the type information􏶱
+    􏵴type info􏵵 = 􏵶type info􏵷;
+    
+    􏶲clear any currently existing value,􏶱
+    􏶲so that a new value can be stored􏶱
+    􏵲clear􏵳);
+    
+    􏶲store the value passed in􏶱
+    􏶲we know the current state is now empty􏶱
+    􏵲store value􏵳􏵶value􏵷);
+􏶳
+
+􏷘-􏷗􏷒store value􏷑
+􏷐stores the value􏷏
+􏶠assumes there is no current value set􏶡
+􏶜r􏶝􏷆void􏷅􏷄value􏷃􏷀the value to be stored in the type􏶿
+􏶴
+    􏶲only allocate memory for the data if a value was passed in􏶱
+    􏶲not passing in a value is considered normal and it considers the 'any' type to be empty.􏶱
+    if(􏵶value􏵷){
+        􏵲construct new type􏵳􏵶value􏵷);
+    }
+    
+    􏶲we set the data to NULL if it does not point to anything􏶱
+    􏶲this is how we know if the type is empty􏶱
+    else{
+        􏵴data􏵵 = NULL;
+    }
+􏶳
+
+􏷘-􏷗􏷒construct new type􏷑
+􏷐constructs a new type by allocating memory, and possibly calling an associated copy constructor􏷏
+􏶠gives value to our internal data void pointer􏶡
+􏶜r􏶝􏷆void􏷅􏷄value􏷃􏷀the value to be stored in the type (guaranteed not to be NULL)􏶿
+􏶴
+    􏶲allocate new memory no matter what􏶱
+    􏵴data􏵵 = Allocate(􏵴type info􏵵.m_uSize,1);
+    
+    􏶲maybe the type we are copying is allocating memory􏶱
+    􏶲decide if we need to copy construct instead􏶱
+    if (􏵴type info􏵵.m_tCopyCall){
+        􏶲deep copy􏶱
+        (*􏵴type info􏵵.m_tCopyCall)(􏵴data􏵵,􏵶value􏵷);
+    }
+    else{
+        􏶲shallow copy􏶱
+        memcpy(􏵴data􏵵,􏵶value􏵷,􏵴type info􏵵.m_uSize);
+    }
+􏶳
+
+􏶨the value of the data􏶧
+􏶦This points to a block of memory representing the value of any type􏶥
+􏶘+􏶙􏶮void*􏶭􏶬data􏶫􏶪􏶩
+
+􏶨the necessary type information associated with our void pointer􏶧
+􏶦Type information is needed for memory allocations, as well as constructing/destructing managed types􏶥
+􏶘+􏶙􏶮TypeInformationT􏶭􏶬type info􏶫􏶪􏶩

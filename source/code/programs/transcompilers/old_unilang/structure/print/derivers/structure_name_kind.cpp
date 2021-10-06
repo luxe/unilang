@@ -1,0 +1,1 @@
+#include "structure_name_kind.hpp"

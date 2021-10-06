@@ -1,0 +1,154 @@
+class
+⚯
+⚞⚟
+
+
+
+◀public: static▶ void ☀Handle_Menu_Selection(Buildable_Face_Tree_State & tree, Character_Maps const& font_chars, Position const& pos, Child_Lookup_Map const& lookup, Style_Lookup_Map const& style_lookup, std::string message, Pc_Input_State const& pc_input)❰
+    
+    //TODO: I'd rather determine this by the menu type instead of a character symbol seen in the menu item
+    auto symbol = Remove_And_Get_First_Char(message);
+    if (symbol == "+"){
+        Add_Child_Node(tree,font_chars,pos,lookup,style_lookup,message,pc_input);
+    }
+    if (symbol == "~"){
+        Replace_Selected_Node(tree,lookup,style_lookup,message);
+    }
+    if (symbol == ":"){
+        Handle_Local_Tree_Actions(tree,lookup,message);
+    }
+    if (symbol == "!"){
+        Handle_Global_Tree_Actions(tree,lookup,style_lookup,message);
+    }
+    if (symbol == ">"){
+        Handle_Choice_Actions(tree,lookup,message);
+    }
+
+❱
+
+◀private: static▶ void ☀Handle_Choice_Actions(Buildable_Face_Tree_State & tree, Child_Lookup_Map const& lookup, std::string const& message)❰
+
+    tree.selected_node->label.state.faces[tree.selected_node->label.state.faces.size()-1].label.message = message;
+❱
+
+◀private: static▶ void ☀Handle_Local_Tree_Actions(Buildable_Face_Tree_State & tree, Child_Lookup_Map const& lookup, std::string const& message)❰
+
+    switch (enum_cast_to_Local_Manipulation_Option(message)){
+        case Local_Manipulation_Option::DELETE:
+        Buildable_Face_Tree_Action_Doer::Do_Label_Action(tree,Buildable_Label_Action::DELETE);
+        break;
+        case Local_Manipulation_Option::DUPLICATE:
+        Buildable_Face_Tree_Action_Doer::Do_Label_Action(tree,Buildable_Label_Action::DUPLICATE);
+        break;
+        case Local_Manipulation_Option::UP:
+        Buildable_Face_Tree_Action_Doer::Do_Label_Action(tree,Buildable_Label_Action::MOVE_SIBLING_UP);
+        break;
+        case Local_Manipulation_Option::DOWN:
+        Buildable_Face_Tree_Action_Doer::Do_Label_Action(tree,Buildable_Label_Action::MOVE_SIBLING_DOWN);
+        break;
+        case Local_Manipulation_Option::FIRST:
+        Buildable_Face_Tree_Action_Doer::Do_Label_Action(tree,Buildable_Label_Action::MOVE_SIBLING_FIRST);
+        break;
+        case Local_Manipulation_Option::LAST:
+        Buildable_Face_Tree_Action_Doer::Do_Label_Action(tree,Buildable_Label_Action::MOVE_SIBLING_LAST);
+        break;
+        case Local_Manipulation_Option::MOVE_CHILDREN_TO_NEW_PARENT:
+        Buildable_Face_Tree_Action_Doer::Do_Label_Action(tree,Buildable_Label_Action::MOVE_CHILDREN_TO_NEW_PARENT);
+        break;
+        case Local_Manipulation_Option::DELETE_CHILDREN:
+        Buildable_Face_Tree_Action_Doer::Do_Label_Action(tree,Buildable_Label_Action::DELETE_CHILDREN);
+        break;
+    }
+    
+❱
+◀private: static▶ void ☀Handle_Global_Tree_Actions(Buildable_Face_Tree_State & tree, Child_Lookup_Map const& lookup, Style_Lookup_Map const& style_lookup, std::string const& message)❰
+
+    switch (enum_cast_to_Global_Manipulation_Option(message)){
+        
+        case Global_Manipulation_Option::DRAW_REGULAR:
+        tree.structure.draw_settings.draw_strategy = Draw_Strategy::REGULAR_TREE;
+        break;
+        
+        case Global_Manipulation_Option::DRAW_WIDE:
+        tree.structure.draw_settings.draw_strategy = Draw_Strategy::WIDE_TREE;
+        break;
+        
+        case Global_Manipulation_Option::DRAW_CHILDREN_ONLY:
+        break;
+        
+        case Global_Manipulation_Option::DRAW_SIGNIFIED_ONLY:
+        break;
+        
+        case Global_Manipulation_Option::DRAW_ALL:
+        break;
+        
+        case Global_Manipulation_Option::APPLY_COLOR_THEME:
+        Buildable_Face_Tree_Style_Applier::Apply_Theme(tree,lookup,style_lookup);
+        break;
+        
+        case Global_Manipulation_Option::SORT_BY_SCHEMA:
+        break;
+    }
+❱
+
+◀private: static▶ void ☀Add_Child_Node(Buildable_Face_Tree_State & tree, Character_Maps const& font_chars, Position const& pos, Child_Lookup_Map const& lookup, Style_Lookup_Map const& style_lookup, std::string const& message, Pc_Input_State const& pc_input)❰
+
+    //create the node
+    auto x = Create_Styled_Unilang_Node_Via_Parent(tree,tree.selected_node,lookup,style_lookup,message);
+    
+    //make everything in the tree inactive except for the new label
+    Button_Face_Tree_Set_Active::Set_Active(tree.structure,false);
+    x.label.state.faces[x.label.state.faces.size()-1].label.user_state.is_active = true;
+    
+    //for convenience, select the dummy text of the new label so the user can get to replacing it right away
+    Faced_Label_Highlight_Text::Highlight_Text(font_chars, pos, x.label, pc_input);
+    
+    //add it
+    tree.structure.nodes.append_child(tree.selected_node,x);
+❱
+◀private: static▶ void ☀Replace_Selected_Node(Buildable_Face_Tree_State & tree, Child_Lookup_Map const& lookup, Style_Lookup_Map const& style_lookup, std::string const& message)❰
+
+    //I think this will always be valid because you won't have the choice to replace on a non-parent node.
+    //so this should not throw a navigation error.
+    auto parent = tree.structure.nodes.parent(tree.selected_node);
+    
+    
+    auto x = Create_Styled_Unilang_Node_Via_Parent(tree,parent,lookup,style_lookup, message);
+    *tree.selected_node = x;
+❱
+
+◀private: static▶ Buttoned_Faced_Label ☀Create_Styled_Unilang_Node_Via_Parent(Buildable_Face_Tree_State & tree, ::tree<Buttoned_Faced_Label>::pre_order_iterator parent, Child_Lookup_Map const& lookup, Style_Lookup_Map const& style_lookup, std::string const& message)❰
+    
+    //decide how many faces and what they are going to say
+    Buttoned_Faced_Label new_label;
+    if (Is_Chosen_Child_A_Leaf(tree.structure,lookup,parent,message)){
+        new_label = Buttoned_Faced_Label_Premades::Opened_Unilang_Leaf_Node(message);
+    }
+    else {
+        new_label = Buttoned_Faced_Label_Premades::Opened_Unilang_NonLeaf_Node(message);
+    }
+    
+    
+    //change color and style based on a customizable theme
+    auto full_name = With_Child_Name(tree.structure,parent,message);
+    Button_Faced_Label_Style_Applier::Apply_Theme(new_label,style_lookup,full_name);
+    
+    
+    return new_label;
+❱
+
+
+
+◀private: static▶ bool ☀Is_Chosen_Child_A_Leaf(Button_Face_Tree const& structure, Child_Lookup_Map const& lookup, ::tree<Buttoned_Faced_Label>::pre_order_iterator it, std::string const& child_name)❰
+    auto full_name = With_Child_Name(structure,it,child_name);
+    
+    auto strs = Child_Lookup_Map_Find::Get_Children(lookup,full_name);
+    return strs.empty();
+❱
+
+
+◀private: static▶ std::string ☀With_Child_Name(Button_Face_Tree const& structure, ::tree<Buttoned_Faced_Label>::pre_order_iterator it, std::string const& child_name)❰
+    auto full_name = Button_Face_Tree_Full_Path_Name::Get(structure,it);
+    full_name += child_name + "/";
+    return full_name;
+❱

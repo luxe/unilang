@@ -1,0 +1,111 @@
+class
+❪"utilities"❫
+❪"systems"❫
+❪"program_options"❫
+❪"macro"❫
+❪"error"❫
+⚯
+⚞⚟
+◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& program_options) ❰
+    
+    auto paths = Get_All_Paths_To_Files_That_Need_Scanned();
+    
+    //name / {filename,value}
+    std::map<std::string,Macro> finds;
+    std::vector<Error> errors;
+    unsigned int total_number_of_macros = 0;
+    for (auto it: paths){
+        Scan_Each_File(finds,it,total_number_of_macros,errors);
+    }
+    
+    Print_Error_Messages(errors);
+    
+❱
+◀private: static▶ void ☀Print_Error_Messages(std::vector<Error> & errors)❰
+
+    for (auto e : errors){
+        std::cerr << "Redefinition of Macro: " << e.name << std::endl;
+        std::cerr << e.macro_original.path << ":" << e.macro_original.line_number << " =>" << e.macro_original.value << std::endl;
+        std::cerr << e.macro_duplicate.path << ":" << e.macro_duplicate.line_number << " =>" << e.macro_duplicate.value << std::endl;
+        std::cerr << std::endl;
+    }
+❱
+
+
+◀private: static▶ std::vector<std::string> ☀Get_All_Paths_To_Files_That_Need_Scanned()❰
+
+    auto paths = Recursively_Get_All_Paths_To_Files_Of_Given_File_Extension_From_Path("c");
+    paths+= Recursively_Get_All_Paths_To_Files_Of_Given_File_Extension_From_Path("cpp");
+    paths+= Recursively_Get_All_Paths_To_Files_Of_Given_File_Extension_From_Path("h");
+    paths+= Recursively_Get_All_Paths_To_Files_Of_Given_File_Extension_From_Path("hpp");
+    
+    return paths;
+❱
+
+◀private: static▶ void ☀Scan_Each_File(std::map<std::string,Macro> & finds, std::string file_path, unsigned int total_number_of_macros, std::vector<Error> & errors)❰
+
+    auto lines = Read_Each_Line_Of_File_Into_Vector(file_path);
+    for (int i = 0; i < lines.size(); ++i){
+        Test_File_Line(finds,file_path,lines[i],i,total_number_of_macros,errors);
+    }
+❱
+
+◀private: static▶ void ☀Test_File_Line(std::map<std::string,Macro> & finds, std::string file_path, std::string line, int line_number, unsigned int total_number_of_macros, std::vector<Error> & errors)❰
+    
+    trim(line);
+    Turn_Any_Whitespace_Chars_Into_A_Space(line);
+    if (Begins_With(line,"#define ")){
+        ++total_number_of_macros;
+        line.erase(0,std::string("#define ").size());
+        trim(line);
+        auto macro = Strip_Out_From_Front_Until_Char_Is_Found(line,' ');
+        line.erase(0,macro.size());
+        trim(line);
+        auto macro_value =Strip_Out_From_Front_Until_Char_Is_Found(line,' ');
+        
+        //comments are not actual values
+        if (Begins_With(macro_value,"//") || Begins_With(macro_value,"/*")){
+            macro_value = "";
+        }
+        
+        Record_If_Macro_Was_Already_Found_Or_Add_It(finds,file_path,macro,macro_value,line_number,errors);
+    }
+❱
+
+◀private: static▶ void ☀Record_If_Macro_Was_Already_Found_Or_Add_It(std::map<std::string,Macro> & finds, std::string file_path, std::string macro, std::string macro_value, int line_number, std::vector<Error> & errors)❰
+    
+    if(Exists_In_Map(finds,macro)){
+        auto from = finds.find(macro);
+
+        Error e;
+        e.name = macro;
+        e.macro_original = from->second;
+        
+        Macro m;
+        m.path = file_path;
+        m.value = macro_value;
+        m.line_number = line_number;
+        e.macro_duplicate = m;
+        
+        errors.push_back(e);
+    }
+    else{
+        Macro m;
+        m.path = file_path;
+        m.value = macro_value;
+        m.line_number = line_number;
+        
+        finds.emplace(macro,m);
+    }
+❱
+
+
+◀private: static▶ bool ☀Exists_In_Map(std::map<std::string,Macro> const& finds, std::string const& macro)❰
+    if (finds.count(macro)){
+        return true;
+    }
+    return false;
+❱
+
+
+

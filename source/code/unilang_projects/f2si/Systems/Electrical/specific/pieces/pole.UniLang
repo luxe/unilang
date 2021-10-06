@@ -1,0 +1,76 @@
+􏶞p􏶟
+􏷲A pole acts like a switch to allow current to flow through one of the two terminals􏷱
+􏷰This is different than a regular switch where a node is simply turned on/off
+In this case, electricity will always flow through, and switch decides which terminal.  
+Poles are used internally inside multi-pole switches􏷯
+􏷮Electrical_System􏷭 􏷮Pole􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦stddef􏷥􏴓1􏴔􏴑size_t􏴒
+􏷤􏷣􏷦electrical_graph􏷥􏴓d􏴔􏴑ElectricalGraphT􏴒
+􏶔􏶕􏶒string􏶓􏴏d􏴐􏴍strcpy()􏴎
+
+􏳹electrical graph􏳺
+
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be in an invalid state until initialized.
+Initializing a 􏶐 will construct all of its nodes into the generic electrical graph.
+It will store the IDs given back by the graph so that they may be queried later by the user.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its nodes into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+  􏶲create all the internal nodes inside the graph data structure􏶱
+  􏵲create nodes􏵳􏵶graph􏵷,􏵶tag name􏵷);
+  
+  􏶲connect these newly created nodes􏶱
+  􏵲create wires􏵳􏵶graph􏵷);
+  
+  􏶲connect these newly created nodes􏶱
+  􏵲create triggers􏵳􏵶graph􏵷);
+􏶳
+
+􏷘-􏷗􏷒create nodes􏷑
+􏷐Constructs all of the electrical components into the generic electrical graph data structure.􏷏
+􏶠This will give all of the node a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its nodes into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+  􏶲create all of the vertices that are part of the 􏶐􏶱
+  
+  􏶲add nodes to graph􏶱
+  􏵴input terminal􏵵 = ElectricalGraphAddRelay(􏵶graph􏵷,"input terminal",􏵶tag name􏵷,0.0f,0.0f,CAN_BE_POWERED_YES);
+  
+  􏶲we start with the relay open.􏶱
+  􏶲this is because these poles are normally used in multi-pole power relays, which holds the relays closed when a coil is powered􏶱
+  􏵴closed terminal􏵵 = ElectricalGraphAddJunction(􏵶graph􏵷,"closed terminal",􏵶tag name􏵷,0.0f,0.0f,CAN_BE_POWERED_NO);
+  􏵴open terminal􏵵 = ElectricalGraphAddJunction(􏵶graph􏵷,"open terminal",􏵶tag name􏵷,0.0f,0.0f,CAN_BE_POWERED_YES);
+􏶳
+
+􏷘-􏷗􏷒create wires􏷑
+􏷐Connects all of the necessary 􏶐 nodes together.􏷏
+􏶠The nodes being connected will need to be created first.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its wires into.􏶿
+􏶴
+  􏶲connect pole terminals together􏶱
+  ElectricalGraphAddDirectedWire(􏵶graph􏵷,􏵴input terminal􏵵,􏵴open terminal􏵵);
+  ElectricalGraphAddDirectedWire(􏵶graph􏵷,􏵴input terminal􏵵,􏵴closed terminal􏵵);
+􏶳
+
+􏷘-􏷗􏷒create triggers􏷑
+􏷐creates trigger behavior on internal nodes􏷏
+􏶠The nodes being connected will need to be created first.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its wires into.􏶿
+􏶴
+  􏶲no triggers...􏶱
+  􏶲triggers are applied by the multi-pole relays that include a pole.􏶱
+􏶳
+
+􏶨The input into the pole􏶧
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬input terminal􏶫􏶪0􏶩
+
+􏶨Where electricity will flow to when the pole is in the closed position􏶧
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬closed terminal􏶫􏶪0􏶩
+
+􏶨Where electricity will flow to when the pole is in the open position􏶧
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬open terminal􏶫􏶪0􏶩

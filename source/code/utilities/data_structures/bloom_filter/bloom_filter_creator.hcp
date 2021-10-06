@@ -1,0 +1,132 @@
+class
+⚯
+⚞⚟
+
+
+◀public: static▶ bf::basic_bloom_filter ☀Create_From_File_Impl1(std::string const& path)❰
+
+    //deserialize
+    //NONE
+
+    //settings
+    auto total_size = File_Line_Counter::Get(path);
+    double false_positive_rate = 0.1;
+    
+    // build and populate
+    bf::basic_bloom_filter x(false_positive_rate, as_size_t(total_size));
+    File_Content_Traverser::For_Each_Line_Of_File_With_Progress_Bar(path,"Loading Bloom Filter",[&](std::string const& line){
+        
+        x.add(line);
+    });
+    
+    //serialize
+    //NONE
+    
+    return x;
+❱
+
+◀public: static▶ bloom::OrdinaryBloomFilter<std::string> ☀Create_From_File_Impl2(std::string const& path)❰
+
+    //deserialize if it already exists
+    if (File_Exists(Bloom_Filter_Path(path))){
+        return Load_Impl2(path);
+    }
+
+    //settings
+    auto total_size = File_Line_Counter::Get(path);
+    int number_of_hashes = 4;
+    
+    // build and populate
+    bloom::OrdinaryBloomFilter<std::string> x(number_of_hashes, as_size_t(total_size));
+    File_Content_Traverser::For_Each_Line_Of_File_With_Progress_Bar(path,"Loading Bloom Filter",[&](std::string const& line){
+        
+        x.Insert(line);
+    });
+    
+    //serialize
+    Save_Impl2(x,path);
+    
+    return x;
+❱
+
+◀public: static▶ std::shared_ptr<BloomFilter> ☀Create_From_File_Impl3(std::string const& path)❰
+
+    //settings
+    auto total_size = File_Line_Counter::Get(path);
+    const unsigned k = 5; //doesn't matter
+    const unsigned numHashes = 16;
+    
+    std::shared_ptr<BloomFilter> x = std::make_shared<BloomFilter>(as_size_t(total_size),numHashes, k);
+    
+    //deserialize if it already exists
+    if (File_Exists(Bloom_Filter_Path(path))){
+        return Load_Impl3(x,path);
+    }
+    
+    //populate
+    File_Content_Traverser::For_Each_Line_Of_File_With_Progress_Bar(path,"Loading Bloom Filter",[&](std::string const& line){
+        
+        //x->insert(line);
+    });
+    
+    //serialize
+    Save_Impl3(x,path);
+    
+
+    return x;
+❱
+
+
+
+
+◀private: static▶ bloom::OrdinaryBloomFilter<std::string> ☀Load_Impl2(std::string const& path)❰
+
+    std::ifstream infile(Bloom_Filter_Path(path));
+    auto loaded_filter = bloom::OrdinaryBloomFilter<std::string>::Deserialize(infile);
+    infile.close();
+    return loaded_filter;
+❱
+◀private: static▶ void ☀Save_Impl2(bloom::OrdinaryBloomFilter<std::string> & x, std::string const& path)❰
+
+    std::ofstream outfile(Bloom_Filter_Path(path));
+    x.Serialize(outfile);
+    outfile.close();
+❱
+
+◀private: static▶ std::shared_ptr<BloomFilter> ☀Load_Impl3(std::shared_ptr<BloomFilter> & x, std::string const& path)❰
+
+    x->loadFilter(Bloom_Filter_Path(path));
+    return x;
+❱
+
+◀private: static▶ void ☀Save_Impl3(std::shared_ptr<BloomFilter> & x, std::string const& path)❰
+    x->storeFilter(Bloom_Filter_Path(path));
+❱
+
+
+
+
+
+
+◀private: static▶ std::string ☀Bloom_Filter_Path(std::string const& path)❰
+    auto serialization_file = path + "_bloom";
+    return serialization_file;
+❱
+
+
+
+
+
+
+
+
+
+
+
+
+
+◀private: static▶  int ☀calcOptiHashNum(double fpr) ❰ return int(-log(fpr) / log(2)); ❱ // .00001 = 16
+
+
+
+

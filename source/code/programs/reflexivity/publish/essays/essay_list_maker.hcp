@@ -1,0 +1,107 @@
+class
+❪"code/utilities/formats/pdf/pdf_settings"❫
+❪"code/utilities/code/concept_static_tree_structs"❫
+❪"code/utilities/output/publisher/essay/essay"❫
+⚯
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/program/common_actions/exits/lib"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
+❪"code/utilities/program/common_actions/locale/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/filesystem/files/getting/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/formats/pdf/latex_template_getter"❫
+❪"code/utilities/web/dropbox/dropbox_uploader"❫
+❪"code/utilities/personal/secret/secret_getter"❫
+❪"code/utilities/filesystem/files/temp/temp_file"❫
+❪"code/utilities/formats/pdf/pdf_creator"❫
+❪"code/utilities/output/upload/file_upload_settings"❫
+❪"code/utilities/output/upload/file_uploader"❫
+❪"code/utilities/formats/html/basic_html_template_getter"❫
+❪"code/utilities/formats/html/body/html_list_maker"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/formats/html/style/link_list_styling"❫
+❪"code/utilities/formats/html/full/list_of_links"❫
+❪"code/utilities/formats/json/converters/json_file_io"❫
+❪"code/utilities/types/strings/transformers/search_replace/lib"❫
+⚞⚟
+
+
+◀public: static▶ void ☀Make(std::vector<Essay> const& all_essays) ❰
+
+    auto link_and_names = Gather_Links_And_Names(all_essays);
+    Generate_Essay_List(link_and_names);
+❱
+
+◀private: static▶ std::vector<std::pair<std::string,std::string>> ☀Gather_Links_And_Names(std::vector<Essay> const& all_essays) ❰
+    std::vector<std::pair<std::string,std::string>> x;
+    for (auto const& it: all_essays){
+        
+        model::Code structure;
+        Json_File_Io::Read_Json_From_File(structure,it.json_file_name);
+        auto title = Get_Title_Name_For_Link(structure.module[0]);
+        auto link = destroy_path_name_with_underscores(it.json_file_name);
+        
+        link += Assumed_Output_Extension(it);
+        
+        x.emplace_back(link,title);
+    }
+    return x;
+❱
+
+◀private: static▶ std::string ☀Get_Title_Name_For_Link(model::Module const& structure) ❰
+
+    // Instead of relying on the file name, we expect the content of the file to have the title
+    // It should be the title of the first paragraph.
+    for (auto const& l: structure.literature){
+        if (!l.paragraph.empty()){
+            auto title = l.paragraph[0].title[0].value;
+            if (!title.empty()){
+                return title;
+            }
+        }
+    }
+    
+    //actually... we couldn't find the title in the content of the literature
+    //lets resort to the file name now instead.
+    //return Case_Modifier::As_Modified_Casing(Case_Format_Style::CAPITAL,structure.name);
+    return "";
+❱
+
+◀private: static▶ std::string ☀Assumed_Output_Extension(Essay const& essay) ❰
+        if (essay.style == Essay_Style::SCIENTIFIC){
+            return ".pdf";
+        }
+        else if (essay.style == Essay_Style::POETIC){
+            return ".html";
+        }
+        
+        return ".txt";
+❱
+
+◀private: static▶ void ☀Generate_Essay_List(std::vector<std::pair<std::string,std::string>> const& link_and_names) ❰
+    
+
+    //create html file
+    auto local_file_name = Full_Path_For_Desktop_File("essays.html");
+    auto html = List_Of_Links::Get_Html("Essays",link_and_names);
+    auto temp_html = Temp_File(local_file_name,html);
+    
+    //upload it
+    File_Upload_Settings upload_settings;
+    upload_settings.local_file_name = local_file_name;
+    upload_settings.remote_file_name = "essays/essays.html";
+    
+    //dropbox specific
+    upload_settings.upload_to_dropbox = false;
+    
+    //github specific
+    upload_settings.upload_to_github = true;
+    upload_settings.github_settings.pull_first = false;
+    upload_settings.github_settings.update = true;
+    
+    File_Uploader::Upload(upload_settings);
+❱

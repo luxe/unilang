@@ -1,0 +1,55 @@
+class
+❪string❫
+❪iostream❫
+❪cstdlib❫
+❪fstream❫
+❪"code/utilities/program/call/lib"❫
+❪"code/utilities/colors/converters/rgb_to_hex_string"❫
+❪filesystem❫
+⚯
+
+⚞⚟
+
+//convert image.gif -transparent white result.gif
+◀public: static▶ void ☀Convert(std::string const& file_in) ❰
+
+    Convert(file_in,file_in +"_converted");
+    execute_quietly("mv " + file_in +"_converted " + file_in);
+❱
+
+◀public: static▶ void ☀Convert(std::string const& file_in, std::string const& file_out) ❰
+
+    Convert(file_in,file_out,"white");
+❱
+
+◀public: static▶ void ☀Convert(std::string const& file_in, Rgb_Color const& color) ❰
+
+    auto hex_string = Rgb_To_Hex_String::Convert(color);
+    Convert(file_in,file_in +"_converted",hex_string);
+    execute_quietly("mv " + file_in +"_converted " + file_in);
+❱
+
+◀private: static▶ void ☀Convert(std::string const& file_in, std::string const& file_out, std::string const& color) ❰
+
+
+
+    std::string command;
+    command += "convert ";
+    command += file_in;
+    command += " ";
+    command += "-fuzz 1% -transparent '" + color + "' ";
+    
+    //BUG! For some reason this creates a slightly different image each time.
+    //It's not deterministic so git always says the generated file is dirty even
+    //though it looks exactly the same.
+    //But when I run it outside of code it works.  wtf.
+    //I think the date is being injected.
+    //This didn't work
+    command += "-define png:exclude-chunks=date ";
+    
+    command += file_out;
+    execute_quietly(command);
+    
+    //this fixes output nondeterminism by removing timestamp metadata
+    execute(std::string("mogrify -strip ") + file_out); 
+❱

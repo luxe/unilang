@@ -1,0 +1,86 @@
+class
+⚯
+⚞⚟
+
+
+◀public: static▶ Frame_Elements ☀Draw(Arrow const& arrow)
+❰
+    Frame_Elements x;
+    
+    //nothing to draw
+    if (arrow.points.empty()){
+        return x;
+    }
+    
+    
+    //analyze points two at a time
+    for (size_t i = 0; i < arrow.points.size(); ++i){
+        if (i+1 < arrow.points.size()){
+            x.types += Draw_Line(arrow.points[i],arrow.points[i+1]).types;
+        }
+    }
+    
+    //draw arrows
+    if (arrow.direction == Arrow_Direction::START){
+        auto arrow_pos = arrow.points[0];
+        arrow_pos.y -= 2;
+        auto arrow_head = Left_Arrow::Create_Positioned(arrow_pos,4);
+        x.types.emplace_back(arrow_head);
+    }
+    else if (arrow.direction == Arrow_Direction::END){
+        auto arrow_pos = arrow.points[arrow.points.size()-1];
+        arrow_pos.y -= 2;
+        arrow_pos.x -= 1;
+        auto arrow_head = Right_Arrow::Create_Positioned(arrow_pos,4);
+        x.types.emplace_back(arrow_head);
+    }
+    else if (arrow.direction == Arrow_Direction::BOTH){
+        
+        auto arrow_pos1 = arrow.points[0];
+        auto arrow_pos2 = arrow.points[arrow.points.size()-1];
+        arrow_pos1.y -= 2;
+        arrow_pos2.y -= 2;
+        arrow_pos2.x -= 1;
+        auto arrow_head1 = Left_Arrow::Create_Positioned(arrow_pos1,4);
+        auto arrow_head2 = Right_Arrow::Create_Positioned(arrow_pos2,4);
+        x.types.emplace_back(arrow_head1);
+        x.types.emplace_back(arrow_head2);
+    }
+    
+    return x;
+❱
+
+◀private: static▶ Frame_Elements ☀Draw_Line(Position const& start, Position const& end)
+❰
+    Frame_Elements x;
+    
+    //horizontal line
+    if (start.x == end.x){
+        
+        //left to right
+        if (start.x <= end.x){
+            x.types.emplace_back(Horizontal_Line::Create_Positioned(start, end.x - start.x));
+            return x;
+        }
+        else{
+            x.types.emplace_back(Horizontal_Line::Create_Positioned(end, start.x - end.x));
+            return x;
+        }
+    }
+    
+    //diagonal line, curved line, or it needs made of two lines
+    x.types.emplace_back(Vertical_Line::Create_Positioned(start, end.y - start.y));
+    auto new_pos = start;
+    new_pos.y = end.y;
+    
+    //left to right
+    if (new_pos.x <= end.x){
+        x.types.emplace_back(Horizontal_Line::Create_Positioned(new_pos, end.x - new_pos.x));
+    }
+    else{
+        x.types.emplace_back(Horizontal_Line::Create_Positioned(end, new_pos.x - end.x));
+    }
+    
+    
+    return x;
+❱

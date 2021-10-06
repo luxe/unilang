@@ -1,0 +1,75 @@
+class
+❪string❫
+❪iostream❫
+❪cstdlib❫
+❪fstream❫
+❪functional❫
+❪"code/utilities/program/call/lib"❫
+❪"code/utilities/program/wrappers/zenity/file_selector/file_selection_settings"❫
+❪"code/utilities/colors/converters/converters"❫
+❪filesystem❫
+❪"code/utilities/program/call/thread_caller"❫
+⚯
+
+⚞⚟
+
+
+◀public: static▶ std::string ☀Typical_Save_As() ❰
+    
+    File_Selection_Settings settings;
+    settings.action = File_Action::SAVE;
+    settings.confirm_overwrite = true;
+    std::string command = Build_Command(settings);
+    
+    auto chosen_result = execute_and_get_back_stdout_only(command);
+    return chosen_result;
+❱
+
+◀public: static▶ std::string ☀Typical_Load() ❰
+    
+    File_Selection_Settings settings;
+    settings.action = File_Action::SELECT;
+    settings.allow_multiple_files = false;
+    settings.directories_only = false;
+    std::string command = Build_Command(settings);
+    
+    auto chosen_result = execute_and_get_back_stdout_only(command);
+    return chosen_result;
+❱
+
+
+◀private: static▶ std::string ☀Build_Command(File_Selection_Settings const& settings) ❰
+
+    std::string command = "zenity --file-selection ";
+    
+    command += "--title=";
+    command += "'";
+    command += settings.title;
+    command += "' ";
+    
+    //apply select settings
+    if (settings.action == File_Action::SELECT){
+        if (settings.allow_multiple_files){
+            command += "--multiple ";
+        }
+        if (settings.directories_only){
+            command += "--directory ";
+        }
+        for (auto const& it: settings.file_filters){
+            command += "--file-filter " + it + " ";
+        }
+    }
+    
+    //apply save settings
+    else if (settings.action == File_Action::SAVE){
+        command += "--save ";
+        if (settings.default_filename.empty()){
+            command += "--filename=" + settings.default_filename + " ";
+        }
+        if (settings.confirm_overwrite){
+            command += "--confirm-overwrite ";
+        }
+    }
+    
+    return command;
+❱

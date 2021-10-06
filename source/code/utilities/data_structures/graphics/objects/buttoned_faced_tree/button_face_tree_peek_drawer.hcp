@@ -1,0 +1,75 @@
+class
+⚯
+⚞⚟
+
+
+
+◀public: static▶ Frame_Elements  ☀Draw(Character_Maps const& font_chars, tree<Buttoned_Faced_Label> const& tr, tree<Buttoned_Faced_Label>::pre_order_iterator prev, tree<Buttoned_Faced_Label>::pre_order_iterator it, int prev_depth, int depth, Position current_pos, Schema_Path_Settings const& settings)❰
+
+
+    
+    
+    //create the hint bitmap
+    Label_Settings hint;
+    hint.message = Decide_Hint_Text(tr,it,settings);
+    Positioned_Full_Color_Bitmap bitmap;
+    bitmap.bitmap = Label_Text_Bitmap_Getter::Get_Width_Adjusted_Text_Bitmap(font_chars,hint);
+    bitmap.pos = current_pos;
+    
+    
+    //position fudging
+    bitmap.pos.y += 10;
+    bitmap.pos.x += 2;
+    bitmap.pos.x += Faced_Label_Dimension_Getter::Get(it->label).x;
+    
+    //add it
+    Frame_Elements x;
+    x.types.emplace_back(bitmap);
+    return x;
+❱
+
+◀private: static▶ std::string  ☀Decide_Hint_Text(tree<Buttoned_Faced_Label> const& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it,Schema_Path_Settings const& settings)❰
+
+    //exit early if we don't have any peeks for this label path
+    auto full_name = Button_Face_Tree_Full_Path_Name::Get(tr,it);
+    if (!Exists_In_Unordered_Map(settings.peeks.map,full_name)){
+         return "";
+    }
+    
+    //if we do, extract the paths for peeking
+    auto peek_paths = settings.peeks.map.at(full_name);
+    
+    //now we need to find the paths by traversing the subtree
+    std::vector<std::string> peek_statements;
+    for (auto const& find_path: peek_paths){
+        peek_statements.emplace_back(Extract_Peek(tr,it,find_path));
+    }
+    
+    
+    
+    
+    //for now, just show the first peek statement
+    if (!peek_statements.empty()){
+        return peek_statements[0];
+    }
+    
+    return "";
+
+❱
+
+◀private: static▶ std::string  ☀Extract_Peek(tree<Buttoned_Faced_Label> const& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, std::string const& find_path)❰
+    
+    
+    auto root_depth = tr.depth(it);
+    while (tr.depth(it) >= root_depth && it != tr.end()){
+        auto full_name = Button_Face_Tree_Full_Path_Name::Get(tr,it);
+        if (full_name == find_path){
+            return Faced_Label_Message::Get(it->label);
+        }
+    
+        ++it;
+    }
+    
+    return "";
+    
+❱

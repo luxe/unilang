@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+
+function Perform_More_Complicated_Installs(){
+
+	#google fonts
+	#cd && wget http://webupd8.googlecode.com/files/install-google-fonts
+	#chmod +x install-google-fonts
+	#./install-google-fonts
+	
+	#google test
+	#wget http://googletest.googlecode.com/files/gtest-1.7.0.zip
+	#unzip gtest-1.7.0.zip
+        #cd gtest-1.7.0
+        #./configure
+        #make
+        #cp -a include/gtest /usr/include
+        #cp -a lib/.libs/* /usr/lib/
+        #lgconfig -v | grep gtest
+        #output should look like this:
+        	#libgtest.so.0 -> libgtest.so.0.0.0
+		#libgtest_main.so.0 -> libgtest_main.so.0.0.0
+		echo "test";
+
+}
+function Clean_Up_The_System(){
+	Purge_Packages;
+	Run_Command_And_Exit_If_Command_Failed "\t\tremoving orphaned packages" "apt-get autoremove -y";
+	#Run_Command_And_Exit_If_Command_Failed "\t\tRemoving leftover configuration files (method 1)" "dpkg --purge $(COLUMNS=200 dpkg -l | grep '^rc' | tr -s ' ' | cut -d ' ' -f 2)";
+	Run_Command_And_Exit_If_Command_Failed "\t\tRemoving leftover configuration files (method 2)" "apt-get purge -y $(dpkg --list |grep '^rc' |awk '{print $2}')";
+	Run_Command_And_Exit_If_Command_Failed "\t\tCleaning package cache" "apt-get -y clean";
+	
+	#escape characters make it tricky to call the function on this one
+	Echo_To_Terminal_And_Log_File "\t\tRemoving old kernel(s)..."
+	dpkg -l 'linux-*' | sed '/^ii/!d;/'"$(uname -r | sed "s/\(.*\)-\([^0-9]\+\)/\1/")"'/d;s/^[^ ]* [^ ]* \([^ ]*\).*/\1/;/[0-9]/!d' | grep -v linux-libc-dev | xargs sudo apt-get -y purge >> "setup.log" 2>&1
+	Exit_If_Command_Failed
+}
+
+function Do_Root_Configuration(){
+	echo "Doing Root Configuration:"
+
+	#green_message "\tCleaning up system:"
+	#Clean_Up_The_System;
+
+	#green_message "\tUpdate And Upgrade Packages:"
+	#Update_And_Upgrade_Packages;
+
+	#green_message "\tGet PPAs:"
+	Get_PPAs;
+	
+	debconf-set-selections <<< 'mysql-server mysql-server/root_password password'
+	debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password'
+	#or
+	#export DEBIAN_FRONTEND=noninteractive
+	#or
+	#echo "mysql-server-5.5 mysql-server/root_password password root" | debconf-set-selections
+	#echo "mysql-server-5.5 mysql-server/root_password_again password root" | debconf-set-selections
+	
+
+	green_message "\tGet apt-get Programs:"
+	Install_Apt_Get_Programs;
+	green_message "\tGet npm Programs:"
+	Install_NPM_Programs;
+	green_message "\tGet pip Programs:"
+	Install_PIP_Programs;
+	green_message "\tTesting existence of programs:"
+	Make_Sure_Programs_Exist;
+
+	green_message "\tGet 3rd Party Programs:"
+	#Perform_More_Complicated_Installs;
+
+	green_message "\tOther:"
+	#Run_Command_And_Exit_If_Command_Failed "\t\tDisplaying Hidden Startup Applications" "sed -i 's/NoDisplay=true/NoDisplay=false/g' /etc/xdg/autostart/*.desktop";
+
+
+}

@@ -1,0 +1,248 @@
+class
+❪vector❫
+❪string❫
+❪iostream❫
+❪sstream❫
+❪iomanip❫
+❪unordered_map❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/program/call/lib"❫
+❪"code/utilities/random/lib"❫
+❪"code/utilities/random/files/random_files"❫
+❪"src/main/protobuf/spawn.pb.h"❫
+❪"code/utilities/formats/serialization/protobuf"❫
+❪"code/utilities/program/wrappers/bazel/build_settings"❫
+❪"code/utilities/program/wrappers/bazel/setup/config/bazel_config_settings"❫
+❪"code/utilities/program/inputs/flags/data/flags"❫
+❪"code/utilities/program/wrappers/bazel/bazel_flags_adder"❫
+⚯
+❪"code/utilities/program/inputs/flags/flag_util"❫
+⚞⚟
+
+
+//getting spawn information
+◀public: static▶ std::unordered_map<std::string,tools::protos::SpawnExec> ☀Get_Spawn_Information_As_Cmd_Map(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& target)❰
+
+    auto spawns = Get_Spawn_Information(bazel_wrapper,settings,config_settings,target);
+    
+    //turn the response into a map where the key is the spawn subcommand
+    std::unordered_map<std::string,tools::protos::SpawnExec> results;
+    for (auto & spawn: spawns){
+        
+        std::vector<std::string> spawn_cmds;
+        for (auto const& cmd: *spawn.mutable_command_args()){
+            spawn_cmds.emplace_back(cmd);
+        }
+        
+        auto key = Get_As_Comma_Seperated_String(spawn_cmds);
+        results.insert({key,spawn});
+    }
+    
+    return results;
+❱
+◀public: static▶ std::vector<tools::protos::SpawnExec> ☀Get_Spawn_Information(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& target)❰
+
+    //clean
+    Clean(bazel_wrapper);
+    
+    //build
+    std::string file_name = Random_Files::Random_Tmp_Filename();
+    auto command = Get_Create_Spawn_File_Command(bazel_wrapper,settings,config_settings,target,file_name);
+    Execute_Quietly_But_Report_Stderr_And_Exit_When_Nonzero(command);
+    
+    //extract
+    auto spawns = Deserialize_Multiple_From_Json_File<tools::protos::SpawnExec>(file_name);
+    return spawns;
+❱
+
+◀public: static▶ std::string ☀Get_Profile_Information(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& target, std::string const& profile_name◀=""▶)❰
+    
+    //build
+    std::cout << "Running profile build on " << target << std::endl;
+    
+    //decide profile name
+    std::string file_name = profile_name;
+    if (file_name.empty()){
+        file_name = Random_Files::Random_Tmp_Json_Filename();
+    }
+    std::cout << "profile will be written to: " << file_name << std::endl;
+    
+    auto command = Get_Create_Profile_Command(bazel_wrapper,settings,config_settings,target,file_name);
+    std::cout << command << std::endl;
+    auto return_code = Execute_Quietly_But_Report_Stderr_When_Nonzero(command);
+    
+    //whether success or failure, return file
+    return file_name;
+❱
+
+
+◀public: static▶ void ☀Build_Target(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& target)❰
+    Clean(bazel_wrapper);
+    auto command = Get_Create_Build_Target_Command(bazel_wrapper,settings,config_settings,target);
+    Execute_Quietly_But_Report_Stderr_And_Exit_When_Nonzero(command);
+❱
+
+◀public: static▶ void ☀Clean(std::string const& bazel_wrapper)❰
+    auto command = Clean_Command(bazel_wrapper);
+    Execute_Quietly_But_Report_Stderr_And_Exit_When_Nonzero(command);
+❱
+
+◀public: static▶ std::string ☀Get_Sync_Information(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings) ❰
+
+    //clean
+    Clean(bazel_wrapper);
+    
+    //sync
+    std::string file_name = Random_Files::Random_Tmp_Filename();
+    auto command = Get_Sync_Log_Command(bazel_wrapper,settings,config_settings,file_name);
+    std::cout << command << std::endl;
+    auto return_code = Execute_Quietly_But_Report_Stderr_When_Nonzero(command);
+    
+    //whether success or failure, return file
+    return file_name;
+❱
+
+◀public: static▶ std::string ☀Get_Sync_Information_From_Build(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings) ❰
+
+    //clean
+    Clean(bazel_wrapper);
+    
+    //sync
+    std::string file_name = Random_Files::Random_Tmp_Filename();
+    auto command = Get_Sync_Log_Command_From_Build(bazel_wrapper,settings,config_settings,file_name);
+    std::cout << command << std::endl;
+    auto return_code = Execute_Quietly_But_Report_Stderr_When_Nonzero(command);
+    
+    //whether success or failure, return file
+    return file_name;
+❱
+
+◀public: static▶ std::string ☀Get_Sync_Information_From_Test(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings) ❰
+
+    //clean
+    Clean(bazel_wrapper);
+    
+    //sync
+    std::string file_name = Random_Files::Random_Tmp_Filename();
+    auto command = Get_Sync_Log_Command_From_Test(bazel_wrapper,settings,config_settings,file_name);
+    std::cout << command << std::endl;
+    auto return_code = Execute_Quietly_But_Report_Stderr_When_Nonzero(command);
+    
+    //whether success or failure, return file
+    return file_name;
+❱
+
+
+
+//Sync the repository
+◀private: static▶ std::string ☀Get_Sync_Log_Command(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& file_name) ❰
+
+    //decide flags
+    Flags flags;
+    Flag_Util::Add_Value(flags,"sync");
+    
+    Flag_Util::Add_Flag(flags,"experimental_workspace_rules_log_file",file_name);
+    
+    Bazel_Flags_Adder::Add_Bazel_Flags(flags,settings,config_settings);
+    return Create_Full_Command(flags,bazel_wrapper);
+    
+❱
+◀private: static▶ std::string ☀Get_Sync_Log_Command_From_Build(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& file_name) ❰
+
+    //decide flags
+    Flags flags;
+    Flag_Util::Add_Value(flags,"build");
+    Flag_Util::Add_Value(flags,"...");
+    
+    Flag_Util::Add_Flag(flags,"experimental_workspace_rules_log_file",file_name);
+    
+    Bazel_Flags_Adder::Add_Bazel_Flags(flags,settings,config_settings);
+    return Create_Full_Command(flags,bazel_wrapper);
+❱
+◀private: static▶ std::string ☀Get_Sync_Log_Command_From_Test(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& file_name) ❰
+
+    //decide flags
+    Flags flags;
+    Flag_Util::Add_Value(flags,"test");
+    Flag_Util::Add_Value(flags,"...");
+    
+    Flag_Util::Add_Flag(flags,"experimental_workspace_rules_log_file",file_name);
+    
+    Bazel_Flags_Adder::Add_Bazel_Flags(flags,settings,config_settings);
+    return Create_Full_Command(flags,bazel_wrapper);
+❱
+
+
+//Cleaning the repository
+◀private: static▶ std::string ☀Clean_Command(std::string const& bazel_wrapper) ❰
+    std::string command = bazel_wrapper;
+    command += " clean";
+    return command;
+❱
+
+
+//Getting target-build-like commands
+◀private: static▶ std::string ☀Get_Create_Build_Target_Command(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& target) ❰
+
+    //decide flags
+    Flags flags;
+    Flag_Util::Add_Value(flags,"build");
+    Flag_Util::Add_Value(flags,target);
+    
+    Bazel_Flags_Adder::Add_Bazel_Flags(flags,settings,config_settings);
+    return Create_Full_Command(flags,bazel_wrapper);
+    
+❱
+
+◀private: static▶ std::string ☀Get_Create_Spawn_File_Command(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& target, std::string const& file_name) ❰
+
+    //decide flags
+    Flags flags;
+    Flag_Util::Add_Value(flags,"build");
+    Flag_Util::Add_Value(flags,target);
+    
+    //Doing target builds while creating an execution log
+    //command += " --execution_log_binary_file=";
+    //I had trouble reading in the binary format
+    Flag_Util::Add_Flag(flags,"execution_log_json_file",file_name);
+    
+    Bazel_Flags_Adder::Add_Bazel_Flags(flags,settings,config_settings);
+    return Create_Full_Command(flags,bazel_wrapper);
+❱
+◀private: static▶ std::string ☀Get_Create_Profile_Command(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& target, std::string const& file_name) ❰
+
+    //decide flags
+    Flags flags;
+    Flag_Util::Add_Value(flags,"build");
+    Flag_Util::Add_Value(flags,target);
+    
+    //Doing target builds while creating an execution log
+    //command += " --execution_log_binary_file=";
+    //I had trouble reading in the binary format
+    Flag_Util::Add_Flag(flags,"profile",file_name);
+    
+    Bazel_Flags_Adder::Add_Bazel_Flags(flags,settings,config_settings);
+    return Create_Full_Command(flags,bazel_wrapper);
+❱
+
+
+
+
+
+
+
+
+//flag utils
+
+◀private: static▶ std::string ☀Create_Full_Command(Flags const& flags, std::string const& bazel_wrapper)❰
+
+    //turn flags into cli command
+    std::string command = bazel_wrapper;
+    command += " ";
+    command += Flag_Util::In_Cli_Form(flags);
+    return command;
+❱

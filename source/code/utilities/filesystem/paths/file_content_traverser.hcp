@@ -1,0 +1,98 @@
+class
+⚯
+⚞⚟
+
+◀
+public: 
+template <typename Fun>
+static void For_Each_Line_Of_File_With_Progress(std::string const& path, Fun fun){
+        
+      //compute total size
+      auto total_size = File_Line_Counter::Get(path);
+      
+      //decide starting progress
+      Gmp_Fraction progress;
+      progress.numerator = "1";
+      progress.denominator = total_size;
+      
+      //loop through each line and provide progress
+      std::ifstream infile(path);
+      std::string str;
+      std::getline(infile,str);
+      while (infile){
+         fun(str,progress);
+         std::getline(infile,str);
+         progress.numerator += 1;
+      }
+}
+
+▶
+
+◀
+public: 
+template <typename Fun>
+static void For_Each_Line_Of_File_With_Progress_Bar(std::string const& path, std::string const& bar_text, Fun fun){
+   
+   
+   
+   
+  using namespace indicators;
+
+  //Hide cursor
+  show_console_cursor(false);
+
+  ProgressBar bar{
+    option::BarWidth{100},
+    option::Start{"["},
+    option::Fill{"■"},
+    option::Lead{"■"},
+    option::Remainder{"-"},
+    option::End{" ]"},
+    option::PostfixText{bar_text},
+    option::ForegroundColor{Color::cyan},
+    option::FontStyles{std::vector<FontStyle>{FontStyle::bold}}
+  };
+        
+      //compute total size
+      auto total_size = File_Line_Counter::Get(path);
+      
+      //decide starting progress
+      Gmp_Fraction progress;
+      progress.numerator = "1";
+      progress.denominator = total_size;
+      
+      //loop through each line and provide progress
+      std::ifstream infile(path);
+      std::string str;
+      std::getline(infile,str);
+      while (infile){
+         fun(str);
+         std::getline(infile,str);
+         progress.numerator += 1;
+         
+         auto pct = percentage(progress.numerator,progress.denominator);
+         auto current_progess = as_signed(pct);
+         //std::cout << progress.numerator.get_str(10) << "/" << progress.denominator.get_str(10) << " " << current_progess << std::endl;
+         bar.set_progress(current_progess);
+      }
+      
+        show_console_cursor(true);
+}
+
+▶
+
+
+◀
+public: 
+template <typename Fun>
+static void For_Each_Char(std::string const& path, Fun fun){
+  
+    std::ifstream infile(path);
+    char c;
+    infile >> c;
+    while (infile){
+      fun(c);
+    }
+    infile.close();
+}
+▶

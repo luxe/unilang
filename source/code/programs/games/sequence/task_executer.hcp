@@ -1,0 +1,288 @@
+class
+❪string❫
+❪iostream❫
+❪algorithm❫
+❪random❫
+❪thread❫
+❪unordered_set❫
+❪utility❫
+❪"include/crow.h"❫
+❪"code/utilities/program/call/lib.hpp"❫
+❪"code/utilities/data_structures/playing_card"❫
+❪"code/programs/games/sequence/data/game_state"❫
+⚯
+❪"code/utilities/formats/html/basic_html_template_getter"❫
+❪"code/utilities/assets/playing_card_assets"❫
+❪"code/utilities/image/data_uri_getter"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/strings/observers/splitting/lib"❫
+❪"code/programs/games/sequence/frontend_drawer"❫
+❪"code/utilities/games/sequence/board_getter"❫
+❪"code/utilities/games/sequence/deck_getter"❫
+⚞⚟
+
+◀public: static▶ void ☀Run()❰
+ 
+    
+    Game_State game;
+    game.host = "192.168.0.137";
+    game.port = 18080;
+    
+    New_Game(game);
+    
+    
+    
+    
+    //add routes and web sockets
+    Create_Player_Routes_P1(game,game.p1);
+    Create_Player_Routes_P2(game,game.p2);
+    
+
+    
+    
+    //start server
+    game.server.port(game.port).multithreaded().run();
+    
+❱
+
+◀private: static▶ void  ☀New_Game(Game_State & game)❰
+
+    //build the board and the deck
+    game.board = Board_Getter::Get_Shuffled();
+    game.deck = Deck_Getter::Get_Shuffled();
+    
+    //each user draws 7 cards
+    game.p1.websocket_name = "ws_p1";
+    game.p1.player_num = 0;
+    game.p1.hand.clear();
+    for (size_t i = 0; i < 7; ++i){
+        Transfer_An_Element(game.deck,game.p1.hand);
+    }
+    
+    
+    game.p2.websocket_name = "ws_p2";
+    game.p2.player_num = 1;
+    game.p2.hand.clear();
+    for (size_t i = 0; i < 7; ++i){
+        Transfer_An_Element(game.deck,game.p2.hand);
+    }
+    
+    
+    //decide who goes first
+    game.player_turn = game.starting_player_turn;
+    
+    
+    //cycle who goes first next time
+    if (game.starting_player_turn == 0){
+        game.starting_player_turn = 1;
+    }
+    else {
+        game.starting_player_turn = 0;
+    }
+
+❱
+
+◀private: static▶ void  ☀Create_Player_Routes_P1(Game_State & game, Player_State & state)❰
+
+    CROW_ROUTE(game.server, "/ws_p1") //can't be dynamic :(
+        .websocket()
+        .onopen([&](crow::websocket::connection& conn){
+                CROW_LOG_INFO << "new websocket connection";
+                state.connection = &conn;
+                })
+        .onclose([&](crow::websocket::connection& conn, const std::string& reason){
+                CROW_LOG_INFO << "websocket connection closed: " << reason;
+                state.connection = nullptr;
+                })
+        .onmessage([&](crow::websocket::connection& conn, const std::string& data, bool is_binary){
+            std::lock_guard<std::mutex> _(game.mtx);
+                    std::cout << "UPDATE" << std::endl;
+                    Update_Game_State(game,data,0);
+                });
+        
+    CROW_ROUTE(game.server, "/p1")([&](){
+        return Frontend_Drawer::Player1_Draw(game);
+    });
+❱
+
+◀private: static▶ void  ☀Create_Player_Routes_P2(Game_State & game, Player_State & state)❰
+
+    CROW_ROUTE(game.server, "/ws_p2") //can't be dynamic :(
+        .websocket()
+        .onopen([&](crow::websocket::connection& conn){
+                CROW_LOG_INFO << "new websocket connection";
+                state.connection = &conn;
+                })
+        .onclose([&](crow::websocket::connection& conn, const std::string& reason){
+                CROW_LOG_INFO << "websocket connection closed: " << reason;
+                state.connection = nullptr;
+                })
+        .onmessage([&](crow::websocket::connection& conn, const std::string& data, bool is_binary){
+            std::lock_guard<std::mutex> _(game.mtx);
+            std::cout << "UPDATE" << std::endl;
+                    Update_Game_State(game,data,1);
+                });
+        
+    CROW_ROUTE(game.server, "/p2")([&](){
+        return Frontend_Drawer::Player2_Draw(game);
+    });
+❱
+
+
+
+
+
+
+◀private: static▶ void  ☀Update_Game_State(Game_State & game, std::string const& data, int player)❰
+
+    
+    //update game state
+    if (player == 0){
+        Handle_Card_Select(game.p1,data);
+        if (game.player_turn == 0){
+            bool success = Take_Turn(game,game.p1,data);
+            if (success) {
+                game.player_turn = 1;
+            }
+        }
+    }
+    if (player == 1){
+        Handle_Card_Select(game.p2,data);
+        if (game.player_turn == 1){
+            bool success = Take_Turn(game,game.p2,data);
+            if (success) {
+                game.player_turn = 0;
+            }
+        }
+    }
+    
+    if (data == "new_game"){
+        New_Game(game);
+    }
+
+
+
+
+    //redraw scene
+    auto space1 = Frontend_Drawer::Get_Update_Space(game,game.p1);
+    auto space2 = Frontend_Drawer::Get_Update_Space(game,game.p2);
+    if (game.p1.connection) {
+        game.p1.connection->send_text(space1);
+    }
+    if (game.p2.connection) {
+        game.p2.connection->send_text(space2);
+    }
+❱
+
+◀private: static▶ void  ☀Handle_Card_Select(Player_State & state, std::string const& data)❰
+
+        if (Begins_With(data,"card")){
+            std::string number = data;
+            number.erase(0,4);
+            int selected = std::atoi(number.c_str());
+            if (state.card_selected == selected){
+                state.card_selected = -1;
+            }
+            else {
+                state.card_selected = selected;
+            }
+        }
+❱
+
+◀private: static▶ bool  ☀Take_Turn(Game_State & game, Player_State & state, std::string const& data)❰
+
+    if (Begins_With(data,"space")){
+            std::string number = data;
+            number.erase(0,5);
+            auto parts = Split_Into_Parts_From_Dash(number);
+            auto index1 = std::atoi(parts[0].c_str());
+            auto index2 = std::atoi(parts[1].c_str());
+            std::cout << index1 << " " << index2 << std::endl;
+            if (Is_Valid_Move(game,state,index1,index2)){
+                Make_Move(game,state,index1,index2);
+                return true;
+            }
+    }
+    
+    return false;
+    std::cout << data << std::endl;
+❱
+
+◀private: static▶ bool  ☀Is_Valid_Move(Game_State & game, Player_State & state, int index1, int index2)❰
+    if (state.card_selected == -1){
+        return false;
+    }
+    
+    auto selected_hand = state.hand[state.card_selected];
+    auto selected_space = game.board[index1][index2];
+    
+    //handle 2 eye jacks
+    if (Is_Add_Jack(selected_hand)){
+        if (selected_space.value == -1){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    
+    //handle 1 eye jacks
+    if (Is_Remove_Jack(selected_hand)){
+        if (selected_space.value == -1){
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+    
+    //handle regular card
+    if (selected_hand == selected_space.face){
+        if (selected_space.value == -1){
+            return true;
+        }
+    }
+    
+    return false;
+    
+❱
+
+◀private: static▶ void  ☀Make_Move(Game_State & game, Player_State & state, int index1, int index2)❰
+    
+    auto selected_hand = state.hand[state.card_selected];
+    
+    //remove piece
+    if (Is_Remove_Jack(selected_hand)){
+        game.board[index1][index2].value = -1;
+    }
+    else {
+    
+        //add piece
+        game.board[index1][index2].value = state.player_num;
+    }
+    
+    //lose card
+    Remove_Element(state.hand,selected_hand);
+    state.card_selected = -1;
+    
+    //draw card from deck
+    Transfer_An_Element(game.deck,state.hand);
+❱
+
+
+
+◀private: static▶ bool  ☀Is_Add_Jack(Playing_Card const& p)❰
+    return p == Playing_Card::CARD_11_HEART || p == Playing_Card::CARD_11_DIAMOND;
+❱
+◀private: static▶ bool  ☀Is_Remove_Jack(Playing_Card const& p)❰
+    return p == Playing_Card::CARD_11_SPADE || p == Playing_Card::CARD_11_CLOVER;
+❱
+
+
+
+
+
+
+

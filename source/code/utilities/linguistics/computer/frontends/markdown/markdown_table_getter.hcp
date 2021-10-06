@@ -1,0 +1,119 @@
+class
+
+❪fstream❫
+❪iostream❫
+❪"code/utilities/contributor/contributor"❫
+❪"code/utilities/linguistics/computer/frontends/markdown/settings/markdown_settings"❫
+❪"code/utilities/code/concept_static_tree_structs"❫
+⚯
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+⚞⚟
+
+◀public: static▶ std::string ☀Get(model::ParagraphSentence const& s, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    
+    
+    if (Should_Skip_Producing_Table_Data(s,settings)){
+        return "";
+    }
+    
+
+    if (settings.tables.as_list){
+        return Markdown_Table_As_List_Format(s,settings);
+    }
+
+    return Traditional_Markdown_Table_Format(s,settings);
+❱
+
+◀private: static▶ bool ☀Should_Skip_Producing_Table_Data(model::ParagraphSentence const& s, Markdown_Settings const& settings)❰
+
+    //decide not to do it at all
+    if (!settings.tables.print){
+        return true;
+    }
+    if (s.table.empty()){
+        return true;
+    }
+    return false;
+❱
+
+
+◀private: static▶ std::string ☀Markdown_Table_As_List_Format(model::ParagraphSentence const& s, Markdown_Settings const& settings)❰
+
+    std::string text;
+    Append_A_Newline(text);
+    
+    for (auto const& table: s.table){
+        for (auto const& it: table.row){
+            Append(text," - ");
+            for (auto const& row_value: it.value){
+                Append_With_Newline(text, row_value.value);
+            }
+        }
+        Append_With_Newline(text,"");
+    }
+    
+    return text;
+❱
+
+◀private: static▶ std::string ☀Traditional_Markdown_Table_Format(model::ParagraphSentence const& s, Markdown_Settings const& settings)❰
+
+    std::string text;
+    Append_A_Newline(text);
+    
+    for (auto const& table: s.table){
+        //print headers
+        Append(text,Bar_Space(settings));
+        
+        for (auto const& it: table.header){
+            for (auto const& header_value: it.value){
+                Append(text, header_value.value);
+                Append(text,Space_Bar_Space(settings));
+            }
+        }
+        Append_A_Newline(text);
+        
+        //append table thing
+        Append(text,Bar_Space(settings));
+        for (auto const& it: table.header){
+            (void)it;
+            Append(text, settings.tables.table_horizontal);
+            Append(text,Space_Bar_Space(settings));
+        }
+        Append_A_Newline(text);
+        
+        //append the rows
+        
+        int count = 0;
+        Append(text,Bar_Space(settings));
+        for (auto const& it: table.row){
+            for (auto const& row_value: it.value){
+                Append(text, row_value.value);
+                Append(text,Space_Bar_Space(settings));
+                ++count;
+                if (count == table.header.size()){
+                    Append_A_Newline(text);
+                    count = 0;
+                }
+            }
+        }
+        Append_A_Newline(text);
+    }
+    
+    return text;
+❱
+
+
+
+◀private: static▶ std::string ☀Space_Bar_Space(Markdown_Settings const& settings)❰
+    std::string text;
+    Append(text," ");
+    Append(text,settings.tables.table_vertical);
+    Append(text," ");
+    return text;
+❱
+◀private: static▶ std::string ☀Bar_Space(Markdown_Settings const& settings)❰
+    std::string text;
+    Append(text,settings.tables.table_vertical);
+    Append(text," ");
+    return text;
+❱

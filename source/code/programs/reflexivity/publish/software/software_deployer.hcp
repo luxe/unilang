@@ -1,0 +1,271 @@
+class
+❪string❫
+❪iostream❫
+❪"code/utilities/linguistics/computer/frontends/markdown/settings/markdown_settings"❫
+❪"code/utilities/code/concept_static_tree_structs"❫
+❪"code/utilities/formats/pdf/pdf_settings"❫
+⚯
+❪"code/utilities/filesystem/files/getting/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/types/strings/observers/path/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/formats/pdf/pdf_settings"❫
+❪"code/utilities/formats/pdf/pdf_creator"❫
+❪"code/utilities/filesystem/files/moving/lib"❫
+❪"code/utilities/program/wrappers/git/update/git_updater"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
+❪"code/utilities/personal/hosting/hosting_repo"❫
+❪"code/utilities/filesystem/files/observers/other/ldd_results_getter"❫
+❪"code/utilities/formats/json/converters/type_to_json_string"❫
+❪"code/programs/repo_tools/repo_stats/repo_stats_documentation_getter"❫
+❪"code/programs/repo_tools/no_remote_scan/no_remote_scan_documentation_getter"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/linguistics/computer/frontends/markdown/markdown_str_getter"❫
+❪"code/utilities/formats/pdf/pdf_creator"❫
+⚞⚟
+
+//TODO: improve data dependencies of tool-related artifacts
+
+//OTHER INFORMATION ON DEPLOYING IN BAZEL:
+//https://www.guyrutenberg.com/2016/07/15/creating-a-personal-apt-repository-using-dpkg-scanpackages/
+//https://askubuntu.com/questions/71510/how-do-i-create-a-ppa/71516#71516
+//https://assafmo.github.io/2019/05/02/ppa-repo-hosted-on-github.html
+//https://github.com/assafmo/ppa/blob/master/update.sh
+
+//work into bazel:
+//https://github.com/graknlabs/bazel-distribution
+
+◀public: static▶ void ☀Deploy()❰
+
+    
+    // get all the debs that are data deps
+    std::string pwd = execute("pwd");
+    auto debs = Recursively_Get_All_Paths_To_Deb_Files_Of_Path(pwd);
+    
+    // get all the documentation for the tools we are going to deploy
+    auto docs = Get_Documentation_Structures();
+    
+    //go to repo we are adding things to
+    std::string repo_path = Hosting_Repo::Get();
+    Set_Path(repo_path);
+    
+    // deploy everything
+    for (auto const& doc: docs){
+        Deploy_Program(debs,doc);
+    }
+    
+    //deploy everything
+    Git_Update_Settings settings;
+    settings.message = "redeploy";
+    Git_Updater::Update_All_Changes(settings);
+❱
+
+
+
+◀private: static▶ void ☀Deploy_Program(std::vector<std::string> const& debs, model::Module const& doc_structure)❰
+
+    std::string program_name = doc_structure.name[0].value;
+    std::string folder_name = "releases/" + program_name;
+    Create_Path_And_Temporarily_Move_To_It_To_Call_Function(folder_name,[&](){
+    
+        Find_Debs_And_Copy_Over_Program_Data(debs,program_name);
+        Create_Path_And_Temporarily_Move_To_It_To_Call_Function("docs",[&](){
+            Find_Debs_And_Copy_Over_Documentation(doc_structure,debs,program_name);
+        });
+    });
+❱
+
+◀private: static▶ void ☀Find_Debs_And_Copy_Over_Program_Data(std::vector<std::string> const& debs, std::string const& program_name)❰
+
+        //settings
+        bool copy_over_all_found_debs = true;
+        bool copy_over_raw_binary = true;
+        
+        
+        //find program's debs and copy them over
+        auto specific_debs = Get_Specific_Debs_Of_Program(debs,program_name);
+          
+        if (copy_over_all_found_debs){
+            Copy_Files_To_Current_Directory(specific_debs);
+        }
+      
+        //copy over raw binary
+        if (copy_over_raw_binary){
+          std::string raw_binary_name = Replace_File_Name(specific_debs[0],program_name);
+          Copy_Dereferenced_File_To_Dir(raw_binary_name,".");
+          execute("chmod 777 " + raw_binary_name);
+          
+        }
+❱
+
+◀private: static▶ void ☀Find_Debs_And_Copy_Over_Documentation(model::Module doc_structure, std::vector<std::string> const& debs, std::string const& program_name)❰
+
+        //get raw binary name
+        auto specific_debs = Get_Specific_Debs_Of_Program(debs,program_name);
+        std::string raw_binary_name = Replace_File_Name(specific_debs[0],program_name);
+        
+        //get ldd results
+        auto ldd_results_str = Get_Ldd_Shared_Objects(raw_binary_name);
+        
+        //add ldd results
+        Ensure_Not_Empty(doc_structure.literature);
+        model::Paragraph paragraph;
+        
+        Add_Sentence(paragraph,"These are the dynamic libraries used by the program");
+        Add_Sentence(paragraph,"Use `apt-file search <file>` to figure out what package you may need to install");
+        
+        model::ParagraphDepth paragraph_depth;
+        paragraph_depth.value = "0";
+        paragraph.depth.emplace_back(paragraph_depth);
+        
+        model::ParagraphTitle paragraph_title;
+        paragraph_title.value = "Ldd Results";
+        paragraph.title.emplace_back(paragraph_title);
+        
+        model::ParagraphSentence paragraph_sentence;
+        model::CodeLine code_line;
+        model::Line line;
+        line.value = ldd_results_str;
+        code_line.line.emplace_back(line);
+        paragraph_sentence.code_line.emplace_back(code_line);
+        paragraph.sentence.emplace_back(paragraph_sentence);
+        
+        doc_structure.literature[0].paragraph.emplace_back(paragraph);
+        
+        //create markdown
+        Create_Markdown(doc_structure,program_name);
+        
+        // create html file
+        execute("pandoc " + program_name + ".md --from markdown --to html5 > " + program_name + ".html");
+        
+        //create PDF
+        Create_Pdf(doc_structure,program_name);
+❱
+
+◀private: static▶ std::string ☀Get_Ldd_Shared_Objects(std::string const& raw_binary_name)❰
+        auto ldd_results = Ldd_Results_Getter::Get(raw_binary_name);
+        //auto ldd_results_str = Type_To_Json_String::As_JSON_String(ldd_results.results);
+        
+        std::string result;
+        for (auto const& it: ldd_results.results.entries){
+            result += it.so + "\n";
+        }
+        return result;
+❱
+
+◀private: static▶ void ☀Create_Markdown(model::Module const& doc_structure, std::string const& program_name)❰
+
+    Markdown_Settings settings;
+    settings.headers.allow_labeled_image_titles = false;
+    settings.headers.h1_as_details_tags = false;
+    settings.headers.h1_as_summary_tags = false;
+    settings.tables.print = false;
+    
+    std::vector<Contributor> contributors;
+    
+    auto str = Markdown_Str_Getter::Get(doc_structure,contributors,settings);
+    Write_To_File(program_name + ".md",str);
+❱
+
+
+
+◀private: static▶ void ☀Create_Pdf(model::Module const& doc_structure, std::string const& program_name)❰
+    std::vector<Contributor> contributors;
+    auto settings = Get_Pdf_Settings(program_name);
+    Pdf_Creator::Create_Pdf(doc_structure,contributors,settings);
+❱
+
+◀private: static▶ Pdf_Settings ☀Get_Pdf_Settings(std::string const& program_name)❰
+      Pdf_Settings pdf_settings;
+      pdf_settings.pandoc_settings.latex_template = "temp_latex.tex";
+      pdf_settings.pandoc_settings.md_format = "temp_markdown.md";
+      pdf_settings.pandoc_settings.resulting_pdf = program_name + ".pdf";
+      pdf_settings.pandoc_settings.font_size = 10;
+      pdf_settings.markdown_settings = Get_Pdf_Markdown_Settings();
+    return pdf_settings;
+❱
+      
+◀private: static▶ Markdown_Settings ☀Get_Pdf_Markdown_Settings()❰
+
+    Markdown_Settings md_settings;
+    md_settings.headers.allow_labeled_image_titles = false;
+    md_settings.headers.h1_as_details_tags = false;
+    md_settings.headers.h1_as_summary_tags = false;
+    md_settings.tables.print = true;
+    md_settings.tables.as_list = true;
+    md_settings.image.style = Markdown_Image_Style::CLASSIC;
+
+    return md_settings;
+❱
+
+
+
+◀private: static▶ std::vector<std::string> ☀Get_Specific_Debs_Of_Program(std::vector<std::string> const& debs, std::string const& program_name)❰
+    auto specific_debs = Filter(debs,[&](std::string const& file){
+      auto deb_files_should_start_with = program_name + "_";
+      return File_Name_Starts_With(file,deb_files_should_start_with);
+    });
+    return specific_debs;
+❱
+
+
+
+
+
+
+
+//documentation related:
+◀private: static▶ std::vector<model::Module> ☀Get_Documentation_Structures()❰
+  std::vector<model::Module> docs;
+  docs.emplace_back(Repo_Stats_Documentation_Getter::Get());
+  docs.emplace_back(No_Remote_Scan_Documentation_Getter::Get());
+  
+  
+  
+  //docs.emplace_back(Deskstock_Documentation_Getter::Get());
+  //docs.emplace_back(Noogle_Documentation_Getter::Get());
+  //docs.emplace_back(Mario_Documentation_Getter::Get());
+  //docs.emplace_back(Gcalviz_Documentation_Getter::Get());
+  //docs.emplace_back(External_Deps_Analysis_Documentation_Getter::Get());
+  //docs.emplace_back(Shared_Object_Trace_Documentation_Getter::Get());
+  //docs.emplace_back(Build_Determinism_Documentation_Getter::Get());
+  //docs.emplace_back(Build_Tools_Documentation_Getter::Get());
+  //docs.emplace_back(Bazel_Profile_Slow_Cc_Files_Documentation_Getter::Get());
+  //docs.emplace_back(Bazel_Network_Sync_Documentation_Getter::Get());
+  return docs;
+❱
+
+
+
+//Utility
+◀private: static▶ void ☀Add_Sentence(model::Paragraph & p, std::string const& str) ❰
+    model::ParagraphSentence x;
+    model::SentenceText text;
+    text.value = str;
+    x.text.emplace_back(text);
+    p.sentence.emplace_back(x);
+❱
+
+
+
+
+//not used
+◀private: static▶ void ☀Create_Packages_File()❰
+  
+  //why does this create a different file each time?
+  execute("dpkg-scanpackages -m . | gzip -c > Packages.gz");
+❱
+
+◀private: static▶ void ☀Create_List_File(std::string const& program_name)❰
+  
+  std::string content = "deb [trusted=yes] https://github.com/luxe/luxe.github.com/raw/master/releases/" + program_name + " /";
+  std::string file_name = program_name + ".list";
+  Write_To_File(file_name,content);
+❱
+
+
+
+
+
+
+

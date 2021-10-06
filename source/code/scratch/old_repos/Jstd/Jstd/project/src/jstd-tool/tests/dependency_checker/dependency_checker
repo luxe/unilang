@@ -1,0 +1,39 @@
+#!/bin/bash
+
+function Clean_All_Directories {
+    Run_Clean boost
+    Run_Clean c++11
+    Run_Clean gmp
+}
+
+function Run_Clean {
+    cd $1;
+    make --file=Makefile clean 2> errors.txt
+    if [[ -s errors.txt ]] ; then
+        echo "Could not clean properly on "$1" directory."
+        exit
+    fi;
+    cd "../";
+     
+}
+
+function Test_All_Directories {
+    Run_Test boost
+    Run_Test c++11
+    Run_Test gmp
+}
+
+function Run_Test {
+    cd $1;
+    make --file=Makefile all 2> errors.txt
+    if [[ -s errors.txt ]] ; then
+        echo "Could not build properly on "$1" directory."
+        exit
+    fi;
+    cd "../";
+     
+}
+
+#start
+Clean_All_Directories
+Test_All_Directories

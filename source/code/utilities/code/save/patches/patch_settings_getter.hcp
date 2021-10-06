@@ -1,0 +1,218 @@
+class
+⚯
+⚞⚟
+
+◀public: static▶ std::vector<std::function<void(nlohmann::json&)>> ☀Get()❰
+
+    // The save/load version of the unilang IDE is determined by the number of patches needed to upgrade any unilang file.
+    // Based on the saved file's recorded version number, we know how many patches are needed to open it.
+    // Additionally, the unilang IDE knows what version itself is on by counting the number of patches it has available.
+    // So how do you upgrade the save/load version when the data model changes?  Add a patch.  Simple as that. A patch is only needed if a version change is needed.
+    // The IDE gets its version number by the number of patches.
+    // The unilang IDE will know to apply the appropriate patches when loading a file. Once the file is re-saved it will then be at the latest version again.
+    using PatchFunctionT = std::function<void(nlohmann::json&)>;
+    std::vector<PatchFunctionT> patches;
+    patches.emplace_back(Patch_0);
+    patches.emplace_back(Patch_1);
+    patches.emplace_back(Patch_2);
+    patches.emplace_back(Patch_3);
+    patches.emplace_back(Patch_4);
+    patches.emplace_back(Patch_5);
+    patches.emplace_back(Patch_6);
+    patches.emplace_back(Patch_7);
+    patches.emplace_back(Patch_8);
+    patches.emplace_back(Patch_9);
+    patches.emplace_back(Patch_10);
+    patches.emplace_back(Patch_11);
+    
+    //add more
+    return patches;
+❱
+
+
+//I wish writing patches could be easier and more automatic.
+//The dilemma boils down to this:
+//A c++ object (the model of the IDE) can change in future versions of the IDE.
+//that's why we need to update the json appropriately so that old unilang files can be loaded and de-serialized correctly.
+//The patches are mechanism to ensure old files have forwards compatibility.
+//It's the same kind of problem that IDLs like protobuf and thrift attempt to solve in regards to a forward compatible wire format.
+//But I'm not going to have dead values in my object descriptions and arbitrary numbering and "reserved" and stuff- that's equally dumb.
+
+//So basically, this is what happens:
+//You change the IDE model in some kind of way that's not compatible with current saved formats.
+//It obvious when this happens because the Unilang IDE can't load them.
+//And more importantly all unilang files are checked at "build time" in the repo because build actions perform a transcompilation of the files- so they crash too.
+//Add the right patch here, and the repo will start building again.  Not full proof if you make a mistake in the patch and don't have a unilang file that would show the problem.
+//But that's just a case of needing more example unilang files for testing.  
+//The very first unilang file ever written should be capable of getting every patch applied to so it can be opened/re-saved with the newest version of the IDE.
+//The number of patches below will indicate the number of times I changed a c++ object that gets serialized as part of the IDE save format.
+◀private: static▶ void ☀Patch_0(nlohmann::json & j)❰
+    //intentionally empty
+    (void)j;
+❱
+◀private: static▶ void ☀Patch_1(nlohmann::json & j)❰
+    for (auto & element: j["elements"]["types"]){
+        
+        //if its the variant structure we care about
+        if (element["element"]["index"] == 1){
+            element["element"]["value"]["state"]["schema_styles"].clear();
+            element["element"]["value"]["state"]["schema_styles"]["map"] = nlohmann::json::object();
+            element["element"]["value"]["state"]["schema_styles"]["default_styles"] = nlohmann::json::object();
+            element["element"]["value"]["state"]["schema_styles"]["default_styles"]["label_styles"] = nlohmann::json::array();
+        }
+    }
+❱
+◀private: static▶ void ☀Patch_2(nlohmann::json & j)❰
+    for (auto & element: j["elements"]["types"]){
+        
+        //if its the variant structure we care about
+        if (element["element"]["index"] == 2){
+            element["element"]["value"]["orign_filepath"] = "";
+            element["element"]["value"]["seralizable_image"] = nlohmann::json::array();
+        }
+    }
+❱
+◀private: static▶ void ☀Patch_3(nlohmann::json & j)❰
+    for (auto & element: j["elements"]["types"]){
+        
+        //if its the variant structure we care about
+        if (element["element"]["index"] == 1){
+            for (auto & label: element["element"]["value"]["state"]["tree"]["state"]["structure"]["nodes"]){
+                    for (auto & face:  label[1]["label"]["state"]["faces"]){
+                        face["draw"] = true;
+                    }
+            }
+        }
+    }
+❱
+
+◀private: static▶ void ☀Patch_4(nlohmann::json & j)❰
+    for (auto & element: j["elements"]["types"]){
+        
+        //find schema tree
+        if (element["element"]["index"] == 1){
+            element["element"]["value"]["state"]["references"].clear();
+            element["element"]["value"]["state"]["references"]["map"] = nlohmann::json::object();
+        }
+    }
+❱
+
+◀private: static▶ void ☀Patch_5(nlohmann::json & j)❰
+    for (auto & element: j["elements"]["types"]){
+        
+        //find schema tree
+        if (element["element"]["index"] == 1){
+            
+            //new object added
+            element["element"]["value"]["state"]["settings"].clear();
+            
+            //old elements moved into it
+            element["element"]["value"]["state"]["settings"]["schema"] = element["element"]["value"]["state"]["schema"];
+            element["element"]["value"]["state"]["settings"]["styles"] = element["element"]["value"]["state"]["schema_styles"]; //renamed
+            element["element"]["value"]["state"]["settings"]["references"] = element["element"]["value"]["state"]["references"];
+            
+            //remove old elements
+            element["element"]["value"]["state"].erase("schema");
+            element["element"]["value"]["state"].erase("schema_styles");
+            element["element"]["value"]["state"].erase("references");
+            
+        }
+    }
+❱
+◀private: static▶ void ☀Patch_6(nlohmann::json & j)❰
+
+    //this patch is because a new data member was added to label: message_constraints
+    for (auto & element: j["elements"]["types"]){
+        
+        //if its the variant structure we care about
+        if (element["element"]["index"] == 1){
+            for (auto & label: element["element"]["value"]["state"]["tree"]["state"]["structure"]["nodes"]){
+                    for (auto & face:  label[1]["label"]["state"]["faces"]){
+                        face["label"]["message_constraints"]["required_regex"] = nlohmann::json::array();
+                    }
+            }
+        }
+    }
+❱
+◀private: static▶ void ☀Patch_7(nlohmann::json & j)❰
+
+    //this patch is because a new data member was added to label: message_constraints
+    for (auto & element: j["elements"]["types"]){
+        
+        //if its the variant structure we care about
+        if (element["element"]["index"] == 0){
+            element["element"]["value"]["state"]["structure"]["draw_settings"] = nlohmann::json::object();
+            element["element"]["value"]["state"]["structure"]["draw_settings"]["draw_strategy"] = 0;
+            element["element"]["value"]["state"]["structure"]["draw_settings"]["can_draw_branches"] = true;
+            element["element"]["value"]["state"]["structure"]["draw_settings"]["can_draw_buttons"] = true;
+        }
+        if (element["element"]["index"] == 1){
+            element["element"]["value"]["state"]["tree"]["state"]["structure"]["draw_settings"] = nlohmann::json::object();
+            element["element"]["value"]["state"]["tree"]["state"]["structure"]["draw_settings"]["draw_strategy"] = 0;
+            element["element"]["value"]["state"]["tree"]["state"]["structure"]["draw_settings"]["can_draw_branches"] = true;
+            element["element"]["value"]["state"]["tree"]["state"]["structure"]["draw_settings"]["can_draw_buttons"] = true;
+        }
+        
+        
+    }
+❱
+
+◀private: static▶ void ☀Patch_8(nlohmann::json & j)❰
+
+
+    //this patch is because the schema tree got a new data member
+    for (auto & element: j["elements"]["types"]){
+        
+        //find schema tree
+        if (element["element"]["index"] == 1){
+            element["element"]["value"]["state"]["settings"]["choices"].clear();
+            element["element"]["value"]["state"]["settings"]["choices"]["map"] = nlohmann::json::object();
+        }
+    }
+
+❱
+
+◀private: static▶ void ☀Patch_9(nlohmann::json & j)❰
+
+
+    //this patch is because the schema tree got a new data member
+    for (auto & element: j["elements"]["types"]){
+        
+        //find schema tree
+        if (element["element"]["index"] == 1){
+            element["element"]["value"]["state"]["settings"]["schema_version"] = 0;
+        }
+    }
+
+❱
+
+◀private: static▶ void ☀Patch_10(nlohmann::json & j)❰
+
+
+    //this patch is because the schema tree got a new data member
+    for (auto & element: j["elements"]["types"]){
+        
+        //find schema tree
+        if (element["element"]["index"] == 1){
+            element["element"]["value"]["state"]["settings"]["peeks"].clear();
+            element["element"]["value"]["state"]["settings"]["peeks"]["map"] = nlohmann::json::object();
+        }
+    }
+
+❱
+
+◀private: static▶ void ☀Patch_11(nlohmann::json & j)❰
+
+
+    //this patch is because the schema tree got a new data member
+    for (auto & element: j["elements"]["types"]){
+        
+        //find schema tree
+        if (element["element"]["index"] == 1){
+            element["element"]["value"]["state"]["settings"]["special_draws"].clear();
+            element["element"]["value"]["state"]["settings"]["special_draws"]["map"] = nlohmann::json::object();
+        }
+    }
+
+❱
+

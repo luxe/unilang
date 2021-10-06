@@ -1,0 +1,45 @@
+class
+⚯
+⚞⚟
+
+◀public: static▶ bool ☀Check(Character_Maps const& font_chars, Button_Face_Tree & tree, Position const& pos, Pc_Input_State const& pc_input)❰
+    
+    return Check_Tree_Through_Iteration(font_chars,pc_input.mouse.pos,pos,tree.nodes,tree.nodes.begin(),tree.nodes.end());
+❱
+
+◀public: static▶ bool ☀Check(Character_Maps const& font_chars, Button_Face_Tree & tree, Position const& pos, Position const& mouse_pos)❰
+    
+    return Check_Tree_Through_Iteration(font_chars,mouse_pos,pos,tree.nodes,tree.nodes.begin(),tree.nodes.end());
+❱
+
+
+◀private: static▶ bool ☀Check_Tree_Through_Iteration(Character_Maps const& font_chars, Position const& mouse_pos, Position const& pos, const tree<Buttoned_Faced_Label>& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, tree<Buttoned_Faced_Label>::pre_order_iterator end)❰
+
+    auto start_pos = pos;
+    auto current_pos = pos;
+    
+    
+    bool is_over = false;
+    For_Each_Noncollapsed::Iterate(tr,it,end,[&](tree<Buttoned_Faced_Label>::pre_order_iterator it, int depth){
+        
+        Adjust_Positions_For_Next_Cell(it->label,start_pos,current_pos,depth);
+        
+        bool check = Buttoned_Faced_Label_Is_Mouse_Over::Check(font_chars,*it,current_pos,mouse_pos);
+        if (check){
+            is_over = true;
+        }
+        
+        return Should_Break::NO;
+        
+    });
+    
+    return is_over;
+
+❱
+
+
+◀private: static▶ void  ☀Adjust_Positions_For_Next_Cell(Faced_Label const& label, Position const& start_pos, Position & current_pos, int const& depth)❰
+        auto dim = Faced_Label_Drawer::Get_Dimensions(label);
+        current_pos.x = start_pos.x + 10 * depth;
+        current_pos.y += dim.y-1;
+❱

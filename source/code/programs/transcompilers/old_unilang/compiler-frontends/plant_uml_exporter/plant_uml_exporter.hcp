@@ -1,0 +1,297 @@
+class
+
+❪fstream❫
+❪iostream❫
+❪"code/utilities/contributor/contributor"❫
+⚯
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/converters/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/program/call/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
+❪"code/utilities/types/strings/observers/comparing/lib"❫
+⚞⚟
+
+◀public: static▶ std::vector<std::string> ☀Export(Structure structure, std::vector<Contributor> const& contributors, Plant_Uml_Settings const& settings)❰
+
+  Structure_Adjuster::Adjust(structure,settings.manipulations,Source_Language::PLANTUML);
+  
+  // create plant uml text file
+  std::string file_name = structure.name + "." + settings.file_extension;
+  std::vector<std::string> created_files = Create_Plant_Uml_File(structure,settings,file_name);
+  
+  // create plant uml image file
+  created_files += Export_Plant_Uml_As_Image(settings,file_name);
+  return created_files;
+❱
+
+◀private: static▶ std::vector<std::string> ☀Create_Plant_Uml_File(Structure structure, Plant_Uml_Settings const& settings, std::string const& file_name)❰
+  std::vector<std::string> created_files;
+  created_files.emplace_back(file_name);
+  
+  std::cout << file_name << std::endl;
+  std::ofstream outfile(file_name);
+  outfile << settings.start_plant_uml_language_tag << "\n\n";
+  auto code_as_plant_uml = Structure_As_String(structure,settings);
+  outfile << code_as_plant_uml << std::endl;
+  outfile << settings.end_plant_uml_language_tag << "\n";
+  outfile.close();
+  
+  return created_files;
+❱
+
+◀private: static▶ std::vector<std::string> ☀Export_Plant_Uml_As_Image(Plant_Uml_Settings const& settings, std::string const& file_name)❰
+  std::vector<std::string> created_files;
+  
+  if (File_Exists(file_name)){
+    std::string command = settings.program_name + " " + file_name;
+    auto results = execute(command);
+    
+    //this causes a partly built image.  super weird.  
+    //its probably because it calls the system command.  
+    //we will need to fix this with pstreams or something.
+    //actually I think it has to with plantuml spawning some other process that gets killed or something
+    //because it works when I run the command locally in my own terminal session
+    //Unsuccessful_Run_Of_Command(command)
+    
+    if (!results.empty()){
+      std::cerr << "Failed to produce image with this command:" << std::endl;
+      std::cerr << command << std::endl;
+    }
+    else{
+        std::cout << "created " << file_name << settings.image_file_extension << std::endl;
+        created_files.emplace_back(file_name + settings.image_file_extension);
+    }
+  }
+  else{
+    std::cerr << file_name << " file does not exist" << std::endl;
+  }
+  return created_files;
+❱
+
+◀private: static▶ std::string ☀Structure_As_String(Structure const& structure, Plant_Uml_Settings const& settings)❰
+  std::string s;
+  
+  //print all custom skinning
+  s += Plant_Uml_Customizations::Customize_With_Skin_Params(structure,settings);
+  
+  //decide to show/hide certain things in the digram
+  s += Plant_Uml_Customizations::Customize_With_Show_Hide_Settings(structure,settings);
+  
+  s += Plant_Uml_Customizations::Customize_Icon_Visibility(structure,settings);
+  
+  //print all the enums
+  s+= Get_Enums(structure.enums.enumerated_types, settings);
+  
+  //print all the classes
+  for (auto const& t: structure.types.types){
+    auto mems = Struct_Derivers::Find_Data_Members_Of_Type(structure.data_members,t);
+    s+= Get_Plant_Uml_Class(t,mems,settings);
+  }
+  
+  //print all the relationships
+  s+= Get_Class_Relationships(structure,settings);
+
+  return s;
+❱
+
+◀private: static▶ std::string ☀Get_Class_Relationships(Structure structure, Plant_Uml_Settings const& settings)❰
+  std::string s;
+  
+  Adjust_Names_For_Easier_Comparison(structure,settings);
+  auto relationships = Find_Composition_Relationships(structure,settings);
+  
+  //decide what relationships to actually print
+  //there might be duplicates because I derived relationships in a hacky way
+  //we'll just get rid of them here
+  std::set<std::string> what_to_print;
+  for (auto const& rel: relationships){
+    std::string line = rel.inner + " " + settings.composition_arrow + " " + rel.outer + "\n";
+    what_to_print.insert(line);
+  }
+  
+  for (auto it: what_to_print){
+    s += it;
+  }
+  
+  return s;
+❱
+
+
+◀private: static▶ std::vector<Composition_Relationship> ☀Find_Composition_Relationships(Structure & structure, Plant_Uml_Settings const& settings)❰
+
+  std::vector<Composition_Relationship> rels;
+  
+  for (auto const& t1: structure.types.types){
+    for (auto const& t2: structure.types.types){
+      Decide_Relationship_Between_Types(rels,structure,t1,t2,settings);
+    }
+  }
+  
+  return rels;
+❱
+
+
+
+◀private: static▶ void ☀Decide_Relationship_Between_Types(std::vector<Composition_Relationship> & rels, Structure & structure, Type_Item const& t1, Type_Item const& t2, Plant_Uml_Settings const& settings)❰
+
+  //find out if there are any composition relationships
+  //for each data member of a particular type
+  for (auto const& m: Struct_Derivers::Find_Data_Members_Of_Type(structure.data_members,t2)){
+      
+    //check data member type
+    if (Case_Insensitive_String_Compare(as_string(m.type.value),as_string(t1.name.value))){
+      
+      Composition_Relationship rel;
+      rel.outer = as_string(t2.name.value);
+      rel.inner = as_string(t1.name.value);
+      rels.emplace_back(rel);
+    }
+
+    //check template parts of type
+    for (auto const& mt: m.type_specializations){
+      if (Case_Insensitive_String_Compare(as_string(mt.type.value),as_string(t1.name.value))){
+        
+        Composition_Relationship rel;
+        rel.outer = as_string(t2.name.value);
+        rel.inner = as_string(t1.name.value);
+        rels.emplace_back(rel);
+      }
+    }
+
+    //check enum parts of type
+    for (auto const& e: structure.enums.enumerated_types){
+      if (Case_Insensitive_String_Compare(as_string(e.name.value),as_string(m.type.value))){
+        Composition_Relationship rel;
+        rel.outer = as_string(t2.name.value);
+        rel.inner = as_string(e.name.value);
+        rels.emplace_back(rel);
+      }
+    }
+  }
+  
+❱
+
+
+
+
+◀private: static▶ void ☀Adjust_Names_For_Easier_Comparison(Structure & structure, Plant_Uml_Settings const& settings)❰
+ Case_Adjustment_Settings case_settings;
+ case_settings.perform_case_adjustments = true;
+ Casing_Adjuster::Adjust(structure,case_settings);
+❱
+
+◀private: static▶ std::string ☀Get_Enums(std::vector<Enum_Item> const& enums, Plant_Uml_Settings const& settings)❰
+  std::string s;
+  
+  for (auto const& e: enums){
+    s+= Get_Enum_Starter(e,settings);
+    for (auto it: e.args){
+      s+= "\t" + Get_Enum_Value_String(it,settings) + "\n";
+    }
+    s+= Get_Enum_Ender(settings);
+    s+= "\n";
+  }
+  
+  return s;
+❱
+
+◀private: static▶ std::string ☀Get_Plant_Uml_Class(Type_Item const& t, std::vector<Data_Member_Item> const& mems, Plant_Uml_Settings const& settings)❰
+  std::string s;
+  s += Get_Class_Starter(t,settings);
+  s += Possibly_Add_A_Description_Section(t,mems,settings);
+  
+  //TODO: loop over methods (don't derive right now)
+  //for (auto it: structure.methods.methods){
+  //  s+= Get_Method_String(it,settings) + "\n";
+  //}
+  
+  for (auto it: mems){
+    s+= "\t" + Get_Data_Member_String(it,settings) + "\n";
+  }
+  
+  s += Get_Class_Ender(settings);
+  s+= "\n";
+  
+  return s;
+❱
+
+◀private: static▶ std::string ☀Possibly_Add_A_Description_Section(Type_Item const& t, std::vector<Data_Member_Item> const& mems, Plant_Uml_Settings const& settings)❰
+  std::string s;
+  if (settings.description_section.add_description_section){
+    if (settings.description_section.show_brief){
+      Append_With_Newline(s,as_string(t.brief.value));
+    }
+    if (settings.description_section.show_detail){
+      Append_With_Newline(s,as_string(t.detail.value));
+    }
+    Append_With_Newline(s,Divider_Line(settings,settings.description_section.divider));
+  }
+  return s;
+❱
+
+◀private: static▶ std::string ☀Divider_Line(Plant_Uml_Settings const& settings, Class_Divider_Type const& divider)❰
+  switch (divider){
+    case Class_Divider_Type::DOTTED: return settings.class_divider_dotted;
+    case Class_Divider_Type::DOUBLE: return settings.class_divider_double;
+    case Class_Divider_Type::SOLID: return settings.class_divider_solid;
+  }
+  return "";
+❱
+
+
+◀private: static▶ std::string ☀Get_Enum_Starter(Enum_Item const& e, Plant_Uml_Settings const& settings)❰
+  std::string s;
+  s+= settings.enum_keyword + " " + Case_Modifier::As_Modified_Casing(settings.enum_identifier_casing,as_string(e.name.value)) + " " + settings.start_enum_body_symbol + "\n";
+  return s;
+❱
+◀private: static▶ std::string ☀Get_Class_Starter(Type_Item const& t, Plant_Uml_Settings const& settings)❰
+  std::string s;
+  s+= settings.class_keyword + " " + Case_Modifier::As_Modified_Casing(settings.data_member_type_casing,as_string(t.name.value)) + " " + settings.start_class_body_symbol + "\n";
+  return s;
+❱
+◀private: static▶ std::string ☀Get_Enum_Ender(Plant_Uml_Settings const& settings)❰
+  return settings.end_enum_body_symbol + '\n';
+❱
+◀private: static▶ std::string ☀Get_Class_Ender(Plant_Uml_Settings const& settings)❰
+  return settings.end_class_body_symbol + '\n';
+❱
+
+
+◀private: static▶ std::string ☀Get_Method_String(Method_Item const& method_item, Plant_Uml_Settings const& settings)❰
+  std::string s;
+  s+= Class_Access_As_String(method_item.class_access,settings);
+  s+= as_string(method_item.names.function_name.value);
+  s+= "()";
+  
+  return s;
+❱
+
+◀private: static▶ std::string ☀Get_Data_Member_String(Data_Member_Item const& data_member_item, Plant_Uml_Settings const& settings)❰
+  std::string s;
+  s+= Class_Access_As_String(data_member_item.class_access,settings);
+  s+= Case_Modifier::As_Modified_Casing(settings.data_member_identifier_casing,as_string(data_member_item.name.value));
+  s+= settings.identifier_type_seperator;
+  s+= Case_Modifier::As_Modified_Casing(settings.data_member_type_casing,as_string(data_member_item.type.value));
+  
+  return s;
+❱
+◀private: static▶ std::string ☀Get_Enum_Value_String(Enum_Arg const& arg, Plant_Uml_Settings const& settings)❰
+  std::string s;
+  s += Case_Modifier::As_Modified_Casing(settings.enum_identifier_arg_casing,as_string(arg.name.value));
+  return s;
+❱
+
+
+◀private: static▶ std::string ☀Class_Access_As_String(Class_Access const& class_access, Plant_Uml_Settings const& settings)❰
+  switch (class_access){
+    case Class_Access::PUBLIC: return settings.public_symbol;
+    case Class_Access::PROTECTED: return settings.protected_symbol;
+    case Class_Access::PRIVATE: return settings.private_symbol;
+   }
+   
+   return settings.public_symbol;
+❱
+

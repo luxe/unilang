@@ -1,0 +1,34 @@
+class
+⚯
+⚞⚟
+
+◀public: static▶ Frame_Elements ☀Draw(Character_Maps const& font_chars, Buttoned_Faced_Label & label, Position const& pos, Pc_Input_State const& pc_input)❰
+    
+    Frame_Elements elements;
+    Append(elements.types,Faced_Label_Drawer::Draw(font_chars,label.label,pos,pc_input.mouse).types);
+    Append(elements.types,Possibly_Add_Button(pc_input,label,pos).types);
+    
+    return elements;
+❱
+
+◀private: static▶ Frame_Elements  ☀Possibly_Add_Button(Pc_Input_State const& pc_input, Buttoned_Faced_Label & label, Position const& pos)❰
+    
+    Frame_Elements elements;
+    
+    if (label.style.show_button){
+    
+        
+        //draw the button
+        auto button = Absolute_Button_Maker::Make(label,pos);
+        elements.types.emplace_back(button);
+        
+        //TODO: make part of events
+        //change on click
+        auto events = Mouse_Events_Checker::search_for_mouse_events_in_rectangle(button.pos,label.button.click_size,pc_input.mouse);
+        if (events.state.left.clicked){
+            Set_Next_Index_In_Round_Robin(label.button.faces,label.button.current_face);
+        }
+    }
+    
+    return elements;
+❱

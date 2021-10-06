@@ -1,0 +1,98 @@
+class
+⚯
+⚞⚟
+
+
+
+◀public: static▶ Frame_Elements  ☀Maybe_Draw_Extra(Character_Maps const& font_chars, Pc_Input_State const& pc_input, tree<Buttoned_Faced_Label>::pre_order_iterator it, int tree_id, Position const& pos, tree<Buttoned_Faced_Label> const& tr, Schema_Path_Settings const& settings)❰
+    Frame_Elements x;
+    
+    
+    
+    
+    //exit early if there is no special draw for the element
+    auto full_name = Button_Face_Tree_Full_Path_Name::Get(tr,it);
+    auto find = settings.special_draws.map.find(full_name);
+    if (find == settings.special_draws.map.end()){
+        return x;
+    }
+        
+        
+    
+    //otherwise perform the special draw
+    if (find->second == Special_Draw::GRAPH){
+        
+        
+        //extract the code object
+        //TODO: this seems inefficient.
+        //We could tokenize a subtree
+        //And then parse only that (instead of everything).
+        //the only problem is, we might need the larger code structure for context when drawing.
+        //I think eventually, we want a separate thread performing occasional parsing for any part of the tree to use for extra drawing.
+        //that are drawings need to reference parts of the tree as dependencies (I'd prefer excluding that kind of complexity).
+        auto tokens = Button_Face_Tree_Tokenizer::Tokenize(tr);
+        auto code = Concept_String_Tree_Parser::Parse(tokens);
+        
+        //find the graph of the iterator
+        auto graph = Extract_Code_Graph(code,tree_id);
+        
+        //convert it into a draw-able c++ object
+        auto cpp_object = Create_Cpp_Type(graph);
+        
+        //then turn it into a drawable object
+        auto drawable_graph = Fitted_Faced_Label_Graph_Creator::Create(cpp_object);
+        
+        
+        return Fitted_Faced_Label_Graph_Drawer::Full_Draw(font_chars,drawable_graph.state,pos,pc_input);
+        
+        
+    }
+    
+    
+    return x;
+❱
+
+◀private: static▶ model::Graph  ☀Extract_Code_Graph(model::Code const& code, int tree_id)❰
+
+        for (auto const& a: code.module){
+            for (auto const& b: a.graphs){
+                for (auto const& c: b.graph){
+                    if (c.tree_id == tree_id){
+                        return c;
+                    }
+                }
+            }
+        }
+        std::cout << "NOT FOUND" << std::endl;
+        exit(-1);
+        return model::Graph{};
+❱
+
+◀private: static▶ Conceptually_Laid_Out_Graph  ☀Create_Cpp_Type(model::Graph const& g)❰
+    Conceptually_Laid_Out_Graph x;
+    
+    
+    //add nodes
+    for (auto const& it: g.nodes){
+        for (auto const& it2: it.node){
+            Conceptually_Laid_Out_Node node;
+            node.name = First_Element_Or_Default(it2.name).value;
+            node.pos.x = as_signed(First_Element_Or_Default(First_Element_Or_Default(it2.pos).x).value);
+            node.pos.y = as_signed(First_Element_Or_Default(First_Element_Or_Default(it2.pos).y).value);
+            x.nodes.emplace_back(node);
+        }
+    }
+    
+    //add edges
+    for (auto const& it: g.edges){
+        for (auto const& it2: it.edge){
+            Conceptually_Laid_Out_Edge edge;
+            edge.from = First_Element_Or_Default(it2.from).value;
+            edge.to = First_Element_Or_Default(it2.to).value;
+            x.edges.emplace_back(edge);
+        }
+    }
+    
+    
+    return x;
+❱

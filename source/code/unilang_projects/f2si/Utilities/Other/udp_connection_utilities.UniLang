@@ -1,0 +1,95 @@
+􏶞g􏶟
+􏷲Connection Utilities􏷱
+􏷰Shared functionality among UDP connections􏷯
+􏷮Utilities􏷭􏷮Connections􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦Defs􏷥􏷢USES: BYTE􏷡
+􏶔􏶕􏶒SocketManager􏶓􏶖USES: SocketSendTo(), SocketReceive()􏶗
+
+􏷘+􏷗􏷒send and handle Udp errors􏷑
+􏷐sends a byte array through a socket, and handles any errors that occur in the process􏷏
+􏶠uses socket send and notifies to watchdog􏶡
+􏶜􏶝􏷆int􏷅􏷄bytes packed􏷃􏷀the number of bytes packed􏶿
+􏶜􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀the buffer to send􏶿
+􏶜􏶝􏷆int􏷅􏷄socket number􏷃􏷀the unique id for the particular socket􏶿
+􏶜􏶝􏷆char[]􏷅􏷄what sent􏷃􏷀the name of message being sent􏶿
+􏶴
+    int nBytesSent = 0;
+    
+    􏶲handle any data buffer errors from a failed packing􏶱
+    if(􏵶bytes packed􏵷 == 0){
+        􏵲report buffer failure to watchdog􏵳􏵶what sent􏵷);
+    }
+    
+    􏶲if packing succeeded, send data over the socket􏶱
+    else
+    {
+        nBytesSent = SocketSendTo(􏵶socket number􏵷, (char *)􏵶buffer􏵷, 􏵶bytes packed􏵷);
+        
+        􏶲if the data did not reach its destination􏶱
+        if (nBytesSent == ERROR){
+            􏵲report send failure to watchdog􏵳􏵶what sent􏵷);
+        }
+    }
+􏶳
+
+􏷘+􏷗􏷒report Udp receive status􏷑
+􏷐reports any failures or successes related to receiving data􏷏
+􏶠notifies watchdog􏶡
+􏶜􏶝􏷆int􏷅􏷄bytes received􏷃􏷀the number of bytes received which will indicate a possible error􏶿
+􏶜􏶝􏷆char[]􏷅􏷄received for􏷃􏷀what task the bytes were received for􏶿
+􏶴
+    􏶲report errors when receiving UDP data has failed􏶱
+    if(􏵶bytes received􏵷 == ERROR){
+        
+        􏵲report receive failure to watchdog􏵳􏵶received for􏵷);
+        
+    }
+    else{
+        􏵲report receive success to watchdog􏵳􏵶received for􏵷);
+    }
+􏶳
+
+􏷘-􏷗􏷒report buffer failure to watchdog􏷑
+􏷐handles buffer failures encountered􏷏
+􏶠notifies watchdog and reports error􏶡
+􏶜􏶝􏷆char[]􏷅􏷄what sent􏷃􏷀the name of message being sent􏶿
+􏶴
+    fprintf(stderr,"%s failed to pack\n",􏵶what sent􏵷);
+
+    􏶲TODO: report to watchdog􏶱
+    􏶲watchdog not implemented􏶱
+􏶳
+
+􏷘-􏷗􏷒report send failure to watchdog􏷑
+􏷐handles send failures encountered􏷏
+􏶠notifies watchdog and reports error􏶡
+􏶜􏶝􏷆char[]􏷅􏷄what sent􏷃􏷀the name of message being sent􏶿
+􏶴
+    fprintf(stderr,"%s failed to send\n",􏵶what sent􏵷);
+    
+    􏶲TODO: report to watchdog􏶱
+    􏶲watchdog not implemented􏶱
+􏶳
+
+􏷘-􏷗􏷒report receive success to watchdog􏷑
+􏷐handles recieve success encountered􏷏
+􏶠notifies watchdog with the relevant health information􏶡
+􏶜􏶝􏷆char[]􏷅􏷄received for􏷃􏷀what task the bytes were received for􏶿
+􏶴
+    􏶲TODO: send timestamp to watchdog task􏶱
+    􏶲timestamp,  nBytesReceived, ... ?􏶱
+    􏶲watchdog not implemented􏶱
+􏶳
+
+􏷘-􏷗􏷒report receive failure to watchdog􏷑
+􏷐handles receive failures encountered􏷏
+􏶠notifies watchdog and reports error􏶡
+􏶜􏶝􏷆char[]􏷅􏷄received for􏷃􏷀what task the bytes were received for􏶿
+􏶴
+    fprintf(stderr, "error receiving %s\n",􏵶received for􏵷);
+    
+    􏶲TODO: report to watchdog􏶱
+    􏶲watchdog not implemented􏶱
+􏶳

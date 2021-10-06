@@ -1,0 +1,39 @@
+class
+❪string❫
+❪iostream❫
+❪"nlohmann/json.hpp"❫
+⚯
+❪"code/utilities/system/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
+❪"code/utilities/program/call/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/strings/transformers/trimming/lib"❫
+❪"code/utilities/program/wrappers/wget/wget_downloader"❫
+⚞⚟
+
+◀public: static▶ nlohmann::json ☀Run_In_Dir_And_Get_Json_Results(std::string const& path)❰
+
+    std::string timeout_per_file_s = "60";
+    
+    //get cloc if we don't have it
+    Wget_Downloader::Download_To_Tmp_If_Missing("https://github.com/AlDanial/cloc/releases/download/v1.90/cloc-1.90.pl","cloc");
+
+
+    
+    std::string command;
+    command = "/tmp/cloc --json ";
+    command += "--diff-timeout " + timeout_per_file_s + " ";
+    command += path;
+    auto results = execute(command);
+    
+    Remove_Newlines(results);
+    Remove_Spaces(results);
+    trim(results);
+    
+    
+    //std::cout << results << std::endl;
+    
+    auto j = nlohmann::json::parse(results);
+    return j;
+❱

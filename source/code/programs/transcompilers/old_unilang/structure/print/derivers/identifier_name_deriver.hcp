@@ -1,0 +1,102 @@
+class
+
+❪string❫
+❪iostream❫
+❪"code/utilities/linguistics/computer/frontends/parts/notation_settings"❫
+❪"code/utilities/types/tri_bool"❫
+⚯
+❪"code/utilities/units/units_to_variable_suffix_lookup_table"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/units/unit_suffix_lookuper"❫
+❪"code/utilities/linguistics/computer/types/self_describe_type/modify_identifier_with_extra_type_info"❫
+❪"code/utilities/linguistics/computer/types/generic/unilang_type_to_language_type_converter"❫
+❪"code/utilities/types/converters/lib"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+⚞⚟
+
+
+
+◀private: static▶ Tri_Bool ☀Decide_Optional(Data_Member_Item const& data_member, C_Export_Settings const& settings)❰
+    auto properties = Unilang_Type_To_Language_Type_Converter::Get_Infered_Type_Properties(as_string(data_member.type.value));
+    return properties.optional;
+❱
+◀private: static▶ Tri_Bool ☀Decide_Serializable(Data_Member_Item const& data_member, C_Export_Settings const& settings)❰
+    auto properties = Unilang_Type_To_Language_Type_Converter::Get_Infered_Type_Properties(as_string(data_member.type.value));
+    return properties.serializable;
+❱
+◀private: static▶ Tri_Bool ☀Decide_Collection(Data_Member_Item const& data_member, C_Export_Settings const& settings)❰
+    auto properties = Unilang_Type_To_Language_Type_Converter::Get_Infered_Type_Properties(as_string(data_member.type.value));
+    return properties.collection;
+❱
+◀private: static▶ Tri_Bool ☀Decide_Sequence(Data_Member_Item const& data_member, C_Export_Settings const& settings)❰
+    auto properties = Unilang_Type_To_Language_Type_Converter::Get_Infered_Type_Properties(as_string(data_member.type.value));
+    return properties.sequence;
+❱
+◀private: static▶ Tri_Bool ☀Decide_State(Data_Member_Item const& data_member, C_Export_Settings const& settings)❰
+    auto properties = Unilang_Type_To_Language_Type_Converter::Get_Infered_Type_Properties(as_string(data_member.type.value));
+    return properties.state;
+❱
+
+
+
+◀private: static▶ Case_Format_Style ☀How_To_Case_Hungarian(Data_Member_Item const& data_member, C_Export_Settings const& settings, bool is_global)❰
+      return How_To_Case_Data_Member_Thing(data_member,settings.portion.data_member_options.notation.hungarian_casing,is_global);
+❱
+◀private: static▶ Case_Format_Style ☀How_To_Case_Units(Data_Member_Item const& data_member, C_Export_Settings const& settings, bool is_global)❰
+      return How_To_Case_Data_Member_Thing(data_member,settings.portion.data_member_options.notation.unit_casing,is_global);
+❱
+◀private: static▶ Case_Format_Style ☀How_To_Case_Extra_Type_Info(Data_Member_Item const& data_member, C_Export_Settings const& settings, bool is_global)❰
+      return How_To_Case_Data_Member_Thing(data_member,settings.portion.data_member_options.notation.extra_type_info_casing,is_global);
+❱
+
+
+
+
+
+◀private: static▶ void ☀Possibly_Add_Identifier_Prefixes_And_Suffixes(std::string & identifier, Notation_Settings const& settings, std::string const& prefix, std::string const& suffix)❰
+        
+        //possibly add hungarian prefix
+        if (settings.use_hungarian_prefix){
+          identifier = prefix + identifier;
+        }
+        
+        //possibly and unit suffix
+        if (settings.use_unit_suffix){
+          identifier += suffix;
+        } 
+❱
+
+
+
+//raw gets
+◀private: static▶ std::string ☀Get_Raw_Unit_Suffix(Data_Member_Item const& construct)❰
+    std::string suffix;
+    if (!construct.units.value.empty()){
+        suffix = Unit_Suffix_Lookuper::Get_Unit_Suffix_From_Data_Unit(as_string(construct.units.value));
+        if (suffix.empty()){
+            suffix = as_string(construct.units.value);
+        }
+    }
+    return suffix;
+❱
+
+
+//after raw transformations
+◀private: static▶ std::string ☀Get_Properly_Cased_Suffix(std::string suffix, Case_Format_Style style)❰
+    std::string str;
+    
+    if (!suffix.empty()){
+        str += "_";
+        str += Case_Modifier::As_Modified_Casing(style,suffix);
+        
+    }
+    
+    return str;
+❱
+
+
+
+
+
+
+

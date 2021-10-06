@@ -1,0 +1,60 @@
+class
+❪string❫
+❪vector❫
+❪utility❫
+⚯
+❪iostream❫
+❪"code/utilities/types/vectors/creators/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/strings/observers/splitting/lib"❫
+❪"code/utilities/program/wrappers/nvprune/nvprune_finder"❫
+❪"code/utilities/program/call/lib"❫
+❪"code/utilities/types/strings/observers/converting/lib"❫
+❪"code/utilities/types/strings/transformers/trimming/lib"❫
+❪"code/utilities/types/strings/transformers/search_replace/lib"❫
+❪"code/utilities/program/call/process_spawn/process_spawner"❫
+❪"code/utilities/random/files/random_files"❫
+⚞⚟
+
+◀public: static▶ void ☀Prune(std::string const& filename, std::vector<std::string> const& keep_archs, std::string filename_out)❰
+
+    //avoiding trying to overwrite the file directly
+    bool wants_to_overwrite = false;
+    if (filename == filename_out){
+        wants_to_overwrite = true;
+        filename_out = Random_Files::Random_Tmp_Filename() + ".a";
+    }
+    
+    auto command = Get_Command(filename,keep_archs,filename_out);
+    std::cout << command << std::endl;
+    auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
+    
+    if (!results.stderr.empty()){
+        std::cout << results.stderr << std::endl;
+    }
+    
+    //perform overwrite
+    if (wants_to_overwrite){
+        execute("mv -f " + filename_out + " " + filename);
+    }
+❱
+
+◀public: static▶ std::string ☀Get_Command(std::string const& filename, std::vector<std::string> const& keep_archs, std::string const& filename_out)❰
+    std::string command;
+    command += Nvprune_Finder::Find_Binary();
+    command += " ";
+    for (auto const& it: keep_archs){
+        command += "-gencode code=";
+        command += "\"" + it + "\"";
+        command += ",";
+        command += "arch=";
+        command += "\"" + string_replace_all(it,"sm","compute") + "\"";
+        command += " ";
+    }
+    command += " " + filename;
+    command += " -o ";
+    command += filename_out;
+    return command;
+❱

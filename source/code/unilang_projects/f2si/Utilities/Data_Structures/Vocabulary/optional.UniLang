@@ -1,0 +1,110 @@
+􏶞p􏶟
+􏷲Type to hold an optional value􏷱
+􏷰
+    An "option type" or "maybe type" is a polymorphic type that represents encapsulation of an optional value.
+    They commonly used and built into many other languages:  
+    https://en.wikipedia.org/wiki/Option_type
+    
+    Pointers and NULL do not achieve the same thing.  Pointers hold a memory addresses.  
+    Copied pointers point to the same data.  An optional type gives us value semantics in place of pointer semantics.  
+    
+    Often thought of as a pair<bool,T>, an optional better describes the intent.  
+    It can be used to improve interfaces, and error handling.
+    http://en.cppreference.com/w/cpp/utility/optional
+􏷯
+􏷮Data Structure􏷭􏷮Any􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤s􏷣􏷦stdioLib􏷥􏴓d􏴔􏴑BOOL􏴒
+􏷤􏷣􏷦type_information􏷥􏴓d􏴔􏴑TypeInformationT􏴒
+􏷤􏷣􏷦any􏷥􏴓1􏴔􏴑AnyT􏴒
+
+
+MEMORY MANAGEMENT:
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be created storing a copy of the value passed in􏶡
+􏶜r􏶝􏷆void􏷅􏷄value􏷃􏷀the value to be stored in the type􏶿
+􏶜􏶝􏷆TypeInformationT􏷅􏷄type info􏷃􏷀type information to specialize 􏶐􏶿
+􏶴
+    􏶲assign an initial value􏶱
+    􏶲if NULL is passed in, the optional type is empty􏶱
+    InitializeAny(&􏵴data􏵵,􏵶value􏵷,􏵶type info􏵷);
+􏶳
+
+􏷘+􏷗􏷒^􏶐􏷑
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆void􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    􏶲implicit forward casting􏶱
+    􏶲this is only going to work in C where things are unsafe􏶱
+    􏵲copy􏵳􏵶self􏵷);
+􏶳
+
+􏷘-􏷗􏷒copy􏷑
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆􏶐T􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    􏶲perform deep copy on any􏶱
+    CopyInitializeAnyT(&􏵴data􏵵,&􏵶self􏵷->m_tLocals.m_tData);
+􏶳
+
+􏷘+􏷗􏷒~􏶐􏷑
+􏷐Destruct the 􏶐 type􏷏
+􏶠This function must be called to free the internal allocated memory before 􏶐 goes out of scope.􏶡
+􏶴
+    􏶲implicit forward casting􏶱
+    􏶲this is only going to work in C where things are unsafe􏶱
+    􏵲destruct data􏵳);
+􏶳
+
+􏷘-􏷗􏷒destruct data􏷑
+􏷐Destructs the internal data􏷏
+􏶠The type should not be used after this􏶡
+􏶴
+    DestructAnyT(&􏵴data􏵵);
+􏶳
+
+
+
+􏷘+c􏷗􏷒get􏷑
+􏷐get a pointer to the data􏷏
+􏶠a void pointer to the allocated block of memory􏶡
+􏶚m􏶛􏶾void*􏶽􏶼data􏶻􏶺a pointer to the data􏶹
+􏶴
+    􏶲returns a pointer to the data􏶱
+    return AnyGet(&􏵴data􏵵);
+􏶳
+
+􏷘+c􏷗􏷒has value􏷑
+􏷐checks to see if the any type has a value􏷏
+􏶠true if the type has a value, false if it does not􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼has value􏶻􏶺whether the type has a value or not􏶹
+􏶴
+    􏶲checks whether the any type is empty to determine value􏶱
+    return !AnyIsEmpty(&􏵴data􏵵);
+􏶳
+
+􏷘+􏷗􏷒reset􏷑
+􏷐removes the value􏷏
+􏶠the type will no longer have a value after the call􏶡
+􏶴
+    􏶲ensures the type no longer holds a value􏶱
+    AnyClear(&􏵴data􏵵);
+􏶳
+
+􏷘+􏷗􏷒assign􏷑
+􏷐assigns a new value to the type􏷏
+􏶠this will handle any necessary deallocation/reallocation.  
+This can be done whether the type is empty or not􏶡
+􏶜r􏶝􏷆void􏷅􏷄value􏷃􏷀the value to be stored in the type􏶿
+􏶴
+    􏶲store a value (optional types are expected to be the same underlying type)􏶱
+    AnyAssign(&􏵴data􏵵,􏵶value􏵷,􏵴data􏵵.m_tLocals.m_tTypeInfo);
+􏶳
+
+􏶨the value of the data􏶧
+􏶦This points to a block of memory representing the value of any type􏶥
+􏶘+􏶙􏶮AnyT􏶭􏶬data􏶫􏶪􏶩

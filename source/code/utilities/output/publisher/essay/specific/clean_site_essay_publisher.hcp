@@ -1,0 +1,111 @@
+class
+
+❪"code/utilities/formats/pdf/pdf_settings"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/code/concept_static_tree_structs"❫
+⚯
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/program/common_actions/exits/lib"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
+❪"code/utilities/program/common_actions/locale/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/filesystem/files/getting/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/formats/pdf/latex_template_getter"❫
+❪"code/utilities/web/dropbox/dropbox_uploader"❫
+❪"code/utilities/personal/secret/secret_getter"❫
+❪"code/utilities/filesystem/files/temp/temp_file"❫
+❪"code/utilities/formats/pdf/pdf_creator"❫
+❪"code/utilities/output/upload/file_upload_settings"❫
+❪"code/utilities/output/upload/file_uploader"❫
+❪"code/utilities/formats/html/basic_html_template_getter"❫
+❪"code/utilities/formats/html/body/html_list_maker"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/filesystem/files/temp/existing_temp_file"❫
+❪"code/utilities/data_structures/graph/unique_str_vertex_graph/lib"❫
+❪"code/utilities/program/wrappers/graphviz/graphviz_image_maker"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/linguistics/computer/frontends/bibtex/bibtex_str_getter"❫
+❪"code/utilities/formats/html/full/blog_essay"❫
+❪"code/utilities/linguistics/grammar/grammar_adjuster"❫
+⚞⚟
+
+◀public: static▶ void ☀Generate(model::Module const& structure, std::string const& essay_name) ❰
+    
+    
+    //create html file
+    auto body = Get_Body_Html(structure);
+    auto html = Blog_Essay::Get_Html(essay_name,body);
+    auto file_name = Full_Path_For_Desktop_File(essay_name + ".html");
+    Temp_File result(file_name,html);
+    
+    // std::cout << file_name << std::endl;
+    // std::cout << html << std::endl;
+    // exit(0);
+    
+    
+    //transfer
+    
+    //upload file
+    File_Upload_Settings upload_settings;
+    upload_settings.local_file_name = file_name;
+    upload_settings.remote_file_name = "essays/" + essay_name + ".html";
+    
+    //dropbox specific
+    upload_settings.upload_to_dropbox = false;
+    
+    //github specific
+    upload_settings.upload_to_github = true;
+    upload_settings.github_settings.pull_first = false;
+    upload_settings.github_settings.update = false;
+    
+    File_Uploader::Upload(upload_settings);
+❱
+
+
+◀public: static▶ std::string ☀Get_Body_Html(model::Module const& structure) ❰
+    std::string x;
+    
+    x += "<div class=\"container\">";
+    x += "\n";
+    
+    x += "<h2><a href=\"http://luxe.github.io/essays/essays.html\">Home</a></h2>";
+    x += "\n";
+    
+    for (auto const& l: structure.literature){
+        for (auto const& p: l.paragraph){
+            
+            //possibly add title
+            std::string title;
+            for (auto const& it: p.title){Append(title,it.value);}
+            if (!title.empty()){
+                x += "<h3>";
+                x += title;
+                x += "</h3>\n";
+            }
+            
+            x += "<p>";
+            for (auto const& s: p.sentence){
+                
+                if (!s.text.empty()){
+                    Comment_Grammar_Settings grammar;
+                    Append(x,Grammar_Adjuster::Get_Adjusted(Get_Sentence(s),grammar));
+                    x += "  ";
+                }
+            }
+            
+            x += "</p>\n";
+        }
+    }
+    
+    x += "</div>";
+    return x;
+❱
+
+◀private: static▶ std::string ☀Get_Sentence(model::ParagraphSentence sentence)❰
+    std::string x;
+    for (auto const& it: sentence.text){Append(x,it.value);}
+    return x;
+❱

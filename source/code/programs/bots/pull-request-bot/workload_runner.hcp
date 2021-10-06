@@ -1,0 +1,60 @@
+class
+❪"systems"❫
+❪"utilities"❫
+❪"workload"❫
+❪"current_issue"❫
+⚯
+❪"issue_resolver"❫
+❪"dirty_tester"❫
+❪"sleeper"❫
+⚞⚟
+
+
+◀public: static▶ void ☀Keep_Making_Pull_Requests_Forever(Workload workload) ❰
+
+    //loop over all the work load tasks attempting to perform them forever
+    Current_Issue issue;
+    For_Each_Forever(workload.tasks.tasks,[&](auto & task){
+        Attempt_To_Perform_Code_Change_Integration(task,issue,workload.settings);
+        Sleeper::Delay_Before_Next_Code_Integration_Attempt(workload.settings.workflow.delays);
+    });
+❱
+
+◀private: static▶ void ☀Attempt_To_Perform_Code_Change_Integration(Code_Submit_Data const& task, Current_Issue & issue, Processing_Settings const& settings) ❰
+
+    //we assume no other issue is in progress or anything right now
+    
+    //given that the issue is resolved, we will now attempt to see if this code task is worth doing
+    //this will see if the task is worth doing, by seeing if it dirties the repo.  
+    //a boolean is returned, and repo is restored
+    if (Dirty_Tester::The_Code_Task_Would_Dirty_The_Repo(task,settings)){
+          
+        //if the issue makes sense to do, do it and move it through the git,stash,jira workflow
+        Perform_The_Code_Change_And_Get_It_All_The_Way_To_A_Pull_Request(task,issue,settings);
+        
+        //we may not always want to wait until the issue is done.  
+        //we may want the bot to just keep going.  We may want it to build off its other pull-requests,
+        //or just make new requests.  I want to avoid the bot having merge conflicts with itself across different branches
+        //that's why I see the bot just waiting until a change is integrated.
+        if (settings.workflow.wait_for_issue_resolution_before_moving_onto_other_tasks){
+            Issue_Resolver::Wait_Until_Current_Issue_Is_Resolved(task,issue,settings);
+        }
+    }
+❱
+
+◀private: static▶ void ☀Perform_The_Code_Change_And_Get_It_All_The_Way_To_A_Pull_Request(Code_Submit_Data const& task, Current_Issue & issue, Processing_Settings const& settings) ❰
+    //Issue_Creator::Creates_Issue(task,issue,settings);
+    //Branch_Creator::Create_Issue_Branch_And_Switch_To_It(task,issue,settings);
+    //Perform_Code_Task(task,settings);
+    //Make_Sure_The_Build_Works();
+    //Make_A_Pull_Request(task,settings);
+❱
+
+
+
+
+
+//clicking the create branch button in a jira issue
+//git checkout -b "feature/UHMEP-1506-test" "development"
+//git push origin feature/UHMEP-1506-test
+//catch-up-with-dev

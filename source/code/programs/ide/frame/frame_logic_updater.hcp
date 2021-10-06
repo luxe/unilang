@@ -1,0 +1,30 @@
+class
+⚯
+⚞⚟
+
+
+
+◀public: static▶ Frame_Elements ☀each_frame(Ide_Settings & settings, SDL_Window* window)❰
+    
+    //lets make sure the exact same mouse state is used for the entire frame of logic.
+    //this will avoid any issues with a fast moving mouse whose position may change faster than the frame rate.
+    //Let's do the same situation with the keyboard.
+    //Basically all of the user's input keyboard/mouse remains immutable from this point forward.
+    //It just makes testing and automation of the IDE code easier as well.
+    settings.desktop.previous_input = settings.desktop.input;
+    settings.desktop.input = Pc_Input_State_Getter::Get();
+    
+    //before deciding all the frame elements to draw, adjust the global viewing anchor.
+    //This is the (possibly infinite) surface spread of frame elements. We intend it to be an infinite plane larger than anyone's screen.
+    //a user will find ways to view sub portions of this space (likely represented by the size of their monitor).
+    //the view anchor represents the (0,0) of their adjustable sub-viewing window location.
+    View_Anchor_Adjuster::Adjust(settings.desktop.mouse,settings.desktop.input.mouse);
+    
+    //this decides everything needed by the frame drawer
+    //the data structure returned here is a representation that could be drawn anywhere
+    //to your screen, to an image, or dumped as json.
+    Everything_Draw_Settings draw_settings;
+    auto frames = Everything_Drawer::Draw(settings,draw_settings,settings.desktop.input);
+    
+    return frames;
+❱

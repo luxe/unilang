@@ -1,0 +1,48 @@
+class
+❪"code/utilities/graphics/x11/data/main_x11_state"❫
+❪"code/utilities/graphics/glx/x11_to_opengl_bind_settings"❫
+❪"code/utilities/graphics/glx/glx_visual_creator"❫
+❪"code/utilities/graphics/glx/glx_context_creator"❫
+❪"code/utilities/graphics/glx/glx_fb_config_creator"❫
+❪"code/utilities/graphics/glx/data/glx_data"❫
+❪GL/gl.h❫
+❪GL/glx.h❫
+⚯
+⚞⚟
+
+//This is basically done for the case where you need to opengl to draw to an x11 window
+//such as when you are making a screensaver for xscreensaver
+◀public: static▶ Glx_Data ☀Get(Main_X11_State & x11, X11_To_Opengl_Bind_Settings const& settings)❰
+
+    Check_GLX_With_X11_Is_Possible(x11);
+    
+    Glx_Data glx;
+    
+    //Get frame buffer config (this may or may not be used)
+    glx.fbc = Glx_Fb_Config_Creator::Create(x11);
+    
+    // Get a visual
+    glx.vi = Glx_Visual_Creator::Create_Visual(x11, glx.fbc, settings);
+    
+    // Get a context
+    glx.ctx = Glx_Context_Creator::Create_Context(x11, glx.vi, glx.fbc, settings);
+    
+    return glx;
+❱
+
+◀private: static▶ void ☀Check_GLX_With_X11_Is_Possible(Main_X11_State const& x11)❰
+
+    // Make sure OpenGL's GLX extension is supported.  The
+    // glXQueryExtension also returns the GLX extension's error base and event
+    // base.  For almost all OpenGL programs, this information is irrelevant;
+    // hence the use of dummy.
+    int dummy = 0;
+    if(!glXQueryExtension(x11.d, &dummy, &dummy)){
+        std::cerr << "X server has no OpenGL GLX extension" << std::endl;
+        exit(-1);
+    }
+❱
+
+
+
+

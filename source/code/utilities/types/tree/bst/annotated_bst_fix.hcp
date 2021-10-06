@@ -1,0 +1,872 @@
+class
+❪iostream❫
+❪string❫
+❪utility❫
+❪cstdlib❫
+❪fstream❫
+❪"code/utilities/types/tree/bst/annotated_bst_state.hpp"❫
+❪"code/utilities/types/tree/bst/tree_traversal.hpp"❫
+❪"code/utilities/types/tree/bst/tree_node_properties.hpp"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/program/call/lib"❫
+❪"code/utilities/types/char/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/types/tree/bst/annotated_bst_visualizer"❫
+⚯
+⚞⚟
+
+//maybe animate
+//https://bl.ocks.org/magjac/4acffdb3afbc4f71b448a210b5060bca
+// convert -loop 0 -delay 100 001.png -delay 20 *.png -delay 200 019.png animation.gif
+
+◀public:
+static void fix(Annotated_Bst_State & state){
+    
+    Annotated_Bst_Visualizer::clean_output_folder(state);
+    
+    //they both start at the root
+    Annotated_Bst_Visualizer::make_image(state);
+    state.b = state.a;
+    Annotated_Bst_Visualizer::make_image(state);
+    
+    //set the loop back
+    move_a_all_the_way_right(state);
+    state.a->right = state.b;
+    Annotated_Bst_Visualizer::make_image(state);
+    
+    //single HOP from ROOT implementation
+    if (!state.a->left){
+        std::cout << "single hop impl" << std::endl;
+        Single_Hop_Implementation(state);
+    }
+    
+    //double HOP from ROOT implementation
+    //find the tail
+    else{
+        std::cout << "double hop impl" << std::endl;
+        Trace_The_Tail_For_The_First_Childless_Node(state);
+        
+        Double_Hop_Implementation(state);
+    }
+}
+▶
+
+
+◀public:
+static void Trace_The_Tail_For_The_First_Childless_Node(Annotated_Bst_State & state){
+    
+        state.b = state.a;
+        Annotated_Bst_Visualizer::make_image(state);
+        
+        while (state.a->left){
+            
+            state.a = state.a->left;
+            Annotated_Bst_Visualizer::make_image(state);
+            move_a_all_the_way_right(state);
+        }
+        
+        state.a->right = state.b;
+        Annotated_Bst_Visualizer::make_image(state);
+        state.b = state.b->right;
+        Annotated_Bst_Visualizer::make_image(state);
+}
+▶
+
+◀public:
+static void Single_Hop_Implementation(Annotated_Bst_State & state){
+    move_b_to_the_leftest_double_null(state);
+    
+    //a controls the new block indirectly
+    state.a->left = state.b;
+    Annotated_Bst_Visualizer::make_image(state);
+    
+    //take b back home
+    set_b_to_a_right(state);
+    
+    modified_LR_morris_traversal_looking_for_discrepancy(state);
+    
+    //we didn't find the discrepancy, but there's gotta be one
+    //but were only 1 hope away, so this doesn't make any sense
+    if (!state.a->left->right){
+        std::cout << "THIS SHOULD NOT HAPPEN" << std::endl;
+    }
+    else{
+        
+        //we found a discrepancy, but we still have to finish the morris traversal because the tree may still be threaded in places
+        //and probably needs cleaned up since we'll need to do a reverse morris later.
+        std::cout << "we found the discrepancy and need to finish the traversal" << std::endl;
+        std::cout << "we might actually fix the tree by finishing the traversal" << std::endl;
+        continued_LR_morris_traversal_looking_for_discrepancy_or_end(state);
+        
+        if (state.a->left->right){
+            std::cout << "WE HAVEN'T FOUND THE SECOND SWAP YET" << std::endl;
+        }
+        cleanup_single_hop(state);
+    }
+}
+▶
+
+◀public:
+static void Double_Hop_Implementation(Annotated_Bst_State & state){
+    move_b_to_the_leftest_double_null(state);
+    
+    //a controls the new block indirectly
+    state.a->left = state.b;
+    Annotated_Bst_Visualizer::make_image(state);
+    
+    //take b back home
+    set_b_to_a_right_right(state);
+    
+    modified_LR_morris_traversal_looking_for_discrepancy(state);
+    
+    //we didn't find the discrepancy, but there's gotta be one
+    //so we can fix it quick and cleanup
+    if (!state.a->left->right){
+        std::cout << "full traversal and no discrepancy was found" << std::endl;
+        //TODO: fix tree when no discrepancy was found
+    }
+    else{
+        
+        //we found a discrepancy, but we still have to finish the morris traversal because the tree may still be threaded in places
+        //and probably needs cleaned up since we'll need to do a reverse morris later.
+        std::cout << "we found the discrepancy and need to finish the traversal" << std::endl;
+        std::cout << "we might actually fix the tree by finishing the traversal" << std::endl;
+        continued_LR_morris_traversal_looking_for_discrepancy_or_end(state);
+        
+        if (state.a->left->right){
+            std::cout << "WE HAVEN'T FOUND THE SECOND SWAP YET" << std::endl;
+            
+            //it might be on the tail end we didn't traverse, or we might
+            //have to do a reverse morris traversal all over again
+            //under the assumption that the discrepancy is adjacent
+        }
+        cleanup_double_hop(state);
+    }
+}
+▶
+
+◀public:
+static void cleanup_double_hop(Annotated_Bst_State & state){
+    std::cout << "CLEANUP TIME" << std::endl;
+    set_proxy1_to_null(state);
+    Annotated_Bst_Visualizer::make_image(state);
+    set_proxy2_to_null(state);
+    Annotated_Bst_Visualizer::make_image(state);
+    state.a->left = nullptr;
+    Annotated_Bst_Visualizer::make_image(state);
+    state.b = state.a;
+    Annotated_Bst_Visualizer::make_image(state);
+    state.b = state.b->right;
+    Annotated_Bst_Visualizer::make_image(state);
+    state.a->right = nullptr;
+    Annotated_Bst_Visualizer::make_image(state);
+    state.a = state.b;
+    Annotated_Bst_Visualizer::make_image(state);
+    state.b = state.b->right;
+    Annotated_Bst_Visualizer::make_image(state);
+    state.a->right = nullptr;
+    Annotated_Bst_Visualizer::make_image(state);
+    state.a = state.b;
+    Annotated_Bst_Visualizer::make_image(state);
+    state.b = nullptr;
+    Annotated_Bst_Visualizer::make_image(state);
+}
+▶
+
+◀public:
+static void cleanup_single_hop(Annotated_Bst_State & state){
+    set_proxy1_to_null(state);
+    Annotated_Bst_Visualizer::make_image(state);
+    set_proxy2_to_null(state);
+    Annotated_Bst_Visualizer::make_image(state);
+    state.a->left = nullptr;
+    Annotated_Bst_Visualizer::make_image(state);
+    state.b = state.a;
+    Annotated_Bst_Visualizer::make_image(state);
+    state.b = state.b->right;
+    Annotated_Bst_Visualizer::make_image(state);
+    state.a->right = nullptr;
+    Annotated_Bst_Visualizer::make_image(state);
+    state.a = state.b;
+    Annotated_Bst_Visualizer::make_image(state);
+    state.b = nullptr;
+    Annotated_Bst_Visualizer::make_image(state);
+}
+▶
+
+◀public:
+static void modified_LR_morris_traversal_looking_for_discrepancy(Annotated_Bst_State & state){
+    
+    //we've given A an additional storage location so it can participate indirectly
+    //in a morris traversal
+    if (state.b == nullptr){
+        return; 
+    }
+    while (!proxy1_points_to_a(state)) {
+        
+        
+        //the hack discrepancy climb
+        if (state.b->left && (state.b->left == state.a->left)){
+            std::cout << "hack climb" << std::endl;
+            
+            //possible discrepancy 1
+            record_compare(state,state.b->left->val,state.b->val);
+            if (state.b->left->val > state.b->val){
+                record_first_discrepancy(state,state.b->left->val);
+                std::cout << "FOUND DISCREPENCY A" << std::endl;
+                state.a->left->left = state.a->left->right;
+                
+                //TODO
+                //record_compare(state,state.b->val,state.a->left->left->val);
+                //if (state.b->val > state.a->left->left->val){
+                    //exit(0);
+                //}
+                
+                set_proxy1_to_b_left(state); //store discrepancy
+                state.b = state.b->right; //do what you would've done this iteration
+                Annotated_Bst_Visualizer::make_image(state);
+                break;
+            }
+            
+            //possible discrepancy 2
+            record_compare(state,state.b->val,state.b->right->val);
+            if (state.b->val > state.b->right->val){
+                record_first_discrepancy(state,state.b->val);
+                std::cout << "FOUND DISCREPENCY B" << std::endl;
+                state.a->left->left = state.a->left->right;
+                set_proxy1_to_b(state); //store discrepancy
+                state.b = state.b->right; //do what you would've done this iteration
+                Annotated_Bst_Visualizer::make_image(state);
+                break;
+            }
+            
+            
+            state.b = state.b->right;
+            Annotated_Bst_Visualizer::make_image(state);
+        }
+        
+        //the normal climb
+        else if (state.b->left == nullptr) {
+            
+            //possible discrepancy 3
+            record_compare(state,state.b->val,state.b->right->val);
+            if (state.b->val > state.b->right->val){
+                record_first_discrepancy(state,state.b->val);
+                std::cout << "FOUND DISCREPENCY C" << std::endl;
+                state.a->left->left = state.a->left->right;
+                set_proxy1_to_b(state); //store discrepancy
+                state.b = state.b->right; //do what you would've done this iteration
+                Annotated_Bst_Visualizer::make_image(state);
+                break;
+            }
+            
+            state.b = state.b->right;
+            Annotated_Bst_Visualizer::make_image(state);
+        }
+        else{
+            
+            find_the_inorder_predecessor_of_current_using_a_proxy1(state);
+            
+            //we've reached the end with no discrepancies found
+            if (proxy1_points_to_a(state)){
+                std::cout << "full traversal and no discrepancy was found" << std::endl;
+                set_proxy1_to_null(state);
+                Annotated_Bst_Visualizer::make_image(state);
+                break;
+            }
+            
+            // if (state.b->left == state.a){
+            //     std::cout << "FULL LOOP" << std::endl;
+            // }
+            
+            /* Make current as the right child of its inorder  
+               predecessor */
+            if (proxy1_right_points_to_null(state)) {
+                set_proxy1_right_to_b(state);
+                Annotated_Bst_Visualizer::make_image(state);
+                state.b = state.b->left;
+                Annotated_Bst_Visualizer::make_image(state);
+            } 
+            
+            /* Revert the changes made in the 'if' part to restore  
+               the original tree i.e., fix the right child 
+               of predecessor */
+            else{
+                if (state.b && state.b->right){
+                    set_proxy1_right_to_b(state);
+                    Annotated_Bst_Visualizer::make_image(state);
+                    set_proxy1_right_to_b_right(state);
+                    Annotated_Bst_Visualizer::make_image(state);
+                    std::cout << "STARTING DOWNFALL " << proxy1_right_val(state) << std::endl;
+                    move_a_proxy1_pointer_all_the_way_left(state);
+                    std::cout << "FINISHED DOWNFALL! " << proxy1_right_val(state) << std::endl;
+                    
+                    
+                    if (state.b->val != proxy1_right_val(state)){
+                        
+                        //possible discrepancy 4
+                        record_compare(state,state.b->val,proxy1_right_val(state));
+                        if (state.b->val > proxy1_right_val(state)){
+                            record_first_discrepancy(state,state.b->val);
+                            std::cout << "FOUND DISCREPENCY D" << std::endl;
+                            state.a->left->left = state.a->left->right;
+                            set_proxy1_right_to_null(state); //do what you would've done this iteration
+                            set_proxy1_to_b(state); //store discrepancy
+                            state.b = state.b->right; //do what you would've done this iteration
+                            Annotated_Bst_Visualizer::make_image(state);
+                            break;
+                        }
+                    }
+                    else{
+                        
+                        //possible discrepancy 5
+                        record_compare(state,state.b->val,state.b->right->val);
+                        if (state.b->val > state.b->right->val){
+                            record_first_discrepancy(state,state.b->val);
+                            std::cout << "FOUND DISCREPENCY E" << std::endl;
+                            state.a->left->left = state.a->left->right;
+                            set_proxy1_right_to_null(state); //do what you would've done this iteration
+                            set_proxy1_to_b(state); //store discrepancy
+                            state.b = state.b->right; //do what you would've done this iteration
+                            Annotated_Bst_Visualizer::make_image(state);
+                            break;
+                        }
+                    }
+                }
+                state.b = state.b->right;
+                Annotated_Bst_Visualizer::make_image(state);
+                set_proxy1_right_to_null(state);
+                Annotated_Bst_Visualizer::make_image(state);
+            }
+        }
+    }
+}
+▶
+
+◀public:
+static void continued_LR_morris_traversal_looking_for_discrepancy_or_end(Annotated_Bst_State & state){
+    
+    //we've given A an additional storage location so it can participate indirectly
+    //in a morris traversal
+    if (state.b == nullptr){
+        return; 
+    }
+    while (!proxy2_points_to_a(state)) {
+        
+        
+        //the hack discrepancy climb
+        if (state.b->left && (state.b->left == state.a->left)){
+            std::cout << "hack climb" << std::endl;
+            
+            //possible discrepancy 1
+            record_compare(state,state.b->left->val,state.b->val);
+            if (state.b->left->val > state.b->val){
+                std::cout << "FOUND DISCREPENCY A" << std::endl;
+                std::swap(state.a->left->right->val,state.b->val);
+                record_swap(state,state.a->left->right->val,state.b->val);
+                set_proxy1_to_null(state);
+                //set_proxy2_to_b_left(state); //store discrepancy
+                //state.b = state.b->right; //do what you would've done this iteration
+                //Annotated_Bst_Visualizer::make_image(state);
+                //break;
+            }
+            
+            if (state.b){
+                if (state.b->right){
+                    if (state.b->right->right){
+                        if (state.b->right->right == state.b){
+                            std::cout << "PPEPEPEPE" << std::endl;
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            //possible discrepancy 2
+            record_compare(state,state.b->val,state.b->right->val);
+            if (state.b->val > state.b->right->val){
+                std::cout << "FOUND DISCREPENCY B" << std::endl;
+                std::swap(state.b->val,state.b->right->val);
+                record_swap(state,state.b->val,state.b->right->val);
+                set_proxy1_to_null(state);
+                //set_proxy2_to_b_right(state); //store discrepancy
+                //state.b = state.b->right; //do what you would've done this iteration
+                //Annotated_Bst_Visualizer::make_image(state);
+                //break;
+            }
+            
+            
+            state.b = state.b->right;
+            Annotated_Bst_Visualizer::make_image(state);
+            
+        }
+        
+        //the normal climb
+        else if (state.b->left == nullptr) {
+            std::cout << "other" << std::endl;
+            
+            //possible discrepancy 3
+            record_compare(state,state.b->val,state.b->right->val);
+            if (state.b->val > state.b->right->val){
+                std::cout << "FOUND DISCREPENCY C" << std::endl;
+                std::cout << "swap happened" << std::endl;
+                std::swap(state.a->left->right->val,state.b->right->val);
+                Annotated_Bst_Visualizer::make_image(state);
+                record_swap(state,state.a->left->right->val,state.b->right->val);
+                std::cout << state.a->left->right->val << " " << state.b->right->val << std::endl;
+                
+                set_proxy1_to_null(state);
+                Annotated_Bst_Visualizer::make_image(state);
+                //set_proxy2_to_b(state); //store discrepancy
+                //state.b = state.b->right; //do what you would've done this iteration
+                //Annotated_Bst_Visualizer::make_image(state);
+                //break;
+            }
+            
+            state.b = state.b->right;
+            
+                if (state.a == state.b){
+                    std::cout << "STOP" << std::endl;
+                    break;
+                }
+            Annotated_Bst_Visualizer::make_image(state);
+        }
+        else{
+            
+            std::cout << "here" << std::endl;
+            find_the_inorder_predecessor_of_current_using_a_proxy2(state);
+            if (state.a->left->left == state.a->right){
+                std::cout << "LOOP LEAVE" << std::endl;
+                //state.b = state.b->right;
+                state.a->left->left->left->right = nullptr;
+                break;
+            }
+            
+            //we've reached the end with no discrepancies found
+            if (proxy2_points_to_a(state)){
+                std::cout << "full traversal and no discrepancy was found" << std::endl;
+                //set_proxy2_to_null(state);
+                //Annotated_Bst_Visualizer::make_image(state);
+                break;
+            }
+            
+            /* Make current as the right child of its inorder  
+               predecessor */
+            if (proxy2_right_points_to_null(state)) {
+                set_proxy2_right_to_b(state);
+                Annotated_Bst_Visualizer::make_image(state);
+                state.b = state.b->left;
+                Annotated_Bst_Visualizer::make_image(state);
+            } 
+            
+            
+            /* Revert the changes made in the 'if' part to restore  
+               the original tree i.e., fix the right child 
+               of predecessor */
+            else{
+                    
+                if (state.b && state.b->right){
+                    set_proxy2_right_to_b(state);
+                    Annotated_Bst_Visualizer::make_image(state);
+                    set_proxy2_right_to_b_right(state);
+                    Annotated_Bst_Visualizer::make_image(state);
+                
+                    std::cout << "STARTING DOWNFALL " << proxy2_right_val(state) << std::endl;
+                    move_a_proxy2_pointer_all_the_way_left(state);
+                    std::cout << "FINISHED DOWNFALL! " << proxy2_right_val(state) << std::endl;
+                    
+                    
+                    
+                    if (state.b->val != proxy2_right_val(state)){
+                        
+                        //possible discrepancy 4
+                        record_compare(state,state.b->val,proxy2_right_val(state));
+                        if (state.b->val > proxy2_right_val(state)){
+                            std::cout << "FOUND DISCREPENCY D" << std::endl;
+                            std::cout << "swap happened" << std::endl;
+                            std::swap(state.a->left->right->val,state.a->left->left->right->val);
+                            record_swap(state,state.a->left->right->val,state.a->left->left->right->val);
+                            std::cout << state.a->left->right->val << " " << state.a->left->left->right->val << std::endl;
+                            set_proxy1_to_null(state);
+                            //set_proxy2_right_to_null(state); //do what you would've done this iteration
+                            //set_proxy2_to_b(state); //store discrepancy
+                            //state.b = state.b->right; //do what you would've done this iteration
+                            //Annotated_Bst_Visualizer::make_image(state);
+                            //break;
+                        }
+                    }
+                    else{
+                        record_compare(state,state.b->val,state.b->right->val);
+                    }
+                
+                    
+                  if (proxy2_points_to_a(state)){std::cout << "SDFSDFSDFSDF" << std::endl; break;}
+                    if (proxy2_right_points_to_a(state)){std::cout << "SDFSDFSDFSDF2" << std::endl; 
+                    set_proxy2_right_to_null(state);
+                    break;}
+                }
+                state.b = state.b->right;
+                Annotated_Bst_Visualizer::make_image(state);
+                set_proxy2_right_to_null(state);
+                Annotated_Bst_Visualizer::make_image(state);
+            }
+        }
+    }
+}
+▶
+
+◀public:
+static void record_compare(Annotated_Bst_State & state, int const& a, int const& b){
+    if (a == b){
+        std::cout << "COMPARING HTE SAME VALUES FOR SOME REASON" << std::endl;
+    }
+    else{
+        std::cout << a << " -> " << b << std::endl;
+        state.comparing_values = true;
+        state.compared_vals.first = a;
+        state.compared_vals.second = b;
+        Annotated_Bst_Visualizer::make_image(state);
+        state.comparing_values = false;
+    }
+}
+▶
+
+◀public:
+static void record_swap(Annotated_Bst_State & state, int const& a, int const& b){
+    state.swap_occured = true;
+    state.performing_swap = true;
+    Annotated_Bst_Visualizer::make_image(state);
+    state.performing_swap = false;
+}
+▶
+◀public:
+static void record_first_discrepancy(Annotated_Bst_State & state, int const& a){
+    state.first_discrepancy_found = true;
+    state.first_discrepancy = a;
+    Annotated_Bst_Visualizer::make_image(state);
+}
+▶
+
+
+
+//USING A PROXY POINTER (1)
+◀public:
+static int proxy1_right_val(Annotated_Bst_State & state){
+    return state.a->left->right->right->val;
+}
+▶
+◀public:
+static int proxy1_val(Annotated_Bst_State & state){
+    return state.a->left->right->val;
+}
+▶
+◀public:
+static void set_proxy1_to_null(Annotated_Bst_State & state){
+    if (state.a){
+        if (state.a->left){
+            state.a->left->right = nullptr;
+        }
+    }
+}
+▶
+◀public:
+static void set_proxy1_right_to_null(Annotated_Bst_State & state){
+    state.a->left->right->right = nullptr;
+}
+▶
+◀public:
+static bool proxy1_points_to_a(Annotated_Bst_State & state){
+    return state.a->left->right == state.a;
+}▶
+
+◀public:
+static bool proxy1_right_points_to_a(Annotated_Bst_State & state){
+    return state.a->left->right->right == state.a;
+}▶
+
+◀public:
+static bool proxy1_right_points_to_null(Annotated_Bst_State & state){
+    return state.a->left->right->right == nullptr;
+}
+▶
+◀public:
+static void set_proxy1_to_b(Annotated_Bst_State & state){
+    state.a->left->right = state.b;
+}
+▶
+◀public:
+static void set_proxy1_right_to_b(Annotated_Bst_State & state){
+    state.a->left->right->right = state.b;
+}
+▶
+◀public:
+static void set_proxy1_to_b_left(Annotated_Bst_State & state){
+    state.a->left->right = state.b->left;
+}
+▶
+◀public:
+static void set_proxy1_to_b_right(Annotated_Bst_State & state){
+    state.a->left->right = state.b->right;
+}
+▶
+◀public:
+static void set_proxy1_right_to_b_right(Annotated_Bst_State & state){
+    state.a->left->right->right = state.b->right;
+}
+▶
+
+//USING A PROXY POINTER (2)
+◀public:
+static int proxy2_right_val(Annotated_Bst_State & state){
+    return state.a->left->left->right->val;
+}
+▶
+◀public:
+static int proxy2_val(Annotated_Bst_State & state){
+    return state.a->left->left->val;
+}
+▶
+◀public:
+static void set_proxy2_to_null(Annotated_Bst_State & state){
+    state.a->left->left = nullptr;
+}
+▶
+◀public:
+static void set_proxy2_right_to_null(Annotated_Bst_State & state){
+    state.a->left->left->right = nullptr;
+}
+▶
+◀public:
+static bool proxy2_points_to_a(Annotated_Bst_State & state){
+    return state.a->left->left == state.a;
+}
+▶
+◀public:
+static bool proxy2_right_points_to_a(Annotated_Bst_State & state){
+    return state.a->left->left->right == state.a;
+}
+▶
+◀public:
+static bool proxy2_right_points_to_null(Annotated_Bst_State & state){
+    return state.a->left->left->right == nullptr;
+}
+▶
+◀public:
+static void set_proxy2_to_b(Annotated_Bst_State & state){
+    state.a->left->left = state.b;
+}
+▶
+◀public:
+static void set_proxy2_right_to_b(Annotated_Bst_State & state){
+    state.a->left->left->right = state.b;
+}
+▶
+◀public:
+static void set_proxy2_to_b_left(Annotated_Bst_State & state){
+    state.a->left->left = state.b->left;
+}
+▶
+◀public:
+static void set_proxy2_to_b_right(Annotated_Bst_State & state){
+    state.a->left->left = state.b->right;
+}
+▶
+◀public:
+static void set_proxy2_right_to_b_right(Annotated_Bst_State & state){
+    state.a->left->left->right = state.b->right;
+}
+▶
+
+◀public:
+static void find_the_inorder_predecessor_of_current_using_a_proxy1(Annotated_Bst_State & state){
+    /* Find the inorder predecessor of current */
+    state.a->left->right = state.b;
+    Annotated_Bst_Visualizer::make_image(state);
+    state.a->left->right = state.b->left;
+    Annotated_Bst_Visualizer::make_image(state);
+    
+    while (state.a->left->right->right != nullptr && state.a->left->right->right != state.b){
+        
+        if (state.a->left->right == state.a->right){
+            std::cout << "LOOP LEAVE" << std::endl;
+            break;
+        }
+        
+        state.a->left->right = state.a->left->right->right;
+        Annotated_Bst_Visualizer::make_image(state);
+    }
+}
+▶
+
+◀public:
+static void find_the_inorder_predecessor_of_current_using_a_proxy2(Annotated_Bst_State & state){
+    /* Find the inorder predecessor of current */
+    state.a->left->left = state.b;
+    Annotated_Bst_Visualizer::make_image(state);
+    state.a->left->left = state.b->left;
+    Annotated_Bst_Visualizer::make_image(state);
+    
+    while (state.a->left->left->right != nullptr && state.a->left->left->right != state.b){
+        
+        if (state.a->left->left == state.a->right){
+            std::cout << "LOOP LEAVE" << std::endl;
+            break;
+        }
+        
+        state.a->left->left = state.a->left->left->right;
+        Annotated_Bst_Visualizer::make_image(state);
+    }
+}
+▶
+
+◀public:
+static void move_a_proxy1_pointer_all_the_way_left(Annotated_Bst_State & state){
+    if (state.a->left->right->right){
+        if (state.a->left->right->right->left){
+            
+            
+            if (state.a->left->right->right == state.a){
+                return;
+            }
+            
+            
+            
+            state.a->left->right->right = state.a->left->right->right->left;
+            Annotated_Bst_Visualizer::make_image(state);
+            std::cout<< "broke out normal reasons" << std::endl;
+        }else{
+            std::cout << "broke out: reason 2" << std::endl;
+        }
+    }
+    else{
+        std::cout << "broke out: reason 1" << std::endl;
+    }
+}
+▶
+◀public:
+static void move_a_proxy2_pointer_all_the_way_left(Annotated_Bst_State & state){
+    if (state.a->left->left->right){
+        while (state.a->left->left->right->left){
+            
+            if (state.a->left->left->right == state.a->left){
+                break;
+            }
+            
+            if (state.a->left->left->right == state.b){
+                break;
+            }
+            
+            // if (state.a->left->left->right == state.a->left->left){
+            //     std::cout << "LOOP FOUND" << std::endl;
+            //     break;
+            // }
+            
+            // if (state.a->left->left->right->left == state.a->left->right){
+            //     std::cout << "BREAKING" << std::endl;
+            //     break;
+            // }
+            
+            
+            
+            if (!proxy2_right_points_to_a(state)){
+                state.a->left->left->right = state.a->left->left->right->left;
+                Annotated_Bst_Visualizer::make_image(state);
+            }else{
+                break;
+            }
+        }
+    }
+}
+▶
+
+
+
+//basic traversing
+◀public:
+static void move_a_all_the_way_right(Annotated_Bst_State & state){
+    
+    while (state.a->right){
+        state.a = state.a->right;
+        Annotated_Bst_Visualizer::make_image(state);
+    }
+}
+▶
+◀public:
+static void move_b_all_the_way_left(Annotated_Bst_State & state){
+    
+    while (state.b->left){
+        state.b = state.b->left;
+        Annotated_Bst_Visualizer::make_image(state);
+    }
+}
+▶
+
+◀public:
+static void move_b_to_the_leftest_double_null(Annotated_Bst_State & state){
+    
+    move_b_all_the_way_left(state);
+    while (state.b->right){
+        state.b = state.b->right;
+        move_b_all_the_way_left(state);
+    }
+    
+}
+▶
+
+◀public:
+static void move_a_right(Annotated_Bst_State & state){
+        state.a = state.a->right;
+        Annotated_Bst_Visualizer::make_image(state);
+}
+▶
+
+◀public:
+static void move_a_right_right(Annotated_Bst_State & state){
+        state.a = state.a->right;
+        Annotated_Bst_Visualizer::make_image(state);
+        state.a = state.a->right;
+        Annotated_Bst_Visualizer::make_image(state);
+}
+▶
+
+◀public:
+static void set_b_to_a_right(Annotated_Bst_State & state){
+        state.b = state.a;
+        Annotated_Bst_Visualizer::make_image(state);
+        state.b = state.b->right;
+        Annotated_Bst_Visualizer::make_image(state);
+}
+▶
+
+◀public:
+static void set_b_to_a_right_right(Annotated_Bst_State & state){
+        state.b = state.a;
+        Annotated_Bst_Visualizer::make_image(state);
+        state.b = state.b->right;
+        Annotated_Bst_Visualizer::make_image(state);
+        state.b = state.b->right;
+        Annotated_Bst_Visualizer::make_image(state);
+}
+▶
+
+
+
+
+//node hacking
+◀public:
+static void set_node_a_left_to_itself(Annotated_Bst_State & state){
+    state.a->left = (BinaryNode<int> *)&(state.a->left);
+}
+▶
+◀public:
+static void set_node_b_left_to_itself(Annotated_Bst_State & state){
+    state.b->left = (BinaryNode<int> *)&(state.b->left);
+}
+▶
+◀public:
+static void set_node_b_left_to_sibling(Annotated_Bst_State & state){
+    state.b->left = (BinaryNode<int> *)&(state.b->right);
+}
+▶
+
+

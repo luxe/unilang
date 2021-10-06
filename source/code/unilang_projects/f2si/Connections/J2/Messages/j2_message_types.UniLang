@@ -1,0 +1,93 @@
+􏶞g􏶟
+􏷲Message types sent to and from the SimHost and the flight model􏷱
+􏷰an enumerated type representing the type of message and how it should be parsed􏷯
+􏷮J2_Message_Types􏷭
+􏷬Trevor Hickey􏷫
+􏷤s􏷣􏷦stdioLib􏷥􏷢USES: BOOL􏷡
+􏷤s􏷣􏷦stddef􏷥􏷢USES: size_t􏷡
+􏷤􏷣􏷦J2Const􏷥􏷢USES: SIMHOST_TO_FLIGHT_MODEL_HEADER_SIZE, FLIGHT_MODEL_TO_SIMHOST_HEADER_SIZE􏷡
+
+􏶀flight model message type􏶋
+􏶊Message Types for messages between Flight Model to Sim Host􏶉
+􏶈Used for processing messages sent between the Simhost and the flight model􏶇
+􏶆j2 high speed􏶅􏶄1􏶃􏶂􏶁
+􏶆j2 low speed􏶅􏶂􏶁
+􏶆j2 engine􏶅􏶂􏶁
+􏶆j2 reposition reply􏶅􏶂􏶁
+􏶆j2 version􏶅􏶂􏶁
+􏶆simhost high speed􏶅􏶂􏶁
+􏶆simhost low speed􏶅􏶂􏶁
+􏶆simhost reposition􏶅􏶂􏶁
+􏶆simhost version􏶅􏶂􏶁
+
+
+􏷘+􏷗􏷒message type sent from flight model􏷑
+􏷐determines if the flight model message type belongs to messages sent by the flight model􏷏
+􏶠􏵱 if the message type is used when sending from the flight model
+􏵰 if the message type is used when sending from the host􏶡
+􏶜􏶝􏷆FlightModelMessageTypeE􏷅􏷄message type􏷃􏷀the message type used in J2 communication􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼from flight model􏶻􏶺whether the message type is sent from the flight model or not􏶹
+􏶴
+    BOOL bFromFlightModel = 􏵰;
+    
+    switch(􏵶message type􏵷){
+        case FLIGHT_MODEL_MESSAGE_TYPE_J2_HIGH_SPEED:
+        case FLIGHT_MODEL_MESSAGE_TYPE_J2_LOW_SPEED:
+        case FLIGHT_MODEL_MESSAGE_TYPE_J2_ENGINE:
+        case FLIGHT_MODEL_MESSAGE_TYPE_J2_REPOSITION_REPLY:
+        case FLIGHT_MODEL_MESSAGE_TYPE_J2_VERSION:
+        bFromFlightModel = 􏵱;
+    }
+    
+    return bFromFlightModel;
+􏶳
+
+􏷘+􏷗􏷒message type sent from host􏷑
+􏷐determines if the flight model message type belongs to messages sent by the host􏷏
+􏶠􏵱 if the message type is used when sending from the host
+􏵰 if the message type is used when sending from the flight model􏶡
+􏶜􏶝􏷆FlightModelMessageTypeE􏷅􏷄message type􏷃􏷀the message type used in J2 communication􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼from flight model􏶻􏶺whether the message type is sent from the host or not􏶹
+􏶴
+    BOOL bHost = 􏵰;
+    
+    switch(􏵶message type􏵷){
+        case FLIGHT_MODEL_MESSAGE_TYPE_SIMHOST_HIGH_SPEED:
+        case FLIGHT_MODEL_MESSAGE_TYPE_SIMHOST_LOW_SPEED:
+        case FLIGHT_MODEL_MESSAGE_TYPE_SIMHOST_REPOSITION:
+        case FLIGHT_MODEL_MESSAGE_TYPE_SIMHOST_VERSION:
+        bHost = 􏵱;
+    }
+    
+    return bHost;
+􏶳
+
+􏷘+􏷗􏷒get expected header size of message􏷑
+􏷐gets the expected header size of a particular message type􏷏
+􏶠􏶡
+􏶜􏶝􏷆FlightModelMessageTypeE􏷅􏷄message type􏷃􏷀the message type used in J2 communication􏶿
+􏶚m􏶛􏶾size_t􏶽􏶼expected header size􏶻􏶺the expected header size of the message type􏶹
+􏶴
+    size_t uExpectedHeaderSize = 0u;
+    
+    switch(􏵶message type􏵷){
+        case FLIGHT_MODEL_MESSAGE_TYPE_SIMHOST_HIGH_SPEED:
+        case FLIGHT_MODEL_MESSAGE_TYPE_SIMHOST_LOW_SPEED:
+        case FLIGHT_MODEL_MESSAGE_TYPE_SIMHOST_REPOSITION:
+        case FLIGHT_MODEL_MESSAGE_TYPE_SIMHOST_VERSION:
+        uExpectedHeaderSize = SIMHOST_TO_FLIGHT_MODEL_HEADER_SIZE;
+        break;
+        
+        case FLIGHT_MODEL_MESSAGE_TYPE_J2_HIGH_SPEED:
+        case FLIGHT_MODEL_MESSAGE_TYPE_J2_LOW_SPEED:
+        case FLIGHT_MODEL_MESSAGE_TYPE_J2_ENGINE:
+        case FLIGHT_MODEL_MESSAGE_TYPE_J2_REPOSITION_REPLY:
+        case FLIGHT_MODEL_MESSAGE_TYPE_J2_VERSION:
+        uExpectedHeaderSize = FLIGHT_MODEL_TO_SIMHOST_HEADER_SIZE;
+        break;
+        
+        default:;
+    }
+    
+    return uExpectedHeaderSize;
+􏶳

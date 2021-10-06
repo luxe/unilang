@@ -1,0 +1,142 @@
+􏶞p􏶟
+􏷲Type to hold a pair of two values􏷱
+􏷰
+    Similar to std::pair<T,U>
+    http://en.cppreference.com/w/cpp/utility/pair
+􏷯
+􏷮Data Structure􏷭􏷮Any􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦type_information􏷥􏴓d􏴔􏴑TypeInformationT􏴒
+􏷤􏷣􏷦any􏷥􏴓1􏴔􏴑AnyT􏴒
+􏷤􏷣􏷦Defs􏷥􏴓d􏴔􏴑BOOL􏴒
+
+􏴃memory management􏴄􏴁handles memory allocations and deallocations internally. Called to explicitly handle the lifetime of the object􏴂
+􏴃element access􏴄􏴁accessing elements in the container􏴂
+􏴃modifier􏴄􏴁make changes to the container sequence􏴂
+
+
+􏷘+􏷗􏷒􏶐􏷑
+􏴅memory management􏴆
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be created storing a copy of the value passed in􏶡
+􏶜r􏶝􏷆void􏷅􏷄first value􏷃􏷀the value to be stored in the first element􏶿
+􏶜􏶝􏷆TypeInformationT􏷅􏷄first type info􏷃􏷀type information to specialize 􏶐's first element􏶿
+􏶜r􏶝􏷆void􏷅􏷄second value􏷃􏷀the value to be stored in the second element􏶿
+􏶜􏶝􏷆TypeInformationT􏷅􏷄second type info􏷃􏷀type information to specialize 􏶐's second element􏶿
+􏶴
+    􏶲assign initial values􏶱
+    InitializeAny(&􏵴first􏵵,􏵶first value􏵷,􏵶first type info􏵷);
+    InitializeAny(&􏵴second􏵵,􏵶second value􏵷,􏵶second type info􏵷);
+􏶳
+
+
+􏷘+􏷗􏷒^􏶐􏷑
+􏴅memory management􏴆
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆void􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    􏶲implicit forward casting􏶱
+    􏶲this is only going to work in C where things are unsafe􏶱
+    􏵲copy􏵳􏵶self􏵷);
+􏶳
+
+􏷘-􏷗􏷒copy􏷑
+􏴅memory management􏴆
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆􏶐T􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    􏶲perform deep copy on elements􏶱
+    CopyInitializeAnyT(&􏵴first􏵵,&􏵶self􏵷->m_tLocals.m_tFirst);
+    CopyInitializeAnyT(&􏵴second􏵵,&􏵶self􏵷->m_tLocals.m_tSecond);
+􏶳
+
+􏷘+􏷗􏷒~􏶐􏷑
+􏴅memory management􏴆
+􏷐Destruct the 􏶐 type􏷏
+􏶠This function must be called to free the internal allocated memory before 􏶐 goes out of scope.􏶡
+􏶴
+    􏶲implicit forward casting􏶱
+    􏶲this is only going to work in C where things are unsafe􏶱
+    􏵲destruct data􏵳);
+􏶳
+
+􏷘-􏷗􏷒destruct data􏷑
+􏴅memory management􏴆
+􏷐Destructs the internal data􏷏
+􏶠The type should not be used after this􏶡
+􏶴
+    DestructAnyT(&􏵴first􏵵);
+    DestructAnyT(&􏵴second􏵵);
+􏶳
+
+􏷘+c􏷗􏷒first􏷑
+􏴅element access􏴆
+􏷐get a pointer to the first element􏷏
+􏶠a void pointer to the allocated block of memory􏶡
+􏶚m􏶛􏶾void*􏶽􏶼first􏶻􏶺a pointer to the data􏶹
+􏶴
+    􏶲returns a pointer to the data􏶱
+    return AnyGet(&􏵴first􏵵);
+􏶳
+
+􏷘+c􏷗􏷒second􏷑
+􏴅element access􏴆
+􏷐get a pointer to the second element􏷏
+􏶠a void pointer to the allocated block of memory􏶡
+􏶚m􏶛􏶾void*􏶽􏶼second􏶻􏶺a pointer to the data􏶹
+􏶴
+    􏶲returns a pointer to the data􏶱
+    return AnyGet(&􏵴second􏵵);
+􏶳
+
+􏷘+􏷗􏷒set first􏷑
+􏴅modifier􏴆
+􏷐sets the value of the first element􏷏
+􏶠this will handle any necessary deallocation/reallocation.  
+This can be done whether the type is empty or not􏶡
+􏶜r􏶝􏷆void􏷅􏷄first􏷃􏷀the value to be stored in the first element􏶿
+􏶴
+    􏶲store the value while handling any allocations/deallocations automatically􏶱
+    AnyAssign(&􏵴first􏵵,􏵶first􏵷,􏵴first􏵵.m_tLocals.m_tTypeInfo);
+􏶳
+
+􏷘+􏷗􏷒set second􏷑
+􏴅modifier􏴆
+􏷐sets the value of the second element􏷏
+􏶠this will handle any necessary deallocation/reallocation.  
+This can be done whether the type is empty or not􏶡
+􏶜r􏶝􏷆void􏷅􏷄second􏷃􏷀the value to be stored in the second element􏶿
+􏶴
+    􏶲store the value while handling any allocations/deallocations automatically􏶱
+    AnyAssign(&􏵴second􏵵,􏵶second􏵷,􏵴second􏵵.m_tLocals.m_tTypeInfo);
+􏶳
+
+OVERLOADED OPERATOR:
+􏷘+c􏷗􏷒less than int􏷑
+􏷐overloaded < operator assuming pair of ints􏷏
+􏶠compares from first to second􏶡
+􏶜r􏶝􏷆PairT􏷅􏷄rhs􏷃􏷀the value of the right hand side when comparing two pairs􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is less than􏶻􏶺whether the first pair is less than the second pair􏶹
+􏶴
+    􏶲get values as ints􏶱
+    int nPairOneFirst = *((int*)􏵲first􏵳));
+    int nPairOneSecond = *((int*)􏵲second􏵳));
+    int nPairTwoFirst = *((int*)PairFirst(􏵶rhs􏵷));
+    int nPairTwoSecond = *((int*)PairSecond(􏵶rhs􏵷));
+    
+    􏶲perform comparison􏶱
+    if (nPairOneFirst != nPairTwoFirst){ return nPairOneFirst < nPairTwoFirst; }
+    return nPairOneSecond < nPairTwoSecond;
+􏶳
+
+
+􏶨the value of the first element􏶧
+􏶦This points to a block of memory representing the value of any type􏶥
+􏶘+􏶙􏶮AnyT􏶭􏶬first􏶫􏶪􏶩
+
+􏶨the value of the second element􏶧
+􏶦This points to a block of memory representing the value of any type􏶥
+􏶘+􏶙􏶮AnyT􏶭􏶬second􏶫􏶪􏶩

@@ -1,0 +1,162 @@
+􏶞o􏶟
+􏷲reindex CAS data in order to remove references on absent workers􏷱
+􏷰redis CAS entries contain reference information to the workers who have access to the underlying addressable content
+however workers can disappear leaving some of these references stale
+the indexer is designed to compare existing workers with all CAS entries and remove references to no longer accessible workers􏷯
+􏷞build􏷝􏷞buildfarm􏷝􏷞instance􏷝􏷞shard􏷝
+
+􏷤􏷣􏷦com.google.common.collect.LinkedHashMultimap􏷥
+􏷤􏷣􏷦com.google.common.collect.Lists􏷥
+􏷤􏷣􏷦com.google.common.collect.SetMultimap􏷥
+􏷤􏷣􏷦java.util.List􏷥
+􏷤􏷣􏷦build.buildfarm.common.redis.BalancedRedisQueue􏷥
+􏷤􏷣􏷦build.buildfarm.common.redis.ProvisionedRedisQueue􏷥
+􏷤􏷣􏷦build.buildfarm.common.redis.RedisSlotToHash􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisCluster􏷥
+􏷤􏷣􏷦build.buildfarm.common.StringVisitor􏷥
+􏷤􏷣􏷦java.util.Collections􏷥
+􏷤􏷣􏷦java.util.regex.Matcher􏷥
+􏷤􏷣􏷦java.util.regex.Pattern􏷥
+􏷤􏷣􏷦build.buildfarm.v1test.QueueStatus􏷥
+􏷤􏷣􏷦build.buildfarm.v1test.OperationQueueStatus􏷥
+􏷤􏷣􏷦build.bazel.remote.execution.v2.Platform􏷥
+􏷤􏷣􏷦java.lang.RuntimeException􏷥
+􏷤􏷣􏷦java.util.ArrayList􏷥
+􏷤􏷣􏷦java.util.Set􏷥
+􏷤i􏷣􏷦redis.clients.jedis.JedisCluster.HASHSLOTS􏷥
+􏷤􏷣􏷦redis.clients.jedis.util.JedisClusterCRC16􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanParams􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanResult􏷥
+
+􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
+􏲏􏲐􏲍build.buildfarm.common.redis.BalancedRedisQueue􏲎
+􏲏􏲐􏲍build.buildfarm.common.redis.ProvisionedRedisQueue􏲎
+􏲏􏲐􏲍build.buildfarm.common.StringVisitor􏲎
+􏲏􏲐􏲍redis.clients.jedis.JedisCluster􏲎
+􏲏􏲐􏲍org.junit.Test􏲎
+􏲏􏲐􏲍java.util.List􏲎
+􏲏􏲐􏲍java.util.ArrayList􏲎
+􏲏􏲐􏲍org.junit.runner.RunWith􏲎
+􏲏􏲐􏲍org.junit.runners.JUnit4􏲎
+􏲏􏲐􏲍java.lang.Thread􏲎
+􏲏􏲐􏲍java.util.concurrent.TimeUnit􏲎
+􏲏􏲐􏲍java.lang.RuntimeException􏲎
+􏲏􏲐􏲍java.io.IOException􏲎
+􏲏􏲐􏲍java.util.function.Supplier􏲎
+􏲏􏲐􏲍org.mockito.Mock􏲎
+􏲏􏲐􏲍org.mockito.MockitoAnnotations􏲎
+􏲏􏲐􏲍java.util.Arrays􏲎
+􏲏i􏲐􏲍com.google.common.truth.Truth.assertThat􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.eq􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.mock􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.times􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.verify􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.when􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.any􏲎
+
+􏶨the prefix for finding CAS keys􏶧
+􏶦can be used in scan operations on CAS􏶥
+􏶘-s􏶙􏶰c􏶯􏶮String􏶭􏶬cas wildcard􏶫􏶪"ContentAddressableStorage:*"􏶩
+
+􏶨a default scan count􏶧
+􏶦can be used in scan operations on CAS􏶥
+􏶘-s􏶙􏶰c􏶯􏶮i􏶭􏶬default scan count􏶫􏶪10000􏶩
+
+􏶨the worker key name in redis􏶧
+􏶦used to get all worker key names􏶥
+􏶘-s􏶙􏶰c􏶯􏶮String􏶭􏶬workers key name􏶫􏶪"Workers"􏶩
+
+􏶨the key name for a worker set􏶧
+􏶦this set is temporary for performing same slot intersections􏶥
+􏶘-s􏶙􏶰c􏶯􏶮String􏶭􏶬temp worker set􏶫􏶪"intersecting-workers"􏶩
+
+􏶨cursor sentimental used by jedis􏶧
+􏶦used to begin and end scan paging􏶥
+􏶘-s􏶙􏶰c􏶯􏶮String􏶭􏶬cursor sentinal􏶫􏶪"0"􏶩
+
+
+􏷐re-index the workers associated with CAS data􏷏
+􏶠removes references to worker nodes that are no longer running􏶡
+􏷘+s􏷗􏴅Observer􏴆􏷒reindex workers􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established jedis client to operate on a redis cluster􏶿
+􏶴
+    //setup
+    storeActiveWorkersInAllSlots(cluster);
+    
+    //worker index deletion
+    performIndexing(cluster);
+    
+    //cleanup
+    deleteActiveWorkersFromAllSlots(cluster);
+􏶳
+
+􏷐perform the indexing operation to remove workers􏷏
+􏶠assumes the needed worker information is available in each slot􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒perform indexing􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established jedis client to operate on a redis cluster􏶿
+􏶴
+
+    //construct CAS query
+    ScanParams params = new ScanParams();
+    params.match(CAS_WILDCARD);
+    params.count(DEFAULT_SCAN_COUNT);
+
+    //run query and perform intersections
+    String nextCursor = CURSOR_SENTINAL;
+    do {
+        
+        //update workers on scanned keys
+        ScanResult scanResult = cluster.scan(nextCursor, params);
+        List<String> keys = scanResult.getResult();
+        deleteWorkersThroughIntersection(cluster,keys);
+        
+        nextCursor = scanResult.getCursor();
+    } while(!nextCursor.equals(CURSOR_SENTINAL));
+􏶳
+
+􏷐reindex the workers through intersection􏷏
+􏶠uses all the CAS keys to update their references to workers􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒delete workers through intersection􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established jedis client to operate on a redis cluster􏶿
+􏶜􏶝􏷆List<String>􏷅􏷄cas keys􏷃􏷀CAS keys to reindex􏶿
+􏶴
+    for (String casKey: casKeys){
+        int casSlotNumber = JedisClusterCRC16.getSlot(casKey);
+        String workerKey = slotSpecificActiveWorkerSet(casSlotNumber);
+        cluster.sinterstore(casKey,workerKey,casKey);
+    }
+􏶳
+
+􏷐store the active workers in a set designated at each slot􏷏
+􏶠this is done to ensure workers are available for intersection operations at any slot􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒store active workers in all slots􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established jedis client to operate on a redis cluster􏶿
+􏶴
+    Set<String> workers = cluster.hkeys(WORKERS_KEY_NAME);
+    for (int i = 0; i < HASHSLOTS; ++i){
+        String key = slotSpecificActiveWorkerSet(i);
+        cluster.del(key);
+        cluster.sadd(key,workers.stream().toArray(String[]::new));
+    }
+􏶳
+
+􏷐delete the active workers set from each slot􏷏
+􏶠this is done assuming they are no longer needed􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒delete active workers from all slots􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established jedis client to operate on a redis cluster􏶿
+􏶴
+    for (int i = 0; i < HASHSLOTS; ++i){
+        String key = slotSpecificActiveWorkerSet(i);
+        cluster.del(key);
+    }
+􏶳
+
+􏷐get a set name specific to the slot number given􏷏
+􏶠we need sets to exist at specific slots in order to perform redis intersections (same slot operations)􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒slot specific active worker set􏷑
+􏶜􏶝􏷆l􏷅􏷄slot number􏷃􏷀the slot number to derive the key name for􏶿
+􏶾String􏶽􏶼key􏶻􏶺the derived key with hashtag􏶹
+􏶴
+    String hashtag = RedisSlotToHash.correlate(slotNumber);
+    return "{" + hashtag + "}:" + TEMP_WORKER_SET;
+􏶳

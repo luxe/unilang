@@ -1,0 +1,735 @@
+􏶞p􏶟
+􏷲A basic generic 􏶐 type for adding and accessing a dynamic number of elements.􏷱
+􏷰The implementation of this 􏶐 is modeled off of the interface of STL 􏶐.  
+http://en.cppreference.com/w/cpp/container/􏶐
+
+It's obviously slower in C than it would be in C++, because we don't have templates to stamp out the type.
+It relies on the casting of void pointers.  Void pointers are a sacrifice made for generic types at the expense of speed.
+Templates are the best of both worlds.
+
+Usage note:  
+Be sure to type cast the void* returned when accessing.
+This is the typical practice of void pointers.
+See the unit tests for further examples and use of functionality.
+
+Implementation note:
+Why not just use char* instead of void*?
+It is always presumed that a char* may refer to an alias of any object.
+The converse is not true. Casting a char* to a pointer of any type other than 
+a char* and dereferencing it, is usually in violation of the strict aliasing rule. 
+􏷯
+􏷮􏶐􏷭 􏷮Data Structure􏷭
+􏷬Trevor Hickey􏷫
+
+
+􏷤s􏷣􏷦stddef􏷥􏴓1􏴔􏴑size_t􏴒
+􏷤s􏷣􏷦stdioLib􏷥􏴓d􏴔􏴑BOOL􏴒
+􏷤􏷣􏷦iterator􏷥􏴓d􏴔􏴑IteratorT􏴒
+􏷤􏷣􏷦Any􏷥􏴓1􏴔􏴑AnyT􏴒
+􏷤􏷣􏷦type_information􏷥􏴓1􏴔􏴑TypeInformationT􏴒
+􏷤􏷣􏷦algorithm_delegates􏷥􏴓1􏴔􏴑actions􏴒
+􏷤􏷣􏷦json􏷥􏴓d􏴔􏴑JSON_Value􏴒􏴓d􏴔􏴑JSON_Object􏴒
+􏷤􏷣􏷦ascii_string􏷥􏴓d􏴔􏴑AsciiStringT􏴒
+􏷤􏷣􏷦json_array_helpers􏷥􏴓d􏴔􏴑serialize methods􏴒
+􏶔􏶕􏶒allocator􏶓􏴏d􏴐􏴍Allocate()􏴎􏴏d􏴐􏴍Deallocate()􏴎􏴏d􏴐􏴍Reallocate()􏴎
+􏶔s􏶕􏶒strLib􏶓􏴏d􏴐􏴍memcpy()􏴎
+􏶔􏶕􏶒iterator_algorithms􏶓􏴏d􏴐􏴍ForEach()􏴎
+
+􏴃memory management􏴄􏴁handles memory allocations and deallocations internally. Called to explicitly handle the lifetime of the object􏴂
+􏴃element access􏴄􏴁accessing elements in the container􏴂
+􏴃iterator􏴄􏴁retrieve iterators for use in algorithms􏴂
+􏴃capacity􏴄􏴁methods for retrieving capacity and size related information about the container􏴂
+􏴃modifier􏴄􏴁make changes to the container sequence􏴂
+􏴃operator􏴄􏴁overloaded operators on the vector􏴂
+􏴃range algorithm􏴄􏴁perform algorithms over the vector range􏴂
+􏴃serialization􏴄􏴁converting to and from a serializeable format􏴂
+
+Modifiers, Operators
+
+MEMORY MANAGEMENT:
+
+􏷘+􏷗􏷒􏶐􏷑
+􏴅memory management􏴆
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be set to an empty state with a size of 0􏶡
+􏶜􏶝􏷆TypeInformationT􏷅􏷄type info􏷃􏷀type information to specialize 􏶐􏶿
+􏶜􏶝􏷆size􏷅􏷄initial capacity􏷃􏷀pre allocate a certain number of elements upon initialization.􏶿
+􏶴
+    􏶲start as an empty 􏶐􏶱
+    􏵴size􏵵 = 0;
+
+    􏶲store the type information for the elements􏶱
+    􏵴type info􏵵 = 􏵶type info􏵷;
+
+    􏶲start with the chosen allocation amount􏶱
+    􏵴capacity􏵵 = 􏵶initial capacity􏵷;
+
+    􏶲initialize the internal dynamic array.􏶱
+    􏶲this array starts with an initial capacity, and will grow as more elements are added􏶱
+    􏵴elements􏵵 = Allocate(sizeof(AnyT),􏵴capacity􏵵);
+􏶳
+
+
+􏷘+􏷗􏷒~􏶐􏷑
+􏴅memory management􏴆
+􏷐Destruct the 􏶐􏷏
+􏶠This function must be called to free the internal allocated memory before 􏶐 goes out of scope.􏶡
+􏶴
+    􏶲clear all of the dynamic memory from the internal array􏶱
+    􏶲after this call, 􏶐 can safely fall out of scope.􏶱
+    
+    􏶲iterate over the 􏶐 deleting each element􏶱
+    􏵲free all the elements􏵳);
+    
+    􏶲then delete the actual AnyT* array􏶱
+    􏵲free the internal array􏵳);
+    
+    􏶲c++ would have delete[] as a short hand􏶱
+􏶳
+
+􏷘+􏷗􏷒^􏶐􏷑
+􏴅memory management􏴆
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆􏶐T􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    􏶲forward to deduce void params􏶱
+    􏵲copy􏵳􏵶self􏵷);
+􏶳
+
+􏷘-􏷗􏷒copy􏷑
+􏴅memory management􏴆
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆􏶐T􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    
+    􏶲first initialize the 􏶐􏶱
+    Initialize􏶐(pt􏶐,􏵶self􏵷->m_tLocals.m_tTypeInfo,􏵶self􏵷->m_uCapacity);
+    
+    􏶲then copy over each of the elements, performing the deep copy􏶱
+    􏵲copy all the elements􏵳􏵶self􏵷);
+􏶳
+
+􏷘-􏷗􏷒free the internal array􏷑
+􏴅memory management􏴆
+􏷐Destructs the internal dynamic array used by the vector􏷏
+􏶠This function must be called to free the internal allocated memory before 􏶐 goes out of scope.􏶡
+􏶴
+    Deallocate(􏵴elements􏵵);
+􏶳
+
+􏷘-􏷗􏷒free all the elements􏷑
+􏴅memory management􏴆
+􏷐deallocates all of the current elements in the 􏶐􏷏
+􏶠The 􏶐 will then contain pointers to invalid memory􏶡
+􏶴
+    􏶲loop over and delete each Any type􏶱
+    size_t uIndex=0;
+    for (;uIndex < 􏵴size􏵵; ++uIndex){
+        DestructAnyT(&􏵴elements􏵵[uIndex]);
+    }
+􏶳
+
+􏷘-􏷗􏷒copy all the elements􏷑
+􏴅memory management􏴆
+􏷐deep copies all of the elements over􏷏
+􏶠The 􏶐 will then contain valid elements􏶡
+􏶜r􏶝􏷆􏶐T􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    􏶲copy over each of the elements, performing the deep copy􏶱
+    size_t uIndex = 0u;
+    for(; uIndex < 􏵶self􏵷->m_uSize; ++uIndex){
+        􏶐PushBack(pt􏶐,􏶐At(􏵶self􏵷,uIndex));
+    }
+􏶳
+
+operator=
+assign
+get_allocator
+
+􏵺whether or not the internal implementation should provide bounds checking􏵻􏵸safety vs cost decision􏵹􏵐-􏵑􏵾provide bounds checking on user api at􏵿􏵼TRUE􏵽
+􏵺what address to return on at assuming at is safe􏵻􏵸customization􏵹􏵐-􏵑􏵾retrieval address on irretrievable at􏵿􏵼NULL􏵽
+
+􏷘+c􏷗􏷒at􏷑
+􏴅element access􏴆
+􏷐Get an element at a particular index (only if that index is valid)􏷏
+􏶠If an invalid index is given, NULL is returned􏶡
+􏶜􏶝􏷆size􏷅􏷄index􏷃􏷀the index of the item to get􏶿
+􏶚m􏶛􏶾void*􏶽􏶼selected element􏶻􏶺the selected element of the 􏶐 from the given index􏶹
+􏶴
+    􏶲If the internal implementation settings change,􏶱
+    􏶲be sure to update the docs on user API assumptions.􏶱
+    #if PROVIDE_BOUNDS_CHECKING_ON_USER_API_AT
+    return 􏵲safe at􏵳􏵶index􏵷);
+    #elif !PROVIDE_BOUNDS_CHECKING_ON_USER_API_AT
+    return 􏵲unsafe at􏵳􏵶index􏵷);
+    #else
+    􏶲print a warning on the off chance that we fail to choose an implementation􏶱
+    #warning At method missing functionality
+    #endif
+􏶳
+􏷘-cu􏷗􏷒safe at􏷑
+􏴅element access􏴆
+􏷐Get an element at a particular index (only if that index is valid)􏷏
+􏶠If an invalid index is given, NULL is returned􏶡
+􏶜􏶝􏷆size􏷅􏷄index􏷃􏷀the index of the item to get􏶿
+􏶚m􏶛􏶾void*􏶽􏶼selected element􏶻􏶺the selected element of the 􏶐 from the given index􏶹
+􏶴
+    􏶲if the index is valid, return it.􏶱
+    if (􏵲valid index􏵳􏵶index􏵷)){
+        return 􏵲unsafe at􏵳􏵶index􏵷);
+    }
+
+    􏶲if the index is NOT valid, return NULL.􏶱
+    return RETRIEVAL_ADDRESS_ON_IRRETRIEVABLE_AT;
+􏶳
+
+􏷘-cu􏷗􏷒unsafe at􏷑
+􏴅element access􏴆
+􏷐Get an element at a particular index (the index given MUST be valid)􏷏
+􏶠If an invalid index is given, the behavior is undefined􏶡
+􏶜􏶝􏷆size􏷅􏷄index􏷃􏷀the index of the item to get􏶿
+􏶚m􏶛􏶾void*􏶽􏶼selected element􏶻􏶺the selected element of the 􏶐 from the given index􏶹
+􏶴
+    􏶲index into internally memory block without bounds check􏶱
+    return AnyGet(&􏵴elements􏵵[􏵶index􏵷]);
+􏶳
+
+􏵺whether or not the internal implementation should provide bounds checking􏵻􏵸safety vs cost decision􏵹􏵐-􏵑􏵾provide bounds checking on user api front􏵿􏵼TRUE􏵽
+􏵺what address to return on at assuming at is safe􏵻􏵸customization􏵹􏵐-􏵑􏵾retrieval address on irretrievable front􏵿􏵼NULL􏵽
+
+􏷘+c􏷗􏷒front􏷑
+􏴅element access􏴆
+􏷐Returns reference to the first element in the 􏶐.􏷏
+􏶠NULL is returned for empty 􏶐s􏶡
+􏶚m􏶛􏶾void*􏶽􏶼selected element􏶻􏶺the first element of the 􏶐􏶹
+􏶴
+    􏶲If the internal implementation settings change,􏶱
+    􏶲be sure to update the docs on user API assumptions.􏶱
+    #if PROVIDE_BOUNDS_CHECKING_ON_USER_API_FRONT
+    return 􏵲safe front􏵳);
+    #elif !PROVIDE_BOUNDS_CHECKING_ON_USER_API_FRONT
+    return 􏵲unsafe front􏵳);
+    #else
+    􏶲print a warning on the off chance that we fail to choose an implementation􏶱
+    #warning Front method missing functionality
+    #endif
+􏶳
+
+􏷘-cu􏷗􏷒safe front􏷑
+􏴅element access􏴆
+􏷐Returns reference to the first element in the 􏶐 (only if the index is valid).􏷏
+􏶠NULL is returned for empty 􏶐s􏶡
+􏶚m􏶛􏶾void*􏶽􏶼selected element􏶻􏶺the first element of the 􏶐􏶹
+􏶴
+    􏶲return null if the 􏶐 is empty􏶱
+    if (􏵲is empty􏵳)){ return RETRIEVAL_ADDRESS_ON_IRRETRIEVABLE_FRONT; }
+    
+    􏶲else return the first element􏶱
+    return 􏵲unsafe front􏵳);
+􏶳
+
+􏷘-cu􏷗􏷒unsafe front􏷑
+􏴅element access􏴆
+􏷐Returns reference to the first element in the 􏶐 (the index given MUST be valid).􏷏
+􏶠If an invalid index is given, the behavior is undefined􏶡
+􏶚m􏶛􏶾void*􏶽􏶼selected element􏶻􏶺the first element of the 􏶐􏶹
+􏶴
+    􏶲return the first element without bounds checking􏶱
+    return 􏵲unsafe at􏵳0);
+􏶳
+
+
+
+
+􏵺whether or not the internal implementation should provide bounds checking􏵻􏵸safety vs cost decision􏵹􏵐-􏵑􏵾provide bounds checking on user api back􏵿􏵼TRUE􏵽
+􏵺what address to return on at assuming at is safe􏵻􏵸customization􏵹􏵐-􏵑􏵾retrieval address on irretrievable back􏵿􏵼NULL􏵽
+
+􏷘+c􏷗􏷒back􏷑
+􏴅element access􏴆
+􏷐Returns reference to the last element in the 􏶐.􏷏
+􏶠NULL is returned for empty 􏶐s􏶡
+􏶚m􏶛􏶾void*􏶽􏶼selected element􏶻􏶺the last element of the 􏶐􏶹
+􏶴
+    􏶲If the internal implementation settings change,􏶱
+    􏶲be sure to update the docs on user API assumptions.􏶱
+    #if PROVIDE_BOUNDS_CHECKING_ON_USER_API_BACK
+    return 􏵲safe back􏵳);
+    #elif !PROVIDE_BOUNDS_CHECKING_ON_USER_API_BACK
+    return 􏵲unsafe back􏵳);
+    #else
+    􏶲print a warning on the off chance that we fail to choose an implementation􏶱
+    #warning Back method missing functionality
+    #endif
+􏶳
+
+􏷘-cu􏷗􏷒safe back􏷑
+􏴅element access􏴆
+􏷐Returns reference to the last element in the 􏶐 (only if the index is valid).􏷏
+􏶠NULL is returned for empty 􏶐s􏶡
+􏶚m􏶛􏶾void*􏶽􏶼selected element􏶻􏶺the last element of the 􏶐􏶹
+􏶴
+    􏶲return null if the 􏶐 is empty􏶱
+    if (􏵲is empty􏵳)){ return RETRIEVAL_ADDRESS_ON_IRRETRIEVABLE_BACK; }
+    
+    􏶲else return the last element􏶱
+    return 􏵲unsafe back􏵳);
+􏶳
+
+􏷘-cu􏷗􏷒unsafe back􏷑
+􏴅element access􏴆
+􏷐Returns reference to the last element in the 􏶐 (the index given MUST be valid).􏷏
+􏶠If an invalid index is given, the behavior is undefined􏶡
+􏶚m􏶛􏶾void*􏶽􏶼selected element􏶻􏶺the last element of the 􏶐􏶹
+􏶴
+    􏶲return the last element without bounds checking􏶱
+    return 􏵲unsafe at􏵳􏵴size􏵵-1);
+􏶳
+
+data
+
+Iterators:
+􏷘+c􏷗􏷒begin􏷑
+􏴅iterator􏴆
+􏷐Returns an iterator to the first element of the container.􏷏
+􏶠If the container is empty, the returned iterator will be equal to the end iterator􏶡
+􏶚m􏶛􏶾IteratorT􏶽􏶼begin iterator􏶻􏶺the begin iterator􏶹
+􏶴
+    􏶲create iterator for contiguous memory block􏶱
+    return ConstructIterator(&􏵴elements􏵵[0],sizeof(AnyT));
+􏶳
+
+􏷘+c􏷗􏷒end􏷑
+􏴅iterator􏴆
+􏷐Returns an iterator to the element following the last element of the container.􏷏
+􏶠This element acts as a placeholder; attempting to access it results in undefined behavior.􏶡
+􏶚m􏶛􏶾IteratorT􏶽􏶼end iterator􏶻􏶺the end iterator􏶹
+􏶴
+    􏶲create iterator for contiguous memory block􏶱
+    return ConstructIterator(&􏵴elements􏵵[􏵴size􏵵],sizeof(AnyT));
+􏶳
+
+cbegin
+cend
+rbegin / crbegin
+rend / crend
+
+􏷘+c􏷗􏷒is empty􏷑
+􏴅capacity􏴆
+􏷐checks whether the 􏶐 is empty or not􏷏
+􏶠􏵱 if the 􏶐 is empty(size == 0), 􏵰 if it is not(size > 0)􏶡
+􏶚m􏶛􏶾bool􏶽􏶼is empty􏶻􏶺whether or not the 􏶐 is empty􏶹
+􏶴
+    􏶲returns 􏵱 if 􏶐 is empty􏶱
+    if(􏵴size􏵵 == 0){
+        return 􏵱;
+    }
+    
+    􏶲returns 􏵰 if 􏶐 is NOT empty􏶱
+    return 􏵰;
+􏶳
+
+􏷘+c􏷗􏷒size􏷑
+􏴅capacity􏴆
+􏷐the current number of elements in the 􏶐􏷏
+􏶠an empty 􏶐 would return 0􏶡
+􏶚m􏶛􏶾size􏶽􏶼size􏶻􏶺the size of the 􏶐 (i.e. the number of elements)􏶹
+􏶴
+    􏶲return the size known internally􏶱
+    return 􏵴size􏵵;
+􏶳
+
+􏷘+c􏷗􏷒same size􏷑
+􏴅capacity􏴆
+􏷐checks to see if the two vectors have the same number of elements􏷏
+􏶠compares the sizes of the two vectors􏶡
+􏶜r􏶝􏷆􏶐T􏷅􏷄self􏷃􏷀the other vector to compare sizes with􏶿
+􏶚m􏶛􏶾bool􏶽􏶼same size􏶻􏶺whether the two vectors are the same size (i.e. have the same number of elements)􏶹
+􏶴
+    􏶲compare the sizes of the two vectors􏶱
+    return 􏵴size􏵵 == 􏵶self􏵷->m_uSize;
+􏶳
+􏷘+c􏷗􏷒not same size􏷑
+􏴅capacity􏴆
+􏷐checks to see if the two vectors have the same number of elements􏷏
+􏶠compares the sizes of the two vectors􏶡
+􏶜r􏶝􏷆􏶐T􏷅􏷄self􏷃􏷀the other vector to compare sizes with􏶿
+􏶚m􏶛􏶾bool􏶽􏶼same size􏶻􏶺whether the two vectors are not the same size (i.e. have the same number of elements)􏶹
+􏶴
+    􏶲compare the sizes of the two vectors􏶱
+    return 􏵴size􏵵 != 􏵶self􏵷->m_uSize;
+􏶳
+
+􏷘+c􏷗􏷒has less elements􏷑
+􏴅capacity􏴆
+􏷐checks to see if the vector has less elements than the one passed in􏷏
+􏶠compares the sizes of the two vectors􏶡
+􏶜r􏶝􏷆􏶐T􏷅􏷄self􏷃􏷀the other vector to compare sizes with􏶿
+􏶚m􏶛􏶾bool􏶽􏶼same size􏶻􏶺whether the lhs has less elements than the rhs􏶹
+􏶴
+    􏶲compare the sizes of the two vectors􏶱
+    return 􏵴size􏵵 < 􏵶self􏵷->m_uSize;
+􏶳
+
+􏷘+c􏷗􏷒has more elements􏷑
+􏴅capacity􏴆
+􏷐checks to see if the vector has more elements than the one passed in􏷏
+􏶠compares the sizes of the two vectors􏶡
+􏶜r􏶝􏷆􏶐T􏷅􏷄self􏷃􏷀the other vector to compare sizes with􏶿
+􏶚m􏶛􏶾bool􏶽􏶼same size􏶻􏶺whether the lhs has more elements than the rhs􏶹
+􏶴
+    􏶲compare the sizes of the two vectors􏶱
+    return 􏵴size􏵵 > 􏵶self􏵷->m_uSize;
+􏶳
+
+􏷘+c􏷗􏷒has less or equal elements􏷑
+􏴅capacity􏴆
+􏷐checks to see if the vector has less or equal elements than the one passed in􏷏
+􏶠compares the sizes of the two vectors􏶡
+􏶜r􏶝􏷆􏶐T􏷅􏷄self􏷃􏷀the other vector to compare sizes with􏶿
+􏶚m􏶛􏶾bool􏶽􏶼same size􏶻􏶺whether the lhs has less or equal elements than the rhs􏶹
+􏶴
+    􏶲compare the sizes of the two vectors􏶱
+    return 􏵴size􏵵 <= 􏵶self􏵷->m_uSize;
+􏶳
+
+􏷘+c􏷗􏷒has more or equal elements􏷑
+􏴅capacity􏴆
+􏷐checks to see if the vector has more or equal elements than the one passed in􏷏
+􏶠compares the sizes of the two vectors􏶡
+􏶜r􏶝􏷆􏶐T􏷅􏷄self􏷃􏷀the other vector to compare sizes with􏶿
+􏶚m􏶛􏶾bool􏶽􏶼same size􏶻􏶺whether the lhs has more or equal elements than the rhs􏶹
+􏶴
+    􏶲compare the sizes of the two vectors􏶱
+    return 􏵴size􏵵 >= 􏵶self􏵷->m_uSize;
+􏶳
+
+
+max size
+reserve
+􏷘+c􏷗􏷒capacity􏷑
+􏴅capacity􏴆
+􏷐the current capacity of the 􏶐􏷏
+􏶠returns the number of elements that the container has currently allocated space for (NOT how many elements the 􏶐 actually has)􏶡
+􏶚m􏶛􏶾size􏶽􏶼capacity􏶻􏶺the number of elements the container has currently allocated space for􏶹
+􏶴
+    􏶲return the capacity known internally􏶱
+    return 􏵴capacity􏵵;
+􏶳
+
+􏷘+􏷗􏷒shrink to fit􏷑
+􏴅capacity􏴆
+􏷐Requests the removal of unused capacity􏷏
+􏶠It is a non-binding request to reduce capacity() to size(). It depends on the implementation if the request is fulfilled.
+If reallocation occurs, all iterators, including the past the end iterator, and all references to the elements are invalidated.
+If no reallocation takes place, no iterators or references are invalidated.􏶡
+􏶴
+    􏶲just do a reallocation and match the size􏶱
+    if(!􏵲resize􏵳􏵴size􏵵)){
+        printf("realloc failed\n");
+    }
+􏶳
+
+Modifiers:
+􏷘+􏷗􏷒clear􏷑
+􏴅modifier􏴆
+􏷐clears the 􏶐􏷏
+􏶠Safely empties all the elements in the 􏶐􏶡
+􏶴
+    􏶲iterate over the 􏶐 deleting each element􏶱
+    􏵲free all the elements􏵳);
+    
+    􏶲reset the 􏶐 size􏶱
+    􏵴size􏵵 = 0;
+    
+    􏶲we leave the the capacity alone for efficiency􏶱
+    􏶲granted, we've already sacrificed speed to obtain generic elements􏶱
+    􏶲an allocated array of allocated void pointers is much slower in C􏶱
+    􏶲than a normal templated 􏶐 would be in C++􏶱
+    􏶲I chose to use void pointers, because the only other route􏶱
+    􏶲would have been heavy macros to stamp out the typed 􏶐􏶱
+    􏶲The void pointers are abstracted as Any types to fit modern practices􏶱
+􏶳
+
+insert
+emplace
+erase
+
+􏷘+􏷗􏷒push back􏷑
+􏴅modifier􏴆
+􏷐Adds an element to the end of the 􏶐􏷏
+􏶠Potentially increases the capacity if more room is needed.  Increases the size.
+The added item will be the last item.􏶡
+􏶜r􏶝􏷆void􏷅􏷄new element􏷃􏷀an element to add to the end of the 􏶐􏶿
+􏶴
+    
+    􏶲adjust the allocation space if needed,􏶱
+    􏶲and if there is enough room, add the new element􏶱
+    if (􏵲ensure there is enough space􏵳)){
+        
+        􏶲adds the new element􏶱
+        􏵲add new element to the end􏵳􏵶new element􏵷);
+        
+        􏶲increase our size now that the insertion is complete.􏶱
+        ++􏵴size􏵵;
+    }
+􏶳
+
+􏷘+􏷗􏷒push back vector􏷑
+􏴅modifier􏴆
+􏷐push back an entire vector into the vector􏷏
+􏶠a container-wise concatenation
+a vec += vec for containers (not elements)􏶡
+􏶜mr􏶝􏷆􏶐T􏷅􏷄vec􏷃􏷀the vector to push back into the other vector􏶿
+􏶴
+    􏶲loop over each element and push it back into this container􏶱
+    size_t uIndex=0;
+    for (;uIndex < VectorSize(􏵶vec􏵷); ++uIndex){
+        􏵲push back􏵳VectorAt(􏵶vec􏵷,uIndex));
+    }
+􏶳
+
+􏷘-􏷗􏷒add new element to the end􏷑
+􏴅modifier􏴆
+􏷐adds a new element to the end of the vector􏷏
+􏶠We assume the vector has enough room, and we only added the element.
+We don't adjust any other information.  We only add the element􏶡
+􏶜r􏶝􏷆void􏷅􏷄new element􏷃􏷀an element to add to the end of the 􏶐􏶿
+􏶴
+    AnyT tAny;
+    InitializeAny(&tAny,􏵶new element􏵷,􏵴type info􏵵);
+    memcpy(&􏵴elements􏵵[􏵴size􏵵],&tAny,sizeof(tAny));
+􏶳
+
+emplace back
+􏷘+􏷗􏷒pop back􏷑
+􏴅modifier􏴆
+􏷐removes the last element􏷏
+􏶠Calling on an empty container is undefined.􏶡
+􏶴
+    if (!􏵲is empty􏵳)){
+        􏵲erase􏵳􏵲size􏵳)-1);
+    }
+􏶳
+
+resize (a public, possibly safe version)
+swap
+
+􏷘+􏷗􏷒erase􏷑
+􏴅modifier􏴆
+􏷐removes an element at a particular index􏷏
+􏶠If an invalid index is given, NULL is returned􏶡
+􏶜􏶝􏷆size􏷅􏷄index􏷃􏷀the index of the item to remove􏶿
+􏶴
+    􏶲only attempt to remove the item if it is at a valid index􏶱
+    if (􏵲valid index􏵳􏵶index􏵷)){
+    
+        􏶲free the element at the specified index􏶱
+        DestructAnyT(&􏵴elements􏵵[􏵶index􏵷]);
+        
+        􏶲starting at the deleted index, iterate over each element and point them to their greater indexed neighbor.􏶱
+        􏶲this will continue until we reach the last element which we will ignore (no need to set it to NULL)􏶱
+        􏶲this effectively shifts all the elements down an index from the deletion point.􏶱
+        􏶲afterward, we decrement the size, making the last element unaccessible.􏶱
+        􏵲shift elements from deleted index􏵳􏵶index􏵷);
+
+        􏶲decrement the size􏶱
+        --􏵴size􏵵;
+        
+    }
+􏶳
+
+􏷘-􏷗􏷒ensure there is enough space􏷑
+􏴅modifier􏴆
+􏷐ensure there is enough space, by possibly resizing the internal array.􏷏
+􏶠if resizing the array is needed, but it cannot be preformed, 􏵰 is returned.􏶡
+􏶚m􏶛􏶾bool􏶽􏶼available space􏶻􏶺whether there is enough space to add an item􏶹
+􏶴
+    􏶲whether there is enough space to add an item􏶱
+    BOOL bAvailableSpace = 􏵱;
+    
+    􏶲increase the size of the internal array if we are already full􏶱
+    if (􏵴size􏵵 == 􏵴capacity􏵵){
+        
+        􏶲double capacity when allocating more space􏶱
+        bAvailableSpace = 􏵲resize􏵳􏵲determine resize amount􏵳));
+    }
+    
+    return bAvailableSpace;
+􏶳
+
+􏷘-c􏷗􏷒determine resize amount􏷑
+􏴅modifier􏴆
+􏷐determines the rate at which to resize the 􏶐􏷏
+􏶠handles any changes where capacities are 0 and up􏶡
+􏶚m􏶛􏶾size􏶽􏶼new capacity􏶻􏶺the new capacity amount for resizing􏶹
+􏶴
+    􏶲this is employed when the vector is full, but we want to add another element􏶱
+    􏶲substitute in a current method of handling a resize􏶱
+    􏶲if size is tight, one may consider an increment approach􏶱
+    return 􏵲double capacity amount for resize􏵳);
+􏶳
+
+􏷘-c􏷗􏷒double capacity amount for resize􏷑
+􏴅modifier􏴆
+􏷐a specific implementation for handling resizes􏷏
+􏶠handles any changes where capacities are 0 and up
+A capacity of 0 is brought to 1 (since doubling 0 would not work)􏶡
+􏶚m􏶛􏶾size􏶽􏶼new capacity􏶻􏶺the new capacity amount for resizing􏶹
+􏶴
+    􏶲handle edge case of 0 capacity􏶱
+    if (􏵴capacity􏵵 == 0){
+        return 1;
+    }
+    
+    􏶲double capacity when allocating more space􏶱
+    return 􏵴capacity􏵵 * 2;
+􏶳
+
+􏷘-c􏷗􏷒valid index􏷑
+􏴅modifier􏴆
+􏷐Check if an integer is a valid index􏷏
+􏶠􏵱 is returned if the index is an addressable element in the 􏶐.
+􏵰 is returned if it is an out of range index􏶡
+􏶜􏶝􏷆size􏷅􏷄index􏷃􏷀the index to test for validity of􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is valid index􏶻􏶺whether the index is valid for the current state of the 􏶐􏶹
+􏶴
+    􏶲Ensure the index is in range􏶱
+    􏶲We need not worry about negative numbers􏶱
+    􏶲the properties of our index type will constrain to positive values􏶱
+    return 􏵶index􏵷 < 􏵴size􏵵;
+􏶳
+
+􏷘-􏷗􏷒resize􏷑
+􏴅modifier􏴆
+􏷐Resize the internal array.􏷏
+􏶠This is done when new space is needed for a newly inserted element.􏶡
+􏶜􏶝􏷆size􏷅􏷄new capacity􏷃􏷀the new capacity to resize the internal array to.􏶿
+􏶚m􏶛􏶾bool􏶽􏶼successful reallocation􏶻􏶺whether memory was successfully reallocated􏶹
+􏶴
+
+    􏶲whether memory was successfully reallocated􏶱
+    BOOL bSuccessfulRealloc = 􏵱;
+    
+    Reallocate(&􏵴elements􏵵, sizeof(AnyT), 􏵶new capacity􏵷);
+    􏵴capacity􏵵 = 􏵶new capacity􏵷;
+    
+    􏶲for now, we will assume that a reallocation always succeeds􏶱
+    return 􏵱;
+􏶳
+
+􏷘-􏷗􏷒shift elements from deleted index􏷑
+􏴅modifier􏴆
+􏷐shifts all elements down from an index that is assumed to be deleted.􏷏
+􏶠this is done through pointer swapping of neighboring elements􏶡
+􏶜􏶝􏷆size􏷅􏷄deleted index􏷃􏷀the index that represents the deleted element.  Everything to the right, needs shifted one element to the left.􏶿
+􏶴
+    􏶲shift each element one by one starting at the deletion point􏶱
+    􏶲forget about the last element􏶱
+    size_t uIndex=􏵶deleted index􏵷;
+    for (;uIndex < 􏵴size􏵵-1; ++uIndex){
+        􏵴elements􏵵[uIndex] = 􏵴elements􏵵[uIndex+1];
+    }
+􏶳
+
+􏳇plural􏳈􏳅bools􏳆􏳅shorts􏳆􏳅ints􏳆􏳅longs􏳆􏳅size ts􏳆􏳅floats􏳆􏳅doubles􏳆􏳅long doubles􏳆􏳅strings􏳆
+􏷘+􏷗􏷒to json {{plural}}􏷑
+􏴅serialization􏴆
+􏷐get json string representation of vector of {{plural}}􏷏
+􏶠returns a string representation of the vector assuming the vector has int elements􏶡
+􏶚m􏶛􏶾AsciiStringT􏶽􏶼json representation􏶻􏶺The JSON string representation of the vector􏶹
+􏶴
+    􏶲create root value􏶱
+    JSON_Value *ptRootValue = json_value_init_object();
+    
+    􏶲use root value to create root json object􏶱
+    JSON_Object *ptRootObject = json_value_get_object(ptRootValue);
+    
+    􏶲declare string literal for storing json representation􏶱
+    char *szSerializedString = NULL;
+    
+    􏶲the string type to return to the user􏶱
+    AsciiStringT tResult = ConstructAsciiString("");
+    
+    􏶲call local function to serialize into the json object􏶱
+    􏵲serialize json {{plural}}􏵳"", ptRootObject);
+    
+    􏶲get the string representation in compact format􏶱
+    szSerializedString = json_serialize_to_string(ptRootValue);
+    
+    􏶲store serialized string in standard string􏶱
+    AsciiStringAppendCString(&tResult, szSerializedString);
+    
+    􏶲free locally allocated data􏶱
+    json_free_serialized_string(szSerializedString);
+    json_value_free(ptRootValue);
+    
+    􏶲return string back to user􏶱
+    return tResult;
+􏶳
+
+􏳇plural􏳈        􏳅bools􏳆􏳅shorts􏳆􏳅ints􏳆􏳅longs􏳆􏳅size ts􏳆􏳅floats􏳆􏳅doubles􏳆􏳅long doubles􏳆􏳅strings􏳆
+􏳇func part􏳈     􏳅Bool􏳆 􏳅Short􏳆 􏳅Int􏳆 􏳅Long􏳆 􏳅SizeT􏳆  􏳅Float􏳆 􏳅Double􏳆 􏳅LongDouble􏳆  􏳅String􏳆
+􏷘+􏷗􏷒serialize json {{plural}}􏷑
+􏴅serialization􏴆
+􏷐serializes elements as a number array􏷏
+􏶠concatenates a json array to the serialization structure􏶡
+􏶜􏶝􏷆ascii_string􏷅􏷄parent􏷃􏷀the name of the parent structure the function is being called from􏶿
+􏶜mr􏶝􏷆JSON_Object􏷅􏷄json object􏷃􏷀the json object to serialize into􏶿
+􏶴
+    􏶲emplace the array inside the json object and get a pointer back to it􏶱
+    JSON_Array *ptElements = 􏵲add and get empty json array􏵳􏵶parent􏵷,􏵶json object􏵷);
+    
+    􏶲append vector elements to json array􏶱
+    VectorForEach1(ptVector,(BinaryActionT)Serialize{{func part}}IntoJsonArray,ptElements);
+􏶳
+
+􏷘+􏷗􏷒serialize json custom􏷑
+􏴅serialization􏴆
+􏷐serializes elements as a number array􏷏
+􏶠concatenates a json array to the serialization structure􏶡
+􏶜􏶝􏷆ascii_string􏷅􏷄parent􏷃􏷀the name of the parent structure the function is being called from􏶿
+􏶜mr􏶝􏷆JSON_Object􏷅􏷄json object􏷃􏷀the json object to serialize into􏶿
+􏶜􏶝􏷆CustomObjectIntoJsonArrayT􏷅􏷄callback􏷃􏷀a callback to place a custom object into a json array􏶿
+􏶴
+    􏶲emplace the array inside the json object and get a pointer back to it􏶱
+    JSON_Array *ptElements = 􏵲add and get empty json array􏵳􏵶parent􏵷,􏵶json object􏵷);
+    
+    􏶲append vector elements to json array􏶱
+    VectorForEach2(ptVector,(TernaryActionT)SerializeObjectIntoJsonArray,ptElements,􏵶callback􏵷);
+􏶳
+
+􏷘-􏷗􏷒add and get empty json array􏷑
+􏴅serialization􏴆
+􏷐add a json array for the vector into the json object and return a non-owning pointer to it􏷏
+􏶠adds an array to the appropriate place in the json object and gives back an array to continue serializing with􏶡
+􏶜􏶝􏷆ascii_string􏷅􏷄parent􏷃􏷀the name of the parent structure the function is being called from􏶿
+􏶜mr􏶝􏷆JSON_Object􏷅􏷄json object􏷃􏷀the json object to serialize into􏶿
+􏶚m􏶛􏶾JSON_Array*􏶽􏶼json array just added􏶻􏶺The JSON array added into the json object to represent the vector􏶹
+􏶴
+    􏶲emplace the array􏶱
+    json_object_dotset_value(􏵶json object􏵷,􏵶parent􏵷, json_value_init_array());
+    
+    􏶲get the array back out􏶱
+    return json_object_dotget_array(􏵶json object􏵷,􏵶parent􏵷);
+􏶳
+
+
+􏶨the number of elements currently in the 􏶐􏶧
+􏶦This can be used for iteration of the elements.
+There is no hard limit on the size.  The internal array will grow to accommodate for new inserted elements.􏶥
+􏶘-g􏶙􏶮size􏶭􏶬size􏶫􏶪0􏶩
+
+􏶨the amount of space allocated for the internal array􏶧
+􏶦different implementations do different initial capacity, and have the capacity grow at different rates.
+We will increase the capacity by *2 every time we need to add a new element to a full array.􏶥
+􏶘-g􏶙􏶮size􏶭􏶬capacity􏶫􏶪1􏶩
+
+􏶨the internal array for all of our generic elements􏶧
+􏶦when accessing an element, you will need to type cast to the appropriate pointer type before dereferencing􏶥
+􏶘-􏶙􏶮AnyT*􏶭􏶬elements􏶫􏶪0􏶩
+
+􏶨the type information of each element in the homogeneous container.􏶧
+􏶦Type information is needed for memory allocations, as well as constructing/destructing managed types􏶥
+􏶘+􏶙􏶮TypeInformationT􏶭􏶬type info􏶫􏶪􏶩

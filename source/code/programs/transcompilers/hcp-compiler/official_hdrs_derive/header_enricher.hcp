@@ -1,0 +1,75 @@
+class
+❪iostream❫
+❪string❫
+❪cstdlib❫
+❪iostream❫
+❪string❫
+❪vector❫
+❪set❫
+❪"code/programs/transcompilers/hcp-compiler/official/structure/class_structure"❫
+❪"code/programs/transcompilers/hcp-compiler/official/settings/hcp_settings"❫
+⚯
+❪"code/utilities/types/strings/observers/path/lib"❫
+❪"code/utilities/types/wstrings/transformers/other/lib"❫
+❪"code/utilities/types/converters/lib"❫
+❪"code/utilities/types/strings/transformers/search_replace/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Enrich_Structure_With_Header_Data(Class_Structure & structure, Hcp_Settings const& settings)❰
+  
+  
+  for (auto const& it: settings.headers.interface_deps){
+    auto hdr = Bazel_Dep_To_Header(it);
+    structure.data.header_includes.emplace_back(Quoted_Wstring(hdr),true);
+  }
+  
+  for (auto const& it: settings.headers.interface_hdrs){
+    structure.data.header_includes.emplace_back(Quoted_Wstring(it),true);
+  }
+  
+  for (auto const& it: settings.headers.implementation_deps){
+    auto hdr = Bazel_Dep_To_Header(it);
+    structure.data.source_includes.emplace_back(Quoted_Wstring(hdr),true);
+  }
+  
+  for (auto const& it: settings.headers.implementation_hdrs){
+    structure.data.source_includes.emplace_back(Quoted_Wstring(it),true);
+  }
+❱
+
+◀private: static▶ std::wstring ☀Quoted_Wstring(std::string str)❰
+      str = "\"" + str + "\"";
+      return as_wstring(str);
+❱
+
+◀private: static▶ std::string ☀Bazel_Dep_To_Header(std::string dep)❰
+  
+  //remove the "//"
+  if (Begins_With(dep,"//")){
+    dep.erase(0,1);
+    dep.erase(0,1);
+  }
+  else{
+    dep += ".hpp";
+    return dep;
+  }
+  
+  //bazel has this automatic derive thing.
+  //if your dep is: //a/b/c:c
+  //you can just write //a/b/c
+  //and it assumes the conversion //a/b/c -> //a/b/c:c
+  //we'll support that possibility when deciding what the header should look like
+  if (Contains_Character(dep,':')){
+    //replace the ":" with a "/"
+    replace_colon_with_fwd_slash(dep);
+  }
+  else{
+    dep += "/" + Get_File_Name(dep);
+  }
+  
+  
+  
+  dep += ".hpp";
+  return dep;
+❱

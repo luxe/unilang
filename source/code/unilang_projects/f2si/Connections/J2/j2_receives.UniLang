@@ -1,0 +1,156 @@
+􏶞g􏶟
+􏷲J2 System Connection􏷱
+􏷰Receives J2 flight model messages􏷯
+􏷮J2_Connection􏷭
+􏷬Trevor Hickey􏷫
+
+􏶔􏶕􏶒Defs􏶓􏶖USES: BYTE, WORD, DWORD􏶗
+􏶔􏶕􏶒strLib􏶓􏶖USES: memcpy()􏶗
+􏶔􏶕􏶒string􏶓􏶖USES: memcmp()􏶗
+􏶔􏶕􏶒SocketManager􏶓􏶖USES: SocketReceive(), MAX_J2_MESSAGE_SIZE􏶗
+􏶔􏶕􏶒SocketList􏶓􏶖USES: SOCKET_GEN_J2_DATA_SEND, SOCKET_GEN_J2_DATA_RECEIVE􏶗
+􏶔􏶕􏶒TimeUtilities􏶓􏶖USES: DelayTaskNumberOfMilliseconds()􏶗
+􏶔􏶕􏶒OwnShip􏶓􏶖USES: WriteJ2Data()􏶗
+􏶔􏶕􏶒J2CommunicationConfig􏶓􏶖USES: J2_TASKDELAY_MS􏶗
+􏶔􏶕􏶒SendToJ2Messages􏶓􏶖USES: all messages that get sent to J2􏶗
+􏶔􏶕􏶒ReceiveFromJ2Messages􏶓􏶖USES: all messages that get received from J2􏶗
+􏶔􏶕􏶒J2MessageTypes􏶓􏶖USES SimhostToJ2MessageTypeE, J2ToSimhostMessageTypeE􏶗
+􏶔􏶕􏶒J2Packing􏶓􏶖USES: pack functions􏶗
+􏶔􏶕􏶒J2Unpacking􏶓􏶖USES: unpack functions􏶗
+􏶔􏶕􏶒stddef.h􏶓􏶖USES: size_t􏶗
+􏶔􏶕􏶒J2ConnectionData􏶓􏶖USES: UpdateJ2HighSpeedOutputData(), UpdateJ2LowSpeedOutputData(), UpdateJ2RepositionRequestData(), UpdateJ2VersionRequestData()􏶗
+􏶔􏶕􏶒J2SendConstraints􏶓􏶖USES: CheckConstraintsOnSendHighSpeedMessage(), CheckConstraintsOnSendLowSpeedMessage(), CheckConstraintsOnSendRepositionMessage(), CheckConstraintsOnSendVersionRequestMessage()􏶗
+􏶔􏶕􏶒SemaphoreManager􏶓􏶖USES: SemaphoreGive()􏶗
+􏶔􏶕􏶒SemaphoreList􏶓􏶖USES: SEMAPHORE_SCHEDULE_IN􏶗
+􏶔􏶕􏶒UdpConnectionUtilities􏶓􏶖USES: SendAndHandleUdpErrors(), ReportUdpRecieveStatus()􏶗
+
+􏷘+􏷗􏷒J2 data receive􏷑
+􏷐Used to sequence incoming J2 Data Messages.􏷏
+􏶠This is an infinitely running task.􏶡
+􏶚m􏶛􏶾int􏶽􏶼status􏶻􏶺The return status of the task.  Not relevant as the task does not return.􏶹
+􏶴
+    􏶲Creates J2 data that will be filled􏶱
+    J2InConnectionDataMessageT tJ2Data;
+    memset(&tJ2Data, 0, sizeof(tJ2Data));
+
+    while(1)
+    {
+
+        􏶲Read from Ownship in case we are only changing part of J2InConnectionDataT􏶱
+        ReadJ2DataMessageData(&tJ2Data);
+        
+        􏶲listens for incoming data messages, and processes them into J2Data􏶱
+        􏵲handle incoming data messages􏵳&tJ2Data);
+
+        􏶲Write data back into Ownship􏶱
+        WriteJ2DataMessageData(&tJ2Data);
+    }
+
+    return 0;
+􏶳
+
+􏷘+􏷗􏷒J2 control receive􏷑
+􏷐Used to sequence incoming J2 Control Messages.􏷏
+􏶠This is an infinitely running task.􏶡
+􏶚m􏶛􏶾int􏶽􏶼status􏶻􏶺The return status of the task.  Not relevant as the task does not return.􏶹
+􏶴
+    
+    􏶲Creates J2 data that will be filled􏶱
+    J2InConnectionControlMessageT tJ2Data;
+    memset(&tJ2Data, 0, sizeof(tJ2Data));
+
+    while(1)
+    {
+
+        􏶲Read from Ownship in case we are only changing part of J2InConnectionDataT􏶱
+        ReadJ2ControlMessageData(&tJ2Data);
+        
+        􏶲listens for incoming control messages, and processes them into J2Data􏶱
+        􏵲handle incoming control messages􏵳&tJ2Data);
+
+        􏶲Write data back into Ownship􏶱
+        WriteJ2ControlMessageData(&tJ2Data);
+    }
+
+    return 0;
+􏶳
+
+􏷘-􏷗􏷒handle incoming data messages􏷑
+􏷐receives the J2 data message􏷏
+􏶠gets the data message from the J2 flight model and writes into the J2 Data􏶡
+􏶜mr􏶝􏷆J2InConnectionDataMessageT􏷅􏷄J2Data􏷃􏷀the J2 data we expect to be filled by the J2 flight model􏶿
+􏶴
+
+    􏶲buffer data􏶱
+    BYTE pucDataBuffer[MAX_J2_MESSAGE_SIZE];
+    
+    􏶲Read UDP data􏶱
+    int nBytesReceived = SocketReceive(SOCKET_GEN_J2_DATA_RECEIVE, (char *)pucDataBuffer, sizeof(pucDataBuffer));
+    
+    􏶲Error handling on UDP data.  Watchdog related􏶱
+    ReportUdpReceiveStatus(nBytesReceived,"J2 Data Messages");
+    
+    􏶲unpack valid socket stream􏶱
+    if (nBytesReceived != ERROR){
+        g_bFMFirstTimeCompleted = TRUE;
+        􏵲unpack received data message􏵳pucDataBuffer, nBytesReceived,􏵶J2Data􏵷);
+    }
+􏶳
+
+􏷘-􏷗􏷒handle incoming control messages􏷑
+􏷐receives the J2 control message􏷏
+􏶠gets the control message from the J2 flight model and writes into the J2 Data􏶡
+􏶜mr􏶝􏷆J2InConnectionControlMessageT􏷅􏷄J2Data􏷃􏷀the J2 data we expect to be filled by the J2 flight model􏶿
+􏶴
+    􏶲buffer data􏶱
+    BYTE pucDataBuffer[MAX_J2_MESSAGE_SIZE];
+    
+    􏶲Read UDP data􏶱
+    int nBytesReceived = SocketReceive(SOCKET_GEN_J2_CONTROL_RECEIVE, (char *)pucDataBuffer, sizeof(pucDataBuffer));
+    
+    􏶲Error handling on UDP data.  Watchdog related􏶱
+    ReportUdpReceiveStatus(nBytesReceived,"J2 Control Messages");
+    
+    􏶲unpack valid socket stream􏶱
+    if (nBytesReceived != ERROR){
+        􏵲unpack received control message􏵳pucDataBuffer, nBytesReceived,􏵶J2Data􏵷);
+    }
+􏶳
+􏷘-􏷗􏷒unpack received control message􏷑
+􏷐processes the j2 data buffer received from the socket and unpacks it into the appropriate structure􏷏
+􏶠assumes the data received over the socket was valid and completed successfully􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄data buffer􏷃􏷀the buffer received from the socket􏶿
+􏶜􏶝􏷆int􏷅􏷄bytes received􏷃􏷀the amount of bytes received from the socket􏶿
+􏶜mr􏶝􏷆J2InConnectionControlMessageT􏷅􏷄J2Data􏷃􏷀the J2 data we expect to be filled by the J2 flight model􏶿
+􏶴
+    􏶲process message and parse data received into the input communication data􏶱
+    􏶲decide what data message was received, and receive it􏶱
+    switch(pucDataBuffer[0]){
+        case FLIGHT_MODEL_MESSAGE_TYPE_J2_REPOSITION_REPLY: UnpackJ2RepositionReceivedMessage(pucDataBuffer,nBytesReceived,&􏵶J2Data􏵷->m_tRepositionReply); break;
+        case FLIGHT_MODEL_MESSAGE_TYPE_J2_VERSION:          UnpackJ2VersionReceivedMessage   (pucDataBuffer,nBytesReceived,&􏵶J2Data􏵷->m_tVersion);         break;
+        default:;
+    }
+􏶳
+
+􏷘-􏷗􏷒unpack received data message􏷑
+􏷐processes the j2 data buffer received from the socket and unpacks it into the appropriate structure􏷏
+􏶠assumes the data received over the socket was valid and completed successfully􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄data buffer􏷃􏷀the buffer received from the socket􏶿
+􏶜􏶝􏷆int􏷅􏷄bytes received􏷃􏷀the amount of bytes received from the socket􏶿
+􏶜mr􏶝􏷆J2InConnectionDataMessageT􏷅􏷄J2Data􏷃􏷀the J2 data we expect to be filled by the J2 flight model􏶿
+􏶴
+    􏶲process message and parse data received into the input communication data􏶱
+    􏶲decide what data message was received, and receive it􏶱
+    switch(􏵶data buffer􏵷[0]){
+        case FLIGHT_MODEL_MESSAGE_TYPE_J2_HIGH_SPEED:
+            UnpackJ2HighSpeedReceivedMessage(􏵶data buffer􏵷,􏵶bytes received􏵷,&􏵶J2Data􏵷->m_tHighSpeed);
+            
+            􏶲Release the "flight model arrived" semaphore􏶱
+            SemaphoreGive(SEMAPHORE_SCHEDULE_IN); break;
+        case FLIGHT_MODEL_MESSAGE_TYPE_J2_LOW_SPEED: UnpackJ2LowSpeedReceivedMessage(􏵶data buffer􏵷,􏵶bytes received􏵷,&􏵶J2Data􏵷->m_tLowSpeed); break;
+        case FLIGHT_MODEL_MESSAGE_TYPE_J2_ENGINE:    UnpackJ2EngineReceivedMessage(􏵶data buffer􏵷,􏵶bytes received􏵷,&􏵶J2Data􏵷->m_tEngine);     break;
+        default:;
+    }
+􏶳
+
+

@@ -1,0 +1,54 @@
+class
+❪iostream❫
+❪string❫
+❪cstdlib❫
+❪iostream❫
+❪string❫
+❪vector❫
+❪set❫
+❪"code/programs/transcompilers/hcp-compiler/official_pos_hdrs_derive/program_options/program_options"❫
+❪"code/utilities/types/strings/observers/path/lib"❫
+❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
+❪"code/utilities/types/wstrings/transformers/other/lib"❫
+⚯
+❪"code/programs/transcompilers/hcp-compiler/official/structure/class_structure"❫
+❪"code/programs/transcompilers/hcp-compiler/official/hcp_parser"❫
+❪"code/programs/transcompilers/hcp-compiler/official/hcp_compiler"❫
+❪"code/utilities/types/converters/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/programs/transcompilers/hcp-compiler/official/file_name_checker"❫
+❪"code/programs/transcompilers/hcp-compiler/official_hdrs_derive/header_enricher"❫
+❪"code/programs/transcompilers/hcp-compiler/official/settings/hcp_settings"❫
+❪"code/programs/transcompilers/hcp-compiler/official_pos/position_enricher"❫
+⚞⚟
+
+◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& program_options)❰
+
+     //process each file at a time
+     for (auto const& hcp_file: program_options.Input_Files()){
+      
+        Hcp_Settings settings;
+        settings.input_file = hcp_file;
+        settings.output_directory = program_options.Output_Directory();
+        settings.output_basename = program_options.Output_Base_Name();
+        settings.utility_functions = program_options.Utility_Functions();
+        
+        settings.headers.interface_deps = program_options.Interface_Deps();
+        settings.headers.interface_hdrs = program_options.Interface_Hdrs();
+        settings.headers.implementation_deps = program_options.Implementation_Deps();
+        settings.headers.implementation_hdrs = program_options.Implementation_Hdrs();
+      
+        //exit if anything is initially wrong with the file name sent to the compiler
+        File_Name_Checker::Immediate_Checks_On_Filename(hcp_file);
+
+        //parse the hcp file and get back a class that represents it
+        auto structure = Hcp_Parser::Parse(settings,hcp_file);
+        Position_Enricher::Enrich_Structure_With_Position_Data(structure);
+        Header_Enricher::Enrich_Structure_With_Header_Data(structure,settings);
+
+        //Bazel_Deps_Printer::Possibly_Give_Bazel_Deps(structure,program_options);
+    
+        //compile that structure into the appropriate files (hcp -> hpp and cpp)
+        Hcp_Compiler::Compile(structure,settings);
+  }
+❱

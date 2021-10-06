@@ -1,0 +1,350 @@
+class
+❪iostream❫
+❪string❫
+❪utility❫
+❪cstdlib❫
+❪fstream❫
+❪iomanip❫
+❪sstream❫
+❪"code/utilities/types/tree/bst/annotated_bst_state.hpp"❫
+❪"code/utilities/types/tree/bst/tree_traversal.hpp"❫
+❪"code/utilities/types/tree/bst/tree_node_properties.hpp"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/strings/creators/lib"❫
+❪"code/utilities/program/call/lib"❫
+❪"code/utilities/types/char/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/filesystem/files/deleting/lib"❫
+⚯
+⚞⚟
+
+//visualizing
+
+◀public:
+static void clean_output_folder(Annotated_Bst_State & state){
+    
+    if (state.draw_photo){
+        Empty_Out_Folder_But_Keep_Folder(Output_Folder());
+    }
+}
+▶
+
+◀public:
+static void make_image(Annotated_Bst_State & state){
+    
+    if (state.draw_photo){
+        auto text = as_graphviz(state);
+        std::string file_name = Output_Folder() + to_zero_lead(state.current_photo,3);
+        std::ofstream outfile(file_name);
+        outfile << text;
+        outfile.close();
+        ++state.current_photo;
+        
+        std::string command;
+        command = "dot ";
+        command += file_name;
+        command += " -Tpng -O";
+        execute_quietly(command);
+        std::cout << "creating " << file_name << std::endl;
+    }
+}
+▶
+
+
+
+◀private:
+static std::string Output_Folder(){
+    return Full_Path_To_Desktop() + "bst_run/";
+}
+▶
+
+◀private:
+static std::string to_zero_lead(const int value, const unsigned precision)
+{
+     std::ostringstream oss;
+     oss << std::setw(precision) << std::setfill('0') << value;
+     return oss.str();
+}
+▶
+
+◀private:
+static std::string as_graphviz(Annotated_Bst_State const& state){
+    std::string str;
+    Append_With_Newline(str,"digraph BST {");
+    Append_With_Newline(str,"splines=false;");
+    Append_With_Newline(str,"node [fontname=\"Arial\", shape = plaintext, height=.1];");
+    //Append_With_Newline(str,"node [fontname=\"Arial\", shape = record, height=.1];");
+    //Append_With_Newline(str,"node [fontname=\"Arial\", height=.1];");
+    //Append_With_Newline(str,"rankdir=LR");
+    
+    //create pointer nodes
+    Append(str, "a");
+    Append(str, "[label = ");
+    Append(str,empty_table("a"));
+    //Append(str, " style=filled fillcolor=red");
+    Append_With_Newline(str, "];");
+
+    Append(str, "b");
+    Append(str, "[label = ");
+    Append(str,empty_table("b"));
+    //Append(str, " style=filled fillcolor=red");
+    Append_With_Newline(str, "];");
+
+    
+    //create tree nodes
+    for (auto const& node: state.all_nodes){
+        Append(str, "node");
+        Append(str, std::to_string(node->val));
+        Append(str, "[label = ");
+        Append(str,node_label_as_table(state,node->val));
+        Append_With_Newline(str, "];");
+    }
+    
+    
+    Append(str,graphviz_for_edges(state));
+    Append(str,graphviz_for_structuring_picture(state));
+    
+    
+    Append_With_Newline(str,"}");
+    return str;
+}
+▶
+
+
+◀private:
+static std::string graphviz_for_edges(Annotated_Bst_State const& state){
+    std::string str;
+    for (auto const& node: state.all_nodes){
+        if (node->left){
+            //Append(str,Get_Double_Quote());
+            Append(str, "node");
+            Append(str,std::to_string(node->val));
+            //Append(str,Get_Double_Quote());
+            Append(str, ":f0");
+            Append(str, " -> ");
+            
+            
+            //special cases
+            if (Tree_Node_Properties::left_node_points_to_its_sibling(node)){
+                //Append(str,Get_Double_Quote());
+                Append(str, "node");
+                Append(str,std::to_string(node->val));
+                //Append(str,Get_Double_Quote());
+                Append(str, ":f2");
+            }
+            else if (Tree_Node_Properties::left_node_points_to_itself(node)){
+                //Append(str,Get_Double_Quote());
+                Append(str, "node");
+                Append(str,std::to_string(node->val));
+                //Append(str,Get_Double_Quote());
+                Append(str, ":f0");
+            }
+            
+            //normal case
+            else{
+                //Append(str,Get_Double_Quote());
+                Append(str, "node");
+                Append(str,std::to_string(node->left->val));
+                //Append(str,Get_Double_Quote());
+                Append(str, ":f1");
+            }
+            Append_With_Newline(str,edge_description("red",false));
+        }
+        if (node->right){
+            //Append(str,Get_Double_Quote());
+            Append(str, "node");
+            Append(str,std::to_string(node->val));
+            //Append(str,Get_Double_Quote());
+            Append(str, ":f2");
+            Append(str, " -> ");
+            //Append(str,Get_Double_Quote());
+            Append(str, "node");
+            Append(str,std::to_string(node->right->val));
+            //Append(str,Get_Double_Quote());
+            Append(str, ":f1");
+            Append_With_Newline(str,edge_description("blue",false));
+        }
+    }
+    
+    //the special pointers
+    if (state.a){
+        Append(str,"a:main");
+        Append(str, " -> ");
+        //Append(str,Get_Double_Quote());
+        Append(str, "node");
+        Append(str,std::to_string(state.a->val));
+        //Append(str,Get_Double_Quote());
+        Append(str, ":f1");
+        Append_With_Newline(str,edge_description("green",false));
+    }
+    if (state.b){
+        Append(str,"b:main");
+        Append(str, " -> ");
+        //Append(str,Get_Double_Quote());
+        Append(str, "node");
+        Append(str,std::to_string(state.b->val));
+        //Append(str,Get_Double_Quote());
+        Append(str, ":f1");
+        Append_With_Newline(str,edge_description("purple",false));
+    }
+    return str;
+}
+▶
+
+◀private:
+static std::string edge_description(std::string const& color, bool constraint){
+    std::string str;
+    Append(str, "[");
+    if (!color.empty()){
+        Append(str, "color=\"");
+        Append(str,color);
+        Append(str, "\"");
+    }
+    Append(str,"constraint=");
+    if (constraint){
+        Append(str,"true");
+    }
+    else{
+        Append(str,"false");
+    }
+    Append(str, "]");
+    return str;
+}
+▶
+
+◀private:
+static std::string graphviz_for_structuring_picture(Annotated_Bst_State const& state){
+    
+    //this is for nice formatting only
+    //it keeps the nodes in the same place when the arrows go crazy
+    //main node connections
+    std::string str;
+    for (auto const& node: state.original_connections){
+        if (node.first && node.second){
+            //Append(str,Get_Double_Quote());
+            Append(str, "node");
+            Append(str,std::to_string(possibly_corrected_value(state,node.first.value())));
+            //Append(str,Get_Double_Quote());
+            Append(str, " -> ");
+            //Append(str,Get_Double_Quote());
+            Append(str, "node");
+            Append(str,std::to_string(possibly_corrected_value(state,node.second.value())));
+            //Append(str,Get_Double_Quote());
+            Append_With_Newline(str," [style=invis]");
+        }
+    }
+    
+    //helper pointers
+    Append(str,"a:main");
+    Append(str, " -> ");
+    //Append(str,Get_Double_Quote());
+    Append(str, "node");
+    Append(str,std::to_string(state.root->val));
+    //Append(str,Get_Double_Quote());
+    Append_With_Newline(str," [style=invis]");
+    
+    Append(str,"b:main");
+    Append(str, " -> ");
+    //Append(str,Get_Double_Quote());
+    Append(str, "node");
+    Append(str,std::to_string(state.root->val));
+    //Append(str,Get_Double_Quote());
+    Append_With_Newline(str," [style=invis]");
+    
+    
+    //the ranking
+    Append_With_Newline(str, "{ rank=same; a b }");
+    for (auto levels: state.val_heights){
+        Append(str, "{ rank=same; ");
+        for (auto val: levels){
+            //Append(str,Get_Double_Quote());
+            Append(str, "node");
+            Append(str,std::to_string(possibly_corrected_value(state,val)));
+            //Append(str,Get_Double_Quote());
+            Append(str, " ");
+        }
+        Append_With_Newline(str,"}");
+    }
+    return str;
+}
+▶
+
+◀private:
+static int possibly_corrected_value(Annotated_Bst_State const& state, int val){
+    if (state.swap_occured){
+        if (state.swapped_vals.first == val){
+            val = state.swapped_vals.second;
+        }
+        else if (state.swapped_vals.second == val){
+            val = state.swapped_vals.first;
+        }
+    }
+    return val;
+}
+▶
+
+◀private:
+static std::string node_label(int val){
+    std::string str;
+    Append(str, "\"<f0> |<f1> ");
+    Append(str, std::to_string(val));
+    Append_With_Newline(str, "|<f2> \"");
+    return str;
+}
+▶
+
+◀private:
+static std::string node_label_as_table(Annotated_Bst_State const& state, int val){
+    std::string str;
+    //BGCOLOR=\"red\"
+    Append_With_Space(str,"<<TABLE");
+    Append_With_Space(str,Create_XML_Attribute_Equals_Quoted_Value("BORDER","0"));
+    Append_With_Space(str,Create_XML_Attribute_Equals_Quoted_Value("CELLBORDER","1"));
+    Append_With_Space(str,Create_XML_Attribute_Equals_Quoted_Value("CELLSPACING","0"));
+    
+    //decide if something special is going on with the node right now
+    if (state.performing_swap){
+        if (val == state.swapped_vals.first || val == state.swapped_vals.second){
+            Append_With_Space(str,Create_XML_Attribute_Equals_Quoted_Value("BGCOLOR","green"));
+        }
+    }
+    else if (state.first_discrepancy_found && !state.swap_occured){
+        if (val == state.first_discrepancy){
+            Append_With_Space(str,Create_XML_Attribute_Equals_Quoted_Value("BGCOLOR","red"));
+        }
+    }
+    else if (state.comparing_values){
+        if (val == state.compared_vals.first || val == state.compared_vals.second){
+            Append_With_Space(str,Create_XML_Attribute_Equals_Quoted_Value("BGCOLOR","orange"));
+        }
+    }
+    
+    Append_With_Newline(str,"> <TR>");
+    
+    
+    Append_With_Newline(str,"<TD PORT=\"f0\"></TD>");
+    Append(str,"<TD PORT=\"f1\">");
+    Append(str, std::to_string(val));
+    Append_With_Newline(str,"</TD>");
+    Append_With_Newline(str,"<TD PORT=\"f2\"></TD>");
+    Append_With_Newline(str,"</TR> </TABLE>>");
+    return str;
+}
+▶
+
+◀private:
+static std::string empty_table(std::string const& name){
+    std::string str;
+    Append_With_Space(str,"<<TABLE");
+    Append_With_Space(str,Create_XML_Attribute_Equals_Quoted_Value("BORDER","0"));
+    Append_With_Space(str,Create_XML_Attribute_Equals_Quoted_Value("CELLBORDER","1"));
+    Append_With_Space(str,Create_XML_Attribute_Equals_Quoted_Value("CELLSPACING","0"));
+    Append_With_Newline(str,"> <TR>");
+    
+    Append(str,"<TD PORT=\"main\">");
+    Append(str, name);
+    Append_With_Newline(str,"</TD>");
+    Append_With_Newline(str,"</TR> </TABLE>>");
+    return str;
+}
+▶

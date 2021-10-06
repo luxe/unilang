@@ -1,0 +1,290 @@
+class
+❪string❫
+❪chrono❫
+❪"SFML/Graphics"❫
+❪"SFML/Graphics/Transformable"❫
+❪Kairos/TimestepLite.hpp❫
+❪Kairos/Stopwatch.hpp❫
+⚯
+⚞⚟
+
+//Game loops that can be leveraged for games and applications.
+
+
+◀public:
+template <typename T, typename U, typename V>
+static void Run(T stop_predicate, U logic, V render){
+    
+    // run the program as long as the window is open
+    // this is a common game loop and it was taken
+    // from the SFML Game Development Book.
+    sf::Clock clock;
+    sf::Time timeSinceLastUpdate = sf::Time::Zero;
+    const sf::Time TimePerFrame = sf::seconds(1.f/60.f);
+    
+    
+    while (stop_predicate()){
+        
+        //process events()
+        
+        while (timeSinceLastUpdate >= TimePerFrame){
+            timeSinceLastUpdate -= TimePerFrame;
+            logic(timeSinceLastUpdate);
+        }
+        render();
+        timeSinceLastUpdate += clock.restart();
+    }
+}
+▶
+
+
+◀public:
+template <typename T, typename U, typename V>
+static void Run_Same_Rate(T stop_predicate, U logic, V render){
+    
+    // run the program as long as the window is open
+    // this is a common game loop and it was taken
+    // from the SFML Game Development Book.
+    sf::Clock clock;
+    sf::Time timeSinceLastUpdate = sf::Time::Zero;
+    const sf::Time TimePerFrame = sf::seconds(1.f/60.f);
+    
+    
+    while (stop_predicate()){
+        
+        timeSinceLastUpdate -= TimePerFrame;
+        logic(timeSinceLastUpdate);
+        render();
+        timeSinceLastUpdate += clock.restart();
+    }
+}
+▶
+
+
+
+
+//https://github.com/Hopson97/SFML-Game-Framework/blob/master/Source/Game.cpp
+◀public:
+template <typename T, typename U, typename V>
+static void Fixed_Step_Interpolation(T stop_predicate, U logic, V render){
+
+    constexpr unsigned TPS = 60; //ticks per seconds
+    const sf::Time     timePerUpdate = sf::seconds(1.0f / float(TPS));
+    unsigned ticks = 0;
+
+    sf::Clock timer;
+    auto lastTime = sf::Time::Zero;
+    auto lag      = sf::Time::Zero;
+    
+    while (stop_predicate()){
+        
+        //Get times
+        auto time = timer.getElapsedTime();
+        auto elapsed = time - lastTime;
+        lastTime = time;
+        lag += elapsed;
+        
+        
+        //Fixed time update
+        while (lag >= timePerUpdate)
+        {
+            ticks++;
+            lag -= timePerUpdate;
+            logic(elapsed);
+        }
+        
+        render();
+    }
+    
+}
+▶
+
+
+//https://github.com/MitchBarnett/chronoGameLoop/blob/master/physicsGame/src/Game.cpp
+◀public:
+template <typename T, typename U, typename V>
+static void Chrono_Loop(T stop_predicate, U logic, V render){
+    
+    using namespace std::chrono_literals;
+    
+    //not used
+    sf::Clock timer;
+    
+    const std::chrono::nanoseconds FRAMETIME(16666667);     // Equal to 16.66ms or 1000/60
+    using clock = std::chrono::high_resolution_clock;
+    
+    auto frameTimeStart = clock::now();     
+    std::chrono::nanoseconds accumulator(0ns);              // Time passed since the last update
+    
+    while (stop_predicate()){
+        
+        if (clock::now() - frameTimeStart > std::chrono::milliseconds(1))
+        {
+            auto deltaTime = clock::now() - frameTimeStart;     // Time passed for last loop
+            frameTimeStart = clock::now();                      // Reset
+            accumulator += deltaTime;                           // Add time passed last loop
+        }
+        
+        
+        while (accumulator >= FRAMETIME)                    // Update if enough time has passed
+        {
+            accumulator -= FRAMETIME;                       
+            logic(timer.getElapsedTime());
+            
+        }
+        render();
+    }
+    
+    
+}
+▶
+
+
+//https://en.sfml-dev.org/forums/index.php?topic=921.0
+◀public:
+template <typename T, typename U, typename V>
+static void Fix_Your_Timestep(T stop_predicate, U logic, V render){
+    
+    sf::Clock clock;
+    float dt = 1.f/40.f; // Modify this to change physics rate.
+    float accumulator = 0.f;
+    bool drawn = false;
+    
+    while (stop_predicate()){
+        
+        accumulator += clock.getElapsedTime().asMicroseconds();
+        clock.restart();
+
+        while (accumulator >= dt)
+        {
+            // Physics and gameplay updates.
+
+            accumulator -= dt;
+            drawn = false;
+            logic(clock.getElapsedTime());
+        }
+
+        if (drawn)
+        {
+            //sf::Sleep(0.01);
+        }
+        else
+        {
+            // Draw everything.
+
+            drawn = true;
+            render();
+        }
+    
+    }
+}
+▶
+
+
+
+◀public:
+template <typename T, typename U, typename V>
+static void Kairos_Fix_Step(T stop_predicate, U logic, V render){
+
+    kairos::Stopwatch clock;
+    kairos::TimestepLite timestep;
+    timestep.setStep(1.0 / 60.0);
+    
+    while (stop_predicate()){
+        
+        timestep.update(clock.restart().asSeconds()); // add frame time each cycle
+        while (timestep.isTimeToIntegrate()) // this is true as long as there are unprocessed timesteps.
+        {
+            float dt{ static_cast<float>(timestep.getStep()) };
+            logic(sf::seconds(dt));
+            //render();
+        }
+        render();
+    }
+    
+}
+▶
+
+
+
+
+    // double t = 0.0;
+    // double dt = 0.01;
+
+    // double currentTime = hires_time_in_seconds();
+    // double accumulator = 0.0;
+
+    // State previous;
+    // State current;
+
+    // while ( !quit )
+    // {
+    //     double newTime = time();
+    //     double frameTime = newTime - currentTime;
+    //     if ( frameTime > 0.25 )
+    //         frameTime = 0.25;
+    //     currentTime = newTime;
+
+    //     accumulator += frameTime;
+
+    //     while ( accumulator >= dt )
+    //     {
+    //         previousState = currentState;
+    //         integrate( currentState, t, dt );
+    //         t += dt;
+    //         accumulator -= dt;
+    //     }
+
+    //     const double alpha = accumulator / dt;
+
+    //     State state = currentState * alpha + 
+    //         previousState * ( 1.0 - alpha );
+
+    //     render( state );
+    // }
+
+
+
+
+
+
+
+
+
+// #include "State.h"
+
+// int main()
+// {
+//         sf::RenderWindow window(sf::VideoMode(1500, 1000), "Timestep Testing");
+//         window.setKeyRepeatEnabled(false);
+
+//         State state;
+
+//         sf::Clock clock;
+//         float dt = 1.0f / 60.0f;
+//         float accumulator = 0.0f;
+
+//         while(window.isOpen())
+//         {
+//                 sf::Event event;
+//                 while(window.pollEvent(event))
+//                         if(event.type == sf::Event::Closed)
+//                                 window.close();
+
+//                 accumulator += clock.restart().asSeconds();
+
+//                 while(accumulator >= dt)
+//                 {
+//                         state.update(dt);
+//                         accumulator -= dt;
+//                 }
+
+//                 float interp = accumulator / dt;
+
+//                 window.clear();
+//                 state.draw(window, interp);
+//                 window.display();
+//         }
+
+//     return 0;
+// }

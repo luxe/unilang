@@ -1,0 +1,112 @@
+class
+❪iostream❫
+❪fstream❫
+❪"code/programs/repo_tools/repo_stats/program_options/program_options"❫
+❪"code/utilities/build/build_repo_establisher/build_repo_establisher"❫
+❪"code/utilities/program/wrappers/bazel/fetch/fetch_results"❫
+❪"code/utilities/data_structures/endpoint/endpoint"❫
+❪"code/programs/repo_tools/repo_stats/phases/data/bes_metrics"❫
+❪"code/programs/repo_tools/repo_stats/phases/data/workspace_metrics"❫
+❪"code/programs/repo_tools/repo_stats/phases/data/filesystem_metrics"❫
+⚯
+❪"code/utilities/program/wrappers/bazel/query/bazel_aquery_runner"❫
+❪"code/utilities/program/wrappers/bazel/query/bazel_cquery_runner"❫
+❪"code/utilities/program/wrappers/bazel/query/bazel_query_runner"❫
+❪"code/utilities/program/wrappers/bazel/fetch/bazel_fetch_runner"❫
+❪"code/utilities/program/wrappers/bazel/clean/bazel_clean_runner"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
+❪"code/utilities/output/printers/lib"❫
+❪"code/utilities/formats/json/converters/type_to_json_string"❫
+❪"code/utilities/web/statsd/statsd_nc_poster"❫
+❪"code/utilities/data_structures/counters/unique_counter/unique_counter"❫
+❪"code/utilities/types/strings/observers/counters/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/strings/observers/path/lib"❫
+❪"code/utilities/metrics/metrics_publisher"❫
+❪"code/utilities/formats/json/converters/json_file_io"❫
+❪"code/utilities/program/wrappers/cloc/cloc_runner"❫
+❪"code/utilities/types/strings/observers/splitting/lib"❫
+❪"code/utilities/filesystem/files/size/get_dir_size"❫
+❪"code/utilities/filesystem/files/size/get_total_file_count"❫
+⚞⚟
+
+
+
+◀public: static▶ Filesystem_Metrics ☀Get() ❰
+
+    Filesystem_Metrics x;
+    
+    Analyze_Source_Language_Types(x);
+    Analyze_Source_Language_Types_Comment_Coverage(x);
+    Analyze_Biggest_Files(x);
+    x.current_dir_size_bytes = Get_Dir_Size::Calculate_Size_Of_Dir_In_Bytes(".");
+    x.total_file_count  = as_signed(Get_Total_File_Count::Get("."));
+    
+    //find broken symlinks
+    //count bazel BUILD files
+    
+    return x;
+❱
+
+◀private: static▶ void ☀Analyze_Source_Language_Types(Filesystem_Metrics & x) ❰
+    
+    auto json = Cloc_Runner::Run_In_Dir_And_Get_Json_Results(".");
+    //Json_File_Io::Print_Json(json);
+    
+    
+    for (auto const& it: json.items()){
+        
+        try{
+            x.code_types.emplace(it.key(),static_cast<int>(it.value()["nFiles"]));
+        }
+        catch(...){
+        }
+    }
+    
+❱
+
+◀private: static▶ void ☀Analyze_Source_Language_Types_Comment_Coverage(Filesystem_Metrics & x) ❰
+    
+    auto json = Cloc_Runner::Run_In_Dir_And_Get_Json_Results(".");
+    //Json_File_Io::Print_Json(json);
+    
+    
+    for (auto const& it: json.items()){
+        
+        try{
+            auto language = it.key();
+            auto code_amount = static_cast<int>(it.value()["code"]);
+            auto comment_amount = static_cast<int>(it.value()["comment"]);
+            int comment_percentage = 0;
+            if (comment_amount >= code_amount){
+                comment_percentage = 100;
+            }
+            else{
+                comment_percentage = ((float)comment_amount / (float)code_amount) * 100;
+            }
+            
+            x.code_types_comment_coverage.emplace(language,comment_percentage);
+            
+        }
+        catch(...){
+        }
+    }
+    
+❱
+
+◀private: static▶ void ☀Analyze_Biggest_Files(Filesystem_Metrics & x) ❰
+    auto command = "find -type f -not -path './.git/*' -print0 | du -b --files0-from=- | sort -rn | head -n 10";
+    auto results = execute(command);
+    auto lines = Split_Into_Parts_From_Newline(results);
+    
+    
+    for (auto line: lines){
+        auto row = Split_By_Whitespace(line);
+        if (row.size() == 2){
+            std::string val = row[0];
+            std::string file = row[1];
+            x.big_files.emplace(file,as_signed(val));
+        }
+    }
+❱

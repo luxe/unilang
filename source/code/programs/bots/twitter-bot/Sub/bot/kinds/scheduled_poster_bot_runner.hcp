@@ -1,0 +1,36 @@
+class
+❪"systems"❫
+❪"utilities"❫
+❪"program_input"❫
+❪"paths"❫
+❪"tweet_database"❫
+⚯
+❪"tweeter"❫
+⚞⚟
+
+◀public: static▶ void ☀Run(Program_Input const& input, Paths const& paths)❰
+
+    //get the database; it will be rebuilt if the file was deleted
+    Tweet_Database db(input,paths);
+
+    //send the current tweet
+    Post_Scheduled_Tweet(input,paths,db);
+❱
+
+◀private: static▶ void ☀Post_Scheduled_Tweet(Program_Input const& input, Paths const& paths, Tweet_Database & db)❰
+
+    // //get tweets
+    auto tweets = db.Get_Current_Tweets(paths);
+    
+    if (!tweets.empty()){
+        for (auto it = tweets.cbegin(); it != tweets.cend(); ++it){
+            Tweeter::Tweet(input,paths,*it);
+
+            //only sleep if it's not the last part of the tweet chain
+            if (it != tweets.cend()-1){Sleep_For_N_Seconds(input.settings.timing.wait_time);}
+        }
+    }else{
+        std::cerr << "tweets somehow empty..\n";
+        exit(EXIT_FAILURE);
+    }
+❱

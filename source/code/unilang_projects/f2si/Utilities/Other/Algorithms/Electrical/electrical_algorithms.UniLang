@@ -1,0 +1,920 @@
+􏶞g􏶟
+􏷲specific algorithms to run with an electrical graph􏷱
+􏷰Uses the generic graph algorithms, and specializes over the vertexes and edges􏷯
+􏷮Algorithms􏷭􏷮Graph􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦stddef􏷥􏴓d􏴔􏴑size_t􏴒
+􏷤􏷣􏷦stdioLib􏷥􏴓d􏴔􏴑BOOL􏴒
+􏷤􏷣􏷦graph􏷥􏴓d􏴔􏴑GraphT􏴒
+􏷤􏷣􏷦ElectricalGraph􏷥􏴓d􏴔􏴑ElectricalGraphT􏴒
+􏷤􏷣􏷦graph_vertex􏷥􏴓d􏴔􏴑GraphVertexT􏴒
+􏷤􏷣􏷦node􏷥􏴓d􏴔􏴑NodeT􏴒
+􏷤􏷣􏷦graph_edge􏷥􏴓d􏴔􏴑GraphEdgeT􏴒
+􏷤􏷣􏷦graph_traversal_control􏷥􏴓d􏴔􏴑GraphTraversalControlT􏴒
+􏷤􏷣􏷦dfs_graph_algorithms􏷥􏴓d􏴔􏴑VertexActionT􏴒
+􏷤􏷣􏷦graph_traversal_information􏷥􏴓d􏴔􏴑GraphTraversalInformationT􏴒
+􏶔􏶕􏶒vector􏶓􏴏d􏴐􏴍VectorT􏴎
+
+􏴃electrical􏴄􏴁algorithms used during electrical traversal simulation􏴂
+􏴃inspect􏴄􏴁algorithms used to inspect properties about the electrical graph􏴂
+
+
+BEFORE/AFTER STEPS:
+􏷘+􏷗􏷒perform triggers􏷑
+􏴅electrical􏴆
+􏷐􏷏
+􏶠applies triggers across graph nodes􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    
+    􏶲perform trigger changes before traversal􏶱
+    􏵲perform trigger checks􏵳ptNode,􏵶data􏵷);
+􏶳
+
+􏷘+􏷗􏷒clear electrical properties􏷑
+􏴅electrical􏴆
+􏷐􏷏
+􏶠clears electrical properties across graph nodes􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    
+    􏶲reset ground assumptions for next traversal􏶱
+    􏵲clear grounded flag unless its actually ground􏵳ptNode);
+    
+    􏶲take away power from each node􏶱
+    NodeSetHasPower(ptNode,FALSE);
+    
+    􏶲disable the voltage􏶱
+    ptNode->m_tElectricalProperties.m_fVoltage_v = 0;
+􏶳
+
+􏷘+􏷗􏷒enable all electrical power􏷑
+􏴅electrical􏴆
+􏷐enables all power over the electrical graph􏷏
+􏶠sets all the "has power" flags to true􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    
+    􏶲reset ground assumptions for next traversal􏶱
+    􏵲clear grounded flag unless its actually ground􏵳ptNode);
+    
+    􏶲give each node power􏶱
+    NodeSetHasPower(ptNode,TRUE);
+􏶳
+
+􏷘-􏷗􏷒clear grounded flag unless its actually ground􏷑
+􏴅electrical􏴆
+􏷐clears grounded flag for all nodes that aren't ground themselves􏷏
+􏶠this is necessary as we determine if nodes are grounded during the traversal.
+This needs to be deduced in the traversal, because it also affects power.  
+We begin traversals assuming that nothing is grounded (except ground), until proven otherwise.􏶡
+􏶜mr􏶝􏷆NodeT􏷅􏷄node􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    if (!NodeIsAGround(􏵶node􏵷)){
+        NodeSetGrounded(􏵶node􏵷,FALSE);
+    }
+􏶳
+
+TRIGGER STEP:  
+􏷘-􏷗􏷒perform trigger checks􏷑
+􏴅electrical􏴆
+􏷐perform all of the triggers of each node􏷏
+􏶠relies on the current power state of nodes to adjust flow ability􏶡
+􏶜mr􏶝􏷆NodeT􏷅􏷄node􏷃􏷀pointer to the custom node data􏶿
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀the entire electrical graph􏶿
+􏶴
+    VectorForEach2(&􏵶node􏵷->m_tTriggers, (TernaryActionT)PossiblyApplyTrigger,􏵶graph􏵷,􏵶node􏵷);
+􏶳
+
+􏷘-􏷗􏷒possibly apply trigger􏷑
+􏴅electrical􏴆
+􏷐possibly apply the trigger using the electrical graph for lookup􏷏
+􏶠this may effect the flow state of the receiving node if the node has been triggered􏶡
+􏶜mr􏶝􏷆ElectricalTriggerT􏷅􏷄trigger􏷃􏷀The trigger to apply from one node against another􏶿
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀the entire electrical graph􏶿
+􏶜mr􏶝􏷆NodeT􏷅􏷄node􏷃􏷀pointer to the custom node data􏶿
+􏶴
+
+    􏶲for power enable triggers􏶱
+    if (􏵶trigger􏵷->m_ePowerTrigger == POWER_STATE_TRIGGER_AVAILABLE){
+        
+        􏶲only perform the trigger when the node has power􏶱
+        if (NodeHasPower(􏵶node􏵷)){
+            􏵲apply trigger􏵳􏵶graph􏵷,􏵶trigger􏵷);
+        }
+    }
+    
+    􏶲for power disable triggers􏶱
+    else{
+    
+        􏶲only perform the trigger when the node does not has power􏶱
+        if (!NodeHasPower(􏵶node􏵷)){
+            􏵲apply trigger􏵳􏵶graph􏵷,􏵶trigger􏵷);
+        }
+    }
+􏶳
+
+􏷘-􏷗􏷒apply trigger􏷑
+􏴅electrical􏴆
+􏷐perform the trigger on receiver node􏷏
+􏶠this set the flow state of the receiver node to the value specified in the trigger􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀the entire electrical graph􏶿
+􏶜r􏶝􏷆ElectricalTriggerT􏷅􏷄trigger􏷃􏷀The trigger to apply from one node against another􏶿
+􏶴
+    􏶲enable flow if requested􏶱
+    if (􏵶trigger􏵷->m_eFlowResult == TRIGGERED_FLOW_RESULT_ENABLED){
+        NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(􏵶graph􏵷,􏵶trigger􏵷->m_uId),TRUE);
+    }
+    
+    􏶲disable flow if requested􏶱
+    else{
+        NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(􏵶graph􏵷,􏵶trigger􏵷->m_uId),FALSE);
+    }
+􏶳
+
+
+DFS STEPS:
+􏷘+􏷗􏷒electrical forward step􏷑
+􏴅electrical􏴆
+􏷐perform the decision made at each forward step in an electrical traversal􏷏
+􏶠decide whether to continue traversing, and set the appropriate electrical properties􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲convert to the specific node type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    
+    􏶲if the node can be powered, power it􏶱
+    if (NodeCanBePowered(ptNode)){
+    
+        􏶲powering it requires us to set the power flag to true, and decide the appropriate voltage􏶱
+        􏶲if we find the voltage we are trying to apply is lower than what it already has,􏶱
+        􏶲we will choose to bail out of the sub-traversal􏶱
+        NodeSetHasPower(ptNode,TRUE);
+        􏵲decide voltage􏵳ptNode,􏵶data􏵷,&􏵶control􏵷->m_bStopSubTraversal);    }
+    
+    􏶲if it can't be powered, stop the subgraph traversal􏶱
+    else{
+        􏵶control􏵷->m_bStopSubTraversal = TRUE;
+    }
+􏶳
+
+􏷘+􏷗􏷒electrical backward step􏷑
+􏴅electrical􏴆
+􏷐perform the decision made at each backward step in an electrical traversal􏷏
+􏶠decide whether to continue traversing, and set the appropriate electrical properties􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲convert to the specific node type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    
+    􏶲the only thing we care about while backward traversing,􏶱
+    􏶲is whether or not we can state the node is grounded􏶱
+    􏶲if we can state that the node is grounded, we will do so􏶱
+    􏵲decide grounding􏵳ptNode,􏵶data􏵷);
+􏶳
+
+􏷘+􏷗􏷒electrical children exhaust step􏷑
+􏴅electrical􏴆
+􏷐perform the decision made at the vertex after all of its children have finished being traversed􏷏
+􏶠decide whether to continue traversing, and set the appropriate electrical properties􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲convert to the specific node type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    
+    􏶲now that we've traversed all of the node's children,􏶱
+    􏶲we will have a consensus on whether or not the node is grounded􏶱
+    􏶲Using this information, we can revoke power and clear electrical properties if we discover the node is not grounded􏶱
+    􏵲adjust based on grounding􏵳ptNode);
+    
+    􏶲if we are grounded, signal it to the parent node so it knows that it is grounded as well􏶱
+    􏵲signal ground state to parent􏵳ptNode,􏵶data􏵷);
+    
+    􏶲accumulate the wattage based on the active wattage of the current node􏶱
+    􏵲accumulate wattage􏵳ptNode,􏵶data􏵷);
+􏶳
+
+USER FORCED CHANGES
+􏷘+􏷗􏷒force on found node name􏷑
+􏴅user force changes􏴆
+􏷐forces a node to be powered􏷏
+􏶠allows the node to be self-powered􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    
+    􏶲resolve the custom data􏶱
+    AsciiStringT* ptSubstr = (AsciiStringT*)􏵶data􏵷;
+    
+    􏶲create a temp node string to lowercase􏶱
+    􏶲this will allow a case-insensitive search􏶱
+    AsciiStringT tNodeName = ConstructAsciiString(NodeName(ptNode));
+    
+    􏶲if the substring exists􏶱
+    if (􏵲name lookup strategy for nodes􏵳&tNodeName,ptSubstr)){
+        􏵲perform force on􏵳ptNode,TRUE);
+    }
+    
+    􏶲destruct local string􏶱
+    DestructAsciiStringT(&tNodeName);
+􏶳
+􏷘+􏷗􏷒force off found node name􏷑
+􏴅user force changes􏴆
+􏷐forces a node to be powered off􏷏
+􏶠ensures a node is forced off􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    
+    􏶲resolve the custom data􏶱
+    AsciiStringT* ptSubstr = (AsciiStringT*)􏵶data􏵷;
+    
+    􏶲create a temp node string to lowercase􏶱
+    􏶲this will allow a case-insensitive search􏶱
+    AsciiStringT tNodeName = ConstructAsciiString(NodeName(ptNode));
+    
+    􏶲if the substring exists􏶱
+    if (􏵲name lookup strategy for nodes􏵳&tNodeName,ptSubstr)){
+        􏵲perform force off􏵳ptNode,TRUE);
+    }
+    
+    􏶲destruct local string􏶱
+    DestructAsciiStringT(&tNodeName);
+􏶳
+
+􏷘+􏷗􏷒restore forced changes on found node name􏷑
+􏴅user force changes􏴆
+􏷐restores any changes to the found nodes that were force applied by a debugging user􏷏
+􏶠removes forced user debugging lock􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    
+    􏶲resolve the custom data􏶱
+    AsciiStringT* ptSubstr = (AsciiStringT*)􏵶data􏵷;
+    
+    􏶲create a temp node string to lowercase􏶱
+    􏶲this will allow a case-insensitive search􏶱
+    AsciiStringT tNodeName = ConstructAsciiString(NodeName(ptNode));
+    
+    􏶲if the substring exists􏶱
+    if (􏵲name lookup strategy for nodes􏵳&tNodeName,ptSubstr)){
+        􏵲perform force clear􏵳ptNode,TRUE);
+    }
+    
+    􏶲destruct local string􏶱
+    DestructAsciiStringT(&tNodeName);
+􏶳
+􏷘+􏷗􏷒force on found node id􏷑
+􏴅user force changes􏴆
+􏷐forces a node to be powered􏷏
+􏶠allows the node to be self-powered􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    
+    􏶲resolve the custom data􏶱
+    size_t* uId = (size_t*)􏵶data􏵷;
+    
+    􏶲if the substring exists􏶱
+    if (NodeId(ptNode) == *uId){
+        􏵲perform force on􏵳ptNode,TRUE);
+    }
+􏶳
+􏷘+􏷗􏷒force off found node id􏷑
+􏴅user force changes􏴆
+􏷐forces a node to be powered off􏷏
+􏶠ensures a node is forced off􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    
+    􏶲resolve the custom data􏶱
+    size_t* uId = (size_t*)􏵶data􏵷;
+    
+    􏶲if the substring exists􏶱
+    if (NodeId(ptNode) == *uId){
+        􏵲perform force off􏵳ptNode,TRUE);
+    }
+􏶳
+
+􏷘+􏷗􏷒restore forced changes on found node id􏷑
+􏴅user force changes􏴆
+􏷐restores any changes to the found nodes that were force applied by a debugging user􏷏
+􏶠removes forced user debugging lock􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    
+    􏶲resolve the custom data􏶱
+    size_t* uId = (size_t*)􏵶data􏵷;
+    
+    􏶲if the substring exists􏶱
+    if (NodeId(ptNode) == *uId){
+        􏵲perform force clear􏵳ptNode,TRUE);
+    }
+􏶳
+
+􏷘+􏷗􏷒force all on􏷑
+􏴅user force changes􏴆
+􏷐forces all nodes to be powered􏷏
+􏶠allows the node to be self-powered􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    􏵲perform force on􏵳ptNode,FALSE);
+􏶳
+􏷘+􏷗􏷒force all off􏷑
+􏴅user force changes􏴆
+􏷐forces all nodes to be powered off􏷏
+􏶠ensures a node is forced off􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    􏵲perform force off􏵳ptNode,FALSE);
+􏶳
+
+􏷘+􏷗􏷒restore all􏷑
+􏴅user force changes􏴆
+􏷐restores any changes to all nodes that were force applied by a debugging user􏷏
+􏶠removes forced user debugging lock on all nodes􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    􏵲perform force clear􏵳ptNode,FALSE);
+􏶳
+
+
+
+
+
+
+
+
+
+􏷘-􏷗􏷒perform force on􏷑
+􏴅user force changes􏴆
+􏷐takes the actions necessary for a user to force a node on􏷏
+􏶠assumes the node passed in was found based on a condition􏶡
+􏶜mr􏶝􏷆NodeT􏷅􏷄node􏷃􏷀the node to force an action on􏶿
+􏶜􏶝􏷆bool􏷅􏷄print change􏷃􏷀whether or not to print the change to the user􏶿
+􏶴
+    􏶲force on􏶱
+    NodeUnlock(􏵶node􏵷,100);
+    NodeSetCanBePowered(􏵶node􏵷,TRUE);
+    NodeSetSelfPower(􏵶node􏵷,TRUE);
+    NodeSetHasPower(􏵶node􏵷,TRUE);
+    NodeLock(􏵶node􏵷,100);
+    
+    􏶲print the forced action that took place􏶱
+    if (􏵶print change􏵷){
+        printf("%s has been forced on.\n",NodeName(􏵶node􏵷));
+    }
+􏶳
+
+􏷘-􏷗􏷒perform force off􏷑
+􏴅user force changes􏴆
+􏷐takes the actions necessary for a user to force a node off􏷏
+􏶠assumes the node passed in was found based on a condition􏶡
+􏶜mr􏶝􏷆NodeT􏷅􏷄node􏷃􏷀the node to force an action on􏶿
+􏶜􏶝􏷆bool􏷅􏷄print change􏷃􏷀whether or not to print the change to the user􏶿
+􏶴
+    􏶲force off􏶱
+    NodeUnlock(􏵶node􏵷,100);
+    NodeSetCanBePowered(􏵶node􏵷,FALSE);
+    NodeSetSelfPower(􏵶node􏵷,FALSE);
+    NodeSetHasPower(􏵶node􏵷,FALSE);
+    NodeLock(􏵶node􏵷,100);
+    
+    􏶲print the forced action that took place􏶱
+    if (􏵶print change􏵷){
+        printf("%s has been forced off.\n",NodeName(􏵶node􏵷));
+    }
+􏶳
+
+􏷘-􏷗􏷒perform force clear􏷑
+􏴅user force changes􏴆
+􏷐takes the actions necessary for a user to force a node to be cleared􏷏
+􏶠assumes the node passed in was found based on a condition􏶡
+􏶜mr􏶝􏷆NodeT􏷅􏷄node􏷃􏷀the node to force an action on􏶿
+􏶜􏶝􏷆bool􏷅􏷄print change􏷃􏷀whether or not to print the change to the user􏶿
+􏶴
+    􏶲for clear􏶱
+    NodeUnlock(􏵶node􏵷,100);
+    􏶲assume other inputs may change this now that we are unlocked􏶱
+    NodeSetCanBePowered(􏵶node􏵷,TRUE);
+    NodeSetSelfPower(􏵶node􏵷,FALSE);
+    
+    􏶲print the forced action that took place􏶱
+    if (􏵶print change􏵷){
+        printf("%s has had forced changes revoked\n",NodeName(􏵶node􏵷));
+    }
+􏶳
+
+
+
+DEBUG DEFS STEPS:
+􏷘+􏷗􏷒passive step􏷑
+􏴅inspect􏴆
+􏷐perform no action during the particular dfs step􏷏
+􏶠passive steps are not ideal for electrical simulation, but can be helpful for dfs analysis􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲do nothing􏶱
+    􏶲why call an empty function instead of just using a NULL function pointer?􏶱
+    􏶲I don't want the main electrical traversal to make checks since its going to utilize every dfs step opportunity􏶱
+􏶳
+
+􏷘+􏷗􏷒mark traversed node􏷑
+􏴅inspect􏴆
+􏷐marks the node as found when it performs its step over it􏷏
+􏶠finding a node more than once is fine.
+we start assuming nothing is found, and mark ones that are found
+after all the dfs traversals take place, the unmarked nodes are unreachable􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    
+    􏶲resolve the hash table􏶱
+    VectorT* ptMarkings = (VectorT*)􏵶data􏵷;
+    
+    􏶲mark the node as we are currently stepping over it􏶱
+    􏶲we use 0 in the hash, but the graph designates 0 as an invalid id􏶱
+    *((BOOL*)VectorAt(ptMarkings,NodeId(ptNode)-1)) = TRUE;
+􏶳
+
+􏷘-􏷗􏷒signal ground state to parent􏷑
+􏴅inspect􏴆
+􏷐we set whether we are grounded now as part of our traversal information􏷏
+􏶠This will let the parent node know if they are grounded or not􏶡
+􏶜mr􏶝􏷆NodeT􏷅􏷄node􏷃􏷀pointer to the custom vertex data􏶿
+􏶜mr􏶝􏷆GraphTraversalInformationT􏷅􏷄traversal info􏷃􏷀accumulated information about the traversal􏶿
+􏶴
+    if (NodeIsGrounded(􏵶node􏵷) || NodeIsAGround(􏵶node􏵷)){
+        􏵶traversal info􏵷->m_bFoundCommonGround = TRUE;
+        NodeSetHasPower(ptNode,TRUE);
+    }
+    else{
+    }
+􏶳
+
+􏷘-􏷗􏷒adjust based on grounding􏷑
+􏴅inspect􏴆
+􏷐adjust the electrical properties of the node based on what we know about its grounding􏷏
+􏶠This will potentially revoke power and clear electrical properties if we find the node is not grounded􏶡
+􏶜mr􏶝􏷆NodeT􏷅􏷄node􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶴
+    􏶲if we have determined that the node is not grounded􏶱
+    if (!NodeIsGrounded(􏵶node􏵷)){
+    
+        􏶲revoke any power we might have given to it􏶱
+        NodeSetHasPower(ptNode,FALSE);
+        
+        􏶲and ensure it has no voltage􏶱
+        􏵶node􏵷->m_tElectricalProperties.m_fVoltage_v = 0;
+    }
+􏶳
+
+􏷘-􏷗􏷒accumulate wattage􏷑
+􏴅inspect􏴆
+􏷐accumulate the wattage based on the active wattage of the current node􏷏
+􏶠We will only accumulate the wattage if the node is powered􏶡
+􏶜mr􏶝􏷆NodeT􏷅􏷄node􏷃􏷀pointer to the custom vertex data􏶿
+􏶜mr􏶝􏷆GraphTraversalInformationT􏷅􏷄traversal info􏷃􏷀accumulated information about the traversal􏶿
+􏶴
+    􏶲we only accumulate the wattage if the node in question has power􏶱
+    if (NodeCanBePowered(􏵶node􏵷)){
+        􏵶traversal info􏵷->m_fAccumulatedWattage_w += 􏵶node􏵷->m_tElectricalProperties.m_fActiveWattage_w;
+    }
+􏶳
+
+􏷘-􏷗􏷒decide voltage􏷑
+􏴅inspect􏴆
+􏷐decides voltage based on power source traversal information􏷏
+􏶠voltage will be overwritten if the power source is providing a stronger voltage than its current voltage level􏶡
+􏶜mr􏶝􏷆NodeT􏷅􏷄node􏷃􏷀pointer to the custom vertex data􏶿
+􏶜mr􏶝􏷆GraphTraversalInformationT􏷅􏷄traversal info􏷃􏷀accumulated information about the traversal􏶿
+􏶜mr􏶝􏷆BOOL􏷅􏷄stop sub traversal􏷃􏷀whether to stop the sub traversal or not􏶿
+􏶴
+    􏶲if the current voltage level is lower than what the power source is providing, replace the voltage of the node􏶱
+    if (􏵶node􏵷->m_tElectricalProperties.m_fVoltage_v < 􏵶traversal info􏵷->m_tPowerSource.m_fPowerDistribution_v){
+        􏵶node􏵷->m_tElectricalProperties.m_fVoltage_v = 􏵶traversal info􏵷->m_tPowerSource.m_fPowerDistribution_v;
+        
+        NodeSetGrounded(􏵶node􏵷,FALSE);
+        ((GraphTraversalInformationT*)􏵶traversal info􏵷)->m_bFoundCommonGround = FALSE;
+    }
+    
+    􏶲otherwise, don't make any changes and bail out of the sub-traversal􏶱
+    􏶲there is no reason to keep traversing when the other power source will win out in terms of the node's set voltage􏶱
+    else{
+        *􏵶stop sub traversal􏵷 = TRUE;
+        
+        􏶲since we are stopping the sub traversal,
+        we must assume that the current node, if powered, is also grounded􏶱
+        if (NodeHasPower(􏵶node􏵷)){
+            ((GraphTraversalInformationT*)􏵶traversal info􏵷)->m_bFoundCommonGround = TRUE;
+        }
+    }
+􏶳
+
+􏷘-􏷗􏷒decide grounding􏷑
+􏴅inspect􏴆
+􏷐based on our visitation to a child, we can state whether we have found grounding􏷏
+􏶠We set the grounding to true if the child we just visited was grounded.
+Otherwise, we leave the grounding in the state it currently is.􏶡
+􏶜mr􏶝􏷆NodeT􏷅􏷄node􏷃􏷀pointer to the custom vertex data􏶿
+􏶜mr􏶝􏷆GraphTraversalInformationT􏷅􏷄traversal info􏷃􏷀accumulated information about the traversal􏶿
+􏶴
+    if (􏵶traversal info􏵷->m_bFoundCommonGround || NodeIsAGround(􏵶node􏵷)){
+        NodeSetGrounded(􏵶node􏵷,TRUE);
+    }
+􏶳
+
+
+DEBUGGING STEPS:
+􏷘+􏷗􏷒increment node type count􏷑
+􏴅inspect􏴆
+􏷐􏷏
+􏶠increments the appropriate node type count for the particular node􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    
+    􏶲resolve the custom data􏶱
+    size_t* puCounts = (size_t*)􏵶data􏵷;
+    
+    􏶲perform the increment􏶱
+    ++puCounts[NodeType(ptNode)];
+􏶳
+
+􏷘+􏷗􏷒store ungrounded leaf node􏷑
+􏴅inspect􏴆
+􏷐counts and stores ungrounded leaf nodes􏷏
+􏶠stores the id if the node is a leaf and not grounded􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    
+    􏶲resolve the custom data􏶱
+    VectorT* ptCounts = (VectorT*)􏵶data􏵷;
+    
+    size_t uNodeId = 0u;
+    
+    􏶲perform the increment if the node is not a ground􏶱
+    if (!NodeIsAGround(ptNode)){
+        uNodeId = NodeId(ptNode);
+        VectorPushBack(ptCounts,&uNodeId);
+    }
+􏶳
+
+􏷘+􏷗􏷒increment power node count􏷑
+􏴅inspect􏴆
+􏷐􏷏
+􏶠increments the total number of traversal starting points in the graph􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    
+    􏶲resolve the custom data􏶱
+    size_t* puCounts = (size_t*)􏵶data􏵷;
+    
+    􏶲perform the increment if node is a power source􏶱
+    if (NodeIsAPowerSource(ptNode)){
+        ++(*puCounts);
+    }
+􏶳
+
+􏷘+􏷗􏷒increment total wattage􏷑
+􏴅inspect􏴆
+􏷐􏷏
+􏶠increments the total wattage of all the nodes􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    
+    􏶲resolve the custom data􏶱
+    float* pfCounts = (float*)􏵶data􏵷;
+    
+    􏶲add the wattage to the total􏶱
+    (*pfCounts) += NodeActiveWattage(ptNode);
+􏶳
+
+􏷘+􏷗􏷒store power node id􏷑
+􏴅inspect􏴆
+􏷐􏷏
+􏶠stores all of the power node IDs found in the graph􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    
+    􏶲resolve the custom data􏶱
+    VectorT* ptCounts = (VectorT*)􏵶data􏵷;
+    
+    size_t uNodeId = 0u;
+    
+    􏶲perform the increment if node is a power source􏶱
+    if (NodeIsAPowerSource(ptNode)){
+        uNodeId = NodeId(ptNode);
+        VectorPushBack(ptCounts,&uNodeId);
+    }
+􏶳
+
+􏷘+􏷗􏷒increment trigger count􏷑
+􏴅inspect􏴆
+􏷐􏷏
+􏶠increments the total number of triggers in the graph􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    
+    􏶲resolve the custom data􏶱
+    size_t* puCounts = (size_t*)􏵶data􏵷;
+    
+    􏶲increment based on the number of triggers the node has􏶱
+    (*puCounts) += VectorSize(&ptNode->m_tTriggers);
+􏶳
+
+􏷘+􏷗􏷒increment wire count􏷑
+􏴅inspect􏴆
+􏷐􏷏
+􏶠increments the wire count for the particular edge􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphEdgeT􏷅􏷄edge􏷃􏷀pointer to the custom edge data􏶿
+􏶴
+    􏶲resolve the actual node edge type􏶱
+    WireT* ptWire = (WireT*)GraphEdgeRawData(􏵶edge􏵷);
+    
+    􏶲resolve the custom data􏶱
+    size_t* puCount = (size_t*)􏵶data􏵷;
+    
+    􏶲perform the increment􏶱
+    ++(*puCount);
+􏶳
+
+􏷘+􏷗􏷒increment has grounded neighbor􏷑
+􏴅inspect􏴆
+􏷐increments the appropriate ground count for the particular node􏷏
+􏶠will only increment if the node has a grounded neighbor
+ground itself will also increment􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶜mr􏶝􏷆VectorT􏷅􏷄neighbors􏷃􏷀the immediate neighbors of the vertex􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    
+    􏶲resolve the custom data􏶱
+    size_t* puCounts = (size_t*)􏵶data􏵷;
+    
+    􏶲iterate over neighbors looking for ground􏶱
+    size_t uIndex = 0u;
+    BOOL bFoundGrounding = FALSE;
+    for(;uIndex < VectorSize(􏵶neighbors􏵷); ++uIndex){
+        if (NodeIsAGround((NodeT*)GraphVertexRawData(VectorAt(􏵶neighbors􏵷,uIndex)))){
+            bFoundGrounding = TRUE;
+            break;
+        }
+    }
+    
+    􏶲perform the increment if it is grounded􏶱
+    if (bFoundGrounding || NodeIsAGround(ptNode)){
+        ++puCounts[NodeType(ptNode)];
+    }
+􏶳
+
+􏷘+􏷗􏷒store unused breaker􏷑
+􏴅inspect􏴆
+􏷐store the node if it is a breaker and not being used􏷏
+􏶠the neighbors passed in should not have any ground types􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶜mr􏶝􏷆VectorT􏷅􏷄neighbors􏷃􏷀the immediate neighbors of the vertex (excluding ground)􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    
+    􏶲resolve the custom data􏶱
+    VectorT* ptCounts = (VectorT*)􏵶data􏵷;
+    
+    􏶲current node id􏶱
+    size_t uNodeId = 0u;
+    
+    􏶲we only store the node id if it is a breaker and doesn't have any neighbors (ignoring any ground neighbors)􏶱
+    if (NodeType(ptNode) == NODE_TYPE_BREAKER){
+        if (VectorIsEmpty(􏵶neighbors􏵷)){
+            uNodeId = NodeId(ptNode);
+            VectorPushBack(ptCounts,&uNodeId);
+        }
+    }
+􏶳
+
+􏷘+􏷗􏷒increment duplicated wire count􏷑
+􏴅inspect􏴆
+􏷐increments the appropriate duplicated wire count for the particular node􏷏
+􏶠we have the same neighbor twice, we have a duplicated wire􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶜mr􏶝􏷆VectorT􏷅􏷄neighbors􏷃􏷀the immediate neighbors of the vertex􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    
+    􏶲resolve the custom data􏶱
+    size_t* puCount = (size_t*)􏵶data􏵷;
+    
+    􏶲if the same neighbor is found more than once, we can assume its a duplicated wire􏶱
+    
+    􏶲Need a hash table. will use vector for now.􏶱
+    VectorT tFoundIds = ConstructVector(SPECIALIZE_UNMANAGED(size_t),0);
+    
+    􏶲iterate over each neighbor􏶱
+    size_t uIndex = 0u;
+    size_t uCurrentId = 0u;
+    IteratorT tFoundIterator;
+    IteratorT tEndIterator;
+    for (; uIndex < VectorSize(􏵶neighbors􏵷); ++uIndex){
+      
+      􏶲get the current neighbor id􏶱
+      uCurrentId = NodeId((NodeT*)GraphVertexRawData(VectorAt(􏵶neighbors􏵷,uIndex)));
+
+      􏶲Increment our duplication count if it already exists􏶱
+      􏶲otherwise add it for the next iteration􏶱
+      tFoundIterator = VectorFindIf1(&tFoundIds,(BinaryPredicateT)IdsEqual,&uCurrentId);
+      tEndIterator = VectorEnd(&tFoundIds);
+      if (IteratorEqual(&tFoundIterator,&tEndIterator)){
+        VectorPushBack(&tFoundIds,&uCurrentId);
+      }
+      else{
+        ++(*puCount);
+      }
+    }
+    
+    􏶲Clean up locals􏶱
+    DestructVectorT(&tFoundIds);
+􏶳
+
+􏷘+􏷗􏷒print found node name􏷑
+􏴅inspect􏴆
+􏷐prints any nodes found that contain a substring of the searched with􏷏
+􏶠prints to terminal􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    
+    􏶲resolve the custom data􏶱
+    AsciiStringT* ptSubstr = (AsciiStringT*)􏵶data􏵷;
+    
+    􏶲create a temp node string to lowercase􏶱
+    􏶲this will allow a case-insensitive search􏶱
+    AsciiStringT tNodeName = ConstructAsciiString(NodeName(ptNode));
+    
+    􏶲if the substring exists􏶱
+    if (􏵲name lookup strategy for nodes􏵳&tNodeName,ptSubstr)){
+    
+        􏶲print the node􏶱
+        NodePrintJson(ptNode);
+        printf("\n");
+    }
+    
+    􏶲destruct local string􏶱
+    DestructAsciiStringT(&tNodeName);
+􏶳
+
+􏷘+􏷗􏷒print found node id􏷑
+􏴅inspect􏴆
+􏷐prints any nodes found with the id􏷏
+􏶠prints to terminal􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄vertex􏷃􏷀pointer to the custom vertex data􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptNode = (NodeT*)GraphVertexRawData(􏵶vertex􏵷);
+    
+    􏶲resolve the custom data􏶱
+    size_t* uId = (size_t*)􏵶data􏵷;
+    
+    􏶲if id matches􏶱
+    if (NodeId(ptNode) == *uId){
+    
+        􏶲print the node􏶱
+        NodePrintJson(ptNode);
+        printf("\n");
+    }
+􏶳
+
+􏷘-􏷗􏷒name lookup strategy for nodes􏷑
+􏴅inspect􏴆
+􏷐decides whether the node name is a valid match to a user search term􏷏
+􏶠As a convenience to the user, we don't want to do a regular string search.  
+We will likely want our search term to be case and whitespace insensitive.  
+We may also want to do a fuzzy search and just see if the user's search term exists as a substring􏶡
+􏶜mr􏶝􏷆AsciiStringT􏷅􏷄actual name􏷃􏷀the actual name of the node􏶿
+􏶜mr􏶝􏷆AsciiStringT􏷅􏷄search name􏷃􏷀the name searched for by the user􏶿
+􏶚m􏶛􏶾bool􏶽􏶼strings match according to strategy􏶻􏶺whether or not the substrings match according to the search strategy􏶹
+􏶴
+    return AsciiStringContainsSubstrCaseAndWhitespaceInsensitive(􏵶actual name􏵷,􏵶search name􏵷);
+􏶳
+
+􏷘+􏷗􏷒print node difference􏷑
+􏴅inspect􏴆
+􏷐prints any nodes found that contain a substring of the searched with􏷏
+􏶠prints to terminal􏶡
+􏶜mr􏶝􏷆GraphTraversalControlT􏷅􏷄control􏷃􏷀controller object for the visitor to change traversal decisions􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀pointer to custom data􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄before􏷃􏷀pointer to the custom vertex before the transition􏶿
+􏶜mr􏶝􏷆GraphVertexT􏷅􏷄after􏷃􏷀pointer to the custom vertex after the transition􏶿
+􏶴
+    􏶲resolve the actual node vertex type􏶱
+    NodeT* ptBeforeNode = (NodeT*)GraphVertexRawData(􏵶before􏵷);
+    NodeT* ptAfterNode = (NodeT*)GraphVertexRawData(􏵶after􏵷);
+    
+    􏶲call transition print method􏶱
+    NodePrintTransitionChanges(ptAfterNode,"",ptBeforeNode);
+    
+􏶳
+
+􏷘-􏷗􏷒ids equal􏷑
+􏴅inspect􏴆
+􏶜mr􏶝􏷆size􏷅􏷄lhs􏷃􏷀left hand side􏶿
+􏶜mr􏶝􏷆size􏷅􏷄rhs􏷃􏷀right hand side􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is equal􏶻􏶺whether the ids are equal􏶹
+􏶴   
+    return *􏵶lhs􏵷 == *􏵶rhs􏵷;
+􏶳

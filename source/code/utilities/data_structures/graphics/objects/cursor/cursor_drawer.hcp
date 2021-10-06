@@ -1,0 +1,69 @@
+class
+⚯
+⚞⚟
+
+//FULL DRAW
+◀public: static▶ Frame_Elements ☀Full_Draw(Character_Maps const& font_chars, Positioned_Label & label, Pc_Input_State const& pc_input)❰
+    return Full_Draw(font_chars,label.pos,label.state,pc_input);
+❱
+◀public: static▶ Frame_Elements ☀Full_Draw(Character_Maps const& font_chars, Position const& pos, Label_Settings & label, Pc_Input_State const& pc_input)❰
+    Event_It(font_chars,pos,label,pc_input);
+    return Draw_Cursor(pos,label);
+❱
+
+//EVENT IT
+◀public: static▶ void ☀Event_It(Character_Maps const& font_chars, Positioned_Label & label, Pc_Input_State const& pc_input)❰
+    Event_It(font_chars,label.pos,label.state,pc_input);
+❱
+◀public: static▶ void ☀Event_It(Character_Maps const& font_chars, Position const& pos, Label_Settings & label, Pc_Input_State const& pc_input)❰
+
+    if (label.user_state.is_active){
+        for (auto & it: label.cursors.cursors){
+            Label_Cursor_Action_Doer::Handle_Actions(font_chars,pos,label,it,pc_input);
+        }
+    }
+❱
+
+//DRAW IT
+◀public: static▶ Frame_Elements ☀Draw_Cursor(Positioned_Label & label)❰
+    
+    return Draw_Cursor(label.pos,label.state);
+❱
+◀public: static▶ Frame_Elements ☀Draw_Cursor(Position const& pos, Label_Settings & label)❰
+    
+    Frame_Elements elements;
+    for (auto & it: label.cursors.cursors){
+        if (label.user_state.is_active){
+            Draw_Label_Cursor(elements, pos, label, it);
+        }
+    }
+    return elements;
+❱
+
+
+
+
+
+
+
+//UTILITY
+◀private: static▶ void ☀Draw_Label_Cursor(Frame_Elements & elements, Position const& pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+    
+    //draw label cursor
+    selection.label_cursor.tick.shape.pos = Calculate_Position(pos,selection);
+    selection.label_cursor.highlight.shape.pos = Calculate_Position(pos,selection);
+    elements.types.emplace_back(selection.label_cursor.tick.shape);
+    
+    //draw selected box over selected text
+    selection.label_cursor.highlight.shape.shape.dimensions.width = selection.additional_chars_selected * 6;
+    selection.label_cursor.highlight.shape.shape.dimensions.height = 13;
+    elements.types.emplace_back(selection.label_cursor.highlight.shape);
+❱
+
+◀private: static▶ Position ☀Calculate_Position(Position const& pos, Label_Cursor_Selection & selection)❰
+    Position p;
+    p = pos;
+    p.y -= 9;
+    p.x += (selection.label_index+1) * 6;
+    return p;
+❱

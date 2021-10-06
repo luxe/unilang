@@ -1,0 +1,56 @@
+class
+❪iostream❫
+❪string❫
+❪fstream❫
+❪"code/programs/transcompilers/hcp-compiler/official/structure/class_structure"❫
+❪"code/programs/transcompilers/hcp-compiler/official/settings/hcp_settings"❫
+⚯
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/strings/observers/path/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/utilities/types/wstrings/transformers/trimming/lib"❫
+❪"code/utilities/types/wstrings/transformers/other/lib"❫
+❪"code/utilities/types/converters/lib"❫
+❪"include_file_printer"❫
+❪"code/programs/transcompilers/hcp-compiler/official/outputs/hcp_outputs_getter"❫
+❪"code/programs/transcompilers/hcp-compiler/official/self_header_decider"❫
+⚞⚟
+
+◀public:▶
+
+◀static▶ void ☀Compile_HCP_File(Class_Structure const& structure, Hcp_Settings const& settings)❰
+
+    auto outputs = Hcp_Outputs_Getter::Get(structure,settings);
+    std::wofstream hpp_stream(outputs.header_path);
+    std::wofstream cpp_stream(outputs.source_path);
+
+    auto str = Self_Header_Decider::Get(structure,settings);
+    std::wstring wstr = as_wstring(str);
+    cpp_stream << "#include " << '"' << wstr << '"' << '\n';
+    hpp_stream << "#pragma once\n";
+   Include_File_Printer::Print(hpp_stream,structure.Header_Includes());
+   Include_File_Printer::Print(cpp_stream,structure.Source_Includes());
+    hpp_stream << '\n';
+    cpp_stream << '\n';
+
+    //dump hpp code wrapped in class name
+    Dump_HPP(hpp_stream,structure,structure.File_Name());
+
+    //dump cpp
+    cpp_stream << structure.CPP_Code();
+❱
+
+◀static▶ void ☀Dump_HPP(std::wofstream & outfile, Class_Structure const& structure, std::string const& hcp_file)❰
+
+    //dump
+    outfile << structure.HPP_Code();
+    
+❱
+
+◀
+friend std::ostream &operator<<( std::ostream & out, ◈ const& self){
+	return out;
+}
+▶
+◀private:▶

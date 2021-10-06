@@ -1,0 +1,62 @@
+􏶞g􏶟
+􏷲validates size requirements needed for unpacking flight model data􏷱
+􏷰Various sanity size checks made while unpacking flight model data􏷯
+􏷮J2_Connection􏷭􏷮Network􏷭
+􏷬Trevor Hickey􏷫
+􏷤􏷣􏷦J2MessageTypes􏷥􏷢USES: SimhostToJ2MessageTypeE􏷡
+􏷤􏷣􏷦J2MessageHeader􏷥􏷢USES: J2MessageHeaderT􏷡
+􏷤s􏷣􏷦stddef􏷥􏷢USES: size_t􏷡
+􏷤s􏷣􏷦stdioLib􏷥􏷢USES: BOOL􏷡
+
+
+􏷘+􏷗􏷒buffer size sufficient for unpacking header􏷑
+􏷐verify we've received enough data over the network to parse off the header of the packet􏷏
+􏶠check that buffer size is large enough for the expected header size􏶡
+􏶜􏶝􏷆int􏷅􏷄buffer size􏷃􏷀The size of the buffer in bytes􏶿
+􏶜􏶝􏷆size_t􏷅􏷄header size􏷃􏷀the expected size of the header􏶿
+􏶜􏶝􏷆char[]􏷅􏷄packet name􏷃􏷀A descriptive name for the packet.  Used for printing a descriptive error􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼size sufficient􏶻􏶺whether the size is sufficient for unpacking the header􏶹
+􏶴
+  􏶲A sanity check to see that are buffer is even big enough to unpack the header portion􏶱
+  if (􏵶buffer size􏵷 < 􏵶header size􏵷){
+    􏵲print header unpack fail􏵳􏵶buffer size􏵷,􏵶header size􏵷,􏵶packet name􏵷);
+    return 􏵰;
+  }
+  return 􏵱;
+􏶳
+
+􏷘+􏷗􏷒message size matches header claim􏷑
+􏷐verify the message size􏷏
+􏶠check that the message size in the header matches the amount of data unpacked􏶡
+􏶜􏶝􏷆J2MessageHeaderT􏷅􏷄header􏷃􏷀The unpacked header􏶿
+􏶜􏶝􏷆int􏷅􏷄buffer size􏷃􏷀The state of the iterator after an unpack􏶿
+􏶜􏶝􏷆char[]􏷅􏷄packet name􏷃􏷀A descriptive name for the packet.  Used for printing a descriptive error􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼sizes match􏶻􏶺whether or not the buffer size matches the size advertised in the header􏶹
+􏶴
+  􏶲A sanity check to see that their header indicates the correct size of the entire message􏶱
+  if (􏵶header􏵷.m_uByteCount != 􏵶buffer size􏵷){
+    􏵲print payload unpack fail􏵳􏵶header􏵷,􏵶buffer size􏵷,􏵶packet name􏵷);
+    return 􏵰;
+  }
+  return 􏵱;
+􏶳
+
+􏷘-􏷗􏷒print header unpack fail􏷑
+􏷐print an error message explaining that the header could not be unpacked􏷏
+􏶠reports to stderr􏶡
+􏶜􏶝􏷆int􏷅􏷄buffer size􏷃􏷀The size of the buffer in bytes􏶿
+􏶜􏶝􏷆size_t􏷅􏷄header size􏷃􏷀the expected size of the header􏶿
+􏶜􏶝􏷆char[]􏷅􏷄packet name􏷃􏷀A descriptive name for the packet.􏶿
+􏶴
+  fprintf(stderr, "J2 %s message size is not large enough to unpack the header. Expected more than: %i, but got: %u\n",􏵶packet name􏵷,􏵶header size􏵷,􏵶buffer size􏵷);
+􏶳
+
+􏷘-􏷗􏷒print payload unpack fail􏷑
+􏷐print an error message explaining that the payload could not be unpacked􏷏
+􏶠reports to stderr􏶡
+􏶜􏶝􏷆J2MessageHeaderT􏷅􏷄header􏷃􏷀The unpacked header􏶿
+􏶜􏶝􏷆int􏷅􏷄buffer size􏷃􏷀The state of the iterator after an unpack􏶿
+􏶜􏶝􏷆char[]􏷅􏷄packet name􏷃􏷀A descriptive name for the packet.􏶿
+􏶴
+  fprintf(stderr, "J2 %s message size does not match what was indicated in the header. Expected: %i, but got: %u\n",􏵶packet name􏵷,􏵶buffer size􏵷,􏵶header􏵷.m_uByteCount);
+􏶳

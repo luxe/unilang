@@ -1,0 +1,35 @@
+class
+❪string❫
+❪sstream❫
+❪"code/utilities/program/call/process_spawn/process_results"❫
+❪"pstream.h"❫
+⚯
+
+⚞⚟
+
+◀public: static▶ Process_Results ☀Execute_And_Get_Back_Results(std::string command) ❰
+    redi::pstream proc(command,redi::pstreams::pstderr|redi::pstreams::pstdout);
+    
+    Process_Results data;
+    std::string temp;
+    
+    //that last newline may not reflect the actual results.
+    //reevaluate later if this becomes and issue
+    
+    while(std::getline(proc.err(),temp)){ data.stderr += temp + '\n';}
+    proc.clear();
+    while(std::getline(proc.out(),temp)){ data.stdout += temp + '\n';}
+    
+    
+    //get stdout / stderr (mixed)
+    //doesn't work rdbuf is only stdout
+    // std::stringstream ss;
+    // ss << proc.rdbuf();
+    // data.mixed = ss.str();
+    
+    proc.close();
+    data.return_code = proc.rdbuf()->status();
+    data.return_code = WEXITSTATUS(data.return_code);
+    
+    return data;
+❱

@@ -1,0 +1,49 @@
+class
+⚯
+⚞⚟
+
+//NOTE: system probably still needs python3 installed
+//update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+
+
+◀public: static▶ void ☀Create(Dependency_Specifications all_specs)❰
+
+
+    //move to where the file goes
+    Temporarily_Move_To_Path_To_Call_Function(Bazel_Workspace_Directory(),[&](){
+    
+        //create its content
+        auto content = Create_Workspace_Content(all_specs);
+        
+        //write it out to a file
+        Write_To_File_With_Auto_Gen_Comment("WORKSPACE",Source_Language::PYTHON,content);
+    
+    });
+❱
+
+◀private: static▶ std::string ☀Create_Workspace_Content(Dependency_Specifications const& all_specs)❰
+    std::string x;
+    
+    //all the dependencies themselves
+    //hopefully this can always go first since they are just http_archive-like rules
+    Append_With_Newline(x,"load(\"//bazel/deps:third_party_libraries.bzl\", \"third_party_libraries\")");
+    Append_With_Newline(x,"third_party_libraries()");
+    
+    //get all the specs that change the workspace
+    auto specs = Filter(all_specs.specs,[&](Dependency_Specification d){
+        return !d.workspace.raw_starlark.empty();
+    });
+    
+    //get them in the order we want to print them
+    std::sort(specs.begin(),specs.end(),[&](Dependency_Specification a, Dependency_Specification b){
+        return a.workspace.priority < b.workspace.priority;
+    });
+    
+    for (auto const& it: specs){
+        x += "#############################################\n";
+        x += it.workspace.raw_starlark;
+        x += "\n\n";
+    }
+    
+    return x;
+❱

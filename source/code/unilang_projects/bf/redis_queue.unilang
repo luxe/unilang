@@ -1,0 +1,1108 @@
+􏶞o􏶟
+􏷲a redis queue􏷱
+􏷰a redis queue is an implementation of a queue data structure which internally uses redis to store and distribute the data.
+Its important to know that the lifetime of the queue persists before and after the queue data structure is created (since it exists in redis)
+Therefore, two redis queues with the same name, would in fact be the same underlying redis queue􏷯
+􏷞build􏷝􏷞buildfarm􏷝􏷞common􏷝􏷞redis􏷝
+
+good inspiration and alternatives
+https://github.com/redisson/redisson
+
+redis list operations:
+https://redis.io/commands#list
+
+might want to try a jedis mock:
+https://github.com/fppt/jedis-mock
+
+
+buildfarm notes on testing dequeue:
+
+look for something that has recently run
+bf-cat buildfarm.dev.aws.uberatc.net SHA256 Operation shard/operations/123-123
+nslookup buildfarm.na.aws.uberatc.net
+netsatat -anp | grep 53
+sudo service systemd
+
+
+bf-cat buildfarm.dev.aws.uberatc.net shard SHA256 DumpQueuedOperation shard/operations/123-123
+
+cat action_definitions | bf-executor
+cat lots | bf-executor buildfarm.dev.aws.uberatc.net shard
+
+
+􏷤􏷣􏷦redis.clients.jedis.JedisCluster􏷥
+􏷤􏷣􏷦java.util.List􏷥
+􏷤􏷣􏷦java.util.Set􏷥
+􏷤􏷣􏷦java.util.HashSet􏷥
+􏷤􏷣􏷦java.util.Iterator􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanResult􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanParams􏷥
+􏷤􏷣􏷦redis.clients.jedis.Jedis􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisPool􏷥
+􏷤􏷣􏷦java.util.ArrayList􏷥
+􏷤􏷣􏷦build.buildfarm.common.StringVisitor􏷥
+􏷤􏷣􏷦java.util.concurrent.TimeUnit􏷥
+􏷤􏷣􏷦java.util.concurrent.TimeUnit.MILLISECONDS􏷥
+􏷤􏷣􏷦java.util.concurrent.ExecutorService􏷥
+􏷤􏷣􏷦java.util.concurrent.Executors􏷥
+􏷤􏷣􏷦java.util.concurrent.TimeoutException􏷥
+􏷤􏷣􏷦java.util.concurrent.Future􏷥
+
+􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
+􏲏􏲐􏲍build.buildfarm.instance.shard.queues.RedisQueue􏲎
+􏲏􏲐􏲍build.buildfarm.common.StringVisitor􏲎
+􏲏􏲐􏲍redis.clients.jedis.JedisCluster􏲎
+􏲏􏲐􏲍org.junit.Test􏲎
+􏲏􏲐􏲍java.util.List􏲎
+􏲏􏲐􏲍java.util.ArrayList􏲎
+􏲏􏲐􏲍org.junit.runner.RunWith􏲎
+􏲏􏲐􏲍org.junit.runners.JUnit4􏲎
+􏲏􏲐􏲍java.lang.Thread􏲎
+􏲏􏲐􏲍java.util.concurrent.TimeUnit􏲎
+􏲏􏲐􏲍java.lang.RuntimeException􏲎
+􏲏􏲐􏲍java.io.IOException􏲎
+􏲏􏲐􏲍java.util.function.Supplier􏲎
+􏲏􏲐􏲍org.mockito.Mock􏲎
+􏲏􏲐􏲍org.mockito.MockitoAnnotations􏲎
+􏲏􏲐􏲍java.util.Arrays􏲎
+􏲏i􏲐􏲍com.google.common.truth.Truth.assertThat􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.eq􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.mock􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.times􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.verify􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.when􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.any􏲎
+
+
+
+􏶨the unique name of the queue􏶧
+􏶦the name is used by the redis cluster client to access the queue data.
+If two queues had the same name, they would be instances of the same underlying redis queue􏶥
+􏶘-􏶙􏶰c􏶯􏶮string􏶭􏶬name􏶫􏶪􏶩
+
+􏷐constructor􏷏
+􏶠construct a named redis queue with an established redis cluster􏶡
+􏷘+􏷗􏴅Constructor􏴆􏷒redis_queue􏷑
+􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the queue􏶿
+􏶴
+    this.name = name;
+􏶳
+􏴱constructs without error􏴲􏴯redis􏴰
+􏲝the queue can be constructed with a valid cluster instance and name􏲞
+􏲛the queue is throwing an exception upon construction􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    
+    //ACT
+    RedisQueue queue = new RedisQueue(redis,"test");
+􏴮
+􏴱constructs without error􏴲􏴯mock􏴰
+􏲝the queue can be constructed with a valid cluster instance and name􏲞
+􏲛the queue is throwing an exception upon construction􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    
+    //ACT
+    RedisQueue queue = new RedisQueue(redis,"test");
+􏴮
+
+􏷐push a value onto the queue􏷏
+􏶠adds the value into the backend redis queue􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒push􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀an established redis cluster􏶿
+􏶜􏶝􏷆string􏷅􏷄val􏷃􏷀the value to push onto the queue􏶿
+􏶴
+    jedis.lpush(name,val);
+􏶳
+􏴱push without error􏴲􏴯redis􏴰
+􏲝the queue can have a value pushed onto it􏲞
+􏲛the queue is throwing an exception upon push􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+􏴮
+􏴱push without error􏴲􏴯mock􏴰
+􏲝the queue can have a value pushed onto it􏲞
+􏲛the queue is throwing an exception upon push􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    
+    //ASSERT
+    verify(redis, times(1)).lpush("test", "foo");
+􏴮
+􏴱push different without error􏴲􏴯redis􏴰
+􏲝the queue can have the different values pushed onto it􏲞
+􏲛the queue is throwing an exception upon pushing different values􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+􏴮
+􏴱push different without error􏴲􏴯mock􏴰
+􏲝the queue can have the different values pushed onto it􏲞
+􏲛the queue is throwing an exception upon pushing different values􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    
+    //ASSERT
+    verify(redis, times(1)).lpush("test", "foo");
+    verify(redis, times(1)).lpush("test", "bar");
+􏴮
+􏴱push same without error􏴲􏴯redis􏴰
+􏲝the queue can have the same values pushed onto it􏲞
+􏲛the queue is throwing an exception upon pushing the same values􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("foo");
+􏴮
+􏴱push same without error􏴲􏴯mock􏴰
+􏲝the queue can have the same values pushed onto it􏲞
+􏲛the queue is throwing an exception upon pushing the same values􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("foo");
+    
+    //ASSERT
+    verify(redis, times(2)).lpush("test", "foo");
+􏴮
+􏴱push many􏴲􏴯redis􏴰
+􏲝the queue can have many values pushed into it􏲞
+􏲛the queue is throwing an exception upon pushing many values􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    for (int i = 0; i < 1000; ++i){
+        queue.push("foo" + String.valueOf(i));
+    }
+􏴮
+􏴱push many􏴲􏴯mock􏴰
+􏲝the queue can have many values pushed into it􏲞
+􏲛the queue is throwing an exception upon pushing many values􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    for (int i = 0; i < 1000; ++i){
+        queue.push("foo" + String.valueOf(i));
+    }
+    
+    //ASSERT
+    for (int i = 0; i < 1000; ++i){
+        verify(redis, times(1)).lpush("test","foo" + String.valueOf(i));
+    }
+􏴮
+􏴱push increases size􏴲􏴯redis􏴰
+􏲝the queue size increases as elements are pushed􏲞
+􏲛the queue size is not accurately reflecting the pushes􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT / ASSERT
+    assertThat(queue.size()).isEqualTo(0);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(1);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(2);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(3);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(4);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(5);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(6);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(7);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(8);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(9);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(10);
+􏴮
+􏴱push increases size􏴲􏴯mock􏴰
+􏲝the queue size increases as elements are pushed􏲞
+􏲛the queue size is not accurately reflecting the pushes􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.size();
+    
+    //ASSERT
+    verify(redis, times(10)).lpush("test","foo");
+    verify(redis, times(1)).llen("test");
+􏴮
+
+􏷐remove element from dequeue􏷏
+􏶠removes an element from the dequeue and specifies whether it was removed􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒remove from dequeue􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀an established redis cluster􏶿
+􏶜􏶝􏷆string􏷅􏷄val􏷃􏷀the value to remove􏶿
+􏶾bool􏶽􏶼was removed􏶻􏶺whether or not the value was removed􏶹
+􏶴
+    return jedis.lrem(getDequeueName(), -1, val) != 0;
+􏶳
+􏴱remove a dequeue value􏴲􏴯mock􏴰
+􏲝we can remove an element from the dequeue􏲞
+􏲛we are either unable to get an element into the dequeue or unable to remove it􏲜
+􏴭
+    // ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrem("test_dequeue", -1, "foo")).thenReturn(1L);
+    when(redis.brpoplpush("test","test_dequeue",1)).thenReturn("foo");
+    RedisQueue queue = new RedisQueue(redis, "test");
+
+    // ACT
+    queue.push("foo");
+    queue.dequeue();
+    boolean wasRemoved = queue.removeFromDequeue("foo");
+
+    // ASSERT
+    assertThat(wasRemoved).isEqualTo(true);
+􏴮
+
+
+
+􏷐remove all elements that match from queue􏷏
+􏶠removes all matching elements from the queue and specifies whether it was removed􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒remove all􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀an established redis cluster􏶿
+􏶜􏶝􏷆string􏷅􏷄val􏷃􏷀the value to remove􏶿
+􏶾bool􏶽􏶼was removed􏶻􏶺whether or not the value was removed􏶹
+􏶴
+    return jedis.lrem(name, 0, val) != 0;
+􏶳
+􏴱false on empty􏴲􏴯redis􏴰
+􏲝removing returns false because the queue is empty and there is nothing to remove􏲞
+􏲛the queue was either not empty, or an error occured while removing from an empty queue􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    Boolean success = queue.removeAll("foo");
+    
+    //ASSERT
+    assertThat(success).isFalse();
+􏴮
+􏴱false on empty􏴲􏴯mock􏴰
+􏲝removing returns false because the queue is empty and there is nothing to remove􏲞
+􏲛the queue was either not empty, or an error occured while removing from an empty queue􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrem("test", 0, "foo")).thenReturn(0L);
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    Boolean success = queue.removeAll("foo");
+    
+    //ASSERT
+    assertThat(success).isFalse();
+􏴮
+􏴱false when value is missing􏴲􏴯redis􏴰
+􏲝removing returns false because the queue does not contain the value to be removed􏲞
+􏲛the queue was either contained the value or incorrectly reported a deletion􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    Boolean success = queue.removeAll("baz");
+    
+    //ASSERT
+    assertThat(success).isFalse();
+􏴮
+􏴱false when value is missing􏴲􏴯mock􏴰
+􏲝removing returns false because the queue does not contain the value to be removed􏲞
+􏲛the queue was either contained the value or incorrectly reported a deletion􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrem("test", 0, "baz")).thenReturn(0L);
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    Boolean success = queue.removeAll("baz");
+    
+    //ASSERT
+    assertThat(success).isFalse();
+􏴮
+􏴱true when value exists􏴲􏴯redis􏴰
+􏲝removing returns true because the queue contained the value before removing􏲞
+􏲛the queue either did not contain the value or incorrectly reported a deletion􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baz");
+    Boolean success = queue.removeAll("bar");
+    
+    //ASSERT
+    assertThat(success).isTrue();
+􏴮
+􏴱true when value exists􏴲􏴯mock􏴰
+􏲝removing returns true because the queue contained the value before removing􏲞
+􏲛the queue either did not contain the value or incorrectly reported a deletion􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrem("test", 0, "bar")).thenReturn(1L);
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baz");
+    Boolean success = queue.removeAll("bar");
+    
+    //ASSERT
+    assertThat(success).isTrue();
+􏴮
+􏴱size changes when value is removed􏴲􏴯redis􏴰
+􏲝removing the value decreases the size􏲞
+􏲛the size does not accurately reflect the removal􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baz");
+    queue.removeAll("bar");
+    
+    //ASSERT
+    assertThat(queue.size()).isEqualTo(2);
+􏴮
+􏴱does remove multiple􏴲􏴯redis􏴰
+􏲝remove removes all values that match (not just 1)􏲞
+􏲛remove is no longer removing all matching elements􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("foo");
+    queue.push("foo");
+    queue.removeAll("foo");
+    
+    //ASSERT
+    assertThat(queue.size()).isEqualTo(1);
+􏴮
+
+
+􏷐pop element into internal dequeue and return value􏷏
+􏶠this pops the element from one queue atomically into an internal list called the dequeue
+it will wait until the timeout has expired
+null is returned if the timeout has expired􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒dequeue􏷑􏶸InterruptedException􏶷
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀an established redis cluster􏶿
+􏶜􏶝􏷆i􏷅􏷄timeout􏷃􏵘seconds􏵙􏷀timeout to wait if there is no item to dequeue􏶿
+􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
+􏶴
+    String val = null;
+    for (int i = 0; i < timeout_s; ++i) {
+      val = jedis.brpoplpush(name,getDequeueName(),1);
+      if (val != null){
+        return val;
+      }
+    }
+    return null;
+􏶳
+􏴱element can be dequeued with timeout􏴲􏴯mock􏴰
+􏲝the element is able to be dequeued􏲞
+􏲛something prevented the element from being dequeued􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.brpoplpush("test","test_dequeue",1)).thenReturn("foo");
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    String val = queue.dequeue(1);
+    
+    //ASSERT
+    assertThat(val).isEqualTo("foo");
+􏴮
+􏴱element is not dequeued if time runs out􏴲􏴯mock􏴰
+􏲝element is not dequeued􏲞
+􏲛element was dequeued􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.brpoplpush("test","test_dequeue",1)).thenReturn(null);
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    String val = queue.dequeue(5);
+    
+    //ASSERT
+    assertThat(val).isEqualTo(null);
+􏴮
+􏴱interrupt􏴲􏴯mock􏴰
+􏲝the dequeue is interrupted􏲞
+􏲛the dequeue was not interrupted as expected􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.brpoplpush("test","test_dequeue",1)).thenReturn(null);
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    Thread call = new Thread(() -> {
+        try {
+            String val = queue.dequeue(100000);
+        }
+        catch (Exception e) {}
+    });
+    call.start();
+    call.interrupt();
+􏴮
+
+􏷐pop element into internal dequeue and return value􏷏
+􏶠this pops the element from one queue atomically into an internal list called the dequeue
+it does not block and null is returned if there is nothing to dequeue􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒non blocking dequeue􏷑􏶸InterruptedException􏶷
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀an established redis cluster􏶿
+􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element. null if nothing was dequeued􏶹
+􏶴
+    String val = jedis.rpoplpush(name,getDequeueName());
+    if (val != null){
+        return val;
+    }
+    if (Thread.currentThread().isInterrupted()) {
+      throw new InterruptedException();
+    }
+    return null;
+􏶳
+􏴱element can be dequeued􏴲􏴯mock􏴰
+􏲝the element is able to be dequeued􏲞
+􏲛something prevented the element from being dequeued􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.rpoplpush("test","test_dequeue")).thenReturn("foo");
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    String val = queue.nonblockingDequeue();
+    
+    //ASSERT
+    assertThat(val).isEqualTo("foo");
+􏴮
+􏴱get value immediately􏴲􏴯mock􏴰
+􏲝the value can be received immediately􏲞
+􏲛the value was not received immediately as expected􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.rpoplpush(any(String.class), any(String.class))).thenReturn("value");
+    
+    //ARRANGE
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    String val = queue.fastDequeue(1000);
+    
+    //ASSERT
+    assertThat(val).isEqualTo("value");
+􏴮
+
+􏴱get value unavailable at first􏴲􏴯mock􏴰
+􏲝when the value is unavailable at first, ensure that is received before timeout􏲞
+􏲛the value was not received before timeout􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.rpoplpush(any(String.class), any(String.class))).thenReturn(null);
+    when(redis.brpoplpush(any(String.class), any(String.class), any(int.class) )).thenReturn("value");
+    
+    //ARRANGE
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    String val = queue.fastDequeue(1000);
+    
+    //ASSERT
+    assertThat(val).isEqualTo("value");
+􏴮
+􏴱simulate timeout􏴲􏴯mock􏴰
+􏲝simulate a timeout when waiting to pop􏲞
+􏲛we should return null in the event of a timeout􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.rpoplpush(any(String.class), any(String.class))).thenReturn(null);
+    when(redis.brpoplpush(any(String.class), any(String.class), any(int.class) )).thenThrow(new RuntimeException());
+    
+    //ARRANGE
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    String val = queue.fastDequeue(1000);
+    
+    //ASSERT
+    assertThat(val).isEqualTo(null);
+􏴮
+
+􏷐pop element into another queue􏷏
+􏶠this pops the element from one queue and pushes it onto another queue possibly located on a different slot
+it will wait indefinitely until the thread is interrupted
+null is returned if the thread is interrupted􏶡
+􏷘+u􏷗􏴅Transformer􏴆􏷒pop into cross slot􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀an established redis cluster􏶿
+􏶜􏶝􏷆RedisQueue􏷅􏷄into queue􏷃􏷀the queue to obtain the popped the value􏶿
+􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
+􏶴
+    return popIntoCrossSlot(name,intoQueue.getName());
+􏶳
+􏴱transfer item effects sizes􏴲􏴯redis􏴰
+􏲝transferring items changes the size of the two queues􏲞
+􏲛the queue sizes do not reflect the transfer􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue1 = new RedisQueue(redis,"queue-1");
+    RedisQueue queue2 = new RedisQueue(redis,"queue-2");
+    
+    //ACT
+    queue1.push("foo");
+    queue1.popIntoCrossSlot(queue2);
+    
+    //ASSERT
+    assertThat(queue1.size()).isEqualTo(0);
+    assertThat(queue2.size()).isEqualTo(1);
+􏴮
+􏴱transfer large queue􏴲􏴯redis􏴰
+􏲝transferring items changes the size of the two queues􏲞
+􏲛the queue sizes do not reflect the transfer􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue1 = new RedisQueue(redis,"queue-1");
+    RedisQueue queue2 = new RedisQueue(redis,"queue-2");
+    
+    //ACT
+    for (int i = 0; i < 1000; ++i){
+        queue1.push("foo" + String.valueOf(i));
+    }
+    for (int i = 0; i < 1000; ++i){
+        queue1.popIntoCrossSlot(queue2);
+    }
+    
+    //ASSERT
+    assertThat(queue1.size()).isEqualTo(0);
+    assertThat(queue2.size()).isEqualTo(1000);
+    
+    for (int i = 0; i < 1000; ++i){
+        assertThat(queue2.pop()).isEqualTo("foo" + String.valueOf(i));
+    }
+􏴮
+􏴱transfer item effects sizes with delayed push􏴲􏴯redis􏴰
+􏲝transferring items changes the size of the two queues (even when the initial push is delayed)􏲞
+􏲛the queue sizes do not reflect the transfer􏲜
+􏴭
+    // ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue1 = new RedisQueue(redis, "queue-1");
+    RedisQueue queue2 = new RedisQueue(redis, "queue-2");
+    
+    // ACT
+    //start a delayed push
+    //we do this because internally
+    //the implementation may have a timeout while it checks for thread interruptions
+    //timeouts had caused an NPE, which this test was written for when fixing.
+    Thread push = new Thread(() -> {
+                try {
+                  TimeUnit.SECONDS.sleep(2);
+                  queue1.push("foo");
+                }
+                catch(Exception e) {
+                    throw new RuntimeException(e);
+                }
+              });
+    push.start();
+    
+    //waiting to pop
+    Thread popInto = new Thread(() -> queue1.popIntoCrossSlot(queue2));
+    popInto.start();
+    push.join();
+    popInto.join();
+    
+    // ASSERT
+    assertThat(queue1.size()).isEqualTo(0);
+    assertThat(queue2.size()).isEqualTo(1);
+􏴮
+􏴱first try􏴲􏴯mock􏴰
+􏲝the transfer is able to happen on the first try􏲞
+􏲛the transfer did not happen as it should have􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.brpop(any(int.class), any(String.class))).thenReturn(Arrays.asList("container","value"));
+    
+    //ARRANGE
+    RedisQueue queue1 = new RedisQueue(redis,"queue-1");
+    RedisQueue queue2 = new RedisQueue(redis,"queue-2");
+    
+    //ACT
+    String val = queue1.popIntoCrossSlot(queue2);
+    
+    //ASSERT
+    assertThat(val).isEqualTo("value");
+􏴮
+􏴱second try􏴲􏴯mock􏴰
+􏲝the transfer is able to happen on the first try􏲞
+􏲛the transfer did not happen as it should have􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.brpop(any(int.class), any(String.class))).thenReturn(null).thenReturn(Arrays.asList("container","value"));
+    
+    //ARRANGE
+    RedisQueue queue1 = new RedisQueue(redis,"queue-1");
+    RedisQueue queue2 = new RedisQueue(redis,"queue-2");
+    
+    //ACT
+    String val = queue1.popIntoCrossSlot(queue2);
+    
+    //ASSERT
+    assertThat(val).isEqualTo("value");
+􏴮
+􏴱exercise thread interrupt􏴲􏴯mock􏴰
+􏲝the transfer is able to happen because of a thread interrupt􏲞
+􏲛the thread interrupt should cause null to be returned􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.brpop(any(int.class), any(String.class))).thenReturn(null);
+    
+    //ARRANGE
+    RedisQueue queue1 = new RedisQueue(redis,"queue-1");
+    RedisQueue queue2 = new RedisQueue(redis,"queue-2");
+    
+    //ACT
+    Thread call = new Thread(() -> {
+        queue1.popIntoCrossSlot(queue2);
+    });
+    call.start();
+    call.interrupt();
+    
+􏴮
+
+
+􏷐pop element into another queue via queue names􏷏
+􏶠this pops the element from one queue and pushes it onto another queue possibly located on a different slot
+it will wait indefinitely until the thread is interrupted
+null is returned if the thread is interrupted􏶡
+􏷘-u􏷗􏴅Transformer􏴆􏷒pop into cross slot􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀an established redis cluster􏶿
+􏶜􏶝􏷆string􏷅􏷄queue name from􏷃􏷀the queue name to pop from􏶿
+􏶜􏶝􏷆string􏷅􏷄queue name to􏷃􏷀the queue name to push to􏶿
+􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
+􏶴
+    List<String> val = null;
+    do {
+      val = jedis.brpop(1, queueNameFrom);
+      if (val != null){
+        jedis.lpush(queueNameTo,val.get(1));
+        return val.get(1);
+      }
+
+      // right here is an operation loss risk
+      if (Thread.currentThread().isInterrupted()) {
+        break;
+      }
+    } while (val == null);
+    
+    return null;
+􏶳
+
+
+􏷐get name􏷏
+􏶠get the name of the queue.  this is the redis key used for the list􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒get name􏷑
+􏶾string􏶽􏶼name􏶻􏶺the name of the queue􏶹
+􏶴
+    return name;
+􏶳
+􏴱name is stored􏴲􏴯redis􏴰
+􏲝the name can be received􏲞
+􏲛name does not match what it should􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"queue_name");
+    
+    //ACT
+    String name = queue.getName();
+    
+    //ASSERT
+    assertThat(name).isEqualTo("queue_name");
+􏴮
+􏴱name is stored􏴲􏴯mock􏴰
+􏲝the name can be received􏲞
+􏲛name does not match what it should􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"queue_name");
+    
+    //ACT
+    String name = queue.getName();
+    
+    //ASSERT
+    assertThat(name).isEqualTo("queue_name");
+􏴮
+
+􏷐get dequeue name􏷏
+􏶠get the name of the internal dequeue used by the queue.  this is the redis key used for the list􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒get dequeue name􏷑
+􏶾string􏶽􏶼name􏶻􏶺the name of the queue􏶹
+􏶴
+    return name + "_dequeue";
+􏶳
+􏴱name is stored􏴲􏴯redis􏴰
+􏲝the name can be received􏲞
+􏲛name does not match what it should􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"queue_name");
+    
+    //ACT
+    String name = queue.getDequeueName();
+    
+    //ASSERT
+    assertThat(name).isEqualTo("queue_name_dequeue");
+􏴮
+􏴱name is stored􏴲􏴯mock􏴰
+􏲝the name can be received􏲞
+􏲛name does not match what it should􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"queue_name");
+    
+    //ACT
+    String name = queue.getDequeueName();
+    
+    //ASSERT
+    assertThat(name).isEqualTo("queue_name_dequeue");
+􏴮
+
+
+􏷐get size􏷏
+􏶠checks the current length of the queue􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒size􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀an established redis cluster􏶿
+􏶾l􏶽􏶼length􏶻􏶺the current length of the queue􏶹
+􏶴
+    return jedis.llen(name);
+􏶳
+􏴱adjust push pop􏴲􏴯redis􏴰
+􏲝size adjusts with push and pop􏲞
+􏲛size is incorrectly reporting the expected queue size􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT / ASSERT
+    assertThat(queue.size()).isEqualTo(0);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(1);
+    queue.push("bar");
+    assertThat(queue.size()).isEqualTo(2);
+    queue.push("baz");
+    assertThat(queue.size()).isEqualTo(3);
+    queue.push("baz");
+    assertThat(queue.size()).isEqualTo(4);
+    queue.push("baz");
+    assertThat(queue.size()).isEqualTo(5);
+    queue.push("baz");
+    assertThat(queue.size()).isEqualTo(6);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(5);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(4);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(3);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(2);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(1);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(0);
+􏴮
+
+
+􏷐visit each element in the queue􏷏
+􏶠enacts a visitor over each element in the queue􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒visit􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀an established redis cluster􏶿
+􏶜􏶝􏷆StringVisitor􏷅􏷄visitor􏷃􏷀a visitor for each visited element in the queue􏶿
+􏶴
+    visit(jedis,name,visitor);
+􏶳
+􏴱check visit of each element􏴲􏴯redis􏴰
+􏲝each element in the queue can be visited􏲞
+􏲛we are unable to visit each element in the queue􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    queue.push("element 1");
+    queue.push("element 2");
+    queue.push("element 3");
+    queue.push("element 4");
+    queue.push("element 5");
+    queue.push("element 6");
+    queue.push("element 7");
+    queue.push("element 8");
+    
+    // ACT
+    List<String> visited = new ArrayList<String>();
+    StringVisitor visitor =
+        new StringVisitor() {
+          public void visit(String entry) {
+            visited.add(entry);
+          }
+        };
+    queue.visit(visitor);
+    
+    //ASSERT
+    assertThat(visited.size()).isEqualTo(8);
+    assertThat(visited.contains("element 1")).isTrue();
+    assertThat(visited.contains("element 2")).isTrue();
+    assertThat(visited.contains("element 3")).isTrue();
+    assertThat(visited.contains("element 4")).isTrue();
+    assertThat(visited.contains("element 5")).isTrue();
+    assertThat(visited.contains("element 6")).isTrue();
+    assertThat(visited.contains("element 7")).isTrue();
+    assertThat(visited.contains("element 8")).isTrue();
+􏴮
+􏴱check visit of each element􏴲􏴯mock􏴰
+􏲝each element in the queue can be visited􏲞
+􏲛we are unable to visit each element in the queue􏲜
+􏴭
+    // MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrange(any(String.class), any(Long.class), any(Long.class)))
+        .thenReturn(
+            Arrays.asList(
+                "element 1",
+                "element 2",
+                "element 3",
+                "element 4",
+                "element 5",
+                "element 6",
+                "element 7",
+                "element 8"));
+
+    // ARRANGE
+    RedisQueue queue = new RedisQueue(redis, "test");
+    queue.push("element 1");
+    queue.push("element 2");
+    queue.push("element 3");
+    queue.push("element 4");
+    queue.push("element 5");
+    queue.push("element 6");
+    queue.push("element 7");
+    queue.push("element 8");
+
+    // ACT
+    List<String> visited = new ArrayList<String>();
+    StringVisitor visitor =
+        new StringVisitor() {
+          public void visit(String entry) {
+            visited.add(entry);
+          }
+        };
+    queue.visit(visitor);
+
+    // ASSERT
+    assertThat(visited.size()).isEqualTo(8);
+    assertThat(visited.contains("element 1")).isTrue();
+    assertThat(visited.contains("element 2")).isTrue();
+    assertThat(visited.contains("element 3")).isTrue();
+    assertThat(visited.contains("element 4")).isTrue();
+    assertThat(visited.contains("element 5")).isTrue();
+    assertThat(visited.contains("element 6")).isTrue();
+    assertThat(visited.contains("element 7")).isTrue();
+    assertThat(visited.contains("element 8")).isTrue();
+􏴮
+
+
+􏴱visit many over page size􏴲􏴯redis􏴰
+􏲝add and visit many elements􏲞
+􏲛we are unable to visit all the elements when there are many of them􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    for (int i = 0; i < 2500; ++i){
+        queue.push("foo" + String.valueOf(i));
+    }
+    
+    // ACT
+    List<String> visited = new ArrayList<String>();
+    StringVisitor visitor =
+        new StringVisitor() {
+          public void visit(String entry) {
+            visited.add(entry);
+          }
+        };
+    queue.visit(visitor);
+    
+    //ASSERT
+    assertThat(visited.size()).isEqualTo(2500);
+    for (int i = 0; i < 2500; ++i){
+        assertThat(visited.contains("foo" + String.valueOf(i))).isTrue();
+    }
+􏴮
+
+􏷐visit each element in the dequeue􏷏
+􏶠enacts a visitor over each element in the dequeue􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒visit dequeue􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀an established redis cluster􏶿
+􏶜􏶝􏷆StringVisitor􏷅􏷄visitor􏷃􏷀a visitor for each visited element in the queue􏶿
+􏶴
+    visit(jedis,getDequeueName(),visitor);
+􏶳
+􏴱check visit of each element􏴲􏴯mock􏴰
+􏲝each element in the queue can be visited􏲞
+􏲛we are unable to visit each element in the queue􏲜
+􏴭
+    // MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrange(any(String.class), any(Long.class), any(Long.class)))
+        .thenReturn(
+            Arrays.asList(
+                "element 1",
+                "element 2",
+                "element 3",
+                "element 4",
+                "element 5",
+                "element 6",
+                "element 7",
+                "element 8"));
+
+    // ARRANGE
+    RedisQueue queue = new RedisQueue(redis, "test");
+
+    // ACT
+    List<String> visited = new ArrayList<String>();
+    StringVisitor visitor =
+        new StringVisitor() {
+          public void visit(String entry) {
+            visited.add(entry);
+          }
+        };
+    queue.visitDequeue(visitor);
+
+    // ASSERT
+    assertThat(visited.size()).isEqualTo(8);
+    assertThat(visited.contains("element 1")).isTrue();
+    assertThat(visited.contains("element 2")).isTrue();
+    assertThat(visited.contains("element 3")).isTrue();
+    assertThat(visited.contains("element 4")).isTrue();
+    assertThat(visited.contains("element 5")).isTrue();
+    assertThat(visited.contains("element 6")).isTrue();
+    assertThat(visited.contains("element 7")).isTrue();
+    assertThat(visited.contains("element 8")).isTrue();
+􏴮
+
+􏷐visit each element in the queue via queue name􏷏
+􏶠enacts a visitor over each element in the queue􏶡
+􏷘-􏷗􏴅Observer􏴆􏷒visit􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀an established redis cluster􏶿
+􏶜􏶝􏷆string􏷅􏷄queue name􏷃􏷀the name of the queue to visit􏶿
+􏶜􏶝􏷆StringVisitor􏷅􏷄visitor􏷃􏷀a visitor for each visited element in the queue􏶿
+􏶴
+    int listPageSize = 10000;
+    
+    int index = 0;
+    int nextIndex = listPageSize;
+    List<String> entries;
+    
+    do {
+        entries = jedis.lrange(queueName, index, nextIndex - 1);
+        for (String entry : entries) {
+          visitor.visit(entry);
+        }
+        index = nextIndex;
+        nextIndex += entries.size();
+    } while (entries.size() == listPageSize);
+􏶳

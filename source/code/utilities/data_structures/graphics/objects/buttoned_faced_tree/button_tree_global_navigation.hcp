@@ -1,0 +1,189 @@
+class
+⚯
+⚞⚟
+
+
+◀public: static▶ void ☀Handle_User_Events(Character_Maps const& font_chars, Frame_Elements const& elements, Pc_Input_State const& pc_input, Position const& pos, tree<Buttoned_Faced_Label>& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, tree<Buttoned_Faced_Label>::pre_order_iterator end)❰
+
+
+    auto action = Button_Face_Tree_Action_Decider::Decide(pc_input);
+    switch (action){
+        case Button_Face_Tree_Action::DOWN_ACTIVATION: Handle_Down_Activation(font_chars,elements,pc_input,pos,tr,it,end); break;
+        case Button_Face_Tree_Action::UP_ACTIVATION: Handle_Up_Activation(font_chars,elements,pc_input,pos,tr,it,end); break;
+        case Button_Face_Tree_Action::COLLAPSE_TOGGLE: Handle_Collapse_Expand_Toggle(font_chars,elements,pc_input,pos,tr,it,end); break;
+        case Button_Face_Tree_Action::ENABLE_TOGGLE: Handle_Enable_Disable_Toggle(font_chars,elements,pc_input,pos,tr,it,end); break;
+        case Button_Face_Tree_Action::DELETE: Delete(font_chars,elements,pc_input,pos,tr,it,end); break;
+    }
+    
+❱
+
+◀private: static▶ void ☀Delete(Character_Maps const& font_chars, Frame_Elements const& elements, Pc_Input_State const& pc_input, Position const& pos, tree<Buttoned_Faced_Label>& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, tree<Buttoned_Faced_Label>::pre_order_iterator end)❰
+    
+    //get all the visible nodes that we can navigate activation through
+    auto linear_nodes = Get_Ordered_Visible_Tree_Nodes(tr,it,end);
+    
+    //get all the nodes that are currently active
+    auto active_itrs = Iterators_Of_Active_Labels(linear_nodes);
+    
+    for (auto const& del_it: active_itrs){
+        tr.erase(del_it);
+    }
+❱
+
+◀private: static▶ void ☀Handle_Down_Activation(Character_Maps const& font_chars, Frame_Elements const& elements, Pc_Input_State const& pc_input, Position const& pos, const tree<Buttoned_Faced_Label>& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, tree<Buttoned_Faced_Label>::pre_order_iterator end)❰
+    
+    //get all the visible nodes that we can navigate activation through
+    auto linear_nodes = Get_Ordered_Visible_Tree_Nodes(tr,it,end);
+    
+    //get all the nodes that are currently active
+    std::vector<size_t> active_indexes = Indexes_Of_Active_Labels(linear_nodes);
+    
+    //perform movement
+    for (auto const& it: active_indexes){
+        Faced_Label_Set_Active::Deactivate(linear_nodes[it]->label);
+        auto moved_to = Safe_Index_Capped(linear_nodes,static_cast<int>(it)+1);
+        Faced_Label_Set_Active::Activate(moved_to->label);
+    }
+    
+❱
+◀private: static▶ void ☀Handle_Up_Activation(Character_Maps const& font_chars, Frame_Elements const& elements, Pc_Input_State const& pc_input, Position const& pos, const tree<Buttoned_Faced_Label>& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, tree<Buttoned_Faced_Label>::pre_order_iterator end)❰
+
+    //get all the visible nodes that we can navigate activation through
+    auto linear_nodes = Get_Ordered_Visible_Tree_Nodes(tr,it,end);
+    
+    //get all the nodes that are currently active
+    std::vector<size_t> active_indexes = Indexes_Of_Active_Labels(linear_nodes);
+    
+    //perform movement
+    for (auto const& it: active_indexes){
+        Faced_Label_Set_Active::Deactivate(linear_nodes[it]->label);
+        auto moved_to = Safe_Index_Capped(linear_nodes,static_cast<int>(it)-1);
+        Faced_Label_Set_Active::Activate(moved_to->label);
+    }
+❱
+◀private: static▶ void ☀Handle_Collapse_Expand_Toggle(Character_Maps const& font_chars, Frame_Elements const& elements, Pc_Input_State const& pc_input, Position const& pos, const tree<Buttoned_Faced_Label>& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, tree<Buttoned_Faced_Label>::pre_order_iterator end)❰
+
+    //get all the visible nodes that we can navigate activation through
+    auto linear_nodes = Get_Ordered_Visible_Tree_Nodes(tr,it,end);
+    
+    //get all the nodes that are currently active
+    std::vector<size_t> active_indexes = Indexes_Of_Active_Labels(linear_nodes);
+    
+    for (auto const& it: active_indexes){
+        Buttoned_Faced_Label_Toggle_Button::Toggle(*linear_nodes[it]);
+    }
+❱
+◀private: static▶ void ☀Handle_Enable_Disable_Toggle(Character_Maps const& font_chars, Frame_Elements const& elements, Pc_Input_State const& pc_input, Position const& pos, const tree<Buttoned_Faced_Label>& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, tree<Buttoned_Faced_Label>::pre_order_iterator end)❰
+
+    //get all the visible nodes that we can navigate activation through
+    auto linear_nodes = Get_Ordered_Visible_Tree_Nodes(tr,it,end);
+    
+    //get all the nodes that are currently active
+    std::vector<size_t> active_indexes = Indexes_Of_Active_Labels(linear_nodes);
+    
+    for (auto & it2: active_indexes){
+        
+        //get all the nodes to toggle
+        auto toggle_nodes = Get_Self_And_Recursive_Children(tr,linear_nodes[it2],end);
+        
+        //toggle them
+        if (!toggle_nodes.empty()){
+        auto set_to = !Faced_Label_Is_Enabled::Is_Enabled(linear_nodes[it2]->label);
+            for (auto const& it3: toggle_nodes){
+                Faced_Label_Set_Enabled::Set(it3->label,set_to);
+            }
+        }
+    }
+❱
+
+
+◀private: static▶ std::vector<tree<Buttoned_Faced_Label>::pre_order_iterator> ☀Get_Self_And_Recursive_Children(tree<Buttoned_Faced_Label> const& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, tree<Buttoned_Faced_Label>::pre_order_iterator end)❰
+    
+    std::vector<tree<Buttoned_Faced_Label>::pre_order_iterator> all;
+    
+    //exit early if tree if empty
+    if(!tr.is_valid(it)) return all;
+    
+    //calculate the current depth of the iterator given
+    int rootdepth=tr.depth(it);
+    
+    //add self
+    all.emplace_back(it);
+    ++it;
+    
+    while(it!=end) {
+        
+        //only keep nodes that are at the lower depth
+        int depth = tr.depth(it);
+        if (depth <= rootdepth){
+            return all;
+        }
+        
+        all.emplace_back(it);
+        ++it;
+    }
+    
+    return all;
+❱
+
+
+◀private: static▶ std::vector<tree<Buttoned_Faced_Label>::pre_order_iterator> ☀Get_Ordered_Visible_Tree_Nodes(tree<Buttoned_Faced_Label> const& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, tree<Buttoned_Faced_Label>::pre_order_iterator end)❰
+
+    std::vector<tree<Buttoned_Faced_Label>::pre_order_iterator> all;
+    
+    //exit early if tree if empty
+    if(!tr.is_valid(it)) return all;
+    
+    //calculate the current depth of the iterator given
+    int rootdepth=tr.depth(it);
+    
+    bool subtree_collapsed = false;
+    int collapsed_depth = 0;
+    
+    while(it!=end) {
+        
+        //calculate the depth of the node
+        int depth = tr.depth(it)-rootdepth;
+        
+        //uncollapse
+        if (subtree_collapsed && collapsed_depth >= depth){
+            subtree_collapsed = false;
+        }
+        
+        if (!subtree_collapsed){
+            all.emplace_back(it);
+        }
+        
+        //collapse
+        if (!subtree_collapsed && tr.number_of_children(it) > 0 && it->button.current_face == 0){
+            subtree_collapsed = true;
+            collapsed_depth = depth;
+        }
+        
+        ++it;
+    }
+    
+    return all;
+❱
+
+◀private: static▶ std::vector<size_t> ☀Indexes_Of_Active_Labels(std::vector<tree<Buttoned_Faced_Label>::pre_order_iterator> const& v)❰
+
+    std::vector<size_t> active_indexes;
+    for (size_t i = 0; i < v.size(); ++i){
+        if (Faced_Label_Is_Active::Is_Active(v[i]->label)){
+            active_indexes.emplace_back(i);
+        }
+    }
+    return active_indexes;
+❱
+
+◀private: static▶ std::vector<tree<Buttoned_Faced_Label>::pre_order_iterator> ☀Iterators_Of_Active_Labels(std::vector<tree<Buttoned_Faced_Label>::pre_order_iterator> const& v)❰
+
+    std::vector<tree<Buttoned_Faced_Label>::pre_order_iterator> active_indexes;
+    for (size_t i = 0; i < v.size(); ++i){
+        if (Faced_Label_Is_Active::Is_Active(v[i]->label)){
+            active_indexes.emplace_back(v[i]);
+        }
+    }
+    return active_indexes;
+❱

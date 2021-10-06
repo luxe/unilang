@@ -1,0 +1,217 @@
+􏶞p􏶟
+􏷲calculated stats about the current state of the electrical graph􏷱
+􏷰Used for debugging and analyzing particular attributes about the graph􏷯
+􏷮electrical graph􏷭􏷮stats􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦node_type􏷥􏴓d􏴔􏴑NUM_NODE_TYPE􏴒
+􏷤􏷣􏷦stddef􏷥􏴓d􏴔􏴑size_t􏴒
+􏷤􏷣􏷦vector􏷥􏴓1􏴔􏴑VectorT􏴒
+􏶔s􏶕􏶒string.h􏶓􏴏d􏴐􏴍memset()􏴎
+
+MEMORY MANAGEMENT:
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be in an invalid state until initialized􏶡
+􏶴
+  􏶲initialize the counts to zero􏶱
+  memset(􏵴node type counts􏵵,0,sizeof(􏵴node type counts􏵵));
+  memset(􏵴grounded counts􏵵,FALSE,sizeof(􏵴grounded counts􏵵));
+  􏵴wire count􏵵 = 0u;
+  􏵴duplicated wire count􏵵 = 0u;
+  􏵴trigger count􏵵 = 0u;
+  􏵴start traversal count􏵵 = 0u;
+  􏵴total wattage􏵵 = 0;
+  InitializeVector(&􏵴unreachable nodes􏵵,SPECIALIZE_UNMANAGED(size_t),0);
+  InitializeVector(&􏵴ungrounded leaf nodes􏵵,SPECIALIZE_UNMANAGED(size_t),0);
+  InitializeVector(&􏵴unused breakers􏵵,SPECIALIZE_UNMANAGED(size_t),0);
+􏶳
+
+􏷘+􏷗􏷒^􏶐􏷑
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆void􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    􏵲perform necessary deep copies􏵳􏵶self􏵷);
+    􏵲perform necessary shallow copies􏵳􏵶self􏵷);
+􏶳
+
+􏷘-􏷗􏷒perform necessary deep copies􏷑
+􏷐perform the necessary deep copies􏷏
+􏶠performs deep copies on only the dynamically allocating data members􏶡
+􏶜r􏶝􏷆ElectricalGraphStatsT􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    􏶲perform deep copy􏶱
+    CopyInitializeVectorT(&􏵴unreachable nodes􏵵,&􏵶self􏵷->m_tUnreachableNodes);
+    CopyInitializeVectorT(&􏵴ungrounded leaf nodes􏵵,&􏵶self􏵷->m_tUngroundedLeafNodes);
+    CopyInitializeVectorT(&􏵴unused breakers􏵵,&􏵶self􏵷->m_tUnusedBreakers);
+􏶳
+
+􏷘-􏷗􏷒perform necessary shallow copies􏷑
+􏷐perform the necessary deep copies􏷏
+􏶠performs deep copies on only the dynamically allocating data members􏶡
+􏶜r􏶝􏷆ElectricalGraphStatsT􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    􏶲perform shallow copies􏶱
+    􏵴wire count􏵵 = 􏵶self􏵷->m_uWireCount;
+    􏵴duplicated wire count􏵵 = 􏵶self􏵷->m_uDuplicatedWireCount;
+    􏵴trigger count􏵵 = 􏵶self􏵷->m_uTriggerCount;
+    􏵴start traversal count􏵵 = 􏵶self􏵷->m_uStartTraversalCount;
+    􏵴total wattage􏵵 = 􏵶self􏵷->m_fTotalWattage;
+    
+    􏶲arrays􏶱
+    memcpy(􏵴node type counts􏵵, 􏵶self􏵷->m_puNodeTypeCounts, sizeof(􏵶self􏵷->m_puNodeTypeCounts));
+    memcpy(􏵴grounded counts􏵵, 􏵶self􏵷->m_puGroundedCounts, sizeof(􏵶self􏵷->m_puGroundedCounts));
+􏶳
+
+􏷘+􏷗􏷒~􏶐􏷑
+􏷐Destruct the 􏶐􏷏
+􏶠􏶐 will leak memory unless destructed􏶡
+􏶴
+  􏶲implicit forwarding cast􏶱
+  􏵲destruct􏵳);
+􏶳
+
+􏷘-􏷗􏷒destruct􏷑
+􏷐Destruct the 􏶐􏷏
+􏶠􏶐 will leak memory unless destructed􏶡
+􏶴
+  􏶲C does not have destructors.􏶱
+  DestructVectorT(&􏵴unreachable nodes􏵵);
+  DestructVectorT(&􏵴ungrounded leaf nodes􏵵);
+  DestructVectorT(&􏵴unused breakers􏵵);
+􏶳
+
+OBSERVERS
+􏷘+c􏷗􏷒total nodes􏷑
+􏷐returns the total number of nodes􏷏
+􏶠adds all of the individual counts for each node type􏶡
+􏶚m􏶛􏶾size􏶽􏶼total number of nodes􏶻􏶺the total number of nodes in the graph􏶹
+􏶴
+    size_t uIndex = 0u;
+    size_t uTotal = 0u;
+    
+    􏶲accumulate from each of the individual node types􏶱
+    for (; uIndex < NUM_NODE_TYPE; ++uIndex){
+        uTotal += 􏵴node type counts􏵵[uIndex];
+    }
+    
+    return uTotal;
+􏶳
+
+􏷘+c􏷗􏷒total grounded nodes􏷑
+􏷐returns the total number of grounded nodes􏷏
+􏶠adds all of the individual counts for each node type􏶡
+􏶚m􏶛􏶾size􏶽􏶼total number of nodes􏶻􏶺the total number of nodes in the graph􏶹
+􏶴
+    size_t uIndex = 0u;
+    size_t uTotal = 0u;
+    
+    􏶲accumulate from each of the individual node types􏶱
+    for (; uIndex < NUM_NODE_TYPE; ++uIndex){
+        uTotal += 􏵴grounded counts􏵵[uIndex];
+    }
+    
+    return uTotal;
+􏶳
+
+􏷘+c􏷗􏷒total ungrounded nodes􏷑
+􏷐returns the total number of grounded nodes􏷏
+􏶠adds all of the individual counts for each node type􏶡
+􏶚m􏶛􏶾size􏶽􏶼total number of nodes􏶻􏶺the total number of nodes in the graph􏶹
+􏶴
+    size_t uIndex = 0u;
+    size_t uTotal = 0u;
+    
+    􏶲accumulate from each of the individual node types􏶱
+    for (; uIndex < NUM_NODE_TYPE; ++uIndex){
+        uTotal += (􏵴node type counts􏵵[uIndex] - 􏵴grounded counts􏵵[uIndex]);
+    }
+    
+    return uTotal;
+􏶳
+
+􏷘+c􏷗􏷒undirected density􏷑
+􏷐returns the graph density assuming the graph is simple undirected􏷏
+􏶠uses well known density formula􏶡
+􏶚m􏶛􏶾f􏶽􏶼density􏶻􏶺the graph density between [0,1]􏶹
+􏶴
+    􏶲create numerator and denominator of formula􏶱
+    float fNumerator = 2 * 􏵴wire count􏵵;
+    float fDenominator = 􏵲total nodes􏵳) * (􏵲total nodes􏵳) - 1);
+    
+    􏶲avoid divide by zero􏶱
+    if (fDenominator == 0.0f){
+        return 0.0f;
+    }
+    
+    􏶲if safe, evaluate formula􏶱
+    return fNumerator / fDenominator;
+􏶳
+
+􏷘+c􏷗􏷒directed density􏷑
+􏷐returns the graph density assuming the graph is simple directed􏷏
+􏶠uses well known density formula􏶡
+􏶚m􏶛􏶾f􏶽􏶼density􏶻􏶺the graph density between [0,1]􏶹
+􏶴
+    􏶲create numerator and denominator of formula􏶱
+    float fNumerator = 􏵴wire count􏵵;
+    float fDenominator = 􏵲total nodes􏵳) * (􏵲total nodes􏵳) - 1);
+    
+    􏶲avoid divide by zero􏶱
+    if (fDenominator == 0.0f){
+        return 0.0f;
+    }
+    
+    􏶲if safe, evaluate formula􏶱
+    return fNumerator / fDenominator;
+􏶳
+
+􏶨a count for each of the node types currently in the graph􏶧
+􏶦indexed by node type􏶥
+􏶘-g􏶙􏶰􏶯􏶮size[NUM_NODE_TYPE]􏶭􏶬node type counts􏶫􏵚􏵛􏶪􏶩
+
+􏶨counts of what types are grounded􏶧
+􏶦indexed by node type􏶥
+􏶘-g􏶙􏶰􏶯􏶮size[NUM_NODE_TYPE]􏶭􏶬grounded counts􏶫􏵚􏵛􏶪􏶩
+
+􏶨a count of the wires in the graph􏶧
+􏶦􏶥
+􏶘-g􏶙􏶰􏶯􏶮size􏶭􏶬wire count􏶫􏵚􏵛􏶪􏶩
+
+􏶨duplicated wire count􏶧
+􏶦this is a count of how many wires connect the same two nodes together
+Often times,doing this is a mistake.  To clarify,
+two directed wires between two nodes to create a cycle is fine.  
+two directed wires from one node to the same other node will be flagged
+Anymore than 1 undirected wire shared between two nodes will be flagged.
+The motivation is that we would be making the graph more dense than necessary.
+By detecting these duplicates, we can provoke a user to prune their configuration.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size􏶭􏶬duplicated wire count􏶫􏵚􏵛􏶪􏶩
+
+􏶨the number of triggers currently built into the graph􏶧
+􏶦􏶥
+􏶘-g􏶙􏶰􏶯􏶮size􏶭􏶬trigger count􏶫􏵚􏵛􏶪􏶩
+
+􏶨the total wattage of all the devices􏶧
+􏶦each device has a wattage pull.  This is accumulated.  
+Some devices have the ability to change their wattage usage.  
+Therefore, this statistic may change over time.􏶥
+􏶘-g􏶙􏶰􏶯􏶮float􏶭􏶬total wattage􏶫􏵚􏵛􏶪􏶩
+
+􏶨a count of traversal start points in the graph􏶧
+􏶦these are most likely power sources􏶥
+􏶘-g􏶙􏶰􏶯􏶮size􏶭􏶬start traversal count􏶫􏵚􏵛􏶪􏶩
+
+􏶨All of the node ids that have been determined to be unreachable􏶧
+􏶦discovered by traversing power sources.  Used to query the graph and get back the actual nodes􏶥
+􏶘-g􏶙􏶮VectorT􏶭􏶬unreachable nodes􏶫􏶪􏶩
+
+􏶨Ungrounded leaf nodes􏶧
+􏶦all of the nodes without neighbors and are not a grounding.
+This will help indicate which nodes cannot get power.􏶥
+􏶘-g􏶙􏶮VectorT􏶭􏶬ungrounded leaf nodes􏶫􏶪􏶩
+
+􏶨Unused breakers􏶧
+􏶦All of the breakers that are currently not being used.􏶥
+􏶘-g􏶙􏶮VectorT􏶭􏶬unused breakers􏶫􏶪􏶩

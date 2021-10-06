@@ -1,0 +1,42 @@
+class
+⚯
+⚞⚟
+
+
+◀public: static▶ int ☀Find(Ide_Settings & settings, Pc_Input_State const& pc_input)❰
+
+    Position prev_pos = settings.desktop.previous_input.mouse.pos;
+    bool was_performed = false;
+    int found_index = settings.elements.types.size()-1;
+    
+    for (auto & it: boost::adaptors::reverse(settings.elements.types)){
+        std::visit(overloaded {
+            [&](Positioned_Buildable_Face_Tree & x) {
+                was_performed = Buildable_Face_Tree_Is_Mouse_Over::Check(settings.desktop.unilang_font_lookup,x,prev_pos);
+            },
+            [&](Positioned_Buildable_Schema_Faced_Tree & x) {
+                was_performed = Buildable_Schema_Faced_Tree_Is_Mouse_Over::Check(settings.desktop.unilang_font_lookup,x,prev_pos);
+            },
+            [&](Positioned_Image_Data & x) {
+                
+                //TODO: abstract
+                Rectangle_Settings rec;
+                rec.dimensions.width = x.width;
+                rec.dimensions.height = x.height;
+                was_performed = Mouse_Events_Checker::position_inside_rectangle(prev_pos,x.pos,rec);
+            },
+            [&](Positioned_Animated_Image_Data & x) {
+                //TODO
+            },
+            [&](Positioned_Select_Menu & x) {
+            },
+        }, it.element);
+        
+        if (was_performed){
+            return found_index;
+        }
+        --found_index;
+    }
+    
+    return -1;
+❱

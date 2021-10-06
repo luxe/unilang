@@ -1,0 +1,190 @@
+class
+❪string❫
+❪iostream❫
+❪set❫
+❪sys/types.h❫
+❪dirent.h❫
+❪errno.h❫
+❪fcntl.h❫
+❪stdio.h❫
+❪stdlib.h❫
+⚯
+❪"code/utilities/types/strings/observers/other/lib"❫
+⚞⚟
+
+//gather the pathnames and inode numbers via readdir (also separate out the directories)
+◀public: static▶ std::unordered_map<std::string,long> ☀Gather_Readdir_Seperate_Dirs(std::string const& path, std::vector<std::string> & dirs)❰
+    
+    std::unordered_map<std::string,long> m;
+    DIR* dir = opendir(path.c_str());
+    struct dirent* entry;
+    while ((entry = readdir(dir)) != NULL){
+        if (Is_Directory(path + "/" + entry->d_name)){
+            dirs.emplace_back(entry->d_name);
+        }
+        else{
+            m.insert({entry->d_name,entry->d_ino});
+        }
+    }
+    Proper_Close(dir);
+    return m;
+❱
+◀public: static▶ std::unordered_map<std::string,long> ☀Gather_Readdir_Seperate_Dirs2(std::string const& path, std::vector<std::string> & dirs)❰
+    
+    std::unordered_map<std::string,long> m;
+    DIR* dir = opendir(path.c_str());
+    struct dirent* entry;
+    while ((entry = readdir(dir)) != NULL){
+        if (File_Name_Ends_With_Dir(entry->d_name)){
+            dirs.emplace_back(entry->d_name);
+        }
+        else{
+            m.insert({entry->d_name,entry->d_ino});
+        }
+    }
+    Proper_Close(dir);
+    return m;
+❱
+
+//gather the pathnames and inode numbers via readdir
+◀public: static▶ std::unordered_map<std::string,long> ☀Gather_Readdir(std::string const& path)❰
+    
+    std::unordered_map<std::string,long> m;
+    DIR* dir = opendir(path.c_str());
+    struct dirent* entry;
+    while ((entry = readdir(dir)) != NULL){
+        //std::cout << entry->d_name << " " << entry->d_ino << std::endl;
+        m.insert({entry->d_name,entry->d_ino});
+    }
+    Proper_Close(dir);
+    return m;
+❱
+
+◀public: static▶ void ☀Print_Readdir(std::string const& path)❰
+    DIR* dir = opendir(path.c_str());
+    struct dirent* entry;
+    while ((entry = readdir(dir)) != NULL){
+        std::cout << entry->d_name << " " << entry->d_ino << std::endl;
+    }
+    Proper_Close(dir);
+❱
+
+//-1 is returned for files
+◀public: static▶ long ☀Get_Dir_Inode(std::string const& path)❰
+
+    //we were able to open the dir so we can assume its a directory
+    DIR* dir = opendir(path.c_str());
+    if (dir != nullptr){
+        
+        struct dirent* dir2 = readdir(dir);
+        Proper_Close(dir);
+        return dir2->d_ino;
+    }
+    
+    
+    return -1;
+❱
+
+◀public: static▶ bool ☀File_Name_Ends_With_Dir(std::string const& path)❰
+    return Ends_With(path,"_dir");
+❱
+
+◀public: static▶ bool ☀Is_Directory(std::string const& path)❰
+
+    //selected implementation
+    return Is_Directory_Via_Opendir(path);
+❱
+
+
+//this was supposed to be an optized way of checking to see if a path is a directory
+//without stating the file.  We are under the impression that stat is more expensive
+//than calling just open().  We are also under the impression that open() is sufficient
+//for determining if a path is a directory or not.
+◀public: static▶ bool ☀Is_Directory_Via_Open(std::string const& path)❰
+
+    long i = open(path.c_str(),O_DIRECTORY);
+    if (i >= 0){
+        return false;
+    }
+    return true;
+❱
+
+//this was supposed to be an optized way of checking to see if a path is a directory
+//without stating the file.  We are under the impression that stat is more expensive
+//than calling just opendir().  We are also under the impression that opendir() is sufficient
+//for determining if a path is a directory or not.
+◀public: static▶ bool ☀Is_Directory_Via_Opendir(std::string const& path)❰
+    
+    //we were able to open the dir so we can assume its a directory
+    auto dir = opendir(path.c_str());
+    if (dir != nullptr){
+        Proper_Close(dir);
+        return true;
+    }
+    
+    //if we were unable to open the directory, we can check if
+    //it was because its not actually a directory.
+    if (errno == ENOTDIR || errno == ENOENT)
+    {
+        return false;
+    }
+    
+    //if it was a different kind of error we can assume
+    //it is indeed a directory.
+    //this is likely a bad assumption.
+    return true;
+❱
+
+◀public: static▶ bool ☀Is_Permission_Denied(std::string const& path)❰
+
+    auto dir = opendir(path.c_str());
+    if (dir != nullptr){
+        Proper_Close(dir);
+        return false;
+    }
+    
+    if (errno != EACCES){return false;}
+    return true;
+❱
+
+◀public: static▶ bool ☀Per_Process_Limit_Reached(std::string const& path)❰
+
+    auto dir = opendir(path.c_str());
+    if (dir != nullptr){
+        Proper_Close(dir);
+        return false;
+    }
+    
+    if (errno != EMFILE){return false;}
+    return true;
+❱
+
+◀public: static▶ bool ☀System_Wide_Limit_Reached(std::string const& path)❰
+
+    auto dir = opendir(path.c_str());
+    if (dir != nullptr){
+        Proper_Close(dir);
+        return false;
+    }
+    
+    if (errno != ENFILE){return false;}
+    return true;
+❱
+
+◀public: static▶ bool ☀Name_Is_Not_A_Directory(std::string const& path)❰
+
+    auto dir = opendir(path.c_str());
+    if (dir != nullptr){
+        Proper_Close(dir);
+        return false;
+    }
+    
+    if (errno != ENOTDIR){return false;}
+    return true;
+❱
+
+
+//properly ensuring this gets closed could be implemented as an infinite loop
+◀private: static▶ void ☀Proper_Close(DIR * dir)❰
+    closedir(dir); //closing may fail
+❱

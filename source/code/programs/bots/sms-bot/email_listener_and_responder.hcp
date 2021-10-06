@@ -1,0 +1,75 @@
+class
+❪"utilities"❫
+❪iostream❫
+❪string❫
+❪cstdlib❫
+❪"member"❫
+❪"members"❫
+⚯
+❪"global"❫
+❪"utilities"❫
+❪"mail_sender"❫
+⚞⚟
+
+
+◀public: static▶ void ☀Monitor(Members & members, std::string const& username, std::string const& password)❰
+
+    std::cout << "enter infinite check loop" << std::endl;
+	while(true){
+		Check_And_Act_Upon_New_Email(members,username,password);
+	}
+
+
+	return;
+❱
+
+◀private: static▶ void ☀Check_And_Act_Upon_New_Email(Members & members, std::string const& username, std::string const& password)❰
+
+	auto user_email = execute("python " + global::DUMP_OLDEST_EMAIL_SCRIPT + " \"" + username + "\" \"" + password + "\"");
+	std::vector<std::string> messages;
+	std::string body;
+	if (!user_email.empty()){
+		auto message_data = Get_Regular_Files_Of_Path("message_data/");
+		for (auto const& datum: message_data){
+			if (datum != "body"){
+				messages.push_back(Read_Entire_File_Into_String("message_data/" + datum));
+				std::cout << "messages: ||" << messages[0] << "||" << std::endl;
+			}else{
+				body = Read_Entire_File_Into_String("message_data/" + datum);
+				std::cout << "body: ||" << body << "||" << std::endl;
+			}
+		}
+
+
+		//add body only if it is not already in an attachment
+		if (!String_In_Vector(messages,body)){
+			auto it = messages.begin();
+  			it = messages.insert (it ,body);
+  			std::cout << "this happened" <<std::endl;
+		}
+
+		std::cout << user_email <<std::endl;
+
+
+
+		//decide how to reply
+		auto who_sent = members.Get(user_email);
+
+        std::string full_email_message;
+		for (auto const& it: messages){
+			full_email_message += it;
+		}
+        
+        Lowercase(full_email_message);
+        std::cout << "FULL_MESSAGE:" << full_email_message << std::endl;
+        if (full_email_message == "@bot hi" || full_email_message == "@bot hey" || full_email_message == "@bot hello" || full_email_message == "@bot hi." || full_email_message == "@bot hey." || full_email_message == "@bot hello."){
+            std::string send_message = "Hello Gabrielle";
+            std::cout << send_message << std::endl;
+            Mail_Sender::Send(members,send_message);
+        }
+
+
+		system("rm message_data/*");
+	}
+	return;
+❱

@@ -1,0 +1,50 @@
+class
+⚯
+
+⚞⚟
+
+◀public:
+
+    //unique name for the 3rd party dependency in the monorepo
+    std::string lib_name;
+    
+    //places to find and download the dependency.
+    //ordered by desired precedence.
+    //we expect a trusted mirror first
+    std::vector<Dependency_Location> locations;
+    
+    //information for assuming the dependency is already on the system
+    //ideally, we don't want this at all, but sometimes its a necessity when hermetics is too hard to achieve.
+    //that being said, we really only want 1 dependency to be system.
+    //it should be a system dependency for the whole system,
+    //and the build file for it includes all of the unhermetic references in 1 place
+    bool system=false;
+    std::string system_path;
+    
+    //all the settings related to patching the dependency
+    Patch_Settings patch;
+    
+    //for dependencies that need dependencies, these are often mapped in
+    std::vector<std::pair<std::string,std::string>> repo_mapping;
+    
+    //sometimes the dependency itself is a bazel repo that already has bazel files inside of it.
+    //in that case, we don't need to point to our own maintained BUILD rule.
+    //if that's the case, we can set this to true.
+    //sometimes repositories do have their own bazel BUILD files but they are still hard to integrate.
+    //in those cases you sometimes see patch files deleting them, and this staying at false.
+    bool build_content_in_dependency=false;
+    
+    //this represents the content for the entire build file
+    //we want to generate things as much as possible for flexibility and introspection.
+    //these contents may be described in other ways, and effectively transformed into a final string here.
+    Build_Definitions build_defs;
+    
+    //Sometimes the dependencies need to also put stuff in the repo's main workspace
+    Workspace_Settings workspace;
+    
+    // We want each all third party dependencies directly referenced by 1 or more wrapper targets
+    // The rest of the codebase will access the wrapper targets.
+    // This is done to make the includes / bazel deps more predictable.
+    // It also helps isolate these third party dependencies for easier repo management
+    Repo_Dependency_Integration dep_integration;
+▶

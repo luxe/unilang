@@ -1,0 +1,493 @@
+􏶞g􏶟
+􏷲general serialization routines for the payload of J2 messages􏷱
+􏷰􏷯
+􏷮J2_Connection􏷭􏷮Network􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦SendToJ2Messages􏷥􏷢USES: SendHighSpeedMessageT, SendLowSpeedMessageT, SendRepositionMessageT, SendVersionRequestMessageT􏷡
+􏷤􏷣􏷦ReceiveFromJ2Messages􏷥􏷢USES: RcvHighSpeedMessageT, RcvLowSpeedMessageT, RcvEngineDataMessageT, FlightModelEngineMessageT, FlightModelPropellerMessageT, RepositionMessageReplyT, VersionMessageReplyT􏷡
+􏷤􏷣􏷦stddef􏷥􏷢USES: size_t􏷡
+􏷤􏷣􏷦Defs􏷥􏷢USES: BYTE􏷡
+􏷤􏷣􏷦SerializationAction􏷥􏷢USES: SerializationActionE􏷡
+􏶔􏶕􏶒SerializationMacroWrappers􏶓􏶖USES: SERIALIZE_VAR(), SERIALIZE_FULL_ARRAY(), SERIALIZE_PARTIAL_ARRAY()􏶗
+
+􏵺method for partially serializing engine arrays according to J2 ICD􏵻
+􏵸macro uses local buffer data implicitly􏵹
+􏵐-􏵑􏵾SERIALIZE_PARTIAL_ENGINE_ARRAY(X,AMOUNT)􏵿􏵖􏵗􏵼PartiallySerializeEngineArray(pucBuffer, puBufferIterator, X, AMOUNT, sizeof(X)/sizeof(X[0]), eAction)􏵽
+
+􏵺method for partially upacking propeller arrays according to J2 ICD􏵻
+􏵸macro uses local buffer data implicitly􏵹
+􏵐-􏵑􏵾SERIALIZE_Partial_Propeller_Array(X,AMOUNT)􏵿􏵖􏵗􏵼PartiallySerializePropellerArray(pucBuffer, puBufferIterator, X, AMOUNT, sizeof(X)/sizeof(X[0]), eAction)􏵽
+
+􏵺method for partially serializing engine reposition arrays according to J2 ICD􏵻
+􏵸macro uses local buffer data implicitly􏵹
+􏵐-􏵑􏵾SERIALIZE_PARTIAL_ENGINE_REPOSITION_ARRAY(X,AMOUNT)􏵿􏵖􏵗􏵼PartiallySerializeEngineRepositionArray(pucBuffer, puBufferIterator, X, AMOUNT, sizeof(X)/sizeof(X[0]), eAction)􏵽
+
+􏵺method for partially serializing propeller reposition arrays according to J2 ICD􏵻
+􏵸macro uses local buffer data implicitly􏵹
+􏵐-􏵑􏵾SERIALIZE_Partial_Propeller_Reposition_Array(X,AMOUNT)􏵿􏵖􏵗􏵼PartiallySerializePropellerRepositionArray(pucBuffer, puBufferIterator, X, AMOUNT, sizeof(X)/sizeof(X[0]), eAction)􏵽
+
+􏷘+􏷗􏷒serialize j2 high speed send message payload􏷑
+􏷐pack the relevant data into the buffer
+From SimHost to Flight Model􏷏
+􏶠specific serializing for high speed􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀The data buffer to pack the message in􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start serializing the data at􏶿
+􏶜rm􏶝􏷆SendHighSpeedMessageT􏷅􏷄message􏷃􏷀The message to pack􏶿
+􏶜􏶝􏷆SerializationActionE􏷅􏷄action􏷃􏷀the serialization action to perform on the data􏶿
+􏶴
+  SERIALIZE_VAR(􏵶message􏵷->m_fPitchFlightControl);
+  SERIALIZE_VAR(􏵶message􏵷->m_fRollFlightControl);
+  SERIALIZE_VAR(􏵶message􏵷->m_fYawFlightControl);
+  SERIALIZE_VAR(􏵶message􏵷->m_fCollectiveFlightControl);
+  SERIALIZE_VAR(􏵶message􏵷->m_fPitchTrimPosition);
+  SERIALIZE_VAR(􏵶message􏵷->m_fRollTrimPosition);
+  SERIALIZE_VAR(􏵶message􏵷->m_fYawTrimPosition);
+  SERIALIZE_FULL_ARRAY(􏵶message􏵷->m_pfYawSerialActuators);
+  SERIALIZE_VAR(􏵶message􏵷->m_fYawTrimActuators);
+  SERIALIZE_FULL_ARRAY(􏵶message􏵷->m_pfRollSerialActuators);
+  SERIALIZE_VAR(􏵶message􏵷->m_fRollTrimActuators);
+  SERIALIZE_FULL_ARRAY(􏵶message􏵷->m_pfPitchSerialActuators);
+  SERIALIZE_VAR(􏵶message􏵷->m_fPitchTrimActuators);
+  SERIALIZE_FULL_ARRAY(􏵶message􏵷->m_pfCollectiveSerialActuators);
+  SERIALIZE_VAR(􏵶message􏵷->m_fCollectiveTrimActuators);
+  SERIALIZE_VAR(􏵶message􏵷->m_nYawControlOverrideFlag);
+  SERIALIZE_VAR(􏵶message􏵷->m_nPitchControlOverrideFlag);
+  SERIALIZE_VAR(􏵶message􏵷->m_nRollControlOverrideFlag);
+  SERIALIZE_VAR(􏵶message􏵷->m_nCollectiveControlOverrideFlag);
+  SERIALIZE_VAR(􏵶message􏵷->m_fRightBrake);
+  SERIALIZE_VAR(􏵶message􏵷->m_fLeftBrake);
+  SERIALIZE_VAR(􏵶message􏵷->m_fNoseWheelControl);
+  SERIALIZE_VAR(􏵶message􏵷->m_fRotorBrake);
+  SERIALIZE_VAR(􏵶message􏵷->m_nWinchFlag);
+  SERIALIZE_VAR(􏵶message􏵷->m_fWinchLength_m);
+  SERIALIZE_VAR(􏵶message􏵷->m_fWinchPayloadMass_kg);
+  SERIALIZE_VAR(􏵶message􏵷->m_fWinchPayloadX_m);
+  SERIALIZE_VAR(􏵶message􏵷->m_fWinchPayloadY_m);
+  SERIALIZE_VAR(􏵶message􏵷->m_fWinchPayloadZ_m);
+  SERIALIZE_VAR(􏵶message􏵷->m_nHookFlag);
+  SERIALIZE_VAR(􏵶message􏵷->m_fHookLength_m);
+  SERIALIZE_VAR(􏵶message􏵷->m_fHookPayloadMass_kg);
+  SERIALIZE_VAR(􏵶message􏵷->m_fHookPayloadX_m);
+  SERIALIZE_VAR(􏵶message􏵷->m_fHookPayloadY_m);
+  SERIALIZE_VAR(􏵶message􏵷->m_fHookPayloadZ_m);
+  SERIALIZE_VAR(􏵶message􏵷->m_nSASMode);
+  SERIALIZE_VAR(􏵶message􏵷->m_fHeightOfTerrain_ft);
+    
+  􏶲contact point serializing􏶱
+  SERIALIZE_VAR(􏵶message􏵷->m_nNumberOfContactPoints);
+  SERIALIZE_PARTIAL_ARRAY(􏵶message􏵷->m_pfGroundContactLocation_ft,􏵶message􏵷->m_nNumberOfContactPoints);
+  
+  􏶲engine related serializing􏶱
+  SERIALIZE_VAR(􏵶message􏵷->m_nNumberOfEngines);
+  SERIALIZE_PARTIAL_ARRAY(􏵶message􏵷->m_pfThrottle,􏵶message􏵷->m_nNumberOfEngines);
+  SERIALIZE_PARTIAL_ARRAY(􏵶message􏵷->m_pfMixture,􏵶message􏵷->m_nNumberOfEngines);
+  
+  􏶲propeller serializing􏶱
+  SERIALIZE_VAR(􏵶message􏵷->m_nNumberOfPropellers);
+  SERIALIZE_PARTIAL_ARRAY(􏵶message􏵷->m_pfPropPitch_deg,􏵶message􏵷->m_nNumberOfPropellers);
+  
+  􏶲fuel tank serializing􏶱
+  SERIALIZE_VAR(􏵶message􏵷->m_nNumberOfTanks);
+  SERIALIZE_PARTIAL_ARRAY(􏵶message􏵷->m_pfFuelWeight_lbs,􏵶message􏵷->m_nNumberOfTanks);
+  
+  SERIALIZE_VAR(􏵶message􏵷->m_nFlag1);
+􏶳
+
+􏷘+􏷗􏷒serialize j2 low speed send message payload􏷑
+􏷐pack the relevant data into the buffer
+From SimHost to Flight Model􏷏
+􏶠specific serializing for low speed􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀The data buffer to pack the message in􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start serializing the data at􏶿
+􏶜rm􏶝􏷆SendLowSpeedMessageT􏷅􏷄message􏷃􏷀The message to pack􏶿
+􏶜􏶝􏷆SerializationActionE􏷅􏷄action􏷃􏷀the serialization action to perform on the data􏶿
+􏶴
+  􏶲gear related serializing􏶱
+  SERIALIZE_VAR(􏵶message􏵷->m_nNumberOfGears);
+  SERIALIZE_PARTIAL_ARRAY(􏵶message􏵷->m_pnGearRequestedPosition_pct,􏵶message􏵷->m_nNumberOfGears);
+    
+  􏶲flap related serializing􏶱
+  SERIALIZE_VAR(􏵶message􏵷->m_nNumberOfFlaps);
+  SERIALIZE_PARTIAL_ARRAY(􏵶message􏵷->m_pnFlapRequestedPosition_pct,􏵶message􏵷->m_nNumberOfFlaps);
+    
+  􏶲speed brake related serializing􏶱
+  SERIALIZE_VAR(􏵶message􏵷->m_nNumberOfSpeedBrakes);
+  SERIALIZE_PARTIAL_ARRAY(􏵶message􏵷->m_pnSpeedBrakeRequestedPosition_pct,􏵶message􏵷->m_nNumberOfSpeedBrakes);
+    
+  SERIALIZE_VAR(􏵶message􏵷->m_fSeaLevelPressure_inHg);
+  SERIALIZE_VAR(􏵶message􏵷->m_fSeaLevelTemperature_degf);
+  SERIALIZE_VAR(􏵶message􏵷->m_fRunwayRoughness);
+  SERIALIZE_VAR(􏵶message􏵷->m_fWindMagnitude_kts);
+  SERIALIZE_VAR(􏵶message􏵷->m_fWindHeading_deg);
+  SERIALIZE_VAR(􏵶message􏵷->m_fWindInclination_deg);
+  SERIALIZE_VAR(􏵶message􏵷->m_fTurbulence);
+  SERIALIZE_VAR(􏵶message􏵷->m_fPayloadWeight_lbs);
+  SERIALIZE_VAR(􏵶message􏵷->m_fCGOffsetX_in);
+  SERIALIZE_VAR(􏵶message􏵷->m_fCGOffsetY_in);
+  SERIALIZE_VAR(􏵶message􏵷->m_fCGOffsetZ_in);
+    
+  􏶲engine related serializing􏶱
+  SERIALIZE_VAR(􏵶message􏵷->m_nNumberOfEngines);
+  SERIALIZE_PARTIAL_ARRAY(􏵶message􏵷->m_pnEngineStarterRunning,􏵶message􏵷->m_nNumberOfEngines);
+  SERIALIZE_PARTIAL_ARRAY(􏵶message􏵷->m_pnBleedAir,􏵶message􏵷->m_nNumberOfEngines);
+  SERIALIZE_PARTIAL_ARRAY(􏵶message􏵷->m_pnIgnition,􏵶message􏵷->m_nNumberOfEngines);
+  SERIALIZE_PARTIAL_ARRAY(􏵶message􏵷->m_pnEngineFlags1,􏵶message􏵷->m_nNumberOfEngines);
+  SERIALIZE_PARTIAL_ARRAY(􏵶message􏵷->m_pnEngineInletState,􏵶message􏵷->m_nNumberOfEngines);
+  SERIALIZE_PARTIAL_ARRAY(􏵶message􏵷->m_pfIceStateEngine_in,􏵶message􏵷->m_nNumberOfEngines);
+  SERIALIZE_PARTIAL_ARRAY(􏵶message􏵷->m_pnEngineFailureFlags,􏵶message􏵷->m_nNumberOfEngines);
+  
+  􏶲propeller related serializing􏶱
+  SERIALIZE_VAR(􏵶message􏵷->m_nNumberOfPropellers);
+  SERIALIZE_PARTIAL_ARRAY(􏵶message􏵷->m_pfIceStatesProp_in,􏵶message􏵷->m_nNumberOfPropellers);
+    
+  SERIALIZE_VAR(􏵶message􏵷->m_fIceStateRightWing_in);
+  SERIALIZE_VAR(􏵶message􏵷->m_fIceStateLeftWing_in);
+  SERIALIZE_VAR(􏵶message􏵷->m_fIceStateFuselage_in);
+  SERIALIZE_VAR(􏵶message􏵷->m_fIceStateTail_in);
+  SERIALIZE_VAR(􏵶message􏵷->m_nTimeMultiplier);
+  SERIALIZE_VAR(􏵶message􏵷->m_nFailureFlags1);
+􏶳
+
+􏷘+􏷗􏷒serialize j2 reposition send message payload􏷑
+􏷐pack the relevant data into the buffer
+From SimHost to Flight Model􏷏
+􏶠specific serializing for reposition􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀The data buffer to pack the message in􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start serializing the data at􏶿
+􏶜rm􏶝􏷆SendRepositionMessageT􏷅􏷄message􏷃􏷀The message to pack􏶿
+􏶜􏶝􏷆SerializationActionE􏷅􏷄action􏷃􏷀the serialization action to perform on the data􏶿
+􏶴
+    SERIALIZE_VAR(􏵶message􏵷->m_nRepositionType);
+    SERIALIZE_VAR(􏵶message􏵷->m_dLatitude_deg);
+    SERIALIZE_VAR(􏵶message􏵷->m_dLongitude_deg);
+    SERIALIZE_VAR(􏵶message􏵷->m_dMSLAltitude_ft);
+    SERIALIZE_VAR(􏵶message􏵷->m_fMagneticHeading_deg);
+    SERIALIZE_VAR(􏵶message􏵷->m_fIndicatedAirspeed_kts);
+    SERIALIZE_VAR(􏵶message􏵷->m_fAircraftPitch_deg);
+    SERIALIZE_VAR(􏵶message􏵷->m_fAircraftRoll_deg);
+    SERIALIZE_VAR(􏵶message􏵷->m_fVerticalSpeed_fpm);
+
+    􏶲engine related serializing􏶱
+    SERIALIZE_VAR(􏵶message􏵷->m_nNumberOfEngines);
+    SERIALIZE_PARTIAL_ENGINE_REPOSITION_ARRAY(􏵶message􏵷->m_ptEngine,􏵶message􏵷->m_nNumberOfEngines);
+
+    􏶲propeller related serializing􏶱
+    SERIALIZE_VAR(􏵶message􏵷->m_nNumberOfPropellers);
+    SERIALIZE_PARTIAL_PROPELLER_REPOSITION_ARRAY(􏵶message􏵷->m_ptPropeller,􏵶message􏵷->m_nNumberOfPropellers);
+    
+    SERIALIZE_VAR(􏵶message􏵷->m_fPitchFlightControl);
+    SERIALIZE_VAR(􏵶message􏵷->m_fRollFlightControl);
+    SERIALIZE_VAR(􏵶message􏵷->m_fYawFlightControl);
+    SERIALIZE_VAR(􏵶message􏵷->m_fCollectiveFlightControl);
+􏶳
+
+􏷘+􏷗􏷒serialize j2 version request message payload􏷑
+􏷐pack the relevant data into the buffer
+From SimHost to Flight Model􏷏
+􏶠specific serializing for version􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀The data buffer to pack the message in􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start serializing the data at􏶿
+􏶜rm􏶝􏷆SendVersionRequestMessageT􏷅􏷄message􏷃􏷀The message to pack􏶿
+􏶜􏶝􏷆SerializationActionE􏷅􏷄action􏷃􏷀the serialization action to perform on the data􏶿
+􏶴
+    //payload is empty
+􏶳
+
+
+
+
+􏷘+􏷗􏷒serialize j2 high speed received message payload􏷑
+􏷐Used to pack the incoming J2 high speed payload.
+From Flight Model to SimHost􏷏
+􏶠specific serializing for high speed􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀The data buffer to pack the message from􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start serializing the data at􏶿
+􏶜rm􏶝􏷆RcvHighSpeedMessageT􏷅􏷄message􏷃􏷀The message to pack􏶿
+􏶜􏶝􏷆SerializationActionE􏷅􏷄action􏷃􏷀the serialization action to perform on the data􏶿
+􏶴
+    SERIALIZE_VAR(􏵶message􏵷->m_dLatitude_deg);
+    SERIALIZE_VAR(􏵶message􏵷->m_dLongitude_deg);
+    SERIALIZE_VAR(􏵶message􏵷->m_dMSLAltitude_ft);
+    SERIALIZE_VAR(􏵶message􏵷->m_fTheta_deg);
+    SERIALIZE_VAR(􏵶message􏵷->m_fPsi_deg);
+    SERIALIZE_VAR(􏵶message􏵷->m_fBeta_deg);
+    SERIALIZE_VAR(􏵶message􏵷->m_fPhi_deg);
+    SERIALIZE_VAR(􏵶message􏵷->m_fAlpha_deg);
+    SERIALIZE_VAR(􏵶message􏵷->m_fSlip_deg);
+    SERIALIZE_VAR(􏵶message􏵷->m_fAngleOfAttack);
+    SERIALIZE_VAR(􏵶message􏵷->m_fVelocityX_mps);
+    SERIALIZE_VAR(􏵶message􏵷->m_fVelocityY_mps);
+    SERIALIZE_VAR(􏵶message􏵷->m_fVelocityZ_mps);
+    SERIALIZE_VAR(􏵶message􏵷->m_fAccelX_mpss);
+    SERIALIZE_VAR(􏵶message􏵷->m_fAccelY_mpss);
+    SERIALIZE_VAR(􏵶message􏵷->m_fAccelZ_mpss);
+    SERIALIZE_VAR(􏵶message􏵷->m_fPitchRate_dps);
+    SERIALIZE_VAR(􏵶message􏵷->m_fRollRate_dps);
+    SERIALIZE_VAR(􏵶message􏵷->m_fYawRate_dps);
+    SERIALIZE_VAR(􏵶message􏵷->m_fPitchAccel_dpss);
+    SERIALIZE_VAR(􏵶message􏵷->m_fRollAccel_dpss);
+    SERIALIZE_VAR(􏵶message􏵷->m_fYawAccel_dpss);
+    SERIALIZE_VAR(􏵶message􏵷->m_fTrueAirspeedLong_kts);
+    SERIALIZE_VAR(􏵶message􏵷->m_fTrueAirspeedLat_kts);
+    SERIALIZE_VAR(􏵶message􏵷->m_fTrueAirspeedVert_kts);
+    SERIALIZE_VAR(􏵶message􏵷->m_fGroundSpeed_kts);
+    SERIALIZE_VAR(􏵶message􏵷->m_fVerticalSpeed_fpm);
+    SERIALIZE_VAR(􏵶message􏵷->m_fIndicatedAirspeedLong_kts);
+    SERIALIZE_VAR(􏵶message􏵷->m_fIndicatedAirspeedLat_kts);
+    SERIALIZE_VAR(􏵶message􏵷->m_fIndicatedAirspeedVert_kts);
+    SERIALIZE_VAR(􏵶message􏵷->m_fMachNumber);
+    SERIALIZE_VAR(􏵶message􏵷->m_fNorthVelocity_kts);
+    SERIALIZE_VAR(􏵶message􏵷->m_fEastVelocity_kts);
+    SERIALIZE_VAR(􏵶message􏵷->m_fDynamicPressure_Pa);
+    SERIALIZE_VAR(􏵶message􏵷->m_fMagneticHeading_deg);
+    
+    
+    􏶲landing gear serializing􏶱
+    SERIALIZE_VAR(􏵶message􏵷->m_nNumberOfLandingGears);
+    SERIALIZE_PARTIAL_ARRAY(􏵶message􏵷->m_pfWeightOnLandingGear_lbs,􏵶message􏵷->m_nNumberOfLandingGears);
+    
+    
+    SERIALIZE_VAR(􏵶message􏵷->m_nFlag1);
+    SERIALIZE_VAR(􏵶message􏵷->m_fPilotSeatCgOffsetX_m);
+    SERIALIZE_VAR(􏵶message􏵷->m_fPilotSeatCgOffsetY_m);
+    SERIALIZE_VAR(􏵶message􏵷->m_fPilotSeatCgOffsetZ_m);
+    SERIALIZE_VAR(􏵶message􏵷->m_fCoPilotSeatCgOffsetX_m);
+    SERIALIZE_VAR(􏵶message􏵷->m_fCoPilotSeatCgOffsetY_m);
+    SERIALIZE_VAR(􏵶message􏵷->m_fCoPilotSeatCgOffsetZ_m);
+    SERIALIZE_FULL_ARRAY(􏵶message􏵷->m_pfYawSerialActuators);
+    SERIALIZE_VAR(􏵶message􏵷->m_fYawTrimActuators);
+    SERIALIZE_FULL_ARRAY(􏵶message􏵷->m_pfRollSerialActuators);
+    SERIALIZE_VAR(􏵶message􏵷->m_fRollTrimActuators);
+    SERIALIZE_FULL_ARRAY(􏵶message􏵷->m_pfPitchSerialActuators);
+    SERIALIZE_VAR(􏵶message􏵷->m_fPitchTrimActuators);
+    SERIALIZE_FULL_ARRAY(􏵶message􏵷->m_pfCollectiveSerialActuators);
+    SERIALIZE_VAR(􏵶message􏵷->m_fCollectiveTrimActuators);
+    
+    􏶲surface serializing􏶱
+    SERIALIZE_VAR(􏵶message􏵷->m_nNumberOfSurfaces);
+    SERIALIZE_PARTIAL_ARRAY(􏵶message􏵷->m_pfSurfaceQ,􏵶message􏵷->m_nNumberOfSurfaces);
+    SERIALIZE_PARTIAL_ARRAY(􏵶message􏵷->m_pfSurfaceAngleOfIncidence,􏵶message􏵷->m_nNumberOfSurfaces);
+    SERIALIZE_PARTIAL_ARRAY(􏵶message􏵷->m_pfSurfaceTorque,􏵶message􏵷->m_nNumberOfSurfaces);
+    
+    SERIALIZE_VAR(􏵶message􏵷->m_fBuffetMagnitude);
+    
+    􏶲spare bucket serializing􏶱
+    SERIALIZE_VAR(􏵶message􏵷->m_nSpareBucketSize);
+    SERIALIZE_PARTIAL_ARRAY(􏵶message􏵷->m_pfSpareBucket,􏵶message􏵷->m_nSpareBucketSize);
+􏶳
+
+􏷘+􏷗􏷒serialize j2 low speed received message payload􏷑
+􏷐Used to pack the incoming J2 low speed payload.
+From Flight Model to SimHost􏷏
+􏶠specific serializing for low speed􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀The data buffer to pack the message from􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start serializing the data at􏶿
+􏶜rm􏶝􏷆RcvLowSpeedMessageT􏷅􏷄message􏷃􏷀The message to pack􏶿
+􏶜􏶝􏷆SerializationActionE􏷅􏷄action􏷃􏷀the serialization action to perform on the data􏶿
+􏶴
+    SERIALIZE_VAR(􏵶message􏵷->m_fOutsideAirTemperature_degf);
+    SERIALIZE_VAR(􏵶message􏵷->m_fOutsideAirPressure_inHg);
+    SERIALIZE_VAR(􏵶message􏵷->m_fNoseWheelPosition_deg);
+    SERIALIZE_VAR(􏵶message􏵷->m_fMagneticVariation_deg);
+􏶳
+
+􏷘+􏷗􏷒serialize j2 engine received message payload􏷑
+􏷐Used to pack the incoming J2 engine payload.
+From Flight Model to SimHost􏷏
+􏶠specific serializing for engine􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀The data buffer to pack the message from􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start serializing the data at􏶿
+􏶜rm􏶝􏷆RcvEngineDataMessageT􏷅􏷄message􏷃􏷀The message to pack􏶿
+􏶜􏶝􏷆SerializationActionE􏷅􏷄action􏷃􏷀the serialization action to perform on the data􏶿
+􏶴
+    SERIALIZE_VAR(􏵶message􏵷->m_nNumberOfEngines);
+    SERIALIZE_PARTIAL_ENGINE_ARRAY(􏵶message􏵷->m_ptEngine,􏵶message􏵷->m_nNumberOfEngines);
+
+    SERIALIZE_VAR(􏵶message􏵷->m_nNumberOfPropellers);
+    SERIALIZE_PARTIAL_PROPELLER_ARRAY(􏵶message􏵷->m_ptPropeller,􏵶message􏵷->m_nNumberOfPropellers);
+􏶳
+
+􏷘+􏷗􏷒serialize j2 reposition received message payload􏷑
+􏷐Used to pack the incoming J2 reposition payload.
+From Flight Model to SimHost􏷏
+􏶠specific serializing for reposition􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀The data buffer to pack the message from􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start serializing the data at􏶿
+􏶜rm􏶝􏷆RepositionMessageReplyT􏷅􏷄message􏷃􏷀The message to pack􏶿
+􏶜􏶝􏷆SerializationActionE􏷅􏷄action􏷃􏷀the serialization action to perform on the data􏶿
+􏶴
+    SERIALIZE_VAR(􏵶message􏵷->m_fYawControlPosition);
+    SERIALIZE_VAR(􏵶message􏵷->m_fThrottlePosition);
+    SERIALIZE_VAR(􏵶message􏵷->m_fLateralControlPosition);
+    SERIALIZE_VAR(􏵶message􏵷->m_fLongitudinalControlPosition);
+􏶳
+
+􏷘+􏷗􏷒serialize j2 version received message payload􏷑
+􏷐Used to pack the incoming J2 version request payload.
+From Flight Model to SimHost􏷏
+􏶠specific serializing for version􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀The data buffer to pack the message from􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start serializing the data at􏶿
+􏶜rm􏶝􏷆VersionMessageReplyT􏷅􏷄message􏷃􏷀The message to pack􏶿
+􏶜􏶝􏷆SerializationActionE􏷅􏷄action􏷃􏷀the serialization action to perform on the data􏶿
+􏶴
+    SERIALIZE_VAR(􏵶message􏵷->m_fJ2Version);
+    SERIALIZE_VAR(􏵶message􏵷->m_fAircraftModel);
+    
+    􏶲dev item serializing􏶱
+    SERIALIZE_VAR(􏵶message􏵷->m_nNumberOfDeveloperItems);
+    SERIALIZE_PARTIAL_ARRAY(􏵶message􏵷->m_szDevItem,􏵶message􏵷->m_nNumberOfDeveloperItems);
+􏶳
+
+
+
+
+
+
+
+􏷘-􏷗􏷒partially serialize engine array􏷑
+􏷐Used to partially pack the incoming J2 engine array.
+From Flight Model to SimHost􏷏
+􏶠specific serializing for engine struct􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start serializing the data at􏶿
+􏶜m􏶝􏷆FlightModelEngineMessageT[]􏷅􏷄message􏷃􏷀the array to be packed􏶿
+􏶜􏶝􏷆size_t􏷅􏷄number of elements􏷃􏷀the number of elements to pack from the start of the array􏶿
+􏶜􏶝􏷆size_t􏷅􏷄array size􏷃􏷀the maximum size of the array􏶿
+􏶜􏶝􏷆SerializationActionE􏷅􏷄action􏷃􏷀the serialization action to perform on the data􏶿
+􏶴
+    size_t uIndex = 0;
+    for(; uIndex < 􏵶number of elements􏵷 && uIndex < 􏵶array size􏵷; ++uIndex){
+        􏵲serialize engine struct􏵳􏵶buffer􏵷,􏵶buffer iterator􏵷,&􏵶message􏵷[uIndex],􏵶action􏵷);
+    }
+􏶳
+
+􏷘-􏷗􏷒partially serialize propeller array􏷑
+􏷐Used to partially pack the incoming J2 propeller array.
+From Flight Model to SimHost􏷏
+􏶠specific serializing for propeller struct􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start serializing the data at􏶿
+􏶜m􏶝􏷆FlightModelPropellerMessageT[]􏷅􏷄message􏷃􏷀the array to be packed􏶿
+􏶜􏶝􏷆size_t􏷅􏷄number of elements􏷃􏷀the number of elements to pack from the start of the array􏶿
+􏶜􏶝􏷆size_t􏷅􏷄array size􏷃􏷀the maximum size of the array􏶿
+􏶜􏶝􏷆SerializationActionE􏷅􏷄action􏷃􏷀the serialization action to perform on the data􏶿
+􏶴
+    size_t uIndex = 0;
+    for(; uIndex < 􏵶number of elements􏵷 && uIndex < 􏵶array size􏵷; ++uIndex){
+        􏵲serialize propeller struct􏵳􏵶buffer􏵷,􏵶buffer iterator􏵷,&􏵶message􏵷[uIndex],􏵶action􏵷);
+    }
+􏶳
+
+
+
+􏷘-􏷗􏷒serialize engine struct􏷑
+􏷐Used to pack the incoming J2 engine struct.
+From Flight Model to SimHost􏷏
+􏶠specific serializing for version􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀The data buffer to pack the message from􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start serializing the data at􏶿
+􏶜rm􏶝􏷆FlightModelEngineMessageT􏷅􏷄message􏷃􏷀The message to pack􏶿
+􏶜􏶝􏷆SerializationActionE􏷅􏷄action􏷃􏷀the serialization action to perform on the data􏶿
+􏶴
+    SERIALIZE_VAR(􏵶message􏵷->m_fN1_pct);
+    SERIALIZE_VAR(􏵶message􏵷->m_fN2_pct);
+    SERIALIZE_VAR(􏵶message􏵷->m_fTorque_ftlbs);
+    SERIALIZE_VAR(􏵶message􏵷->m_fFuelFlow_pph);
+    SERIALIZE_VAR(􏵶message􏵷->m_fOilTemperature_degf);
+    SERIALIZE_VAR(􏵶message􏵷->m_fOilPressure_psi);
+    SERIALIZE_VAR(􏵶message􏵷->m_fExhaustGasTemperature_degf);
+    SERIALIZE_VAR(􏵶message􏵷->m_fCylinderHeadTemperature_degf);
+    SERIALIZE_VAR(􏵶message􏵷->m_fEngineRPM);
+    SERIALIZE_VAR(􏵶message􏵷->m_fEngineThrust_lbs);
+    SERIALIZE_VAR(􏵶message􏵷->m_fManifoldPressure_inHg);
+    SERIALIZE_VAR(􏵶message􏵷->m_fInletTurbineTemperature_degc);
+    SERIALIZE_VAR(􏵶message􏵷->m_fBleedAirPressureGenerated_psi);
+􏶳
+
+􏷘-􏷗􏷒serialize propeller struct􏷑
+􏷐Used to pack the incoming J2 propeller struct.
+From Flight Model to SimHost􏷏
+􏶠specific serializing for version􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀The data buffer to pack the message from􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start serializing the data at􏶿
+􏶜rm􏶝􏷆FlightModelPropellerMessageT􏷅􏷄message􏷃􏷀The message to pack􏶿
+􏶜􏶝􏷆SerializationActionE􏷅􏷄action􏷃􏷀the serialization action to perform on the data􏶿
+􏶴
+    SERIALIZE_VAR(􏵶message􏵷->m_fPropRPM);
+    SERIALIZE_VAR(􏵶message􏵷->m_fPropPitch_deg);
+    SERIALIZE_VAR(􏵶message􏵷->m_fMastMomentDirection_deg);
+    SERIALIZE_VAR(􏵶message􏵷->m_fMastMomentForce_Nm);
+􏶳
+
+
+
+
+
+
+
+
+
+􏷘-􏷗􏷒partially serialize engine reposition array􏷑
+􏷐Used to partially pack the incoming J2 engine reposition array.
+From SimHost to Flight Model􏷏
+􏶠specific serializing for engine reposition struct􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start serializing the data at􏶿
+􏶜m􏶝􏷆EngineRepositionT[]􏷅􏷄message􏷃􏷀the array to be packed􏶿
+􏶜􏶝􏷆size_t􏷅􏷄number of elements􏷃􏷀the number of elements to pack from the start of the array􏶿
+􏶜􏶝􏷆size_t􏷅􏷄array size􏷃􏷀the maximum size of the array􏶿
+􏶜􏶝􏷆SerializationActionE􏷅􏷄action􏷃􏷀the serialization action to perform on the data􏶿
+􏶴
+    size_t uIndex = 0;
+    for(; uIndex < 􏵶number of elements􏵷 && uIndex < 􏵶array size􏵷; ++uIndex){
+        􏵲serialize engine reposition struct􏵳􏵶buffer􏵷,􏵶buffer iterator􏵷,&􏵶message􏵷[uIndex],􏵶action􏵷);
+    }
+􏶳
+
+􏷘-􏷗􏷒partially serialize propeller reposition array􏷑
+􏷐Used to partially pack the incoming J2 propeller reposition array.
+From SimHost to Flight Model􏷏
+􏶠specific serializing for propeller reposition struct􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start serializing the data at􏶿
+􏶜m􏶝􏷆PropellerRepositionT[]􏷅􏷄message􏷃􏷀the array to be packed􏶿
+􏶜􏶝􏷆size_t􏷅􏷄number of elements􏷃􏷀the number of elements to pack from the start of the array􏶿
+􏶜􏶝􏷆size_t􏷅􏷄array size􏷃􏷀the maximum size of the array􏶿
+􏶜􏶝􏷆SerializationActionE􏷅􏷄action􏷃􏷀the serialization action to perform on the data􏶿
+􏶴
+    size_t uIndex = 0;
+    for(; uIndex < 􏵶number of elements􏵷 && uIndex < 􏵶array size􏵷; ++uIndex){
+        􏵲serialize propeller reposition struct􏵳􏵶buffer􏵷,􏵶buffer iterator􏵷,&􏵶message􏵷[uIndex],􏵶action􏵷);
+    }
+􏶳
+
+
+
+􏷘-􏷗􏷒serialize engine reposition struct􏷑
+􏷐Used to pack the incoming J2 engine reposition struct.
+From SimHost to Flight Model􏷏
+􏶠specific packing for version􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀The data buffer to pack the message from􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start packing the data at􏶿
+􏶜rm􏶝􏷆EngineRepositionT􏷅􏷄message􏷃􏷀The message to pack􏶿
+􏶜􏶝􏷆SerializationActionE􏷅􏷄action􏷃􏷀the serialization action to perform on the data􏶿
+􏶴
+    SERIALIZE_VAR(􏵶message􏵷->m_nRunning);
+    SERIALIZE_VAR(􏵶message􏵷->m_fPiston_rpm);
+    SERIALIZE_VAR(􏵶message􏵷->m_fN1_pct);
+    SERIALIZE_VAR(􏵶message􏵷->m_fN2_pct);
+􏶳
+
+􏷘-􏷗􏷒serialize propeller reposition struct􏷑
+􏷐Used to pack the incoming J2 propeller reposition struct.
+From SimHost to Flight Model􏷏
+􏶠specific packing for version􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀The data buffer to pack the message from􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start packing the data at􏶿
+􏶜rm􏶝􏷆PropellerRepositionT􏷅􏷄message􏷃􏷀The message to pack􏶿
+􏶜􏶝􏷆SerializationActionE􏷅􏷄action􏷃􏷀the serialization action to perform on the data􏶿
+􏶴
+    SERIALIZE_VAR(􏵶message􏵷->m_fPiston_rpm);
+􏶳

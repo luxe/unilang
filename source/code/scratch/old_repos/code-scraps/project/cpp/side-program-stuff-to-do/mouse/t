@@ -1,0 +1,14 @@
+Q: Why do you need a seperate thread for mouse events?  
+A: 
+
+
+things we may care about:
+
+ - clicks (as soon as the mouse is pressed down)
+ - double clicks (determined by custom duration between clicks)
+ - holds (determined by custom duration between down/up events)
+
+---
+Q: Why can't the "mouse thread" derive "click", "double click", and "hold" for the VDU processing thread?
+
+A: The VDU thread may want to react immediately to a mouse down event, and then do something later as it discovers the mouse is being held or double clicked.  Determining this inside the mouse thread would cause unnecessary delay, as it would need to wait and determine the mouse event. The responsibly to determining a click(mouse down/up), a double click, and a hold will need to be passed on to the reader of the queue.  All of these events can be derived based on 

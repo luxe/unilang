@@ -1,0 +1,271 @@
+class
+❪iostream❫
+❪fstream❫
+❪"code/programs/repo_tools/repo_stats/program_options/program_options"❫
+❪"code/utilities/build/build_repo_establisher/build_repo_establisher"❫
+❪"code/utilities/program/wrappers/bazel/fetch/fetch_results"❫
+❪"code/utilities/data_structures/endpoint/endpoint"❫
+⚯
+❪"code/utilities/program/wrappers/bazel/query/bazel_aquery_runner"❫
+❪"code/utilities/program/wrappers/bazel/query/bazel_cquery_runner"❫
+❪"code/utilities/program/wrappers/bazel/query/bazel_query_runner"❫
+❪"code/utilities/program/wrappers/bazel/fetch/bazel_fetch_runner"❫
+❪"code/utilities/program/wrappers/bazel/clean/bazel_clean_runner"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
+❪"code/utilities/output/printers/lib"❫
+❪"code/utilities/formats/json/converters/type_to_json_string"❫
+❪"code/utilities/web/statsd/statsd_nc_poster"❫
+❪"code/utilities/data_structures/counters/unique_counter/unique_counter"❫
+❪"code/utilities/types/strings/observers/counters/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/strings/observers/path/lib"❫
+❪"code/utilities/metrics/metrics_publisher"❫
+❪"code/programs/repo_tools/repo_stats/phases/aquery_metrics_getter"❫
+⚞⚟
+
+
+
+//https://github.com/bazelbuild/bazel/blob/master/src/main/protobuf/analysis.proto
+◀public: static▶ void ☀Perform(Build_Repo_Settings const& repo_context, std::vector<Endpoint> const& endpoints) ❰
+
+    Do_Cquery_Stuff(repo_context,endpoints);
+    Do_Aquery_Stuff(repo_context,endpoints);
+    
+❱
+
+◀public: static▶ void ☀Do_Cquery_Stuff(Build_Repo_Settings const& repo_context, std::vector<Endpoint> const& endpoints) ❰
+
+    std::cout << "getting cquery results..." << std::endl;
+    auto results = Bazel_Cquery_Runner::Run(repo_context.program_to_run_build,"deps(//...)");
+    // if (results.spawn_results.results.return_code != 0){
+    //     std::cerr << results.spawn_results.results.stderr << std::endl;
+    // }
+
+    std::cout << "publishing target graph metrics..." << std::endl;
+    std::string phase_prefix = "target_graph_";
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "fetch_time_return_code",std::to_string(results.spawn_results.results.return_code));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "fetch_stdout_line_count",std::to_string(Count_Newlines(results.spawn_results.results.stdout)));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "fetch_stderr_line_count",std::to_string(Count_Newlines(results.spawn_results.results.stderr)));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "fetch_stdout_line_size",std::to_string(results.spawn_results.results.stdout.size()));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "fetch_stderr_line_size",std::to_string(results.spawn_results.results.stderr.size()));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "fetch_stderr_errors",std::to_string(countSubstring(results.spawn_results.results.stderr,"ERROR:")));
+    
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "cquery_time",std::to_string(results.spawn_results.time_s.count()));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "cquery_deserialization_time_ms",std::to_string(results.deserialization_time_ms));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "cquery_file_size",std::to_string(results.cquery_file_size));
+    
+    
+    //declare metrics
+    int configured_target_count = 0;
+    int test_count = 0;
+    int flaky_count = 0;
+    int local_count = 0;
+    Unique_Counter<std::string> config_mnemonics;
+    Unique_Counter<std::string> platform_names;
+    Unique_Counter<std::string> target_discriminator_breakdown;
+    Unique_Counter<std::string> rule_classes;
+    Unique_Counter<std::string> attribute_kinds;
+    Unique_Counter<std::string> exec_properties;
+    Unique_Counter<std::string> exec_compatible_with;
+    Unique_Counter<std::string> target_compatible_with;
+    Unique_Counter<std::string> test_sizes;
+    Unique_Counter<std::string> tags;
+    Unique_Counter<std::string> timeouts;
+    Unique_Counter<std::string> toolchains;
+    Unique_Counter<std::string> features;
+    Unique_Counter<std::string> no_remote_rules;
+    Unique_Counter<std::string> no_cache_rules;
+    
+    //get metrics
+    configured_target_count = results.cquery_result.results().size();
+    for (auto const& it: results.cquery_result.results()){
+        config_mnemonics.Add(it.configuration().mnemonic());
+        platform_names.Add(it.configuration().platform_name());
+        
+        switch (it.target().type()){
+            case blaze_query::Target_Discriminator_RULE:
+            target_discriminator_breakdown.Add("Rule");
+            break;
+            case blaze_query::Target_Discriminator_SOURCE_FILE:
+            target_discriminator_breakdown.Add("Source File");
+            break;
+            case blaze_query::Target_Discriminator_GENERATED_FILE:
+            target_discriminator_breakdown.Add("Generated File");
+            break;
+            case blaze_query::Target_Discriminator_PACKAGE_GROUP:
+            target_discriminator_breakdown.Add("Package Group");
+            break;
+            case blaze_query::Target_Discriminator_ENVIRONMENT_GROUP:
+            target_discriminator_breakdown.Add("Environment Group");
+            break;
+        }
+        
+        if (it.target().has_rule()){
+            
+            // I believe this is how bazel determines whether a target is a test or not- based on the rule name suffix.
+            if (Ends_With(it.target().rule().rule_class(),"_test")){
+                test_count++;
+            }
+            
+            rule_classes.Add(it.target().rule().rule_class());
+            for (auto const& attribute: it.target().rule().attribute()){
+                attribute_kinds.Add(attribute.name());
+                
+                if (attribute.name() == "exec_properties" && attribute.type() == blaze_query::Attribute_Discriminator_STRING_DICT){
+                    for (auto pair: attribute.string_dict_value()){
+                        exec_properties.Add(pair.key());
+                    }
+                }
+                
+                if (attribute.name() == "size" && attribute.type() == blaze_query::Attribute_Discriminator_STRING){
+                    auto str = attribute.string_value();
+                    test_sizes.Add(str);
+                }
+                
+                if (attribute.name() == "tags" && attribute.type() == blaze_query::Attribute_Discriminator_STRING_LIST){
+                    for (auto const& str: attribute.string_list_value()){
+                        tags.Add(str);
+                        
+                        if (str == "no-remote"){
+                            no_remote_rules.Add(it.target().rule().rule_class());
+                        }
+                        if (str == "no-cache"){
+                            no_cache_rules.Add(it.target().rule().rule_class());
+                        }
+                    }
+                }
+                
+                if (attribute.name() == "exec_compatible_with" && attribute.type() == blaze_query::Attribute_Discriminator_LABEL_LIST){
+                    for (auto const& str: attribute.string_list_value()){
+                        exec_compatible_with.Add(str);
+                    }
+                }
+                
+                if (attribute.name() == "target_compatible_with" && attribute.type() == blaze_query::Attribute_Discriminator_LABEL_LIST){
+                    for (auto const& str: attribute.string_list_value()){
+                        target_compatible_with.Add(str);
+                    }
+                }
+                
+                if (attribute.name() == "flaky" && attribute.type() == blaze_query::Attribute_Discriminator_BOOLEAN){
+                    if (attribute.boolean_value() == true){
+                        flaky_count++;
+                    }
+                }
+                
+                if (attribute.name() == "local" && attribute.type() == blaze_query::Attribute_Discriminator_BOOLEAN){
+                    if (attribute.boolean_value() == true){
+                        local_count++;
+                    }
+                }
+                
+                if (attribute.name() == "timeout" && attribute.type() == blaze_query::Attribute_Discriminator_STRING){
+                    auto str = attribute.string_value();
+                    timeouts.Add(str);
+                }
+                
+                if (attribute.name() == "toolchains" && attribute.type() == blaze_query::Attribute_Discriminator_LABEL_LIST){
+                    for (auto const& str: attribute.string_list_value()){
+                        toolchains.Add(str);
+                    }
+                }
+                
+                if (attribute.name() == "features" && attribute.type() == blaze_query::Attribute_Discriminator_STRING_LIST){
+                    for (auto const& str: attribute.string_list_value()){
+                        features.Add(str);
+                    }
+                }
+                
+            }
+        }
+    }
+    
+    
+    //maybe something interesting can be parsed out of attribute: args
+    //attribute: data (how many targets use data).  What is the average data count?
+    //attribute: deps (how many targets have deps).  What is the average deps count?
+    //we could count "ruleInput" size
+    
+    //attribute: "licenses" (count these)
+    
+    //other attributes:
+//     includes
+//     copts
+//     linkstatic
+//     linkopts
+//     defines
+//     local_defines
+//     env
+//     alwayslink
+//     include_prefix
+//     python_version
+//     py_interpreter
+//     :run_under
+//     linkshared
+    
+// cxxopts
+// cppopts
+// clinkopts
+    
+    
+    
+    
+    
+    //publish metrics
+    phase_prefix += "cquery_";
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "target_count",std::to_string(configured_target_count));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "test_count",std::to_string(test_count));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "flaky_count",std::to_string(flaky_count));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "local_count",std::to_string(local_count));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "config_mnemonics","value",config_mnemonics.hash_table);
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "platform_names","value",platform_names.hash_table);
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "target_discriminator_breakdown","value",target_discriminator_breakdown.hash_table);
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "rule_classes","value",rule_classes.hash_table);
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "attribute_kinds","value",attribute_kinds.hash_table);
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "exec_properties","value",exec_properties.hash_table);
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "exec_compatible_with","value",exec_compatible_with.hash_table);
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "target_compatible_with","value",target_compatible_with.hash_table);
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "test_sizes","value",test_sizes.hash_table);
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "tags","value",tags.hash_table);
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "timeouts","value",timeouts.hash_table);
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "toolchains","value",toolchains.hash_table);
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "features","value",features.hash_table);
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "no_remote_rules","value",no_remote_rules.hash_table);
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "no_cache_rules","value",no_cache_rules.hash_table);
+    
+❱
+
+◀public: static▶ void ☀Do_Aquery_Stuff(Build_Repo_Settings const& repo_context, std::vector<Endpoint> const& endpoints) ❰
+
+    std::cout << "getting aquery results..." << std::endl;
+    auto results = Bazel_Aquery_Runner::Run_Aquery(repo_context.program_to_run_build,"deps(//...)");
+    // if (results.spawn_results.results.return_code != 0){
+    //     std::cerr << results.spawn_results.results.stderr << std::endl;
+    // }
+    
+    std::cout << "publishing action graph metrics..." << std::endl;
+    std::string phase_prefix = "build_graph_"; //TODO: change to action_graph_
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "fetch_time_return_code",std::to_string(results.spawn_results.results.return_code));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "fetch_stdout_line_count",std::to_string(Count_Newlines(results.spawn_results.results.stdout)));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "fetch_stderr_line_count",std::to_string(Count_Newlines(results.spawn_results.results.stderr)));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "fetch_stdout_line_size",std::to_string(results.spawn_results.results.stdout.size()));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "fetch_stderr_line_size",std::to_string(results.spawn_results.results.stderr.size()));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "fetch_stderr_errors",std::to_string(countSubstring(results.spawn_results.results.stderr,"ERROR:")));
+    
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "aquery_time",std::to_string(results.spawn_results.time_s.count()));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "aquery_deserialization_time_ms",std::to_string(results.aquery_deserialization_time_ms));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "aquery_file_size",std::to_string(results.aquery_file_size));
+    
+    
+    auto aquery_metrics = Aquery_Metrics_Getter::Get(results.aquery_result);
+    
+    phase_prefix += "aquery_";
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "artifacts_count",std::to_string(aquery_metrics.artifacts_count));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "actions_count",std::to_string(aquery_metrics.actions_count));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "targets_count",std::to_string(aquery_metrics.targets_count));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "dep_set_of_files_count",std::to_string(aquery_metrics.dep_set_of_files_count));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "configuration_count",std::to_string(aquery_metrics.configuration_count));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "aspect_descriptors_count",std::to_string(aquery_metrics.aspect_descriptors_count));
+    Metrics_Publisher::Publish(endpoints,"g",phase_prefix + "rule_classes_count",std::to_string(aquery_metrics.rule_classes_count));
+❱

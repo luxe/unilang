@@ -1,0 +1,468 @@
+􏶞p􏶟
+􏷲A generic node type which represents an electrical component inside of an electrical graph.
+Components of an electrical graph can be interconnected through the use of a nodes and wires.
+*Interconnecting is done automatically through the Electrical Graph's API􏷱
+􏷰NOTE: this is custom data for a graph vertex
+it's just data.  It has no properties related to how its in the graph
+It has no properties related to how its connected to other nodes.
+
+From a computer science perspective, a NodeT is the vertex of a graph.
+The WireTs that connect NodeTs can be looked at as edges. 
+The reason we are not naming things vertex/edge in our code, 
+is because the terms node/wire provide a better fit when describing an electrical circuit.
+
+For the most part, these terms are synonymous, 
+but we will choose the latter as it better fits the problem domain:
+
+Graph Term | Electrical Term
+-----------|-----------------
+Vertex     | Node
+Edge       | Wire
+
+That being said, just about everything on the electrical circuit is a NodeT.  
+WireT are all the lines in an electrical schematic that connect nodes together.􏷯
+􏷮Time􏷭 􏷮Date􏷭 􏷮Component􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦Vector􏷥􏴓1􏴔􏴑VectorT􏴒
+􏷤􏷣􏷦ElectricalTrigger􏷥􏴓1􏴔􏴑ElectricalTriggerT􏴒
+􏷤􏷣􏷦MalfunctionState􏷥􏴓1􏴔􏴑MalfunctionStateT􏴒
+􏷤􏷣􏷦FlowAbility􏷥􏴓1􏴔􏴑FlowAbilityT􏴒
+􏷤􏷣􏷦ElectricalProperties􏷥􏴓1􏴔􏴑ElectricalPropertiesT􏴒
+􏷤􏷣􏷦PowerDelaySettings􏷥􏴓1􏴔􏴑PowerDelaySettingsT􏴒
+􏷤􏷣􏷦NodeType􏷥􏴓1􏴔􏴑NodeTypeE􏴒
+􏷤􏷣􏷦stdioLib􏷥􏴓d􏴔􏴑BOOL􏴒
+􏷤􏷣􏷦can_be_powered􏷥􏴓d􏴔􏴑CanBePoweredE􏴒
+􏷤􏷣􏷦ascii_string􏷥􏴓d􏴔􏴑AsciiStringT􏴒
+􏷤􏷣􏷦json􏷥􏴓d􏴔􏴑JSON_Object􏴒
+
+
+MEMORY MANAGEMENT:
+􏷘+􏷗􏷒􏶐􏷑
+􏴅memory management􏴆
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be in an invalid state until initialized􏶡
+􏶜􏶝􏷆char[]􏷅􏷄name􏷃􏷀the name of the node􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag􏷃􏷀a tag for the node􏶿
+􏶜􏶝􏷆size_t􏷅􏷄id􏷃􏷀a unique id for the node􏶿
+􏶜􏶝􏷆NodeTypeE􏷅􏷄type􏷃􏷀the type of the node (what kind of electrical component it is)􏶿
+􏶜􏶝􏷆float􏷅􏷄resistance􏷃􏵘ohms􏵙􏷀the resistance of the node􏶿
+􏶜􏶝􏷆float􏷅􏷄active wattage􏷃􏵘watts􏵙􏷀what the wattage is when the node is receiving power􏶿
+􏶜􏶝􏷆CanBePoweredE􏷅􏷄can be powered􏷃􏷀whether the node allows current to pass through it or not􏶿
+􏶜􏶝􏷆f􏷅􏷄startup delay􏷃􏷀the amount of time to delay when the node is starting up (before being powered)􏶿
+􏶜􏶝􏷆f􏷅􏷄shutdown delay􏷃􏷀the amount of time to delay when the node is shutting down (before it does not have power)􏶿
+􏶴
+  􏶲store the passed in name􏶱
+  InitializeAsciiString(&􏵴name􏵵,􏵶name􏵷);
+  
+  􏶲store the passed in tag􏶱
+  InitializeAsciiString(&􏵴tag􏵵,􏵶tag􏵷);
+  
+  􏶲start with no triggers􏶱
+  InitializeVector(&􏵴triggers􏵵,SPECIALIZE_UNMANAGED(ElectricalTriggerT),0);
+  
+  􏶲store the specified type􏶱
+  􏵴type􏵵 = 􏵶type􏵷;
+  
+  􏶲store the specified id􏶱
+  􏵴id􏵵 = 􏵶id􏵷;
+  
+  􏶲default to having no malfunction􏶱
+  InitializeMalfunctionState(&􏵴malfunction state􏵵);
+  
+  􏶲store the initial "can be powered" of the component􏶱
+  􏶲we assume everything doesn't have power to start with􏶱
+  InitializeFlowAbility(&􏵴flow ability􏵵,􏵶can be powered􏵷);
+  
+  􏶲store the initial electrical properties of the electrical component􏶱
+  InitializeElectricalProperties(&􏵴electrical properties􏵵,􏵶active wattage􏵷,􏵶resistance􏵷,0);
+  
+  􏶲store power delays􏶱
+  InitializePowerDelaySettings(&􏵴delay settings􏵵,􏵶startup delay􏵷,􏵶shutdown delay􏵷);
+􏶳
+
+􏷘+􏷗􏷒^􏶐􏷑
+􏴅memory management􏴆
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆void􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    􏵲perform necessary deep copies􏵳􏵶self􏵷);
+    􏵲perform necessary shallow copies􏵳􏵶self􏵷);
+􏶳
+
+
+
+􏷘+􏷗􏷒~􏶐􏷑
+􏴅memory management􏴆
+􏷐Destruct the 􏶐􏷏
+􏶠􏶐 will leak memory unless destructed􏶡
+􏶴
+  􏶲implicit forwarding cast􏶱
+  􏵲destruct􏵳);
+􏶳
+
+􏷘-􏷗􏷒destruct􏷑
+􏴅memory management􏴆
+􏷐Destruct the 􏶐􏷏
+􏶠􏶐 will leak memory unless destructed􏶡
+􏶴
+  􏶲C does not have destructors.􏶱
+  DestructAsciiStringT(&􏵴name􏵵);
+  DestructAsciiStringT(&􏵴tag􏵵);
+  DestructVectorT(&􏵴triggers􏵵);
+  DestructMalfunctionStateT(&􏵴malfunction state􏵵);
+􏶳
+
+
+􏷘-􏷗􏷒perform necessary deep copies􏷑
+􏴅memory management􏴆
+􏷐perform the necessary deep copies􏷏
+􏶠performs deep copies on only the dynamically allocating data members􏶡
+􏶜r􏶝􏷆􏶐T􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    􏶲perform deep copy􏶱
+    CopyInitializeAsciiStringT(&􏵴name􏵵,&􏵶self􏵷->m_tLocals.m_tName);
+    CopyInitializeAsciiStringT(&􏵴tag􏵵,&􏵶self􏵷->m_tLocals.m_tTag);
+    CopyInitializeVectorT(&􏵴triggers􏵵,&􏵶self􏵷->m_tTriggers);
+    CopyInitializeMalfunctionStateT(&􏵴malfunction state􏵵,&􏵶self􏵷->m_tMalfunctionState);
+􏶳
+
+􏷘-􏷗􏷒perform necessary shallow copies􏷑
+􏴅memory management􏴆
+􏷐perform the necessary deep copies􏷏
+􏶠performs deep copies on only the dynamically allocating data members􏶡
+􏶜r􏶝􏷆􏶐T􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    􏶲perform shallow copies􏶱
+    􏵴electrical properties􏵵 = 􏵶self􏵷->m_tElectricalProperties;
+    􏵴delay settings􏵵 = 􏵶self􏵷->m_tDelaySettings;
+    􏵴flow ability􏵵 = 􏵶self􏵷->m_tFlowAbility;
+    􏵴type􏵵 = NodeType(􏵶self􏵷);
+    􏵴id􏵵 = NodeId(􏵶self􏵷);
+􏶳
+
+GETTERS:
+􏷘+c􏷗􏷒name􏷑
+􏴅observers􏴆
+􏷐get the name of the node􏷏
+􏶠returns a c string of the name􏶡
+􏶚m􏶛􏶾char*􏶽􏶼name􏶻􏶺the name of the node􏶹
+􏶴
+  return AsciiStringCStr(&􏵴name􏵵);
+􏶳
+
+􏷘+c􏷗􏷒tag􏷑
+􏴅observers􏴆
+􏷐get the tag of the node􏷏
+􏶠returns a c string of the tag􏶡
+􏶚m􏶛􏶾char*􏶽􏶼tag􏶻􏶺the tag of the node􏶹
+􏶴
+  return AsciiStringCStr(&􏵴tag􏵵);
+􏶳
+
+􏷘+c􏷗􏷒type􏷑
+􏴅observers􏴆
+􏷐get the type of the node􏷏
+􏶠returns the type of the node􏶡
+􏶚m􏶛􏶾NodeTypeE􏶽􏶼type􏶻􏶺the type of the node􏶹
+􏶴
+  return 􏵴type􏵵;
+􏶳
+
+􏷘+c􏷗􏷒can be powered􏷑
+􏴅observers􏴆
+􏷐whether the node can be powered􏷏􏶠􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼can be powered􏶻􏶺whether the node can be powered􏶹
+􏶴
+  return 􏵴flow ability􏵵.m_bCanBePowered;
+􏶳
+
+􏷘+c􏷗􏷒has power􏷑
+􏴅observers􏴆
+􏷐whether the node is powered􏷏􏶠􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is powered􏶻􏶺whether the node is powered􏶹
+􏶴
+  return 􏵴flow ability􏵵.m_bIsPowered;
+􏶳
+
+􏷘+c􏷗􏷒is self powering􏷑
+􏴅observers􏴆
+􏷐whether the node is self-powering itself􏷏􏶠􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is self powered􏶻􏶺whether the node is powering itself􏶹
+􏶴
+  return 􏵴flow ability􏵵.m_bIsSelfPowering;
+􏶳
+
+􏷘+c􏷗􏷒is grounded􏷑
+􏴅observers􏴆
+􏷐whether the node is grounded or not􏷏􏶠􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is grounded􏶻􏶺whether the node is grounded􏶹
+􏶴
+  return 􏵴flow ability􏵵.m_bGrounded;
+􏶳
+
+􏷘+c􏷗􏷒is locked􏷑
+􏴅observers􏴆
+􏷐whether the node is locked in its "can be powered" state􏷏􏶠􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is locked􏶻􏶺whether the node is locked􏶹
+􏶴
+  return 􏵴flow ability􏵵.m_bLocked;
+􏶳
+
+􏷘+c􏷗􏷒id􏷑
+􏴅observers􏴆
+􏷐returns the unique id number of the node􏷏􏶠􏶡
+􏶚m􏶛􏶾size_t􏶽􏶼id􏶻􏶺the unique id of the node􏶹
+􏶴
+  return 􏵴id􏵵;
+􏶳
+
+􏷘+c􏷗􏷒is a power source􏷑
+􏴅observers􏴆
+􏷐returns whether the node is a power source type or not􏷏
+􏶠looks at the node type to determine this􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is power source type􏶻􏶺whether the node is a power source type􏶹
+􏶴
+  return IsPowerSource(􏵴type􏵵);
+􏶳
+
+􏷘+c􏷗􏷒is a ground􏷑
+􏴅observers􏴆
+􏷐returns whether the node is a ground type or not􏷏
+􏶠looks at the node type to determine this􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is ground type􏶻􏶺whether the node is a ground type􏶹
+􏶴
+  return IsGrounding(􏵴type􏵵);
+􏶳
+
+􏷘+c􏷗􏷒voltage􏷑
+􏴅observers􏴆
+􏷐returns the current voltage of the node􏷏
+􏶠if the node is not powered, it will most likely contain 0 volts.􏶡
+􏶚m􏶛􏶾float􏶽􏶼voltage􏶻􏵜volts􏵝􏶺the voltage of the node􏶹
+􏶴
+  return 􏵴electrical properties􏵵.m_fVoltage_v;
+􏶳
+
+􏷘+c􏷗􏷒active wattage􏷑
+􏴅observers􏴆
+􏷐returns the current active wattage of the node􏷏
+􏶠if the node is not powered, it will still return a wattage.􏶡
+􏶚m􏶛􏶾float􏶽􏶼active wattage􏶻􏵜watts􏵝􏶺the active wattage of the node􏶹
+􏶴
+  return 􏵴electrical properties􏵵.m_fActiveWattage_w;
+􏶳
+
+
+ELECTRICAL RELATED: 
+􏷘+􏷗􏷒set can be powered􏷑
+􏴅transformers􏴆
+􏷐sets whether the node can be powered􏷏
+􏶠This command will be ignored if the node is "locked".􏶡
+􏶜􏶝􏷆BOOL􏷅􏷄state􏷃􏷀whether to enable or disable the power setting􏶿
+􏶴
+  if (!􏵲is locked􏵳)){
+    􏵴flow ability􏵵.m_bCanBePowered = 􏵶state􏵷;
+  }
+􏶳
+
+􏷘+􏷗􏷒set has power􏷑
+􏴅transformers􏴆
+􏷐sets whether the node is powered􏷏􏶠􏶡
+􏶜􏶝􏷆BOOL􏷅􏷄state􏷃􏷀whether to enable or disable the power setting􏶿
+􏶴
+    􏶲power can only be adjusted if the node is not self-powering itself􏶱
+    if (!􏵴flow ability􏵵.m_bIsSelfPowering){
+      􏵴flow ability􏵵.m_bIsPowered = 􏵶state􏵷;
+    }
+􏶳
+
+􏷘+􏷗􏷒set self power􏷑
+􏴅transformers􏴆
+􏷐sets whether the node is self-powered􏷏􏶠􏶡
+􏶜􏶝􏷆BOOL􏷅􏷄state􏷃􏷀whether to enable or disable the node powering itself􏶿
+􏶴
+    􏶲set self power state􏶱
+    􏵴flow ability􏵵.m_bIsSelfPowering = 􏵶state􏵷;
+    
+    􏶲if we are self powering, we can assume we have power􏶱
+    if (􏵴flow ability􏵵.m_bIsSelfPowering){
+      􏵴flow ability􏵵.m_bIsPowered = TRUE;
+    }
+􏶳
+
+􏷘+􏷗􏷒set active wattage􏷑
+􏴅transformers􏴆
+􏷐sets the active wattage of the node􏷏􏶠􏶡
+􏶜􏶝􏷆float􏷅􏷄active wattage􏷃􏵘watts􏵙􏷀whether to enable or disable the power setting􏶿
+􏶴
+  􏵴electrical properties􏵵.m_fActiveWattage_w = 􏵶active wattage􏵷;
+􏶳
+
+􏷘+􏷗􏷒set grounded􏷑
+􏴅transformers􏴆
+􏷐sets whether the node grounded􏷏􏶠􏶡
+􏶜􏶝􏷆BOOL􏷅􏷄state􏷃􏷀the new active wattage of the node􏶿
+􏶴
+  􏵴flow ability􏵵.m_bGrounded = 􏵶state􏵷;
+􏶳
+
+LOCKING RELATED: 
+􏷘+􏷗􏷒lock􏷑
+􏴅transformers􏴆
+􏷐lock the node in its "can be powered" state􏷏
+􏶠a locked node will state locked􏶡
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀the priority of the caller attempting to lock􏶿
+􏶴
+  if (􏵶priority􏵷 >= 􏵴flow ability􏵵.m_nCurrentlyLockedPriority){
+    􏵴flow ability􏵵.m_bLocked = TRUE;
+    􏵴flow ability􏵵.m_nCurrentlyLockedPriority = 􏵶priority􏵷;
+  }
+􏶳
+􏷘+􏷗􏷒unlock􏷑
+􏴅transformers􏴆
+􏷐unlock the node so that the "can be powered" state can be changed􏷏
+􏶠an unlocked node will state unlocked􏶡
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀the priority of the caller attempting to unlock􏶿
+􏶴
+  if (􏵶priority􏵷 >= 􏵴flow ability􏵵.m_nCurrentlyLockedPriority){
+    􏵴flow ability􏵵.m_bLocked = FALSE;
+    􏵴flow ability􏵵.m_nCurrentlyLockedPriority = 0;
+  }
+􏶳
+
+􏷘+􏷗􏷒unlock matching􏷑
+􏴅transformers􏴆
+􏷐unlock the node so that the "can be powered" state can be changed􏷏
+􏶠an unlocked node will state unlocked (only unlocks when priorities match)􏶡
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀the priority of the caller attempting to unlock􏶿
+􏶴
+  if (􏵶priority􏵷 == 􏵴flow ability􏵵.m_nCurrentlyLockedPriority){
+    􏵴flow ability􏵵.m_bLocked = FALSE;
+    􏵴flow ability􏵵.m_nCurrentlyLockedPriority = 0;
+  }
+􏶳
+
+MALFUNCTION RELATED: 
+􏷘+􏷗􏷒activate malfunction􏷑
+􏴅transformers􏴆
+􏷐activate the malfunction on the node􏷏
+􏶠This indicates to the user that the node has been "flagged" as being malfunctioned.
+The previous malfunction reason will be overwritten.􏶡
+􏶜􏶝􏷆char[]􏷅􏷄reason􏷃􏷀the explanation for the node's malfunction􏶿
+􏶴
+  􏶲forward􏶱
+  if (!􏵲is locked􏵳)){
+    MalfunctionStateActivate(&􏵴malfunction state􏵵,􏵶reason􏵷);
+  }
+􏶳
+
+􏷘+􏷗􏷒deactivate malfunction􏷑
+􏴅transformers􏴆
+􏷐deactivate the malfunction on the node􏷏
+􏶠This indicates to the user that the node device is working as expected
+Any previous malfunction reason will be cleared􏶡
+􏶴
+  􏶲forward􏶱
+  if (!􏵲is locked􏵳)){
+    MalfunctionStateDeactivate(&􏵴malfunction state􏵵);
+  }
+􏶳
+
+ADDING TRIGGERS:
+􏷘+􏷗􏷒add flow disable trigger on available power􏷑
+􏴅adding triggers􏴆
+􏷐􏷏􏶠􏶡
+􏶜􏶝􏷆size_t􏷅􏷄id􏷃􏷀the id of the node to disable flow on􏶿
+􏶴
+  􏶲and the customized trigger into the list of stored triggers􏶱
+  ElectricalTriggerT tTrigger = ConstructElectricalTrigger(POWER_STATE_TRIGGER_AVAILABLE,TRIGGERED_FLOW_RESULT_DISABLED,􏵶id􏵷);
+  VectorPushBack(&􏵴triggers􏵵,&tTrigger);
+􏶳
+􏷘+􏷗􏷒add flow disable trigger on unavailable power􏷑
+􏴅adding triggers􏴆
+􏷐􏷏􏶠􏶡
+􏶜􏶝􏷆size_t􏷅􏷄id􏷃􏷀the id of the node to disable flow on􏶿
+􏶴
+  􏶲and the customized trigger into the list of stored triggers􏶱
+  ElectricalTriggerT tTrigger = ConstructElectricalTrigger(POWER_STATE_TRIGGER_UNAVAILABLE,TRIGGERED_FLOW_RESULT_DISABLED,􏵶id􏵷);
+  VectorPushBack(&􏵴triggers􏵵,&tTrigger);
+􏶳
+
+􏷘+􏷗􏷒add flow enable trigger on available power􏷑
+􏴅adding triggers􏴆
+􏷐􏷏􏶠􏶡
+􏶜􏶝􏷆size_t􏷅􏷄id􏷃􏷀the id of the node to enable flow on􏶿
+􏶴
+  􏶲and the customized trigger into the list of stored triggers􏶱
+  ElectricalTriggerT tTrigger = ConstructElectricalTrigger(POWER_STATE_TRIGGER_AVAILABLE,TRIGGERED_FLOW_RESULT_ENABLED,􏵶id􏵷);
+  VectorPushBack(&􏵴triggers􏵵,&tTrigger);
+􏶳
+􏷘+􏷗􏷒add flow enable trigger on unavailable power􏷑
+􏴅adding triggers􏴆
+􏷐􏷏􏶠􏶡
+􏶜􏶝􏷆size_t􏷅􏷄id􏷃􏷀the id of the node to enable flow on􏶿
+􏶴
+  􏶲and the customized trigger into the list of stored triggers􏶱
+  ElectricalTriggerT tTrigger = ConstructElectricalTrigger(POWER_STATE_TRIGGER_UNAVAILABLE,TRIGGERED_FLOW_RESULT_ENABLED,􏵶id􏵷);
+  VectorPushBack(&􏵴triggers􏵵,&tTrigger);
+􏶳
+
+
+
+
+META DATA:
+􏶨The name of the node (intended for debugging)􏶧
+􏶦the names between electrical components do not need to be unique.
+They can also be left blank.􏶥
+􏶘-ip*~=􏶙􏶮AsciiStringT􏶭􏶬name􏶫􏶪0􏶩
+
+􏶨Conceptual tag name (intended for debugging)􏶧
+􏶦If you have a bunch of electrical components that are related to some overall device or section name,
+consider if giving all of the nodes the same tag name.  This will make graph printing look nicer.
+tags are used to cluster in graphviz.  Comma separate for nested clustering􏶥
+􏶘-ip~=􏶙􏶮AsciiStringT􏶭􏶬tag􏶫􏶪0􏶩
+
+􏶨What kind of electrical component the node actually is.􏶧
+􏶦A note of what specifically the electrical node represents.
+This is just a tag so that visitors of a traversal can provide different transformations/observations if desired.  
+For example, a traversal algorithm may generate a picture, and can use this meta information to decide how to render it.
+It does not change how the graph stores them.  It may or may not change behavior of a traversal algorithm.􏶥
+􏶘-ip~=􏶙􏶮NodeTypeE􏶭􏶬type􏶫􏶪0􏶩
+
+
+INTERACTION DATA:
+􏶨unique id of the vertex􏶧
+􏶦some vertices may have the same display name
+To ensure uniqueness when printing the graph visually, we supply a unique id􏶥
+􏶘-ip~=􏶙􏶮size_t􏶭􏶬id􏶫􏶪0􏶩
+
+
+ELECTRICAL PROPERTIES:
+􏶨The malfunction state of the node􏶧
+􏶦whether or not the node is malfunctioned, and what caused the malfunction􏶥
+􏶘-gip~=􏶙􏶮MalfunctionStateT􏶭􏶬malfunction state􏶫􏶪􏶩
+
+􏶨Electrical properties of an electrical component􏶧
+􏶦Stores all the of electrical load data that is relevant for particular electrical components􏶥
+􏶘-gip~=􏶙􏶮ElectricalPropertiesT􏶭􏶬electrical properties􏶫􏶪􏶩
+
+􏶨Properties of electrical flow given to each electrical component in an electrical graph.􏶧
+􏶦Similar to the system communication of power, this describes whether a node allows electricity to flow through it,
+and expresses whether electricity is flowing through after some traversal algorithm has been ran.􏶥
+􏶘-gip~=􏶙􏶮FlowAbilityT􏶭􏶬flow ability􏶫􏶪􏶩
+
+ELECTRICAL BEHAVIOURS:
+􏶨Power delays when transitioning between "having power" states􏶧
+􏶦Think of this as a delay when the node has electricity but doesn't want to tell the system it has power yet.
+Conversely, the node may have lost power, but doesn't want to tell the systems this yet either.  
+These "startup" and "shutdown" delays for simulated devices are possible through these settings􏶥
+􏶘-gip~=􏶙􏶮PowerDelaySettingsT􏶭􏶬delay settings􏶫􏶪􏶩
+
+􏶨All of the triggers that a particular node can perform on another node􏶧
+􏶦Most nodes are expected to not have triggers, unless they are a multi-way􏶥
+􏶘-gip~=􏶙􏶮VectorT􏶭􏶬triggers􏶫􏶪􏶩
+
+
+

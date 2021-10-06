@@ -1,0 +1,179 @@
+Recover Binary Search Tree
+Two elements of a binary search tree (BST) are swapped by mistake.
+Recover the tree (without changing its structure).
+https://leetcode.com/problems/recover-binary-search-tree/
+
+
+
+-------------------------------------------------------------------------------------
+Bad example:
+    10
+   /  \
+  5    8
+ /  \
+2    20
+(get rid of 20 and 10&8 are swapped)
+
+
+
+2,5,7,6,8,9
+
+    1
+   / \
+  2   3
+ / \
+4  5
+(a) Inorder (Left, Root, Right) : 4 2 5 1 3
+(b) Preorder (Root, Left, Right) : 1 2 4 5 3
+(c) Postorder (Left, Right, Root) : 4 5 2 3 1
+(d) Breadth First or Level Order Traversal : 1 2 3 4 5
+
+-------------------------------------------------------------------------------------
+
+Local example:
+A:
+
+#
+#     6
+#    / \
+#   5   7
+#  /   / \
+# 2   8   9
+
+//
+//     6
+//    / \
+//   5   7
+//  /   / \
+// 2   8   9
+
+[2,5,6,8,7,9]
+
+7 and 8 swapped
+
+B:
+    6
+   / \
+  5   8
+ /   / \ 
+2   7   9
+[2,5,6,7,8,9]
+
+A&B:
+    6               6
+   / \             / \
+  5   7    -->    5   8
+ /   / \         /   / \
+2   8   9       2   7   9
+[2,5,6,8,7,9] -> [2,5,6,7,8,9]
+
+    6               6
+   / \             / \
+  5  (7)   -->    5  (8)
+ /   / \         /   / \ 
+2  (8)  9       2  (7)   9
+[2,5,6,(8),(7),9] -> [2,5,6,(7),(8),9]
+
+-------------------------------------------------------------------------------------
+
+Disjoint example:
+A:
+
+#     10
+#    / \
+#   5   8
+#  / \
+# 2  20
+
+//     10
+//    / \
+//   5   8
+//  / \
+// 2  20
+[2,5,20,10,8]
+
+20 and 8 swapped
+
+B:
+    10
+   / \
+  5   20
+ / \
+2   8
+[2,5,8,10,20]
+
+A&B:
+    10            10
+   / \           / \
+  5   8   -->   5   20
+ / \           / \
+2  20         2   8
+[2,5,20,10,8] -> [2,5,8,10,20]
+
+    10            10
+   / \           / \
+  5   (8)  -->  5   (20)
+ / \           / \
+2  (20)       2   (8)
+[2,5,(20),10,(8)] -> [2,5,(8),10,(20)]
+
+-------------------------------------------------------------------------------------
+
+
+
+
+Follow up:
+A solution using O(n) space is pretty straight forward.
+Could you devise a constant space solution?
+
+
+class Solution {
+    private TreeNode first;
+    private TreeNode second;
+    private TreeNode pre;
+    public void recoverTree(TreeNode root) {
+        if(root==null) return;
+        first = null;
+        second = null;
+        pre = null;
+        inorder(root);
+        int temp = first.val;
+        first.val = second.val;
+        second.val = temp;
+    }
+    
+    private void inorder(TreeNode root){
+        if(root==null) return;
+        inorder(root.left);
+        
+        if(first==null && (pre==null ||pre.val>=root.val)){
+            first = pre;
+        }
+        if(first!=null && pre.val>=root.val){
+            second = root;
+        }
+        pre = root;
+        inorder(root.right);
+    }
+}
+
+
+class Solution {
+    TreeNode* first = nullptr;
+    TreeNode* second = nullptr;
+    TreeNode* prev = new TreeNode(INT_MIN);
+public:
+    void recoverTree(TreeNode* root) {
+        help(root);
+        swap(first->val, second->val);
+    }
+    
+    void help(TreeNode* root) {
+        if (!root) return;
+        help(root->left);
+        if (first == nullptr && prev->val >= root->val) first = prev;
+        if (first != nullptr && prev->val >= root->val) second = root;
+        prev = root;
+        help(root->right);
+    }
+};

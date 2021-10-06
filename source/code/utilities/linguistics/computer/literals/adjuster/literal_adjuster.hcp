@@ -1,0 +1,91 @@
+class
+
+❪"code/utilities/linguistics/computer/literals/getter/data/floating_point_literal_settings"❫
+❪"code/utilities/linguistics/computer/source_language"❫
+⚯
+❪"code/utilities/linguistics/computer/literals/getter/data/literal_suffix_settings"❫
+❪"code/utilities/linguistics/computer/literals/getter/literal_suffix_getter"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/linguistics/computer/literals/getter/cpp_literal_suffix_settings"❫
+❪"code/utilities/linguistics/computer/literals/getter/java_literal_suffix_settings"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/strings/transformers/stripping/lib"❫
+⚞⚟
+
+
+◀public: static▶ std::string ☀Get_Adjusted(std::string actual_language_type, std::string literal, Source_Language const& source_language)❰
+    return Get_Adjusted_By_Language(actual_language_type,literal,source_language);
+❱
+
+
+◀private: static▶ std::string ☀Get_Adjusted_By_Language(std::string actual_language_type, std::string literal, Source_Language const& source_language)❰
+    
+    //settings related to literal settings by language
+    Literal_Suffix_Settings settings;
+    if (source_language == Source_Language::CPP){
+      settings = Cpp_Literal_Suffix_Settings::Get();
+    }
+    else if (source_language == Source_Language::JAVA){
+      settings = Java_Literal_Suffix_Settings::Get();
+    }
+    
+    //add a moronic ".0" to the end of decimals in order to please the mentally brainwashed.
+    //Doing this is meaningless and completely asinine, but I'm tired of hearing people comment about it.
+    //I was also asked to prefix decimals with "0.".
+    //Again, this is idiotic, but automating it will bridge the gap between stupidity, and normal programming.
+    Potentially_Prefix_The_Zero_Point_If_Missing(settings.floating_point,actual_language_type,literal);
+    Potentially_Add_Decimal_If_Missing(settings.floating_point,actual_language_type,literal);
+    
+    //add a stupid suffix literal if needed
+    literal += Literal_Suffix_Getter::Get_Literal_Suffix(settings,actual_language_type);
+    
+    return literal;
+❱
+
+
+
+◀private: static▶ void ☀Potentially_Prefix_The_Zero_Point_If_Missing(Floating_Point_Literal_Settings const& settings, std::string const& type, std::string & literal)❰
+  
+    //add an implicit "0". if the type is floating, and the user specified it with a starting decimal
+    if (Should_Print_Decimal_Prefix(settings,type,literal)){
+      literal = settings.before_decimal + literal;
+    }
+❱
+◀private: static▶ void ☀Potentially_Add_Decimal_If_Missing(Floating_Point_Literal_Settings const& settings, std::string const& type, std::string & literal)❰
+  
+    //add an implicit ".0" if the type is floating, and a decimal does not already exist
+    if (Should_Print_Decimal_And_Decimal_Suffix(settings,type,literal)){
+      literal += settings.output_language_decimal + settings.after_decimal;
+    }
+❱
+
+◀private: static▶ bool ☀Should_Print_Decimal_Prefix(Floating_Point_Literal_Settings const& settings, std::string const& type, std::string & literal)❰
+    if (settings.add_before_decimal_part){
+      if (Is_Type_Floating(settings,type)){
+        if (Begins_With(literal,settings.unilang_decimal)){
+          return true;
+        }
+      }
+    }
+    
+    return false;
+❱
+◀private: static▶ bool ☀Should_Print_Decimal_And_Decimal_Suffix(Floating_Point_Literal_Settings const& settings, std::string const& type, std::string & literal)❰
+    if (settings.add_decimal_after_part){
+      if (Is_Type_Floating(settings,type)){
+        if (!Contains_Character(literal,settings.unilang_decimal)){
+          return true;
+        }
+      }
+    }
+    
+    return false;
+❱
+
+//add a string type representation traits utility section
+◀private: static▶ bool ☀Is_Type_Floating(Floating_Point_Literal_Settings const& settings, std::string type)❰
+  
+  //strip out array
+  Strip_Out_Data_Between_First_Set_Of_Square_Brackets(type);
+  return String_In_Vector(settings.floating_types,type);
+❱

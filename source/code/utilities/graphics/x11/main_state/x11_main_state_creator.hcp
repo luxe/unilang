@@ -1,0 +1,51 @@
+class
+❪string❫
+❪cstdlib❫
+❪iostream❫
+❪X11/extensions/shape.h❫
+❪"code/utilities/graphics/x11/main_state/setup_display_settings"❫
+❪"code/utilities/graphics/x11/main_state/x11_display_getter"❫
+❪"code/utilities/graphics/x11/main_state/x11_color_getter"❫
+❪"code/utilities/graphics/x11/main_state/x11_window_creator"❫
+❪"code/utilities/graphics/x11/data/main_x11_state"❫
+❪"code/utilities/graphics/x11/data/x11_window_geometry"❫
+❪"code/utilities/graphics/x11/data/x11_bg_fg_colors"❫
+❪"code/utilities/graphics/glx/glx_data_getter"❫
+⚯
+⚞⚟
+
+◀public: static▶ Main_X11_State ☀Create(Setup_Display_Settings const& settings)❰
+    Main_X11_State state;
+      
+    //create the main display
+    state.d = X11_Display_Getter::Get(settings);
+    
+    //possibly use that display to set things up for GLX
+    Glx_Data glx;
+    if (settings.use_glx){
+        glx = Glx_Data_Getter::Get(state,settings.glx_settings);
+    }
+    
+    //create the screen and depth
+    state.screen = DefaultScreen(state.d);
+    state.depth = DefaultDepth(state.d, state.screen);
+    
+    //create the root window
+    X11_Window_Creator::Create(state,glx,settings);
+    state.root_geo = get_geometry(state.d, state.root);
+    
+    //colors
+    state.colors = X11_Color_Getter::Get(state.d, state.screen, state.depth);
+    
+    return state;
+❱
+
+◀private: static▶ X11_Window_Geometry ☀get_geometry(Display * display, Window w)❰
+    X11_Window_Geometry geo;
+    Window theTempRoot;
+    XGetGeometry(display, w, &theTempRoot,
+               &geo.x, &geo.y,
+               &geo.width, &geo.height,
+               &geo.border_width, &geo.depth);
+  return geo;
+❱

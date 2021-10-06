@@ -1,0 +1,59 @@
+class
+❪SDL.h❫
+❪SDL_mixer.h❫
+❪string❫
+⚯
+❪iostream❫
+⚞⚟
+
+◀public: static▶ void ☀Maybe_Play(bool const& play, std::string const& path, bool initialize◀=true▶)❰
+    if (play){
+        Play(path,initialize);
+    }
+❱
+
+◀public: static▶ Mix_Music* ☀Play(std::string const& path, bool initialize◀=true▶)❰
+
+    int result = 0;
+    int flags = MIX_INIT_MP3;
+    
+    //OPTIONS:
+        //SDL_INIT_AUDIO
+        //SDL_INIT_EVERYTHING
+    if (initialize){
+        if (SDL_Init(SDL_INIT_AUDIO) < 0) {
+            printf("Failed to init SDL\n");
+            exit(1);
+        }
+    }
+    
+    //OPTIONS:
+        // AUDIO_S16SYS
+        // MIX_DEFAULT_FORMAT
+        // AUDIO_S32SYS
+    if (initialize){
+        if (Mix_OpenAudio(44100, AUDIO_S32SYS, 2, 1024) != 0){
+            printf("Failed to open audio\n");
+            exit(1);
+        }
+    }
+    
+    if (initialize){
+        if (flags != (result = Mix_Init(flags))) {
+            printf("Could not initialize mixer (result: %d).\n", result);
+            printf("Mix_Init: %s\n", Mix_GetError());
+            exit(1);
+        }
+    }
+
+    Mix_Music *music = Mix_LoadMUS(path.c_str());
+    if (!music){
+        std::cerr << "error loading music" << std::endl;
+        exit(1);
+    }
+    Mix_PlayMusic(music, 1);
+    //Mix_PlayChannel(-1,music,0);
+    
+    return music;
+    
+❱

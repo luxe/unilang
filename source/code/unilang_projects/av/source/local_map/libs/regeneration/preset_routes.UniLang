@@ -1,0 +1,327 @@
+􏶞g􏶟
+􏷲Generates route data for tests and experimentation􏷱
+􏷰These are utility functions used by unit tests and experimentation tools􏷯
+􏷮Regeneration􏷭
+􏷬Trevor Hickey􏷫
+
+􏶔􏶕􏶒hub/base/platform/compiler_specific􏶓
+􏶔s􏶕􏶒utility􏶓
+􏶔s􏶕􏶒random􏶓
+􏶔s􏶕􏶒algorithm􏶓
+􏷤s􏷣􏷦random􏷥
+
+􏷞local_map􏷝􏷞statik􏷝
+
+
+􏷘-􏷗􏷒deterministic engine􏷑
+􏴅Random􏴆
+􏷐Get a random number engine that returns the same number sequence for each program invocation􏷏
+􏶠We create a random number engine based on a stationary seed􏶡
+􏶚m􏶛􏶾std::mt19937􏶽􏶼engine􏶻􏲅std::mt19937{0}􏲆􏶺the deterministic engine for generating random numbers􏶹
+􏶴􏶳
+
+􏷘-􏷗􏷒nondeterministic engine􏷑
+􏴅Random􏴆
+􏷐Get a random number engine that returns a different number sequence for each program invocation􏷏
+􏶠We create a random number engine based on a random device􏶡
+􏶚m􏶛􏶾std::mt19937􏶽􏶼engine􏶻􏲅std::mt19937{std::random_device{}()}􏲆􏶺the nondeterministic engine for generating random numbers􏶹
+􏶴􏶳
+
+􏷘-􏷗􏷒create engine􏷑
+􏴅Random􏴆
+􏷐Get a random number engine configured to be deterministic or nondeterministic􏷏
+􏶠We create a random number engine based on the configuration provided􏶡
+􏶜􏶝􏷆bool􏷅􏷄deterministic􏷃􏷀whether to use deterministic or nondeterministic engine􏶿
+􏶚m􏶛􏶾std::mt19937􏶽􏶼engine􏶻􏲅deterministic ? deterministic_engine() : nondeterministic_engine()􏲆􏶺the engine for generating random numbers􏶹
+􏶴􏶳
+
+􏷘-􏷗􏷒random real from range􏷑
+􏴅Random􏴆
+􏷌Real􏷋􏷈any type that represents a real number􏷇
+􏷌Random_Engine􏷋􏷈the random number engine to use􏷇
+􏷐Creates a random real from the specified range􏷏
+􏶠The engine and distribution are an implementation detail
+the interval is closed􏶡
+􏶜􏶝􏷆Real􏷅􏷄low􏷃􏷀low end of the random interval􏶿
+􏶜􏶝􏷆Real􏷅􏷄high􏷃􏷀high end of the random interval􏶿
+􏶜mr􏶝􏷆Random_Engine􏷅􏷄engine􏷃􏷂nondeterministic_engine()􏷁􏷀the random number engine to use􏶿
+􏶚m􏶛􏶾Real􏶽􏶼random value􏶻􏶺the generated random value􏶹
+􏶴
+    std::uniform_real_distribution<Real> dist(low, high);
+    random_value = dist(engine);
+􏶳
+
+􏷘-􏷗􏷒random integral from range􏷑
+􏴅Random􏴆
+􏷌Integral􏷋􏷈any type that represents an integral number􏷇
+􏷌Random_Engine􏷋􏷈the random number engine to use􏷇
+􏷐Creates a random integral from the specified range􏷏
+􏶠The engine and distribution are an implementation detail
+the interval is closed􏶡
+􏶜􏶝􏷆Integral􏷅􏷄low􏷃􏷀low end of the random interval􏶿
+􏶜􏶝􏷆Integral􏷅􏷄high􏷃􏷀high end of the random interval􏶿
+􏶜mr􏶝􏷆Random_Engine􏷅􏷄engine􏷃􏷂nondeterministic_engine()􏷁􏷀the random number engine to use􏶿
+􏶚m􏶛􏶾Integral􏶽􏶼random value􏶻􏶺the generated random value􏶹
+􏶴
+    std::uniform_int_distribution<Integral> dist(low, high);
+    random_value = dist(engine);
+􏶳
+
+􏷘+􏷗􏷒create route from lane distances􏷑
+􏴅Testing􏴆
+􏷐Creates an input route based on the provided lane distances􏷏
+􏶠The only reliable information defined will be the route's annotated lane distances􏶡
+􏶜􏶝􏷆seq􏷅􏳣double􏳤􏷄lane distances􏷃􏵘meters􏵙􏷀the lane distances used to create a route􏶿
+􏶚m􏶛􏶾route􏶽􏲣local_map/static/route/local_map_route􏲤􏲡local_map/static/route/local_map_route_lib􏲢􏶼route􏶻􏶺the generated route􏶹
+􏶴
+    constexpr int ARBITRARY_SUBMAP_ID = 1;
+    constexpr int ARBITRARY_LANE_ID = 0;
+    for (auto const& distance_m: lane_distances_m){
+    
+        􏶲creating / setting map index􏶱
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(ARBITRARY_SUBMAP_ID);
+        
+        􏶲creating / setting lane index􏶱
+        ref.element_id = hub::base::guid::from_int64(ARBITRARY_LANE_ID);
+        route.lane_sequence.emplace_back(ref);
+        
+        􏶲creating / setting lane distance􏶱
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = distance_m;
+        route.annotation_sequence.emplace_back(annotation);
+    }
+􏶳
+
+
+􏷘+􏷗􏷒create route from submap ids􏷑
+􏴅Testing􏴆
+􏷐Creates an input route based on the provided submap identifiers􏷏
+􏶠The only reliable information defined will be the route's submap identifiers.
+We use ints for testing convenience
+They are converted to guids􏶡
+􏶜􏶝􏷆seq􏷅􏳣int􏳤􏷄submap ids􏷃􏷀the submap ids used to create a route􏶿
+􏶚m􏶛􏶾route􏶽􏲣local_map/static/route/local_map_route􏲤􏲡local_map/static/route/local_map_route_lib􏲢􏶼route􏶻􏶺the generated route􏶹
+􏶴
+    constexpr double ARBITRARY_DISTANCE_M = 5.0;
+    constexpr int ARBITRARY_LANE_ID = 0;
+    for (auto const& submap_id: submap_ids){
+        
+        􏶲creating / setting map index􏶱
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(submap_id);
+        
+        􏶲creating / setting lane index􏶱
+        ref.element_id = hub::base::guid::from_int64(ARBITRARY_LANE_ID);
+        route.lane_sequence.emplace_back(ref);
+        
+        􏶲creating / setting lane distance􏶱
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = ARBITRARY_DISTANCE_M;
+        route.annotation_sequence.emplace_back(annotation);
+    }
+􏶳
+
+􏷘+􏷗􏷒create route from lane ids􏷑
+􏴅Testing􏴆
+􏷐Creates an input route based on the provided lane identifiers􏷏
+􏶠The only reliable information defined will be the route's lane identifiers.
+We use ints for testing convenience
+They are converted to guids􏶡
+􏶜􏶝􏷆seq􏷅􏳣int􏳤􏷄lane ids􏷃􏷀the lane ids used to create a route􏶿
+􏶚m􏶛􏶾route􏶽􏲣local_map/static/route/local_map_route􏲤􏲡local_map/static/route/local_map_route_lib􏲢􏶼route􏶻􏶺the generated route􏶹
+􏶴
+    constexpr int ARBITRARY_SUBMAP_ID = 1;
+    constexpr double ARBITRARY_DISTANCE_M = 5.0;
+    for (auto const& lane_id: lane_ids){
+        
+        􏶲creating / setting map index􏶱
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(ARBITRARY_SUBMAP_ID);
+        
+        􏶲creating / setting lane index􏶱
+        ref.element_id = hub::base::guid::from_int64(lane_id);
+        route.lane_sequence.emplace_back(ref);
+        
+        􏶲creating / setting lane distance􏶱
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = ARBITRARY_DISTANCE_M;
+        route.annotation_sequence.emplace_back(annotation);
+    }
+􏶳
+
+􏷘+􏷗􏷒create route from test input􏷑
+􏴅Testing􏴆
+􏷐Creates an input route based on the provided route creation input􏷏
+􏶠Creates a version of a translated route based on the creation input provided􏶡
+􏶜􏶝􏷆route_creation_input􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄creation input􏷃􏷀creation input used to create the translated route􏶿
+􏶚m􏶛􏶾route􏶽􏲣local_map/static/route/local_map_route􏲤􏲡local_map/static/route/local_map_route_lib􏲢􏶼route􏶻􏶺the generated route􏶹
+􏶴
+    for (auto const& lane: creation_input.lane_input_sequence){
+    
+        􏶲creating / setting map index􏶱
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(lane.submap_id);
+        route.lane_sequence.emplace_back(ref);
+        
+        􏶲creating / setting lane distance􏶱
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = lane.distance_m;
+        route.annotation_sequence.emplace_back(annotation);
+    }
+􏶳
+
+􏷘+􏷗􏷒create random route􏷑
+􏴅Testing􏴆
+􏷐Creates a random input route based on the provided route creation input􏷏
+􏶠Creates a random version of a translated route based on the creation input provided􏶡
+􏶜􏶝􏷆random_route_creation_input􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄creation input􏷃􏷀creation input used to create the translated route􏶿
+􏶚m􏶛􏶾route􏶽􏲣local_map/static/route/local_map_route􏲤􏲡local_map/static/route/local_map_route_lib􏲢􏶼route􏶻􏶺the generated route􏶹
+􏶴
+    
+    􏶲decide whether to generate numbers deterministically or nondeterministically􏶱
+    auto engine = 􏵲create engine􏵳creation_input.deterministic_random);
+    route = 􏵲create random route􏵳creation_input,engine);
+􏶳
+
+􏷘-􏷗􏷒create random route􏷑
+􏴅Random􏴆
+􏷐Creates a random input route based on the provided route creation input􏷏
+􏶠Creates a random version of a translated route based on the creation input provided􏶡
+􏶜􏶝􏷆random_route_creation_input􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄creation input􏷃􏷀creation input used to create the translated route􏶿
+􏶜mr􏶝􏷆std::mt19937􏷅􏷄engine􏷃􏷀the random number engine to use􏶿
+􏶚m􏶛􏶾route􏶽􏲣local_map/static/route/local_map_route􏲤􏲡local_map/static/route/local_map_route_lib􏲢􏶼route􏶻􏶺the generated route􏶹
+􏶴
+    auto number_of_lanes = 􏵲random integral from range􏵳creation_input.low_lane_count,creation_input.high_lane_count,engine);
+    for (size_t i = 0; i < number_of_lanes; ++i){
+        
+        􏶲creating / setting map index􏶱
+        mlp::lane_graph::map_ref_id ref;
+        auto id = 􏵲random integral from range􏵳creation_input.lane_inputs.low_submap_id,creation_input.lane_inputs.high_submap_id,engine);
+        ref.map_index = hub::base::guid::from_int64(id);
+        route.lane_sequence.emplace_back(ref);
+        
+        􏶲creating / setting lane distance􏶱
+        route_planning::lane_neighbor_annotation annotation;
+        auto distance_m = 􏵲random real from range􏵳creation_input.lane_inputs.low_distance_m,creation_input.lane_inputs.high_distance_m,engine);
+        annotation.distance = distance_m;
+        route.annotation_sequence.emplace_back(annotation);
+    }
+􏶳
+
+􏷘-􏷗􏷒create n random routes􏷑
+􏴅Random􏴆
+􏷐Creates n random input routes based on the provided route creation input􏷏
+􏶠Creates n random versions of a translated route based on the creation input provided􏶡
+􏶜􏶝􏷆random_route_creation_input􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄creation input􏷃􏷀creation input used to create the translated route􏶿
+􏶜􏶝􏷆i􏷅􏷄number of routes􏷃􏷀the number of translated routes to create􏶿
+􏶚m􏶛􏶾seq􏶽􏳡route􏳢􏶼random_routes􏶻􏶺the generated routes􏶹
+􏶴
+    􏶲decide whether to generate numbers deterministically or nondeterministically􏶱
+    auto engine = 􏵲create engine􏵳creation_input.deterministic_random);
+    
+    􏶲create n number of random routes􏶱
+    for (size_t i = 0; i < number_of_routes; ++i){
+        random_routes.emplace_back(􏵲create random route􏵳creation_input,engine));
+    }
+􏶳
+
+􏷘+􏷗􏷒create interesting test routes􏷑
+􏴅Testing􏴆
+􏷐create interesting test routes that stress functionality with interesting route properties and scenarios􏷏
+􏶠These are interesting routes that may present edge cases in various implementations􏶡
+􏶜􏶝􏷆random_route_creation_input􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄creation input􏷃􏷀creation input used to create test routes􏶿
+􏶚m􏶛􏶾seq􏶽􏳡route􏳢􏶼test_routes􏶻􏲅create_n_random_routes(creation_input,100)􏲆􏶺a collection of test routes􏶹
+􏶴
+    test_routes.emplace_back(􏵲empty route􏵳));
+    test_routes.emplace_back(􏵲single lane route􏵳));
+    test_routes.emplace_back(􏵲aba route􏵳));
+    test_routes.emplace_back(􏵲aabbaa route􏵳));
+    test_routes.emplace_back(􏵲ababa route􏵳));
+    test_routes.emplace_back(􏵲buffer aba route􏵳));
+    test_routes.emplace_back(􏵲aba buffer route􏵳));
+    test_routes.emplace_back(􏵲buffer aba buffer route􏵳));
+    test_routes.emplace_back(􏵲long route􏵳));
+    test_routes.emplace_back(􏵲zero lengths lane route􏵳));
+    test_routes.emplace_back(􏵲negative lengths lane route􏵳));
+􏶳
+
+􏷘-􏷗􏷒empty route􏷑
+􏴅Interesting Routes􏴆
+􏷐Create an empty route􏷏
+􏶠This is is an interesting route that may present edge cases in various implementations􏶡
+􏶚m􏶛􏶾route􏶽􏲣local_map/static/route/local_map_route􏲤􏲡local_map/static/route/local_map_route_lib􏲢􏶼route􏶻􏲅create_route_from_submap_ids({})􏲆􏶺the generated route􏶹
+􏶴􏶳
+
+􏷘-􏷗􏷒single lane route􏷑
+􏴅Interesting Routes􏴆
+􏷐Create an empty route􏷏
+􏶠This is is an interesting route that may present edge cases in various implementations􏶡
+􏶚m􏶛􏶾route􏶽􏲣local_map/static/route/local_map_route􏲤􏲡local_map/static/route/local_map_route_lib􏲢􏶼route􏶻􏲅create_route_from_lane_distances({1.0})􏲆􏶺the generated route􏶹
+􏶴􏶳
+
+􏷘-􏷗􏷒aba route􏷑
+􏴅Interesting Routes􏴆
+􏷐Create an ABA submap looped route􏷏
+􏶠This is is an interesting route that may present edge cases in various implementations􏶡
+􏶚m􏶛􏶾route􏶽􏲣local_map/static/route/local_map_route􏲤􏲡local_map/static/route/local_map_route_lib􏲢􏶼route􏶻􏲅create_route_from_submap_ids({1,2,1})􏲆􏶺the generated route􏶹
+􏶴􏶳
+
+􏷘-􏷗􏷒aabbaa route􏷑
+􏴅Interesting Routes􏴆
+􏷐Create an ABA submap looped route􏷏
+􏶠This is is an interesting route that may present edge cases in various implementations􏶡
+􏶚m􏶛􏶾route􏶽􏲣local_map/static/route/local_map_route􏲤􏲡local_map/static/route/local_map_route_lib􏲢􏶼route􏶻􏲅create_route_from_submap_ids({1,1,2,2,1,1})􏲆􏶺the generated route􏶹
+􏶴􏶳
+
+􏷘-􏷗􏷒ababa route􏷑
+􏴅Interesting Routes􏴆
+􏷐Create an ABA submap looped route􏷏
+􏶠This is is an interesting route that may present edge cases in various implementations􏶡
+􏶚m􏶛􏶾route􏶽􏲣local_map/static/route/local_map_route􏲤􏲡local_map/static/route/local_map_route_lib􏲢􏶼route􏶻􏲅create_route_from_submap_ids({1,2,1,2,1})􏲆􏶺the generated route􏶹
+􏶴􏶳
+
+􏷘-􏷗􏷒buffer aba route􏷑
+􏴅Interesting Routes􏴆
+􏷐Create an ABA submap looped route􏷏
+􏶠This is is an interesting route that may present edge cases in various implementations􏶡
+􏶚m􏶛􏶾route􏶽􏲣local_map/static/route/local_map_route􏲤􏲡local_map/static/route/local_map_route_lib􏲢􏶼route􏶻􏲅create_route_from_submap_ids({0,0,0,1,2,1})􏲆􏶺the generated route􏶹
+􏶴􏶳
+
+􏷘-􏷗􏷒aba buffer route􏷑
+􏴅Interesting Routes􏴆
+􏷐Create an ABA submap looped route􏷏
+􏶠This is is an interesting route that may present edge cases in various implementations􏶡
+􏶚m􏶛􏶾route􏶽􏲣local_map/static/route/local_map_route􏲤􏲡local_map/static/route/local_map_route_lib􏲢􏶼route􏶻􏲅create_route_from_submap_ids({1,2,1,0,0,0})􏲆􏶺the generated route􏶹
+􏶴􏶳
+
+􏷘-􏷗􏷒buffer aba buffer route􏷑
+􏴅Interesting Routes􏴆
+􏷐Create an ABA submap looped route􏷏
+􏶠This is is an interesting route that may present edge cases in various implementations􏶡
+􏶚m􏶛􏶾route􏶽􏲣local_map/static/route/local_map_route􏲤􏲡local_map/static/route/local_map_route_lib􏲢􏶼route􏶻􏲅create_route_from_submap_ids({0,0,0,1,2,1,0,0,0})􏲆􏶺the generated route􏶹
+􏶴􏶳
+
+􏷘-􏷗􏷒long route􏷑
+􏴅Interesting Routes􏴆
+􏷐Create a long route􏷏
+􏶠This is is an interesting route that may present edge cases in various implementations􏶡
+􏶚m􏶛􏶾route􏶽􏲣local_map/static/route/local_map_route􏲤􏲡local_map/static/route/local_map_route_lib􏲢􏶼route􏶻􏲅􏲆􏶺the generated route􏶹
+􏶴
+    std::vector<int> submap_ids(1000);
+    std::iota (std::begin(submap_ids), std::end(submap_ids), 0);
+    route = create_route_from_submap_ids(submap_ids);
+􏶳
+
+􏷘-􏷗􏷒zero lengths lane route􏷑
+􏴅Interesting Routes􏴆
+􏷐Create a zero lengths lane route􏷏
+􏶠This is is an interesting route that may present edge cases in various implementations􏶡
+􏶚m􏶛􏶾route􏶽􏲣local_map/static/route/local_map_route􏲤􏲡local_map/static/route/local_map_route_lib􏲢􏶼route􏶻􏲅create_route_from_lane_distances({0,0,0,0,0})􏲆􏶺the generated route􏶹
+􏶴􏶳
+􏷘-􏷗􏷒negative lengths lane route􏷑
+􏴅Interesting Routes􏴆
+􏷐Create a negative lengths lane route􏷏
+􏶠This is is an interesting route that may present edge cases in various implementations􏶡
+􏶚m􏶛􏶾route􏶽􏲣local_map/static/route/local_map_route􏲤􏲡local_map/static/route/local_map_route_lib􏲢􏶼route􏶻􏲅create_route_from_lane_distances({0,-1,-2,-3,-4,-5})􏲆􏶺the generated route􏶹
+􏶴􏶳

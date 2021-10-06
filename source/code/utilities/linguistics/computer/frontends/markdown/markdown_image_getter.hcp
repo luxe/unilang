@@ -1,0 +1,76 @@
+class
+❪fstream❫
+❪iostream❫
+❪"code/utilities/contributor/contributor"❫
+❪"code/utilities/linguistics/computer/frontends/markdown/settings/markdown_settings"❫
+❪"code/utilities/code/concept_static_tree_structs"❫
+⚯
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/converters/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/types/char/lib"❫
+❪"code/utilities/types/strings/observers/converting/lib"❫
+❪"code/utilities/linguistics/computer/frontends/markdown/images/classic_markdown_image"❫
+❪"code/utilities/linguistics/computer/frontends/markdown/images/html_markdown_image"❫
+⚞⚟
+
+◀public: static▶ std::string ☀Get(model::ParagraphSentence const& s, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    std::string text;
+    
+    //print images
+    for (auto const& it: s.image){
+        Append(text,Create_According_To_Style(it,settings));
+    }
+    return text;
+❱
+
+
+◀private: static▶ std::string ☀Create_According_To_Style(model::Image const& it, Markdown_Settings const& settings)❰
+
+    // decide how to print the image.
+    // we can do the traditional markdown format,
+    // or we can do the more html-oriented format.
+    
+    std::string result;
+    if (settings.image.newline_before_image){
+        result += "\n";
+    }
+
+    //specific style chosen
+    if (settings.image.style == Markdown_Image_Style::CLASSIC){
+        result += Classic_Markdown_Image::Get(it,settings);
+    }
+    else if (settings.image.style == Markdown_Image_Style::HTML){
+        result += Html_Markdown_Image::Get(it,settings);
+    }
+    
+    //derive instead
+    else if (settings.image.style == Markdown_Image_Style::DERIVE){
+        result += Derived_Style_Image(it,settings);
+    }
+
+
+    //should not happen
+    return result;
+❱
+
+
+
+
+◀private: static▶ std::string ☀Derived_Style_Image(model::Image const& it, Markdown_Settings const& settings)❰
+
+    if (Do_Classic_Markdown_Image(it)){
+        return Classic_Markdown_Image::Get(it,settings);
+    }
+    
+    return Html_Markdown_Image::Get(it,settings);
+❱
+
+
+◀private: static▶ bool ☀Do_Classic_Markdown_Image(model::Image const& image)❰
+
+    //TODO: decide logic
+    return true;
+❱

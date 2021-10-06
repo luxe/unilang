@@ -1,0 +1,63 @@
+class
+⚯
+⚞⚟
+
+
+//need to patch an object in memory?
+//maybe its a json object or an actual c++ object- doesn't matter
+//just give the object, the list of patches, and the current version that the object is on
+//patches will be applied incrementally
+
+◀
+public: 
+    
+template <typename Object, typename Patch>
+static void Apply_Any_Needed_Patches(Object & j, std::vector<Patch> const& patches, int version){
+
+    //exit early if there are no patches to apply
+    if (version == patches.size()){
+        SPDLOG_INFO(No_Patching_Needed_Message(version));
+        return;
+    }
+    
+    //exit early if the file version is newer than the editor
+    if (version > patches.size()){
+        SPDLOG_INFO(IDE_Is_Too_Old_Message(version));
+        exit(-1);
+    }
+    
+    //apply the patches
+    for (int i = version; i < patches.size(); ++i){
+        SPDLOG_INFO(Applying_Patch_Message(i));
+        patches[i](j);
+    }
+
+}
+▶
+
+
+◀private: static▶ std::string ☀No_Patching_Needed_Message(int version)❰
+    std::string x;
+    x += "No patching needed.  You are at the correct version (";
+    x += std::to_string(version);
+    x += ").";
+    return x;
+❱
+
+◀private: static▶ std::string ☀IDE_Is_Too_Old_Message(int version)❰
+    std::string x;
+    x += "You're IDE is too old to open this file.  It claims to be version: ";
+    x += std::to_string(version);
+    x += ".\n";
+    x += "You probably need to update your IDE";
+    return x;
+❱
+
+◀private: static▶ std::string ☀Applying_Patch_Message(int patch_num)❰
+    std::string x;
+    x += "Applying patch ";
+    x += std::to_string(patch_num);
+    return x;
+
+
+❱

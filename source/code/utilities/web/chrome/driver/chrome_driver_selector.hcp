@@ -1,0 +1,154 @@
+class
+❪string❫
+❪iostream❫
+❪map❫
+❪"code/utilities/web/chrome/version/chrome_version_getter"❫
+❪"code/utilities/web/chrome/driver/chrome_driver_selection_settings"❫
+⚯
+❪"code/utilities/filesystem/files/getting/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/types/strings/observers/splitting/lib"❫
+❪"code/utilities/types/strings/observers/converting/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/program/common_actions/exits/lib"❫
+❪"code/utilities/assets/chrome_drivers"❫
+⚞⚟
+
+//https://chromedriver.storage.googleapis.com/index.html
+//based on the version of google chrome that the user already has installed,
+//we want to pick the most appropriate chrome driver which should already be localed on the user's machine
+//we bundle all of the chrome drivers in deb as a convenience to the user, and place them in a relevant location.
+//it is expected that the user has already installed this deb, and that they already have google chrome installed.
+//We also bring the drivers in by source so they can be used as a data dependency instead.
+
+◀public: static▶ Chrome_Driver_Selection_Settings ☀Default_Settings()❰
+    Chrome_Driver_Selection_Settings settings;
+    //settings.versions_path = "/usr/local/share/chrome_drivers/versions/";
+    settings.versions_path = Chrome_Drivers::Folder_Of_Drivers();
+    settings.driver_binary_name = "chromedriver";
+    settings.check_system_state = true;
+    return settings;
+❱
+
+◀public: static▶ std::string ☀Get_Driver_Path(Chrome_Driver_Selection_Settings const& settings)❰
+
+    if (settings.check_system_state){
+        Check_That_The_System_Is_Properly_Configured(settings);
+    }
+    
+    //figure out the path to the chrome driver
+    auto dir_names = Get_Dirs_Of_Path(settings.versions_path);
+    auto ideal_driver_path = Fancy_Decision_Algorithm(settings.versions_path,dir_names);
+    
+    //check that what we come up with is a valid binary (sanity check)
+    //TODO
+    
+    return ideal_driver_path;
+❱
+
+◀private: static▶ void ☀Check_That_The_System_Is_Properly_Configured(Chrome_Driver_Selection_Settings const& settings)❰
+
+    // make sure the chrome drivers exist
+    if (!Directory_Exists(settings.versions_path)){
+        Exit_With_Error(settings.versions_path + " does not exist");
+    }
+    
+    //make sure there is at least 1 versioned driver
+    auto dir_names = Get_Dirs_Of_Path(settings.versions_path);
+    if (dir_names.empty()){
+        Exit_With_Error(std::string("there are no versioned chrome drivers in ") + settings.versions_path);
+    }
+❱
+
+◀private: static▶ std::string ☀Fancy_Decision_Algorithm(std::string path, std::vector<std::string> const& dir_names)❰
+
+    //the version numbers of chrome don't always match the version numbers they deploy on chrome drivers.
+    //typical. they are close through. I'm guessing they cut chrome releases more often than driver releases.
+    // we could make a best guess and hard-code versions that seem to work with appropriate drivers.
+    //or we could compare version numbers-- but do we choose the older chrome driver or the newer chrome driver?
+    //for now, we'll hard code versions, and guess if there is no exact match.
+    auto version = Chrome_Version_Getter::Get_Version();
+    
+    //direct lookup table
+    auto hard_coded_mapping = Get_Direct_Mapping_Table();
+    
+    //try to find a hard-coded version mapping
+    auto found = hard_coded_mapping.find(version);
+    if (found != std::end(hard_coded_mapping)){
+        path += found->second;
+        return Complete_Versioned_Driver_Path(path);
+    }
+    
+    //no hard-coded mapping.
+    //do we have an exact match instead?
+    if (In_Vector(dir_names,version)){
+        path += version;
+        return Complete_Versioned_Driver_Path(path);
+    }
+    
+    //still can't find the right driver
+    //time to take a guess
+    for (auto it: dir_names){
+        if (!Is_Version_Number_Less(version,it)){
+            path += it;
+            return Complete_Versioned_Driver_Path(path);
+        }
+    }
+    
+    //I don't know.  just give them the newest driver
+    path += Last_Element(dir_names);
+    return Complete_Versioned_Driver_Path(path);
+❱
+
+◀private: static▶ std::map<std::string,std::string> ☀Get_Direct_Mapping_Table()❰
+
+    //feel free to add more to this table.
+    //as time goes on, new drivers and new chromes will be released.
+    //I added direct mappings for what I needed.
+    //why google needs to cut a new driver for every new browser makes no sense to me.
+    using chrome_version = std::string;
+    using driver_version = std::string;
+    std::map<chrome_version,driver_version> hard_coded_mapping {
+        {"74.0.3729.169","74.0.3729.6"},
+        {"76.0.3809.87","76.0.3809.68"},
+        {"86.0.4240.111","86.0.4240.22"},
+    };
+    return hard_coded_mapping;
+    
+❱
+
+◀private: static▶ std::string ☀Complete_Versioned_Driver_Path(std::string path)❰
+    //we organize chromedrivers directly into their folder.  
+    //So this should be the same format for every version
+    path += "/chromedriver";
+    return path;
+❱
+
+◀private: static▶ bool ☀Is_Version_Number_Less(std::string v1, std::string v2)❰
+
+    //is v1 < v2
+    //strings are assumed to be number.number.number.number
+    auto v1_parts = Split_Into_Parts_From_Dot(v1);
+    auto v2_parts = Split_Into_Parts_From_Dot(v2);
+    
+    for (size_t i = 0; i < v1_parts.size(); ++i){
+        if (v2_parts.size() > i){
+            auto v1_num = as_signed(v1_parts[i]);
+            auto v2_num = as_signed(v2_parts[i]);
+            if (v1_num == v2_num){
+                continue;
+            }
+            return v1_num < v2_num;
+        }
+        
+        //they were the same and v2 ended short...
+        //so the longer version is not less..?
+        else{
+            return false;
+        }
+    }
+    
+    //they were the equal
+    return false;
+❱

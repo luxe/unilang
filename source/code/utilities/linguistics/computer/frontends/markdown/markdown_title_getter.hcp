@@ -1,0 +1,89 @@
+class
+
+❪fstream❫
+❪iostream❫
+❪"code/utilities/contributor/contributor"❫
+❪"code/utilities/linguistics/computer/frontends/markdown/settings/markdown_settings"❫
+❪"code/utilities/code/concept_static_tree_structs"❫
+⚯
+❪"code/utilities/linguistics/computer/frontends/markdown/markdown_header_getter"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/converters/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/program/call/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/types/char/lib"❫
+❪"code/utilities/time/date/lib"❫
+❪"code/utilities/types/strings/observers/converting/lib"❫
+❪"code/utilities/linguistics/computer/frontends/markdown/markdown_sentence_extra_getter"❫
+⚞⚟
+
+◀public: static▶ std::string ☀Get_Possible_Image_Title(model::Paragraph const& it, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    std::string text;
+    if (More_Of_A_Labeled_Image_Title_Display(it,contributors,settings)){
+        
+        if (settings.headers.allow_labeled_image_titles){
+            Append(text,Labeled_Image_Title_Display(it,contributors,settings));
+        }
+        else{
+            Append(text,Labeled_NonImage_Title_Display(it,contributors,settings));
+        }
+    }
+    else{
+        Append(text,Markdown_Header_Getter::Get(it,contributors,settings));
+    }
+    return text;
+❱
+
+
+◀public: static▶ bool ☀More_Of_A_Labeled_Image_Title_Display(model::Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    
+    if (!p.title.empty()){
+        int count = 0;
+        for (auto const& s: p.sentence){
+            if (!s.text.empty()){
+                ++count;
+            }
+        }
+        return count == 0;  
+    }
+    return false;
+❱
+
+◀private: static▶ std::string ☀Labeled_Image_Title_Display(model::Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    std::string text;
+    for (auto const& s: p.sentence){
+        Append(text,Markdown_Sentence_Extra_Getter::Get(s,contributors,settings));
+        Append(text," ");
+        Append_With_Newline(text,"[<img width=\"60\" height=\"60\" src=\".readme/pdf_download.png\">](https://www.dropbox.com/s/1qde65ekii8nyb9/unilang.pdf?dl=1)");
+        Append_With_Newline(text,"");
+        Append(text,"**");
+        for (auto const& it: p.title){
+            Append(text,it.value);
+        }
+        Append_With_Newline(text,"**");
+        Append_A_Newline(text);
+    }
+    return text;
+❱
+◀private: static▶ std::string ☀Labeled_NonImage_Title_Display(model::Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    std::string text;
+    for (auto const& s: p.sentence){
+        for (auto const& it: s.image){
+            Append(text,"% ");
+            for (auto const& alt_text: it.alternative_text){
+            Append_With_Newline(text,alt_text.value);
+            }
+        }
+        Append(text,"% ");
+        for (auto const& it: p.title){
+            Append(text,it.value);
+        }
+        Append_With_Newline(text,"");
+        Append(text,"% ");
+        Append_With_Newline(text,Date_As_Full_Month_Day_Year());
+    }
+    return text;
+❱

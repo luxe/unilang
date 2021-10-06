@@ -1,0 +1,126 @@
+class
+⚯
+⚞⚟
+
+◀public:▶ ☀◈()◖
+             ◗❰
+
+
+             ❱
+
+◀public:▶ ☀◈(Sql_Hashset_Settings const& settings_in)◖
+              :settings(settings_in)
+             ◗❰
+
+             Initialize();
+
+             ❱
+             
+◀public:▶ ☀~◈()❰
+
+                if (settings.file_persistence == Persistence::NOT_PERSISTENT){
+                    Delete_File(file_name_used);
+                }
+             ❱
+             
+             
+
+◀private:▶ void ☀Initialize()❰
+
+
+     //get database name
+     file_name_used = Database_Filename();
+     
+     //if the database already exists, we pnly have to initialize it
+     if (File_Exists(file_name_used)){
+        db = std::make_shared<sqlite::database>(file_name_used);
+        return;
+     }
+     
+     //otherwise, we also need to populate it
+     db = std::make_shared<sqlite::database>(file_name_used);
+     Create_Table();
+     Load_Data();
+     
+❱
+
+
+
+//OBSERVERS
+◀public:▶ std::string ☀Size()❰
+
+  // //show size
+  std::string str_count;
+  *db << "select count(*) from hashtable" >> str_count;
+  return str_count;
+❱
+
+
+◀public:▶ bool ☀does_value_exist(std::string const& key)❰
+   
+   //build command
+   std::string command = "SELECT COUNT(1) FROM hashtable WHERE val = '";
+   command += key;
+   command += "';";
+   
+   int result=0;
+   *db << command >> result;
+   return result != 0;
+❱
+
+//transformers
+◀public:▶ void ☀Add(std::string const& key)❰
+    *db << "insert into hashtable (val) values (?);" << key;
+❱
+
+
+
+
+
+
+
+//IMPL
+◀private:▶ void ☀Create_Table()❰
+
+      *db << "DROP TABLE IF EXISTS hashtable;";
+      *db << "create table if not exists hashtable (val text NOT NULL PRIMARY KEY);";
+❱
+
+◀private:▶ void ☀Load_Data()❰
+
+     if (!File_Exists(settings.load_file)){
+        std::cerr << settings.load_file << " does not exist" << std::endl;
+        std::cerr << "data was not loaded into " << file_name_used << std::endl;
+        std::cerr << "database was deleted" << std::endl;
+        Delete_File(file_name_used);
+        exit(-1);
+     }
+     
+     *db << "begin;";
+      File_Content_Traverser::For_Each_Line_Of_File_With_Progress_Bar(settings.load_file,"Populating SQLite Database",[&](std::string const& line){
+         Add(line);
+      });
+     *db << "commit;";
+❱
+
+
+             
+◀private:▶ std::string ☀Database_Filename()❰
+     std::string x;
+     if (settings.make_unique_name){
+        x = Random_Files::Random_Desktop_Db_Filename();
+     }
+     else {
+        x = Random_Files::Desktop_Filename(settings.name + ".db");
+     }
+     return x;
+❱
+
+
+
+◀
+public:
+    std::string file_name_used;
+    Sql_Hashset_Settings settings;
+    std::shared_ptr<sqlite::database> db;
+▶

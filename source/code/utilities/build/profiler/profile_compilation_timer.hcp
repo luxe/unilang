@@ -1,0 +1,35 @@
+class
+⚯
+⚞⚟
+
+◀public: static▶ std::string ☀Profile(std::string const& file_name) ❰
+
+    return Use_Existing_Measure_Tool(file_name);
+    //TODO: measure in a different way
+    
+❱
+
+◀private: static▶ std::string ☀Use_Existing_Measure_Tool(std::string const& file_name) ❰
+
+    std::string command;
+    command += "./bazel run tools:measure-compile ";
+    command += file_name;
+    
+    auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
+    
+    if (results.return_code != 0){
+        //failed
+        return "";
+    }
+    
+    //passed.  extract duration
+    auto time = All_Characters_After_Last_Found_String(results.stdout,"DURATION:");
+    trim(time);
+    Remove_Everything_After_Found_Instance(time,".");
+    Keep_Only_Numeric_Chars(time);
+    
+    if (time == ""){
+        std::cerr << "somehow passed but there was no time" << std::endl;
+    }
+    return time;
+❱

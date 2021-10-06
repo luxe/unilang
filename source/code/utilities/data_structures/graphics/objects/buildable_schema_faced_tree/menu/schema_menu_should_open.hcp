@@ -1,0 +1,32 @@
+class
+⚯
+⚞⚟
+
+◀public: static▶ Schema_Menu_Open_Strategy ☀Check(Buildable_Schema_Faced_Tree_State & state, Pc_Input_State const& pc_input)❰
+
+    //keyboard input
+    Schema_Menu_Control_Settings control_settings;
+    auto key_activate = pc_input.keyboard.key_states[control_settings.activate_menu];
+
+    //find the element that has been right-clicked
+    //TODO: Drawing the tree should return this information.
+    if (!state.tree.state.menu.visible){
+        
+        //try to select node through keyboard on current active
+        if (key_activate == Key_State::DOWN || key_activate == Key_State::PRESSED){
+            state.tree.state.selected_node = Button_Face_Tree_Active_Finder::Find_Active_Label(state.tree.state.structure);
+            if (state.tree.state.selected_node != state.tree.state.structure.nodes.end()){
+                return Schema_Menu_Open_Strategy::ALONGSIDE;
+            }
+        }
+        
+        //try to select node through clicking
+        state.tree.state.selected_node = Button_Face_Tree_Click_Finder::Find_Clicked_Label(state.tree.state.structure);
+        if (state.tree.state.selected_node != state.tree.state.structure.nodes.end()){
+            return Schema_Menu_Open_Strategy::AT_MOUSE;
+        }
+        
+    }
+    
+    return Schema_Menu_Open_Strategy::DONT_OPEN;
+❱

@@ -1,0 +1,87 @@
+􏶞o􏶟
+􏷲utilities for acting on grpc endpoints􏷱
+􏷰can enforce deadlines and ensure correct errors are sent back to the client􏷯
+􏷞build􏷝􏷞buildfarm􏷝􏷞common􏷝􏷞grpc􏷝
+􏷤􏷣􏷦com.google.protobuf.Duration􏷥
+􏷤􏷣􏷦com.google.protobuf.util.Durations􏷥
+􏷤􏷣􏷦io.grpc.Deadline􏷥
+􏷤􏷣􏷦java.util.concurrent.TimeUnit􏷥
+􏷤􏷣􏷦build.buildfarm.common.grpc.GrpcEndpoint􏷥
+􏷤􏷣􏷦build.bazel.remote.execution.v2.ExecuteRequest􏷥
+􏷤􏷣􏷦build.bazel.remote.execution.v2.ExecutionGrpc􏷥
+􏷤􏷣􏷦build.bazel.remote.execution.v2.RequestMetadata􏷥
+􏷤􏷣􏷦build.bazel.remote.execution.v2.WaitExecutionRequest􏷥
+􏷤􏷣􏷦build.buildfarm.common.Time􏷥
+􏷤􏷣􏷦build.buildfarm.common.Watcher􏷥
+􏷤􏷣􏷦build.buildfarm.common.grpc.GrpcEndpoint􏷥
+􏷤􏷣􏷦build.buildfarm.common.grpc.GrpcEndpointHandler􏷥
+􏷤􏷣􏷦build.buildfarm.common.grpc.TracingMetadataUtils􏷥
+􏷤􏷣􏷦build.buildfarm.instance.Instance􏷥
+􏷤􏷣􏷦build.buildfarm.metrics.MetricsPublisher􏷥
+􏷤􏷣􏷦com.google.common.util.concurrent.FutureCallback􏷥
+􏷤􏷣􏷦com.google.common.util.concurrent.ListenableFuture􏷥
+􏷤􏷣􏷦com.google.longrunning.Operation􏷥
+􏷤􏷣􏷦com.google.protobuf.util.Durations􏷥
+􏷤􏷣􏷦io.grpc.Context􏷥
+􏷤􏷣􏷦io.grpc.Status􏷥
+􏷤􏷣􏷦io.grpc.stub.ServerCallStreamObserver􏷥
+􏷤􏷣􏷦io.grpc.stub.StreamObserver􏷥
+􏷤􏷣􏷦java.util.concurrent.CancellationException􏷥
+􏷤􏷣􏷦java.util.concurrent.ScheduledExecutorService􏷥
+􏷤􏷣􏷦java.util.concurrent.TimeUnit􏷥
+􏷤􏷣􏷦java.util.logging.Level􏷥
+􏷤􏷣􏷦java.util.logging.Logger􏷥
+􏷤􏷣􏷦javax.annotation.Nullable􏷥
+􏷤i􏷣􏷦com.google.common.util.concurrent.MoreExecutors.directExecutor􏷥
+
+
+􏷐handle timeouts specified by the grpc endpoint􏷏
+􏶠a grpc endpoint may not enforce any specific timeouts􏶡
+􏷘+s􏷗􏴅Observers􏴆􏷒handle timeout􏷑
+􏷌T􏷋
+􏶜􏶝􏷆GrpcEndpoint􏷅􏳣T􏳤􏷄endpoint􏷃􏷀information about the endpoint including how to handle timeouts􏶿
+􏶜􏶝􏷆Context􏷅􏷄context􏷃􏷀the grpc context from hitting the endpoint􏶿
+􏶜􏶝􏷆ScheduledExecutorService􏷅􏷄executor􏷃􏷀the executor to use with the context􏶿
+􏶴
+
+    if (endpoint.enforceDeadline){
+        enforceDeadline(endpoint,context,executor);
+    }
+􏶳
+
+􏷐enforce a deadline on the endpoint􏷏
+􏶠cancel the context and operation after a certain amount of time􏶡
+􏷘-s􏷗􏴅Observers􏴆􏷒enforce deadline􏷑
+􏷌T􏷋
+􏶜􏶝􏷆GrpcEndpoint􏷅􏳣T􏳤􏷄endpoint􏷃􏷀information about the endpoint including how to handle timeouts􏶿
+􏶜􏶝􏷆Context􏷅􏷄context􏷃􏷀the grpc context from hitting the endpoint􏶿
+􏶜􏶝􏷆ScheduledExecutorService􏷅􏷄executor􏷃􏷀the executor to use with the context􏶿
+􏶴
+    // enforce a grpc timeout using a deadline.
+    // when the timeout occurs, it will cause a context cancellation.
+    // we also cancel the operation, and return an error to the client.
+    // the operation is canceled so that ongoing work does not continue after the grpc timeout.
+    Context.CancellableContext c = context.withDeadline(Time.toDeadline(endpoint.duration), executor);
+    Context.CancellationListener listener =
+        new Context.CancellationListener() {
+          @Override
+          public void cancelled(Context ctx) {
+            endpoint.operation.cancel(true);
+            String error = deadlineExceededError(endpoint);
+            endpoint.streamObserver.onError(
+                Status.DEADLINE_EXCEEDED.withDescription(error).asException());
+          }
+        };
+
+    c.addListener(listener, directExecutor());
+􏶳
+
+􏷐get error message for deadline exceeded􏷏
+􏶠this message will be sent back to the client􏶡
+􏷘-s􏷗􏴅Observers􏴆􏷒deadline exceeded error􏷑
+􏷌T􏷋
+􏶜􏶝􏷆GrpcEndpoint􏷅􏳣T􏳤􏷄endpoint􏷃􏷀information about the endpoint including how to handle timeouts􏶿
+􏶾String􏶽􏶼error􏶻􏶺the error message􏶹
+􏶴
+    return String.format("The grpc endpoint '%s' has timed out because buildfarm enforces a deadline of %ds",endpoint.name,endpoint.duration.getSeconds());
+􏶳

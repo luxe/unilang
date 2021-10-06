@@ -1,0 +1,92 @@
+class
+❪vector❫
+❪string❫
+❪"code/utilities/types/vectors/converters/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/types/strings/observers/splitting/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/strings/observers/counters/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/strings/observers/char/lib"❫
+❪"code/utilities/types/char/lib"❫
+❪"code/utilities/output/printers/lib"❫
+❪"code/utilities/types/string_grid/string_grid_builder"❫
+❪"code/utilities/data_structures/compass_directions/compass_direction_diagnonal_movement"❫
+❪"code/utilities/data_structures/compass_directions/compass_direction_diagnonal_movements"❫
+⚯
+❪"code/utilities/data_structures/point/point"❫
+❪"code/utilities/data_structures/point/point_mover"❫
+❪"code/utilities/types/strings/transformers/trimming/lib"❫
+❪"code/utilities/types/range/range_shrinker"❫
+❪"code/utilities/data_structures/range/range"❫
+⚞⚟
+
+◀public: static▶ void ☀Part_1(std::vector<std::string> lines) ❰
+
+    auto unique_ids = Get_Unique_Ids(lines);
+    std::cout << unique_ids.back() << std::endl;
+❱
+◀public: static▶ void ☀Part_2(std::vector<std::string> lines) ❰
+    auto unique_ids = Get_Unique_Ids(lines);
+    auto missing = Find_Missing(unique_ids);
+    std::cout << missing.back() << std::endl;
+❱
+
+◀private: static▶ std::vector<int> ☀Find_Missing(std::vector<int> const& nums)❰
+
+    std::vector<int> missing;
+    
+    //assume incrementing
+    auto marker = nums.front();
+    for (auto const& it: nums){
+        while (it != marker){
+            missing.emplace_back(marker);
+            ++marker;
+        }
+        ++marker;
+    }
+    
+    return missing;
+❱
+
+◀private: static▶ std::vector<int> ☀Get_Unique_Ids(std::vector<std::string> const& lines)❰
+    std::vector<int> unique_ids;
+    for (auto const& it: lines){
+        unique_ids.emplace_back(Get_Unique_Id(it));
+    }
+    
+    std::sort(unique_ids.begin(),unique_ids.end());
+    return unique_ids;
+❱
+
+◀private: static▶ int ☀Get_Unique_Id(std::string const& line) ❰
+
+    Range r1;
+    r1.low = 0;
+    r1.high = 127;
+    for (size_t i = 0; i < 7; ++i){
+        if (line[i] == 'F'){
+            Range_Shrinker::Shrink_To_Lower_Half(r1);
+        }
+        else if (line[i] == 'B'){
+            Range_Shrinker::Shrink_To_Upper_Half(r1);
+        }
+    }
+    
+    
+    Range r2;
+    r2.low = 0;
+    r2.high = 7;
+    for (size_t i = 7; i < 11; ++i){
+        if (line[i] == 'L'){
+            Range_Shrinker::Shrink_To_Lower_Half(r2);
+        }
+        else if (line[i] == 'R'){
+            Range_Shrinker::Shrink_To_Upper_Half(r2);
+        }
+    }
+    
+    
+    return r1.low * 8 + r2.low;
+❱

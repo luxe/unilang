@@ -1,0 +1,71 @@
+class
+⚯
+⚞⚟
+
+
+//turn the concept tree into a simple tree image showing the whole schema
+◀public: static▶ void ☀Create()❰
+
+
+    //take the original string tree (code concept representation)
+    auto str_tree = Concept_String_Tree_Getter::Get();
+    
+    //convert the label tree to drawable frame elements
+    //different design choices:
+    //Frame_Elements elements = Render_As_Button_Tree(str_tree);
+    Frame_Elements elements = Render_As_Schema_Tree(str_tree);
+    
+    Convert_To_Image(elements);
+    
+    
+    //print the full paths for convenience
+    //auto full_paths = Tree_Full_Paths_Getter::Get_All_Paths_Ordered(str_tree);
+    //std::cout << Get_As_Newline_Seperated_String(full_paths) << std::endl;
+    
+❱
+
+◀private: static▶ Frame_Elements ☀Render_As_Button_Tree(String_Tree const& str_tree)❰
+
+    //and convert it into a label tree
+    auto label_tree = String_Tree_To_Buttoned_Face_Tree::Convert(str_tree);
+    
+    //convert the label tree to drawable frame elements
+    Frame_Elements elements;
+    Pc_Input_State pc_input;
+    auto unilang_font_lookup = Unilang_Character_Maps::Get();
+    Reference_Lookup_Map ref_map;
+    Schema_Path_Settings path_settings;
+    elements.types += Button_Face_Tree_Drawer::Draw(unilang_font_lookup,label_tree,pc_input,path_settings).types;
+    
+    return elements;
+❱
+
+◀private: static▶ Frame_Elements ☀Render_As_Schema_Tree(String_Tree const& str_tree)❰
+
+    //and convert it into a label tree
+    auto label_tree = String_Tree_To_Buildable_Schema_Faced_Tree::Convert(str_tree);
+    
+    //convert the label tree to drawable frame elements
+    Frame_Elements elements;
+    Pc_Input_State pc_input;
+    auto unilang_font_lookup = Unilang_Character_Maps::Get();
+    elements.types += Buildable_Schema_Face_Tree_Drawer::Draw(unilang_font_lookup,label_tree,pc_input).types;
+    
+    return elements;
+❱
+
+◀private: static▶ void ☀Convert_To_Image(Frame_Elements const& elements)❰
+
+    //draw the elements to an image
+    Cairo_Render_Settings settings;
+    
+    auto host_folder = Bazel_Derived_Root_Of_Repo();
+    settings.file_name = host_folder + ".readme/unilang_concept_tree.png";
+    settings.bg_color.r = 1;
+    settings.bg_color.g = 1;
+    settings.bg_color.b = 1;
+    Frame_Renderer::Render(elements,settings);
+    
+    //additional cleanuo
+    Image_Transparent::Convert(settings.file_name);
+❱
