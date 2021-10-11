@@ -2,19 +2,19 @@ package(default_visibility = ["//visibility:public"])
 
 cc_library(
     name = "php_random",
-    srcs =  glob(["ext/standard/mt_rand.c",
+    srcs = glob(
+        [
+            "ext/standard/mt_rand.c",
             "ext/standard/random.c",
             "ext/standard/basic_functions.c",
             "ext/standard/lcg.c",
             #"Zend/*.c",
             #"Zend/Optimizer/*.c",
-],
-
+        ],
         exclude = [
             "Zend/Optimizer/ssa_integrity.c",
         ],
     ),
-
     hdrs = glob([
         "ext/standard/*h",
         "ext/standard/streams/*h",
@@ -29,13 +29,13 @@ cc_library(
     copts = [],
     includes = [
         ".",
+        "TSRM",
         "Zend",
-        "ext/standard",
         "ext/session",
+        "ext/standard",
         "ext/standard/streams",
         "main",
         "main/streams",
-        "TSRM",
     ],
     deps = [],
 )

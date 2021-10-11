@@ -12,8 +12,8 @@ cc_binary(
     name = "random",
     srcs = ["random.cpp"],
     deps = [
+        "//code/utilities/deps/external/php_src:lib",
         "//code/utilities/random:lib",
         "//code/utilities/random/rand_impls:posix_1_2001_example",
-        "//code/utilities/deps/external/php_src:lib",
     ],
 )
