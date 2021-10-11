@@ -2648,6 +2648,36 @@ grpc_deps()
     Dependency_Specification spec;
     spec.lib_name = "bech32";
     Add_Unilang_Github_Mirror(spec,"bech32","45bbf67d3dcc00dc960041563fc2dddd32a5f903","b9dec129b2cfb7fdc54ada19bade71d5fa1152323eab884192d65210aca1d113");
+    
+    spec.build_defs.raw_starlark = 
+R"RAW_STRING(
+package(default_visibility = ["//visibility:public"],)
+cc_library(
+    name = "cpp",
+    hdrs = glob(
+        [
+            "ref/c++/bech32.h",
+        ],
+        exclude = [
+        ],
+    ),
+    srcs = glob(
+        [
+            "ref/c++/bech32.cpp",
+        ],
+        exclude = [
+        ],
+    ),
+)
+)RAW_STRING";
+
+
+    Wrapper_Target target;
+    target.name = "bech32";
+    target.includes.emplace_back("ref/c++/bech32.h");
+    target.deps.emplace_back("@bech32//:cpp");
+    spec.dep_integration.wrapper_targets.emplace_back(target);
+
     return spec;
 ❱
 ◀private: static▶ Dependency_Specification ☀Getch()❰
