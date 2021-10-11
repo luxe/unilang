@@ -9,6 +9,6 @@ cc_library(
     deps = [
         "//code/utilities/types/char:lib",
         "//code/utilities/types/char:optional_letter_case",
-        "//code/utilities/deps/external/php_src:lib",
+        #"//code/utilities/deps/external/php_src:lib",
     ],
 )

@@ -1,4 +1,4 @@
-#include "code/utilities/deps/external/php_src/lib.hpp"
+//#include "code/utilities/deps/external/php_src/lib.hpp"
 #include "code/utilities/random/lib.hpp"
 #include "code/utilities/types/char/lib.hpp"
 
@@ -58,7 +58,8 @@ char Hex_Char_Via_Gen_Mod_16(std::mt19937_64 & gen){
 }
 char Hex_Char_Via_Gen_Mod_16_PHP(){
         //the mt_rand impl may be different both in algorithm and architecure (bit size)
-	return Get_Hex_Char_From_Index(php_mt_rand()%16);
+	//return Get_Hex_Char_From_Index(php_mt_rand()%16);
+	return 0;
 }
 
 std::string Random_64Char_Hex_Via_Rand(){
@@ -107,7 +108,7 @@ void Shift_On_Another_Hex_Via_PHP(std::string & str){
 }
 
 void seed_PHP_mt19937(uint32_t i){
-   php_mt_srand(i);
+   //php_mt_srand(i);
 }
 
 
