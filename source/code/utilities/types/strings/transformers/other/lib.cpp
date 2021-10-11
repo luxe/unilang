@@ -43,6 +43,13 @@ std::vector<char> Convert_To_Vec_Of_Chars(std::string const& str){
         }
         return all;
 }
+std::vector<uint8_t> Convert_To_Vec_Of_Uint8(std::string const& str){
+        std::vector<uint8_t> all;
+        for (auto it: str){
+                all.push_back(it);
+        }
+        return all;
+}
 
 std::string& Indent_Each_Line_N_Amount(std::string & str, unsigned int amount){
       std::string indent_line(amount,' ');
