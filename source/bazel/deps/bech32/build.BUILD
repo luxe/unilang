@@ -8,6 +8,7 @@ cc_library(
     srcs = glob(
         [
             "ref/c++/bech32.cpp",
+            "ref/c++/segwit_addr.cpp",
         ],
         exclude = [
         ],
@@ -15,8 +16,10 @@ cc_library(
     hdrs = glob(
         [
             "ref/c++/bech32.h",
+            "ref/c++/segwit_addr.h",
         ],
         exclude = [
         ],
     ),
+    includes = ["ref/c++"],
 )

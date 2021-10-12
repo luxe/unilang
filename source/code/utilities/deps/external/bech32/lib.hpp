@@ -3,4 +3,4 @@
 
 
 #pragma once
-#include "ref/c++/bech32.h"
+#include "ref/c++/segwit_addr.h"
