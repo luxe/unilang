@@ -56,6 +56,9 @@ char Hex_Char_Via_Gen_Mod_16(std::mt19937 & gen){
 char Hex_Char_Via_Gen_Mod_16(std::mt19937_64 & gen){
 	return Get_Hex_Char_From_Index(gen()%16);
 }
+char Hex_Char_Via_Gen_Mod_16(std::minstd_rand & gen){
+	return Get_Hex_Char_From_Index(gen()%16);
+}
 char Hex_Char_Via_Gen_Mod_16_PHP(){
         //the mt_rand impl may be different both in algorithm and architecure (bit size)
 	//return Get_Hex_Char_From_Index(php_mt_rand()%16);
@@ -83,6 +86,13 @@ std::string Random_64Char_Hex_Via_Gen(std::mt19937_64 & gen){
 	}
 	return x;
 }
+std::string Random_64Char_Hex_Via_Gen(std::minstd_rand & gen){
+	std::string x;
+	for (size_t i = 0; i < 64; ++i){
+		x += Hex_Char_Via_Gen_Mod_16(gen);
+	}
+	return x;
+}
 std::string Random_64Char_Hex_Via_PHP(){
 	std::string x;
 	for (size_t i = 0; i < 64; ++i){
@@ -99,6 +109,10 @@ void Shift_On_Another_Hex_Via_Gen(std::string & str, std::mt19937 & gen){
 	str += Hex_Char_Via_Gen_Mod_16(gen);
 }
 void Shift_On_Another_Hex_Via_Gen(std::string & str, std::mt19937_64 & gen){
+	str.erase(0,1);
+	str += Hex_Char_Via_Gen_Mod_16(gen);
+}
+void Shift_On_Another_Hex_Via_Gen(std::string & str, std::minstd_rand & gen){
 	str.erase(0,1);
 	str += Hex_Char_Via_Gen_Mod_16(gen);
 }
