@@ -43,7 +43,7 @@ void Count_Up_Forever(std::string const& start_num, Fun fun){
     mpz_class i(start_num);
     while (true){
         fun(i.get_str(10));
-    ++i;
+        ++i;
     }
 }
 

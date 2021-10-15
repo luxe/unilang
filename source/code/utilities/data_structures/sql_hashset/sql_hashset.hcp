@@ -70,7 +70,13 @@ class
 
 //transformers
 ◀public:▶ void ☀Add(std::string const& key)❰
-    *db << "insert into hashtable (val) values (?);" << key;
+
+    // only add the value if it doesn't exist
+    // if the value already exists the insert command throws an exception
+    if (!does_value_exist(key)){
+        *db << "insert into hashtable (val) values (?);" << key;
+    }
+
 ❱
 
 
@@ -92,8 +98,9 @@ class
         std::cerr << settings.load_file << " does not exist" << std::endl;
         std::cerr << "data was not loaded into " << file_name_used << std::endl;
         std::cerr << "database was deleted" << std::endl;
-        Delete_File(file_name_used);
-        exit(-1);
+        //Delete_File(file_name_used);
+        //exit(-1);
+        return;
      }
      
      *db << "begin;";
