@@ -36,7 +36,7 @@ int main(){
    int ROWS = 6;
    int COLS = 10;
    int low_inclusive = 0;
-   int high_inclusive = 15;
+   int high_inclusive = 13;
    std::mt19937 gen;
    std::uniform_int_distribution<> distrib(low_inclusive, high_inclusive);
    gen.seed(0);
