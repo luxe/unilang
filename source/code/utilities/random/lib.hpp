@@ -1,7 +1,9 @@
 #pragma once
 #include <random>
 #include <string>
+#include <vector>
 #include <map>
+#include <cstdint>
 #include <set>
 #include "code/utilities/types/char/optional_letter_case.hpp"
 
@@ -29,12 +31,14 @@ char Hex_Char_Via_Gen_Mod_16(std::mt19937 & gen);
 char Hex_Char_Via_Gen_Mod_16(std::mt19937_64 & gen);
 char Hex_Char_Via_Gen_Mod_16(std::minstd_rand & gen);
 char Hex_Char_Via_Gen_Mod_16_PHP();
+char Hex_Char_Via_Num(uint64_t num);
 
 std::string Random_64Char_Hex_Via_Rand();
 std::string Random_64Char_Hex_Via_Gen(std::mt19937 & gen);
 std::string Random_64Char_Hex_Via_Gen(std::mt19937_64 & gen);
 std::string Random_64Char_Hex_Via_Gen(std::minstd_rand & gen);
 std::string Random_64Char_Hex_Via_PHP();
+std::string Random_64Char_Hex_Via_Nums(std::vector<uint64_t> nums);
 
 void Shift_On_Another_Hex_Via_Rand(std::string & str);
 void Shift_On_Another_Hex_Via_Gen(std::string & str, std::mt19937 & gen);

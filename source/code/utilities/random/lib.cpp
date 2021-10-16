@@ -64,6 +64,9 @@ char Hex_Char_Via_Gen_Mod_16_PHP(){
 	//return Get_Hex_Char_From_Index(php_mt_rand()%16);
 	return 0;
 }
+char Hex_Char_Via_Num(uint64_t num){
+	return Get_Hex_Char_From_Index(num%16);
+}
 
 std::string Random_64Char_Hex_Via_Rand(){
 	std::string x;
@@ -100,6 +103,14 @@ std::string Random_64Char_Hex_Via_PHP(){
 	}
 	return x;
 }
+std::string Random_64Char_Hex_Via_Nums(std::vector<uint64_t> nums){
+	std::string x;
+	for (size_t i = 0; i < 64; ++i){
+		x += Hex_Char_Via_Num(nums[i]);
+	}
+	return x;
+}
+
 void Shift_On_Another_Hex_Via_Rand(std::string & str){
 	str.erase(0,1);
 	str += Hex_Char_Via_Rand_Mod_16();
