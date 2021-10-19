@@ -51,6 +51,10 @@ void Shift_On_Another_Hex_Via_PHP(std::string & str);
 void seed_PHP_mt19937(uint32_t i);
 
 
+//cryptographic random
+std::string urandom(size_t amount);
+
+
 template<typename T>
 auto Get_Random_Index(T const& container) -> std::size_t {
   std::random_device random_device;

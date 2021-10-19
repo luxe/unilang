@@ -137,6 +137,28 @@ void seed_PHP_mt19937(uint32_t i){
 }
 
 
+std::string urandom(size_t amount){
+    
+    // Load private key (seckey) from random bytes
+    FILE *frand = fopen("/dev/urandom", "r");
+    
+    std::string result;
+    for (size_t i = 0; i < amount; ++i){
+        result += (unsigned char)fgetc(frand);
+    }
+    
+    // Read 32 bytes from frand
+    // unsigned char seckey[32];
+    // fread(seckey, 32, 1, frand);
+    
+    // Close the file
+    fclose(frand);
+    
+    //std::string result((char*)seckey);
+    return result;
+}
+
+
 std::string Get_Random_By_Probability(std::map<std::string,double> const& m){
 	auto num = RandomRealFromRange<double>(0.0,100.0);
 	double total = 0;

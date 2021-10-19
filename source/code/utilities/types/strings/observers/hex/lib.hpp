@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 
 //to hex
 std::string AsHexString(int c);
@@ -8,6 +9,8 @@ std::string to_caps_hex(unsigned char *s);
 std::string to_caps_hex(std::string const& str);
 std::string to_caps_hex_p2(std::string const& str);
 std::string string_to_hex(const std::string& input);
+
+std::vector<std::string> Get_All_2_Width_Hex_For_1_Byte();
 
 //from hex
 std::string unhex(std::string const& str);

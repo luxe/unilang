@@ -3,6 +3,23 @@
 #include <sstream>
 #include <stdexcept>
 
+
+std::vector<std::string> Get_All_2_Width_Hex_For_1_Byte(){
+    unsigned char i = 0;
+    std::vector<std::string> results;
+    results.emplace_back("00");
+    i++;
+    while (i != 0){
+        std::stringstream ss;
+        ss << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << (unsigned int)i;
+        results.emplace_back(ss.str());
+        ++i;
+    }
+    
+    return results;
+    
+}
+
 std::string AsHexString(int c){
   std::ostringstream s;
   s << std::hex << std::uppercase << c;
