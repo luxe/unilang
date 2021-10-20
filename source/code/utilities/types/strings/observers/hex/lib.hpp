@@ -11,6 +11,7 @@ std::string to_caps_hex_p2(std::string const& str);
 std::string string_to_hex(const std::string& input);
 
 std::vector<std::string> Get_All_2_Width_Hex_For_1_Byte();
+std::vector<std::string> Get_All_Hex_Chars();
 
 //from hex
 std::string unhex(std::string const& str);

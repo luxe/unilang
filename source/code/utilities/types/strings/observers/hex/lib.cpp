@@ -19,6 +19,26 @@ std::vector<std::string> Get_All_2_Width_Hex_For_1_Byte(){
     return results;
     
 }
+std::vector<std::string> Get_All_Hex_Chars(){
+    std::vector<std::string> x;
+    x.emplace_back("0");
+    x.emplace_back("1");
+    x.emplace_back("2");
+    x.emplace_back("3");
+    x.emplace_back("4");
+    x.emplace_back("5");
+    x.emplace_back("6");
+    x.emplace_back("7");
+    x.emplace_back("8");
+    x.emplace_back("9");
+    x.emplace_back("A");
+    x.emplace_back("B");
+    x.emplace_back("C");
+    x.emplace_back("D");
+    x.emplace_back("E");
+    x.emplace_back("F");
+    return x;
+}
 
 std::string AsHexString(int c){
   std::ostringstream s;
