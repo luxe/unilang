@@ -32,6 +32,7 @@ char Hex_Char_Via_Gen_Mod_16(std::mt19937_64 & gen);
 char Hex_Char_Via_Gen_Mod_16(std::minstd_rand & gen);
 char Hex_Char_Via_Gen_Mod_16_PHP();
 char Hex_Char_Via_Num(uint64_t num);
+char Hex_Char_Via_Num(uint32_t num);
 
 std::string Random_64Char_Hex_Via_Rand();
 std::string Random_64Char_Hex_Via_Gen(std::mt19937 & gen);
@@ -46,6 +47,15 @@ void Shift_On_Another_Hex_Via_Gen(std::string & str, std::mt19937 & gen);
 void Shift_On_Another_Hex_Via_Gen(std::string & str, std::mt19937_64 & gen);
 void Shift_On_Another_Hex_Via_Gen(std::string & str, std::minstd_rand & gen);
 void Shift_On_Another_Hex_Via_PHP(std::string & str);
+
+template <typename Engine>
+std::vector<uint32_t> Run_Generator_To_Get_64_Values(Engine & engine){
+  std::vector<uint32_t> nums;
+  for (size_t i = 0; i < 64; ++i){
+    nums.emplace_back(engine());
+  }
+  return nums;
+}
 
 
 //seeding

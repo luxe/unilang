@@ -67,6 +67,9 @@ char Hex_Char_Via_Gen_Mod_16_PHP(){
 char Hex_Char_Via_Num(uint64_t num){
 	return Get_Hex_Char_From_Index(num%16);
 }
+char Hex_Char_Via_Num(uint32_t num){
+	return Get_Hex_Char_From_Index(num%16);
+}
 
 std::string Random_64Char_Hex_Via_Rand(){
 	std::string x;
