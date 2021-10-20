@@ -110,6 +110,13 @@ std::string Random_64Char_Hex_Via_Nums(std::vector<uint64_t> nums){
 	}
 	return x;
 }
+std::string Random_64Char_Hex_Via_Nums(std::vector<uint32_t> nums){
+	std::string x;
+	for (size_t i = 0; i < 64; ++i){
+		x += Hex_Char_Via_Num(nums[i]);
+	}
+	return x;
+}
 
 void Shift_On_Another_Hex_Via_Rand(std::string & str){
 	str.erase(0,1);

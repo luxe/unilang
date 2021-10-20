@@ -39,6 +39,7 @@ std::string Random_64Char_Hex_Via_Gen(std::mt19937_64 & gen);
 std::string Random_64Char_Hex_Via_Gen(std::minstd_rand & gen);
 std::string Random_64Char_Hex_Via_PHP();
 std::string Random_64Char_Hex_Via_Nums(std::vector<uint64_t> nums);
+std::string Random_64Char_Hex_Via_Nums(std::vector<uint32_t> nums);
 
 void Shift_On_Another_Hex_Via_Rand(std::string & str);
 void Shift_On_Another_Hex_Via_Gen(std::string & str, std::mt19937 & gen);

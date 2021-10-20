@@ -26,3 +26,18 @@ cc_library(
     ],
 )
 
+cc_library(
+    name = "arc4",
+    srcs = ["arc4.cpp"],
+    hdrs = ["arc4.hpp"],
+    deps = [
+    ],
+)
+
+cc_library(
+    name = "chacha",
+    srcs = ["chacha.cpp"],
+    hdrs = ["chacha.hpp"],
+    deps = [
+    ],
+)
