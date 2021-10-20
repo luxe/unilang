@@ -108,6 +108,21 @@ std::string Get_Substring_Found_Between_First_Instance_Of_Two_Characters(std::st
 	}
 	return substring;
 }
+std::string Get_Substring_Found_Between_Two_Strings(std::string const& str, std::string const& before, std::string const& after){
+    
+    int firstDelPos = str.find(before);
+    if (firstDelPos == std::string::npos) {
+        return "";
+    }
+    
+    int secondDelPos = str.find(after);
+    if (secondDelPos == std::string::npos) {
+        return "";
+    }
+    
+    std::string strbetweenTwoDels = str.substr(firstDelPos+before.size(), secondDelPos-firstDelPos-1);
+    return strbetweenTwoDels;
+}
 
 
 
