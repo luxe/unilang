@@ -8,8 +8,8 @@ cc_library(
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
     data = [
+        "@dogecoin_tools//:tools",
     ],
     deps = [
-        "@indicators",
     ],
 )

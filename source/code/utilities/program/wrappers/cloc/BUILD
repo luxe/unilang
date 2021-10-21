@@ -4,9 +4,9 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
-hcp(
+hcp_hdrs_derive(
     name = "cloc_runner",
-    deps = [
+    interface_deps = [
         "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/program/call:lib",

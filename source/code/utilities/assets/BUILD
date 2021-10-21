@@ -33,3 +33,10 @@ hcp_hdrs_derive(
     data = ["@chrome_drivers//:all"],
     deps = [],
 )
+
+hcp_hdrs_derive(
+    name = "dogecoin_tools",
+    interface_deps = [
+        "//code/utilities/deps/external/dogecoin_tools:lib"
+    ],
+)

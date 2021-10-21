@@ -163,6 +163,8 @@ class
     //blockchain / bitcoin / cryptocurrency
     x.specs.emplace_back(bitcoin_iterate());
     x.specs.emplace_back(bips());
+    x.specs.emplace_back(dogecoin_tools());
+    
     //https://github.com/libbitcoin/libbitcoin-system
     
     
@@ -3647,6 +3649,31 @@ cc_binary(
     Add_Unilang_Github_Mirror(spec,"bips","bd943663d6908679ca4f94276589ef402f865739","21c8a09b294268556851a254dd92a8777d6d308a2fc29bc106cab37c42d9ce9f");
     return spec;
 ❱
+
+◀private: static▶ Dependency_Specification ☀dogecoin_tools()❰
+    Dependency_Specification spec;
+    spec.lib_name = "dogecoin_tools";
+    //https://github.com/dogecoin/dogecoin/releases/download/v1.14.4/dogecoin-1.14.4-x86_64-linux-gnu.tar.gz
+    Add_Direct_Url(spec,"https://github.com/dogecoin/dogecoin/releases/download/v1.14.4/dogecoin-1.14.4-x86_64-linux-gnu.tar.gz","6266235abe4bcbd41ea57bdf42f11ef89aa69f0386e8c8846d5228af69e7fa13");
+    spec.build_defs.raw_starlark = 
+R"RAW_STRING(
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "tools",
+    srcs = glob(["*/**"]),
+)
+)RAW_STRING";
+
+    Wrapper_Target target;
+    target.name = "dogecoin_tools";
+    //target.includes.emplace_back("X.hpp");
+    target.data_deps.emplace_back("@dogecoin_tools//:tools");
+    spec.dep_integration.wrapper_targets.emplace_back(target);
+    
+    return spec;
+❱
+
 
 ◀private: static▶ Dependency_Specification ☀ccan()❰
     Dependency_Specification spec;

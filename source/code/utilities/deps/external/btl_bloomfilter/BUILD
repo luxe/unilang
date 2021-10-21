@@ -7,6 +7,8 @@ cc_library(
     name = "lib",
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
+    data = [
+    ],
     deps = [
         "@btl_bloomfilter//:lib",
     ],
