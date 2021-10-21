@@ -396,6 +396,7 @@ using chacha4r  = chacha_detail::chacha_engine<4>;
 using chacha5r  = chacha_detail::chacha_engine<5>;
 using chacha6r  = chacha_detail::chacha_engine<6>;
 using chacha8r  = chacha_detail::chacha_engine<8>;
+using chacha12r = chacha_detail::chacha_engine<12>;
 using chacha20r = chacha_detail::chacha_engine<20>;
 
 #endif // CHACHA_HPP_INCLUDED
