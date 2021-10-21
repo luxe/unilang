@@ -3,7 +3,11 @@
 
 package(default_visibility = ["//visibility:public"])
 
-filegroup(
-    name = "sysroot",
-    srcs = glob(["*/**"]),
+cc_library(
+    name = "lib",
+    srcs = glob(["*.cpp"]),
+    hdrs = glob(["*.hpp"]),
+    deps = [
+        "@bazel//:spawn_proto_cpp",
+    ],
 )

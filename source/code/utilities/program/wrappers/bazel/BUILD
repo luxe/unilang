@@ -27,24 +27,24 @@ enum_cpp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "build_settings",
-    deps = [
+    interface_deps = [
         "//code/utilities/program/wrappers/bazel:run_environment",
         "//code/utilities/program/wrappers/bazel:spawn_strategy",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "default_build_settings",
-    deps = [
+    interface_deps = [
         "//code/utilities/program/wrappers/bazel:build_settings",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "bazel_runner",
-    deps = [
+    interface_deps = [
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/formats/serialization:protobuf",
         "//code/utilities/program/call:lib",
@@ -61,13 +61,13 @@ hcp(
         "//code/utilities/types/strings/transformers/removing:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "@bazel//:spawn_proto_cpp",
+        "//code/utilities/deps/external/bazel_spawn_proto:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "bazel_flags_adder",
-    deps = [
+    interface_deps = [
         "//code/utilities/program/inputs/flags:flag_util",
         "//code/utilities/program/inputs/flags/data:flags",
         "//code/utilities/program/wrappers/bazel:build_settings",
