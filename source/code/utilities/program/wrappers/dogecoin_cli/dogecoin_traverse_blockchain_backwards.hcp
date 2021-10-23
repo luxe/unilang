@@ -1,0 +1,54 @@
+class
+⚯
+⚞⚟
+
+
+
+
+
+◀
+public: template <typename Fun>
+static void Traverse(Fun fun){
+    
+    //what block do we start at?  The last one!
+    auto current_block_hash = Dogecoin_Latest_Block_Getter::Get();
+    //auto current_block_hash = Dogecoin_Get_Block_By_Height::Get(1000);
+    
+    
+    
+    //just make this value start at != 0.
+    //we will start at something high and dwindle to 0- or break out early
+    size_t current_height = -1;
+    
+    
+    
+    while (current_height != 0){
+        
+         //do something with block
+         auto json = Dogecoin_Block_Getter::Get(current_block_hash);
+         auto should_break = fun(json);
+         
+         //break if we need to
+         if (should_break == Should_Break::YES){
+            return;
+        }
+         
+         
+         
+         //move onto the next block
+         if (json.find("previousblockhash") == json.end()){
+            //stop when current_height is 0
+            //if these attributes are missing its 0
+            current_height = 0;
+         }
+         else{
+            current_block_hash = json["previousblockhash"];
+            current_height = json["height"];
+         }
+         
+         
+    }
+    
+    
+}
+▶
