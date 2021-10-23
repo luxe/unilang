@@ -18,13 +18,14 @@ class
     if (!Process_Is_Running(tool_name)){
         std::cout << tool_name << " is not running.  Starting now." << std::endl;
         Spawn_DogecoinD();
+        std::cout << "spawned" << std::endl;
     }
     
     while (!Process_Is_Running(tool_name)){
         std::cout << "waiting for " << tool_name << " to start" << std::endl;
         Sleep_For_N_Seconds(1);
     }
-    std::cout tool_name << " is running!" << std::endl;
+    std::cout << tool_name << " is running!" << std::endl;
 
 ❱
 ◀private: static▶ void ☀Make_Sure_Deamon_Is_Accepting_Requests(std::string const& tool_name)❰
@@ -34,19 +35,19 @@ class
     //especially if the blockchain is far behind.  Let's wait until that's ready
     //a successful ping should ensure we are ready
     while (!Ping_To_DogecoinD_Succeeds()){
-        std::cout tool_name << " is not responding to requests.  It's probably 'Loading the block index'." << std::endl;
+        std::cout << tool_name << " is not responding to requests.  It's probably 'Loading the block index'." << std::endl;
         Sleep_For_N_Seconds(5);
     }
     
-    std::cout tool_name << " is running and accepting requests!" << std::endl;
+    std::cout << tool_name << " is running and accepting requests!" << std::endl;
 ❱
 
 ◀private: static▶ void ☀Spawn_DogecoinD()❰
 
     std::string command;
     command += Dogecoin_Tools::Dogecoind_Path();
-    command += " &";
-    execute(command);
+    //command += " &";
+    no_hup_execute_quietly_in_background(command);
     
 ❱
 
