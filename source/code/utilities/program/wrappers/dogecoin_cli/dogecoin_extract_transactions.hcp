@@ -1,0 +1,32 @@
+class
+⚯
+⚞⚟
+
+◀public: static▶ std::vector<nlohmann::json> ☀Extract(nlohmann::json const& block_json)❰
+
+
+    std::vector<std::string> txs = block_json["tx"];
+    
+    std::vector<nlohmann::json> results;
+    for (auto const& tx: txs){
+        results.emplace_back(Fetch_Tx_Json(tx));
+    }
+
+    return results;
+❱
+
+
+◀private: static▶ nlohmann::json ☀Fetch_Tx_Json(std::string const& tx)❰
+    std::string command;
+    command += Dogecoin_Tools::Dogecoin_Cli_Path();
+    command += " ";
+    command += "getrawtransaction";
+    command += " ";
+    command += tx;
+    command += " ";
+    command += "true";
+    auto str = execute(command);
+    auto j = nlohmann::json::parse(str);
+    return j;
+
+❱
