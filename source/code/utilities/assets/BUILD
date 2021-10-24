@@ -37,6 +37,6 @@ hcp_hdrs_derive(
 hcp_hdrs_derive(
     name = "dogecoin_tools",
     interface_deps = [
-        "//code/utilities/deps/external/dogecoin_tools:lib"
+        "//code/utilities/deps/external/dogecoin_tools:lib",
     ],
 )
