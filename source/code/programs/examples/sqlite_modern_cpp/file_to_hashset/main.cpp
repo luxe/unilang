@@ -32,6 +32,16 @@ int main() {
       std::cout << std::boolalpha << x.does_value_exist("24323424456x") << std::endl;
       std::cout << std::boolalpha << x.does_value_exist("65767567") << std::endl;
       std::cout << std::boolalpha << x.does_value_exist("18VkRiDhFu2Z17AvtpU3vL2LbTXDzCvDV") << std::endl;
+      std::cout << x.Size() << std::endl;
+      
+      x.Start_Transaction();
+      x.Overwriting_Add("hello");
+      x.Overwriting_Add("hello");
+      x.Overwriting_Add("hello");
+      x.Overwriting_Add("hello");
+      x.Complete_Transaction();
+      std::cout << x.Size() << std::endl;
+      
       
    }
       
