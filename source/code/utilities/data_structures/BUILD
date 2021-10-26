@@ -4,6 +4,14 @@ package(
 
 load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
+cc_library(
+    name = "every_n_times",
+    hdrs = ["every_n_times.hpp"],
+    deps = [
+        "//code/utilities/math/gmp:lib",
+    ],
+)
+
 enum_cpp(
     name = "two_d_coordinate_dimension",
     values = [

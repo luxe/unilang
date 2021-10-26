@@ -96,3 +96,41 @@ hcp_hdrs_derive(
         "//code/utilities/program/wrappers/dogecoin_cli:ensure_dogecoind_is_running",
     ],
 )
+
+hcp_hdrs_derive(
+    name = "dogecoin_current_block_height",
+    interface_deps = [
+        "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
+        "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/program/call:lib",
+        "//code/utilities/program/wrappers/wget:wget_downloader",
+        "//code/utilities/system:lib",
+        "//code/utilities/types/strings/transformers/removing:lib",
+        "//code/utilities/types/strings/transformers/trimming:lib",
+        "//code/utilities/assets:dogecoin_tools",
+        "//code/utilities/data_structures/should_break:should_break",
+        "//code/utilities/program/wrappers/dogecoin_cli:dogecoin_latest_block_getter",
+        "//code/utilities/program/wrappers/dogecoin_cli:dogecoin_get_block_by_height",
+        "//code/utilities/program/wrappers/dogecoin_cli:dogecoin_block_getter",
+        "//code/utilities/program/wrappers/dogecoin_cli:ensure_dogecoind_is_running",
+    ],
+)
+
+hcp_hdrs_derive(
+    name = "dogecoin_import_priv_key",
+    interface_deps = [
+        "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
+        "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/program/call:lib",
+        "//code/utilities/program/wrappers/wget:wget_downloader",
+        "//code/utilities/system:lib",
+        "//code/utilities/types/strings/transformers/removing:lib",
+        "//code/utilities/types/strings/transformers/trimming:lib",
+        "//code/utilities/assets:dogecoin_tools",
+        "//code/utilities/data_structures/should_break:should_break",
+        "//code/utilities/program/wrappers/dogecoin_cli:dogecoin_latest_block_getter",
+        "//code/utilities/program/wrappers/dogecoin_cli:dogecoin_get_block_by_height",
+        "//code/utilities/program/wrappers/dogecoin_cli:dogecoin_block_getter",
+        "//code/utilities/program/wrappers/dogecoin_cli:ensure_dogecoind_is_running",
+    ],
+)

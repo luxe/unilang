@@ -22,6 +22,29 @@ std::string Read_Entire_File_Into_String(std::string const& file){
 	std::ifstream t(file);
 	return std::string((std::istreambuf_iterator<char>(t)),std::istreambuf_iterator<char>());
 }
+size_t Read_Entire_File_Into_Size_t(std::string const& file){
+	auto str = Read_Entire_File_Into_String(file);
+	return to_size_t(str.c_str());
+	
+}
+
+/**
+   * @brief  Convert const char* to size_t
+   * @note   When there is an error it returns the maximum of size_t
+   * @param  *number: const char* 
+   * @retval size_t
+   */
+  size_t to_size_t(const char *number) {
+    size_t sizeT;
+    std::istringstream iss(number);
+    iss >> sizeT;
+    if (iss.fail()) {
+      return std::numeric_limits<size_t>::max();
+    } else {
+      return sizeT;
+    }
+  }
+  
 std::vector<std::uint8_t> Read_Entire_Binary_File_Into_Byte_Vec(std::string const& file)
 {
     std::ifstream instream(file, std::ios::in | std::ios::binary);
