@@ -3,7 +3,7 @@
 // Copyright (c) 2014,2015 Stephan Brumme. All rights reserved.
 // see http://create.stephan-brumme.com/disclaimer.html
 //
-#include "keccak.h"
+#include "code/utilities/formats/encryption/KECCAK/keccak.hpp"
 // big endian architectures need #define __BYTE_ORDER __BIG_ENDIAN
 #ifndef _MSC_VER
 #include <endian.h>
