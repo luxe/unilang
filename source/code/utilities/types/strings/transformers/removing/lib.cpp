@@ -403,6 +403,14 @@ std::string& Keep_Only_First_N_Characters(std::string & str, unsigned int const&
         str = new_string;
         return str;
 }
+std::string& Keep_Only_Last_N_Characters(std::string & str, unsigned int const& count){
+    std::string result;
+    for (size_t i = 0; i < count; ++i){
+        result = str[str.size()-1-i] + result;
+    }
+    str = result;
+    return str;
+}
 
 std::string& Empty_String_If_It_Only_Contains_Whitespace(std::string & str){
          if (Contains_Only_Whitespace_Characters(str)){

@@ -69,6 +69,7 @@ std::string As_Removed_Suffix(std::string s);
 std::string& Keep_Matching_Beginning_Part_Of_String(std::string & str, std::string const& match);
 std::string As_Beginning_Matching_Part_Of_String_Kept(std::string const& str, std::string const& match);
 std::string& Keep_Only_First_N_Characters(std::string & str, unsigned int const& count);
+std::string& Keep_Only_Last_N_Characters(std::string & str, unsigned int const& count);
 
 std::string& Empty_String_If_It_Only_Contains_Whitespace(std::string & str);
 std::string As_Empty_String_If_It_Only_Contains_Whitespace(std::string str);

@@ -67,6 +67,13 @@ std::string to_caps_hex(std::string const& str){
     std::string mystr = ss.str();
     return mystr;
 }
+std::string to_uncaps_hex(std::string const& str){
+    std::stringstream ss;
+    for(int i=0; i<str.size(); ++i)
+        ss << std::hex << (unsigned int)str[i];
+    std::string mystr = ss.str();
+    return mystr;
+}
 
 std::string to_caps_hex_p2(std::string const& str){
     std::stringstream ss;
@@ -85,6 +92,19 @@ std::string unhex(std::string const& str){
 std::string string_to_hex(const std::string& input)
 {
     static const char hex_digits[] = "0123456789ABCDEF";
+
+    std::string output;
+    output.reserve(input.length() * 2);
+    for (unsigned char c : input)
+    {
+        output.push_back(hex_digits[c >> 4]);
+        output.push_back(hex_digits[c & 15]);
+    }
+    return output;
+}
+std::string string_to_lower_hex(const std::string& input)
+{
+    static const char hex_digits[] = "0123456789abcdef";
 
     std::string output;
     output.reserve(input.length() * 2);
