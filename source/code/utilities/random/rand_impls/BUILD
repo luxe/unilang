@@ -43,6 +43,9 @@ enum_cpp(
         #actual entropy
         "urandom",
         
+        #actual entropy from a recorded past
+        "nonce",
+        
         #the worst PRNG ever
         "incrementing_numbers",
     ],
