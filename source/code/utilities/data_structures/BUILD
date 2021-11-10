@@ -4,6 +4,16 @@ package(
 
 load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
+enum_cpp(
+    name = "storage_medium",
+    values = [
+        "memory",
+        "disk",
+    ],
+)
+
+
+
 cc_library(
     name = "every_n_times",
     hdrs = ["every_n_times.hpp"],

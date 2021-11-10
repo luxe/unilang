@@ -13,6 +13,7 @@ std::vector<std::string> Split_Into_Parts_From_Newline(std::string const& str);
 std::vector<std::string> Split_Into_Parts_From_Dash(std::string const& str);
 std::vector<std::string> Split_Into_Parts_From_Open_Paren(std::string const& str);
 std::vector<std::string> Split_Into_Parts_From_Close_Paren(std::string const& str);
+std::vector<std::string> Split_Into_Parts_From_Tab(std::string const& str);
 std::vector<std::string> Split_Into_Parts_From_Fwd_Slash(std::string const& str);
 std::string Split_Into_Parts_From_Fwd_Slash_Take_Last(std::string const& str);
 std::vector<std::string> Split_Into_Parts_From_Back_Slash(std::string const& str);

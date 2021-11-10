@@ -22,5 +22,6 @@ hcp_hdrs_derive(
         "//code/utilities/filesystem/files/deleting:lib",
         "//code/utilities/filesystem/paths:file_content_traverser",
         "//code/utilities/math/gmp:lib",
+        "//code/utilities/types/strings/observers/splitting:lib",
     ],
 )
