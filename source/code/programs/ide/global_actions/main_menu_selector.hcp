@@ -1,0 +1,42 @@
+class
+❪"code/utilities/types/variant/lib"❫
+❪"code/programs/ide/settings/data/ide_settings"❫
+❪"code/utilities/data_structures/graphics/objects/faced_tree/tree_label_active_finder"❫
+⚯
+⚞⚟
+
+◀public: static▶ std::string ☀Item_Selected(Ide_Settings & settings)❰
+    
+    for (auto & it: settings.elements.types){
+        auto item = Get(it);
+        if (!item.empty()){
+            return item;
+        }
+    }
+    return "";
+❱
+
+◀private: static▶ std::string ☀Get(Ide_Element & it)❰
+    
+        std::string found;
+        
+        std::visit(overloaded {
+            [&](Positioned_Buildable_Face_Tree & x) {
+            },
+            [&](Positioned_Buildable_Schema_Faced_Tree & x) {
+            },
+            [&](Positioned_Image_Data & x) {
+            },
+            [&](Positioned_Animated_Image_Data & x) {
+            },
+            [&](Positioned_Select_Menu & x) {
+                auto label = Tree_Label_Active_Finder::Find_Active_Label(x.menu);
+                if (label != x.menu.nodes.end()){
+                    found = label->state.faces[0].label.message;
+                    label->state.faces[0].label.user_state.is_active = false;
+                }
+            },
+        }, it.element);
+        
+        return found;
+❱

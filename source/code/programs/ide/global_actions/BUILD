@@ -41,6 +41,7 @@ hcp(
         "//code/utilities/graphics/sdl:sdl_fullscreener",
         "//code/utilities/program/wrappers/zenity/file_selector",
         "//code/utilities/data_structures/graphics/objects:frame_elements",
+        "//code/programs/ide/global_actions:main_menu_selector",
         "@imgui//:imgui_sdl_opengl3",
     ],
 )
@@ -60,6 +61,27 @@ hcp(
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/graphics/sdl:sdl_fullscreener",
         "//code/utilities/program/wrappers/zenity/file_selector",
+        "@imgui//:imgui_sdl_opengl3",
+    ],
+)
+
+hcp(
+    name = "main_menu_selector",
+    deps = [
+        "//code/programs/ide/frame:apply_schema_to_elements",
+        "//code/programs/ide/global_actions:global_action",
+        "//code/programs/ide/global_actions:global_action_decider",
+        "//code/programs/ide/settings/data:ide_settings",
+        "//code/utilities/code:concept_string_tree_parser",
+        "//code/utilities/code/save:save_state_loader",
+        "//code/utilities/code/save:save_state_saver",
+        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:buildable_schema_faced_tree_tokenizer",
+        "//code/utilities/formats/json/converters:json_file_io",
+        "//code/utilities/formats/json/converters:lib",
+        "//code/utilities/graphics/sdl:sdl_fullscreener",
+        "//code/utilities/program/wrappers/zenity/file_selector",
+        "//code/utilities/types/variant:lib",
+        "//code/utilities/data_structures/graphics/objects/faced_tree:tree_label_active_finder",
         "@imgui//:imgui_sdl_opengl3",
     ],
 )
