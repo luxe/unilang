@@ -24,6 +24,28 @@ bool All_Elements_Unique(std::vector<T> &x) {
 }
 
 template <typename T, typename Fun>
+void Paiwise_Iterate(std::vector<T> const& v, Fun fun){
+  for (size_t i = 1; i < v.size(); ++i){
+    fun(v[i-1],v[i]);
+  }
+}
+
+template <typename T, typename Fun>
+void Four_Way_Iterate(std::vector<T> const& v, Fun fun){
+  for (size_t i = 3; i < v.size(); ++i){
+    fun(v[i-3],v[i-2],v[i-1],v[i]);
+  }
+}
+
+template <typename T, typename Fun>
+void Six_Way_Iterate(std::vector<T> const& v, Fun fun){
+  for (size_t i = 5; i < v.size(); ++i){
+    fun(v[i-5],v[i-4],v[i-3],v[i-2],v[i-1],v[i]);
+  }
+}
+
+
+template <typename T, typename Fun>
 void Compare_All_2_Elements(std::vector<T> const& v, Fun fun){
   for (size_t i = 0; i < v.size(); ++i){
     for (size_t j = 0; j < v.size(); ++j){

@@ -12,8 +12,6 @@ enum_cpp(
     ],
 )
 
-
-
 cc_library(
     name = "every_n_times",
     hdrs = ["every_n_times.hpp"],
