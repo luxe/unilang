@@ -15,6 +15,8 @@ hcp_hdrs_derive(
     interface_deps = [
         "//code/programs/puzzles/advent_of_code:advent_of_code_input_getter",
         "//code/programs/puzzles/advent_of_code/2021:day_1",
+        "//code/programs/puzzles/advent_of_code/2021:day_2",
+        "//code/programs/puzzles/advent_of_code/2021:day_3",
     ],
 )
 
@@ -25,5 +27,28 @@ hcp_hdrs_derive(
         "//code/utilities/types/vectors/converters:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
+    ],
+)
+
+hcp_hdrs_derive(
+    name = "day_2",
+    interface_deps = [
+        "//code/utilities/program/common_actions/exits:lib",
+        "//code/utilities/types/vectors/converters:lib",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/types/vectors/transformers:lib",
+        "//code/utilities/types/strings/observers/splitting:lib",
+    ],
+)
+
+hcp_hdrs_derive(
+    name = "day_3",
+    interface_deps = [
+        "//code/utilities/program/common_actions/exits:lib",
+        "//code/utilities/types/vectors/converters:lib",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/types/vectors/transformers:lib",
+        "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/types/strings/observers/binary:lib",
     ],
 )

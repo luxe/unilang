@@ -22,3 +22,8 @@ std::string From_Binary(std::vector<std::string> const& str){
 	}
 	return result;
 }
+
+unsigned long Binary_To_Decimal(std::string const& str){
+	unsigned long value = std::stoull(str, 0, 2);
+	return value;
+}
