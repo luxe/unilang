@@ -3,6 +3,93 @@ class
 ⚞⚟
 
 
-◀public: static▶ size_t ☀Find_Winner(Bingo_Boards boards, std::vector<int> const& nums)❰
-    return 0;
+◀public: static▶ std::vector<Bingo_Results> ☀Find_Winner(Bingo_Boards & boards, std::vector<int> const& nums)❰
+
+
+    std::vector<Bingo_Results> results;
+    
+    
+
+    for (auto num: nums){
+        
+        if (boards.boards.empty()){
+            return results;
+        }
+        
+        
+        //play round
+        for (auto & board: boards.boards){
+            Play_Round(board,num);
+        }
+        
+        auto x = Get_Result(boards,num);
+        if (!x.empty()){
+            results += x;
+            
+            
+            std::vector<int> erase_indexes;
+            for (auto a: x){
+                erase_indexes.emplace_back(a.winning_board);
+            }
+            erase_selected(boards.boards,erase_indexes);
+                
+                
+            //boards.boards.erase(boards.boards.begin() + x.winning_board);
+        }
+        
+        
+        
+    }
+
+
+
+    //std::cout << results.size() << std::endl;
+    return results;
+❱
+
+◀private: static▶ std::vector<Bingo_Results> ☀Get_Result(Bingo_Boards const& boards, int num)❰
+
+        std::vector<Bingo_Results> results;
+        
+        
+        //look for winner
+        for (size_t i = 0; i < boards.boards.size(); ++i){
+            if (Is_Winner(boards.boards[i])){
+                
+                Bingo_Results x;
+                x.winning_board = i;
+                x.board = boards.boards[i];
+                x.last_called_num = num;
+                results.emplace_back(x);
+            }
+        }
+        
+        return results;
+❱
+
+
+◀private: static▶ void ☀Play_Round(Bingo_Board & board, int num)❰
+
+    for (auto & row: board.spaces){
+        for (auto & space: row){
+            if (space.val == num){
+                space.marked = true;
+            }
+        }
+    }
+
+❱
+
+◀private: static▶ bool ☀Is_Winner(Bingo_Board const& board)❰
+
+    auto row_match = There_Is_A_Row_Where_Each_Element_Passes_Predicate(board.spaces,[&](Marked_Number num){
+        return num.marked == true;
+    });
+    
+    auto col_match = There_Is_A_Column_Where_Each_Element_Passes_Predicate(board.spaces,[&](Marked_Number num){
+        return num.marked == true;
+    });
+    
+    return row_match || col_match;
+
 ❱

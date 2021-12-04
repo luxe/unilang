@@ -68,5 +68,6 @@ hcp_hdrs_derive(
         "//code/utilities/output/printers:lib",
         "//code/utilities/data_structures/games/bingo:bingo_boards_getter",
         "//code/utilities/data_structures/games/bingo:bingo_simulator",
+        "//code/utilities/formats/json/converters:json_file_io",
     ],
 )

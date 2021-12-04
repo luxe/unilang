@@ -21,6 +21,21 @@ template <typename T>
 bool In_Vector(std::vector<T> const& vec, T const& item);
 
 
+template <class T>
+void erase_selected(std::vector<T>& v, const std::vector<int>& selection)
+{
+    v.resize(std::distance(
+        v.begin(),
+        std::stable_partition(v.begin(), v.end(),
+             [&selection, &v](const T& item) {
+                  return !std::binary_search(
+                      selection.begin(),
+                      selection.end(),
+                      static_cast<int>(static_cast<const T*>(&item) - &v[0]));
+        })));
+}
+
+
 template <typename T>
 void Move_Indexed_Item_To_Back(std::vector<T>& v, size_t itemIndex)
 {

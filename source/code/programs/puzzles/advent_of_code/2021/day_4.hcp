@@ -8,14 +8,48 @@ class
     auto nums = Get_Numbers_From_Comma_Seperated_List(lines[0]);
     Remove_First_Element(lines);
     auto boards = Bingo_Boards_Getter::Get(lines);
+    //std::cout << Type_To_Json_String::As_JSON_String(boards) << std::endl;
     
     //simulate bingo
-    auto winner = Bingo_Simulator::Find_Winner(boards,nums);
+    auto winner = Bingo_Simulator::Find_Winner(boards,nums)[0];
     
     //calculate result
+    auto answer = Calculate_Result(winner) * winner.last_called_num;
+    Exit_If_Not_Equal(answer,21607);
     
 
 ❱
-◀public: static▶ void ☀Part_2(std::vector<std::string> const& lines) ❰
+◀public: static▶ void ☀Part_2(std::vector<std::string> lines) ❰
 
+    //get input
+    auto nums = Get_Numbers_From_Comma_Seperated_List(lines[0]);
+    Remove_First_Element(lines);
+    auto boards = Bingo_Boards_Getter::Get(lines);
+    //std::cout << Type_To_Json_String::As_JSON_String(boards) << std::endl;
+    
+    //simulate bingo
+    auto winners = Bingo_Simulator::Find_Winner(boards,nums);
+    auto winner = Last_Element(winners);
+    //std::cout << Type_To_Json_String::As_JSON_String(winner) << std::endl;
+    
+    //calculate result
+    auto answer = Calculate_Result(winner) * winner.last_called_num;
+    Exit_If_Not_Equal(answer,19012);
+    
+    
+❱
+
+
+◀private: static▶ int ☀Calculate_Result(Bingo_Results const& winner) ❰
+
+    //calculate result
+    int total = 0;
+    for (auto row: winner.board.spaces){
+        for (auto space: row){
+            if (!space.marked){
+                total += space.val;
+            }
+        }
+    }
+    return total;
 ❱

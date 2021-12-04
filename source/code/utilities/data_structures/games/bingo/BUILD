@@ -22,6 +22,7 @@ hcp_hdrs_derive(
     name = "bingo_boards_getter",
     interface_deps = [
         "//code/utilities/data_structures/games/bingo:bingo_boards",
+        "//code/utilities/types/strings/observers/splitting:lib",
     ],
 )
 
@@ -29,5 +30,16 @@ hcp_hdrs_derive(
     name = "bingo_simulator",
     interface_deps = [
         "//code/utilities/data_structures/games/bingo:bingo_boards",
+        "//code/utilities/data_structures/games/bingo:bingo_results",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/types/vectors/operators:lib",
+    ],
+)
+
+hcp_hdrs_derive(
+    name = "bingo_results",
+    interface_deps = [
+        "//code/utilities/data_structures/marked_number:marked_number",
+        "//code/utilities/data_structures/games/bingo:bingo_board",
     ],
 )

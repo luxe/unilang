@@ -7,6 +7,7 @@
 #include <random>
 #include <utility>
 #include <optional>
+#include "code/utilities/types/vectors/transformers/lib.hpp"
 
 std::string Get_As_Comma_Seperated_String(std::vector<std::string> strs);
 std::string Get_As_Comma_Seperated_Double_Quoted_String(std::vector<std::string> strs);
@@ -500,6 +501,56 @@ std::vector<std::vector<T>> Split_Into_N_Parts(std::vector<T> const& v, size_t a
   return all;
   
 }
+
+
+
+template <typename T, typename Fun>
+bool There_Is_A_Column_Where_Each_Element_Passes_Predicate(std::vector<std::vector<T>> const& grid, Fun fun){
+  // auto width = grid[0].size();
+  
+  // for (size_t i = 0; i < width; ++i){
+  //   std::vector<T> collect;
+  //   for (auto row: grid){
+  //     collect.emplace_back(row[i]);
+  //     if (All_Pass_Predicate(collect,fun)){
+  //       return true;
+  //     }
+  //   }
+  // }
+  
+  auto new_grid = transpose(grid);
+  return There_Is_A_Row_Where_Each_Element_Passes_Predicate(new_grid,fun);
+  
+  //return false;
+}
+
+template <typename T, typename Fun>
+bool There_Is_A_Row_Where_Each_Element_Passes_Predicate(std::vector<std::vector<T>> const& grid, Fun fun){
+  
+  for (auto row: grid){
+      if (All_Pass_Predicate(row,fun)){
+        return true;
+      }
+  }
+  
+  return false;
+}
+
+template <typename T, typename Fun>
+bool All_Pass_Predicate(std::vector<T> const& vec, Fun fun){
+  
+  for (auto v: vec){
+    if (!fun(v)){
+      return false;
+    }
+  }
+  
+  return true;
+}
+
+
+
+
 
 template<class InputIt, class MemberType>
 auto Split_By_Data_Member_Uniqueness(InputIt first, InputIt last, MemberType std::iterator_traits<InputIt>::value_type::* member_name){
