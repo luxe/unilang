@@ -1,4 +1,5 @@
 #include "code/utilities/types/strings/observers/splitting/lib.hpp"
+#include "code/utilities/types/strings/observers/converting/lib.hpp"
 #include<boost/tokenizer.hpp>
 #include <string>
 #include <iostream>
@@ -265,6 +266,14 @@ std::vector<int> Default_Boost_Tokenize_To_Ints(std::string const& str)
        results.emplace_back(std::stoi(*beg));
     }
     return results;
+}
+std::vector<int> Get_Numbers_From_Comma_Seperated_List(std::string const& str){
+    auto elements = Split_Into_Parts_From_Comma(str);
+    std::vector<int> nums;
+    for (auto e: elements){
+        nums.emplace_back(as_signed(e));
+    }
+    return nums;
 }
 
 

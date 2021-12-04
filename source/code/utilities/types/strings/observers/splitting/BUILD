@@ -11,6 +11,7 @@ cc_library(
     hdrs = glob(["*.hpp"]),
     deps = [
         "@boost//:tokenizer",
+        "//code/utilities/types/strings/observers/converting:lib",
     ],
 )
 

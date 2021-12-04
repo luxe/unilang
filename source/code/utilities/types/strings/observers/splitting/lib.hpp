@@ -32,3 +32,4 @@ std::pair<std::string,std::string> Split_On_Second_Instance_Of_Char(std::string 
 std::pair<std::string,std::string> Split_By_Char(std::string const& str, char const& c);
 std::vector<std::string> Default_Boost_Tokenize(std::string const& str);
 std::vector<int> Default_Boost_Tokenize_To_Ints(std::string const& str);
+std::vector<int> Get_Numbers_From_Comma_Seperated_List(std::string const& str);

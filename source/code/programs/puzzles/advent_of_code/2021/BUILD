@@ -17,6 +17,7 @@ hcp_hdrs_derive(
         "//code/programs/puzzles/advent_of_code/2021:day_1",
         "//code/programs/puzzles/advent_of_code/2021:day_2",
         "//code/programs/puzzles/advent_of_code/2021:day_3",
+        "//code/programs/puzzles/advent_of_code/2021:day_4",
     ],
 )
 
@@ -64,5 +65,8 @@ hcp_hdrs_derive(
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/types/strings/observers/binary:lib",
         "//code/utilities/types/vectors/observers:character_index_frequency",
+        "//code/utilities/output/printers:lib",
+        "//code/utilities/data_structures/games/bingo:bingo_boards_getter",
+        "//code/utilities/data_structures/games/bingo:bingo_simulator",
     ],
 )
