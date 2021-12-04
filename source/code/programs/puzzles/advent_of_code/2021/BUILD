@@ -50,5 +50,6 @@ hcp_hdrs_derive(
         "//code/utilities/types/vectors/transformers:lib",
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/types/strings/observers/binary:lib",
+        "//code/utilities/types/vectors/observers:character_index_frequency",
     ],
 )

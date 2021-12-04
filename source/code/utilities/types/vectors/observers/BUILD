@@ -23,6 +23,13 @@ hcp(
 )
 
 hcp(
+    name = "character_index_frequency",
+    deps = [
+        "//code/utilities/data_structures/counters/unique_counter",
+    ],
+)
+
+hcp(
     name = "index_range_algorithms",
     deps = [
         "//code/utilities/data_structures/range",

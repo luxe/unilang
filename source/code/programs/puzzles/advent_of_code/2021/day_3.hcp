@@ -7,24 +7,15 @@ class
     int binary_size = lines[0].size();
     
     
-    int ones = 0;
-    int zeros = 0;
-    
     std::string most_sig;
     std::string least_sig;
     
     for (size_t i = 0; i < binary_size; ++i){
-        for (auto const& line: lines){
-            if (line[i] == '0'){
-                zeros++;
-            }
-            else{
-                ones++;
-            }
-        }
+        
+        auto c = Character_Index_Frequency::Get_Most_Common(lines,i);
         
         //build 
-        if (ones > zeros){
+        if (c == '1'){
             most_sig += "1";
             least_sig += "0";
         }
@@ -33,18 +24,64 @@ class
             least_sig += "1";
         }
         
-        //clear
-        ones = 0;
-        zeros = 0;
     }
     
-    std::cout << most_sig << std::endl;
-    std::cout << most_sig << " = " << Binary_To_Decimal(most_sig) << std::endl;
-    std::cout << least_sig << " = " << Binary_To_Decimal(least_sig) << std::endl;
-    std::cout << Binary_To_Decimal(most_sig) * Binary_To_Decimal(least_sig) << std::endl;
+    auto answer = Binary_To_Decimal(most_sig) * Binary_To_Decimal(least_sig);
+    Exit_If_Not_Equal(answer,3374136);
 
 ❱
 ◀public: static▶ void ☀Part_2(std::vector<std::string> const& lines) ❰
 
-
+    int binary_size = lines[0].size();
+    
+    auto temp = lines;
+    for (size_t i = 0; i < binary_size; ++i){
+        if (temp.size() > 1){
+            auto c = Character_Index_Frequency::Get_Most_Common(temp,i);
+            if (Character_Index_Frequency::More_Than_1_Most_Common(temp,i)){
+                Remove_If(temp,[&](auto x){
+                    return x[i] == '0';
+                });
+            }
+            else{
+                Remove_If(temp,[&](auto x){
+                    return x[i] != c;
+                });
+            }
+            
+        }
+        else{
+            break;
+        }
+    }
+    
+    auto most_sig = temp[0];
+    
+    
+    temp = lines;
+    for (size_t i = 0; i < binary_size; ++i){
+        std::cout << temp.size() << std::endl;
+        if (temp.size() > 1){
+                auto c = Character_Index_Frequency::Get_Least_Common(temp,i);
+            if (Character_Index_Frequency::More_Than_1_Most_Common(temp,i)){
+                Remove_If(temp,[&](auto x){
+                    return x[i] == '1';
+                });
+            }
+            else{
+                Remove_If(temp,[&](auto x){
+                    return x[i] != c;
+                });
+            }
+            }
+        else{
+            break;
+        }
+        }
+    
+    auto least_sig = temp[0];
+    
+    auto answer = Binary_To_Decimal(most_sig) * Binary_To_Decimal(least_sig);
+    Exit_If_Not_Equal(answer,3374136);
+    
 ❱
