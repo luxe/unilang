@@ -53,3 +53,16 @@ hcp_hdrs_derive(
         "//code/utilities/types/vectors/observers:character_index_frequency",
     ],
 )
+
+hcp_hdrs_derive(
+    name = "day_4",
+    interface_deps = [
+        "//code/utilities/program/common_actions/exits:lib",
+        "//code/utilities/types/vectors/converters:lib",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/types/vectors/transformers:lib",
+        "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/types/strings/observers/binary:lib",
+        "//code/utilities/types/vectors/observers:character_index_frequency",
+    ],
+)
