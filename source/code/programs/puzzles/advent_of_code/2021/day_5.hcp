@@ -1,0 +1,80 @@
+class
+⚯
+⚞⚟
+
+◀public: static▶ void ☀Part_1(std::vector<std::string> lines) ❰
+    
+    //get inputs
+    auto pipes = Get_Inputs(lines);
+    
+    //remove based on condition
+    Remove_If(pipes,[&](Point_Line pipe){
+        return pipe.start.x != pipe.end.x && pipe.start.y != pipe.end.y;
+    });
+    
+    //compute answer
+    auto answer = Calculate_Total(pipes);
+    Exit_If_Not_Equal(answer,5632);
+
+❱
+◀public: static▶ void ☀Part_2(std::vector<std::string> lines) ❰
+
+    //get inputs
+    auto pipes = Get_Inputs(lines);
+    
+    //compute answer
+    auto answer = Calculate_Total(pipes);
+    Exit_If_Not_Equal(answer,22213);
+❱
+
+
+◀private: static▶ std::vector<Point_Line> ☀Get_Inputs(std::vector<std::string> lines) ❰
+
+    std::vector<Point_Line> pipes;
+    for (auto line: lines){
+        
+        //parse input
+        line = string_replace_all(line," -> ", " ");
+        line = string_replace_all(line," -&gt; ", " ");
+        line = string_replace_all(line,",", " ");
+        auto nums = Default_Boost_Tokenize_To_Ints(line);
+        
+        Point_Line pipe;
+        pipe.start.x = nums[0];
+        pipe.start.y = nums[1];
+        pipe.end.x = nums[2];
+        pipe.end.y = nums[3];
+        
+        //if (pipe.start.x == pipe.end.x || pipe.start.y ==  pipe.end.y){
+            pipes.emplace_back(pipe);
+        //}
+    }
+    
+    return pipes;
+❱
+
+◀private: static▶ int ☀Calculate_Total(std::vector<Point_Line> pipes) ❰
+
+    //store points
+    Unique_Counter<std::string> counter;
+    for (auto pipe: pipes){
+        
+        auto points = Point_Line_To_Points::Convert_With_Diag(pipe);
+        for (auto point: points){
+            counter.Add(Type_To_Json_String::As_JSON_String(point));
+        }
+    }
+    
+    
+    int total = 0;
+    for (auto x: counter.hash_table){
+        if (x.second >= 2){
+            total += 1;
+        }
+    }
+    
+    return total;
+❱
+
+
+

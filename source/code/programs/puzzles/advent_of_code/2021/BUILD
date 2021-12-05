@@ -18,6 +18,7 @@ hcp_hdrs_derive(
         "//code/programs/puzzles/advent_of_code/2021:day_2",
         "//code/programs/puzzles/advent_of_code/2021:day_3",
         "//code/programs/puzzles/advent_of_code/2021:day_4",
+        "//code/programs/puzzles/advent_of_code/2021:day_5",
     ],
 )
 
@@ -69,5 +70,25 @@ hcp_hdrs_derive(
         "//code/utilities/data_structures/games/bingo:bingo_boards_getter",
         "//code/utilities/data_structures/games/bingo:bingo_simulator",
         "//code/utilities/formats/json/converters:json_file_io",
+    ],
+)
+
+hcp_hdrs_derive(
+    name = "day_5",
+    interface_deps = [
+        "//code/utilities/program/common_actions/exits:lib",
+        "//code/utilities/types/vectors/converters:lib",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/types/vectors/transformers:lib",
+        "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/types/strings/observers/binary:lib",
+        "//code/utilities/types/strings/transformers/search_replace:lib",
+        "//code/utilities/types/vectors/observers:character_index_frequency",
+        "//code/utilities/output/printers:lib",
+        "//code/utilities/data_structures/games/bingo:bingo_boards_getter",
+        "//code/utilities/data_structures/games/bingo:bingo_simulator",
+        "//code/utilities/formats/json/converters:json_file_io",
+        "//code/utilities/data_structures/point:point_line",
+        "//code/utilities/data_structures/point:point_line_to_points",
     ],
 )
