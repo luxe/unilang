@@ -7,6 +7,7 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 def trunk():
     http_file(
         name = "trunk",
+        executable = True,
         urls = [
             "https://trunk.io/releases/trunk",
         ],

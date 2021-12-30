@@ -65,6 +65,18 @@ std::string& Append_Key_Value(std::string & str, std::string const& key, std::st
         Append(str,"\" ");
         return str;
 }
+std::string& Append_Key_True(std::string & str, std::string const& key){
+        Append(str,key);
+        Append(str,"= ");
+        Append(str,"True");
+        return str;      
+}
+std::string& Append_Key_False(std::string & str, std::string const& key){
+        Append(str,key);
+        Append(str,"= ");
+        Append(str,"False");
+        return str;      
+}
 
 std::string& Append_N_Times(std::string & str, std::string const& part, unsigned int number_of_times){
         for (unsigned int i = 0; i < number_of_times; ++i){
