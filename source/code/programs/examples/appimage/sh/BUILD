@@ -1,4 +1,9 @@
-load("//appimage:appimage.bzl", "appimage", "appimage_test")
+#Example of building an AppImage
+load("@rules_appimage//appimage:appimage.bzl", "appimage", "appimage_test")
+
+package(
+    default_visibility = ["//visibility:public"],
+)
 
 sh_binary(
     name = "test_sh",

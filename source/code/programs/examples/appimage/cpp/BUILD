@@ -1,5 +1,5 @@
 #Example of building an AppImage
-load("//bazel/rules/cpp:main.bzl", "cpp_main")
+load("@rules_appimage//appimage:appimage.bzl", "appimage", "appimage_test")
 
 package(
     default_visibility = ["//visibility:public"],
