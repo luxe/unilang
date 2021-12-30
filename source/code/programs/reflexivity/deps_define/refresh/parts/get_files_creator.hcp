@@ -65,12 +65,14 @@ class
     std::string result;
     
     Append_With_Newline(result,"load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_archive\")");
+    Append_With_Newline(result,"load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")");
     Append_With_Newline(result,"");
     Append(result,"def ");
     Append(result,Fix_Casing_For_Bazel(spec.lib_name));
     Append_With_Newline(result,"():");
     Append(result,"    ");
-    Append_With_Newline(result,"http_archive(");
+    Append_Download_Rule_Name(result,spec);
+    Append_With_Newline(result,"(");
     
     //add name
     Append(result,"        ");
@@ -85,9 +87,11 @@ class
     }
     
     //add sha256
-    Append(result,"        ");
-    Append_Key_Value(result,"sha256",spec.locations[0].sha256);
-    Append_With_Newline(result,",");
+    if (!spec.locations[0].sha256.empty()){
+        Append(result,"        ");
+        Append_Key_Value(result,"sha256",spec.locations[0].sha256);
+        Append_With_Newline(result,",");
+    }   
     
     //add strip prefix
     if (!spec.locations[0].repo_name.empty() && !spec.locations[0].at_commit.empty()){
@@ -146,6 +150,17 @@ class
     
     return result;
 ❱
+
+◀private: static▶ void ☀Append_Download_Rule_Name(std::string & result, Dependency_Specification const& it)❰
+
+    if (it.download_rule.empty()){
+        Append(result,"http_archive");
+        return;
+    }
+
+    Append(result,it.download_rule);
+❱
+
 
 ◀private: static▶ std::string ☀Decide_Url(Dependency_Location const& it)❰
 
