@@ -1,0 +1,128 @@
+#!/bin/bash
+
+set -euo pipefail
+
+TRUNK_LAUNCHER_VERSION=0.4.3-beta
+
+check_mark="\033[0;32m✔\033[0m"
+x_mark="\033[0;31m✘\033[0m"
+quiet=${TRUNK_QUIET:-false}
+platform=$(uname | tr "[:upper:]" "[:lower:]")
+
+if [[ ${quiet} == true ]]; then
+  exec 3>&1 4>&2 &>/dev/null
+fi
+
+if [[ ${platform} == "darwin" ]]; then
+  sha256sum() { shasum -a 256 "$@"; }
+elif [[ ${platform} != "linux" ]]; then
+  echo -e "${x_mark} Trunk is only supported on Linux and MacOS. See https://docs.trunk.io for more info."
+  exit 1
+fi
+
+config_path=""
+if repo_head=$(git rev-parse --show-toplevel 2>/dev/null); then
+  config_path="${repo_head}/.trunk/trunk.yaml"
+fi
+
+version="${TRUNK_CLI_VERSION:-}"
+if [[ ! -f ${config_path} && -z ${version} ]]; then
+  if ! command -v curl &>/dev/null; then
+    echo -e "${x_mark} Trunk requires curl to be installed to fetch the latest version."
+    exit 1
+  fi
+  if ! latest=$(curl -fsSL "https://trunk.io/releases/latest" 2>/dev/null); then
+    echo -e "${x_mark} Unable to fetch latest trunk version. Please check your connection, try again, see https://status.trunk.io, or report this issue at https://slack.trunk.io"
+    exit 1
+  fi
+  version=$(echo "${latest}" | awk '/version:/{print $2}')
+  sha256=$(echo "${latest}" | awk '/'"${platform}"'_x86_64:/{print $2}')
+fi
+
+if [[ -z ${version:-} ]]; then
+  version=$(awk '/[ \t]+version:/{print $2;exit;}' "${config_path}")
+  if [[ -z ${version} ]]; then
+    echo -e "${x_mark} Invalid .trunk/trunk.yaml, no cli version found. See https://docs.trunk.io for more info."
+    exit 1
+  fi
+fi
+
+install_dir="${HOME}/.cache/trunk/cli/${version}"
+
+if [[ ! -d ${install_dir} ]]; then
+  if [[ -z ${sha256:-} ]]; then
+    sha256=$(awk '/'"${platform}_x86_64:"'/{print $2}' "${config_path}")
+  fi
+
+  if [[ -n ${latest:-} ]]; then
+    read -rp "Would you like to download and run the latest version of trunk? (Y/n) " yn
+    case "${yn}" in
+    Yes | yes | Y | y | "") ;;
+    *) exit 1 ;;
+    esac
+  fi
+
+  tmp_install_dir="$(mktemp -d -t trunk-XXXXX)"
+  downloaded="${tmp_install_dir}/downloaded"
+
+  cleanup() { rm -rf "${tmp_install_dir}"; }
+  trap 'cleanup' EXIT
+
+  downloading_text="Downloading Trunk ${version}..."
+  echo "${downloading_text}"
+
+  url="https://trunk.io/releases/trunk-${version}.${platform}.tar.gz"
+  if command -v wget &>/dev/null; then
+    if wget "${url}" -O "${downloaded}" --quiet --show-progress; then
+      echo -e "\033[1A\033[K\033[1A\r${check_mark} ${downloading_text} done"
+      download_success=true
+    fi
+  elif command -v curl &>/dev/null; then
+    if curl --max-time 120 --retry 3 "${url}" --output "${downloaded}" --fail; then
+      echo -e "${check_mark} ${downloading_text} done"
+      download_success=true
+    fi
+  else
+    echo -e "\033[1A\r${x_mark} ${downloading_text} FAILED"
+    echo -e "${x_mark} Unable to download without curl or wget installed."
+    exit 1
+  fi
+
+  if [[ ${download_success:-false} == false ]]; then
+    echo -e "${x_mark} Unable to download trunk. Please check your connection, try again, see https://status.trunk.io, or report this issue at https://slack.trunk.io"
+    exit 1
+  fi
+
+  if [[ -n ${sha256:-} ]]; then
+    verifying_text="Verifying Trunk sha256..."
+    echo -n "${verifying_text}"
+    actual_line=$(sha256sum "${downloaded}")
+    actual=${actual_line%% *}
+    if [[ ${actual} != "${sha256}" ]]; then
+      echo -e "\r${x_mark} ${verifying_text} FAILED"
+      echo "Expected sha256: '${sha256}'"
+      echo "Actual sha256:   '${actual}'"
+      exit 1
+    fi
+    echo -e "\r${check_mark} ${verifying_text} done"
+  fi
+
+  unpacking_text="Unpacking Trunk..."
+  echo -n "${unpacking_text}"
+  tar --strip-components=1 -C "${tmp_install_dir}" -xf "${downloaded}"
+  rm -f "${downloaded}"
+  echo -e "\r${check_mark} ${unpacking_text} done\n"
+
+  mkdir -p "$(dirname "${install_dir}")"
+  mv -f "${tmp_install_dir}" "${install_dir}"
+fi
+
+if [[ -n ${latest:-} ]]; then
+  echo "${latest}" >"${install_dir}/version"
+fi
+
+if [[ ${quiet} == true ]]; then
+  exec 1>&3 3>&- 2>&4 4>&-
+fi
+
+exec env TRUNK_LAUNCHER_VERSION="${TRUNK_LAUNCHER_VERSION}" env TRUNK_LAUNCHER_PATH="${BASH_SOURCE[0]}" "${install_dir}/trunk" "$@"
