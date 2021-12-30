@@ -331,8 +331,8 @@ cc_library(
 
 cc_library(
     name = "SDL2_hdrs",
-    hdrs = glob(["usr/include/SDL2/**/*.h"]),
-    includes = ["usr/include/SDL2"],
+    hdrs = glob(["usr/include/SDL2/**/*.h","usr/include/x86_64-linux-gnu/SDL2/**/*.h"]),
+    includes = ["usr/include/SDL2","usr/include/x86_64-linux-gnu"],
 )
 
 cc_library(
