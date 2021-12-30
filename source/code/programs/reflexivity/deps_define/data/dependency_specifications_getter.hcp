@@ -93,6 +93,9 @@ class
     x.specs.emplace_back(BazelBuildTools());
     x.specs.emplace_back(Buildfarm());
     x.specs.emplace_back(Remote_APIs());
+
+    //bazel's way of making "toolchain containers" for remote execution
+    x.specs.emplace_back(rbe_default());
     
     //Google protobuf stuff
     x.specs.emplace_back(Protobuf());
@@ -116,8 +119,8 @@ class
     x.specs.emplace_back(Rules_Fuzzing());
     x.specs.emplace_back(Rules_Python());
     //x.specs.emplace_back(Rules_Pkg());
+    x.specs.emplace_back(Rules_Appimage());
     x.specs.emplace_back(Apple_Rules_Lint());
-    
     x.specs.emplace_back(Bazel_Rules_Qt());
 
 
@@ -133,8 +136,6 @@ class
     //shared objects to link with
     x.specs.emplace_back(GL());
     
-    //bazel's way of making "toolchain containers" for remote execution
-    x.specs.emplace_back(rbe_default());
     
     
     //C
@@ -4072,6 +4073,32 @@ register_qt_toolchains()
 
     return spec;
 ❱
+
+
+◀private: static▶ Dependency_Specification ☀Rules_Appimage()❰
+
+    Dependency_Specification spec;
+    spec.lib_name = "rules_appimage";
+    Add_Unilang_Github_Mirror(spec,"rules_appimage","1768e5767f99f679fb37f2be24d3d23b2cf06541","X");
+    spec.build_content_in_dependency=true;
+
+    spec.workspace.priority = 9;
+    spec.workspace.raw_starlark = 
+R"RAW_STRING(
+
+RULES_APPIMAGE_VER = "main"
+
+load("@rules_appimage//:deps.bzl", "rules_appimage_deps")
+
+rules_appimage_deps()
+
+load("@rules_appimage//:setup.bzl", "rules_appimage_setup")
+
+rules_appimage_setup()
+)RAW_STRING";
+    return spec;
+❱
+
 
 ◀private: static▶ Dependency_Specification ☀Bazel_Rules_Qt()❰
     Dependency_Specification spec;
