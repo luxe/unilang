@@ -6,3 +6,10 @@ package(
 )
 
 cpp_main(name = "main")
+
+load("@rules_appimage//appimage:appimage.bzl", "appimage")
+
+appimage(
+    name = "main_appimage",
+    binary = ":main",
+)
