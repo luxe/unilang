@@ -4,6 +4,10 @@ package(
 
 sh_test(
     name = "main",
-    size = "large",
+    exec_properties = {
+        #"block-network": "true",
+        #"linux-sandbox": "true",
+        "debug-before-execution": "true",
+    },
     srcs = ["main.sh"],
 )

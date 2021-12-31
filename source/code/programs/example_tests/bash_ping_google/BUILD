@@ -4,6 +4,7 @@ package(
 
 sh_test(
     name = "main",
-    size = "large",
+    #tags = ["block-network"],
+    exec_properties = {"block-network" :"true", "debug-before-execution" : "true"},
     srcs = ["main.sh"],
 )

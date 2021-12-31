@@ -13,8 +13,9 @@ sudo chmod 777 /sys/fs/cgroup/cpu/executions/cpu.shares;
 
 sudo chmod 777 -R /sys/fs/cgroup/cpu/executions/;
 
+#sudo apt install cgroup-tools
+#--tab -e 'buildfarm_scripts/start_shard_worker2.sh' \
 gnome-terminal --window -e 'buildfarm_scripts/start_redis.sh' \
 --tab -e 'buildfarm_scripts/start_gpu_shard_server.sh' \
 --tab -e 'buildfarm_scripts/start_shard_worker.sh' \
---tab -e 'buildfarm_scripts/start_shard_worker2.sh' \
 --tab -e 'buildfarm_scripts/go_to_cache.sh'
