@@ -122,6 +122,7 @@ class
     x.specs.emplace_back(Rules_Appimage());
     x.specs.emplace_back(Apple_Rules_Lint());
     x.specs.emplace_back(Bazel_Rules_Qt());
+    x.specs.emplace_back(rules_k8s());
 
 
     
@@ -4086,6 +4087,25 @@ register_qt_toolchains()
     return spec;
 ❱
 
+◀private: static▶ Dependency_Specification ☀rules_k8s()❰
+    Dependency_Specification spec;
+    spec.lib_name = "io_bazel_rules_k8s";
+    Add_Unilang_Github_Mirror(spec,"rules_k8s","d05cbea5c56738ef02c667c10951294928a1d64a","a08850199d6900328ef899906717fb1dfcc6cde62701c63725748b2e6ca1d5d9");
+    spec.build_content_in_dependency=true;
+    
+    spec.workspace.priority = 9;
+    spec.workspace.raw_starlark = 
+R"RAW_STRING(
+load("@io_bazel_rules_k8s//k8s:k8s.bzl", "k8s_repositories")
+
+k8s_repositories()
+
+load("@io_bazel_rules_k8s//k8s:k8s_go_deps.bzl", k8s_go_deps = "deps")
+
+k8s_go_deps()
+)RAW_STRING";
+    return spec;
+❱
 
 ◀private: static▶ Dependency_Specification ☀Rules_Appimage()❰
 
@@ -4098,7 +4118,6 @@ register_qt_toolchains()
     spec.workspace.raw_starlark = 
 R"RAW_STRING(
 
-RULES_APPIMAGE_VER = "main"
 
 load("@rules_appimage//:deps.bzl", "rules_appimage_deps")
 
