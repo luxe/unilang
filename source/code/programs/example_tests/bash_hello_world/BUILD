@@ -8,7 +8,7 @@ sh_test(
     exec_properties = {
         #"block-network": "true",
         #"linux-sandbox": "true",
-        "debug-before-execution": "true",
+        #"debug-before-execution": "true",
     },
     tags = ["block-network","requires-network","no-sandbox"],
 )
