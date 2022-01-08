@@ -10,6 +10,7 @@ enum_cpp(
     values = [
         "none",
         "graph",
+        "rectangle",
     ],
 )
 
