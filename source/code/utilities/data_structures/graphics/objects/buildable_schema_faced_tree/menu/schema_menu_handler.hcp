@@ -10,7 +10,7 @@ class
     Possibly_Open_Menu(pc_input,pos,state,settings,how_to_open);
     
     //how to draw and handle menu clicks
-    Handle_Menu(elements,font_chars,pos,settings.schema,settings.styles,state,pc_input,how_to_open);
+    Handle_Menu(elements,font_chars,pos,settings,settings.styles,state,pc_input,how_to_open);
 ❱
 
 
@@ -37,10 +37,10 @@ class
         
         tree.menu.pos = Decide_Menu_Location(pc_input,pos,tree,how_to_open);
         
-        //does the generated meny actually have menu items?
+        //does the generated menu actually have menu items?
         //if it doesn't let's keep the menu invisible.  
-        //otherwise we bring up an empty menu that the yser can't see.
-        //and its confusing, because they have to do something to make the meny disappear
+        //otherwise we bring up an empty menu that the user can't see.
+        //and its confusing, because they have to do something to make the menu disappear
         //before their actions have another effect.
         if (tree.menu.menu.nodes.size() > 0){
             tree.menu.visible = true;
@@ -132,7 +132,7 @@ class
     
 ❱
 
-◀private: static▶ void ☀Handle_Menu(Frame_Elements & elements, Character_Maps const& font_chars, Position const& pos, Child_Lookup_Map const& lookup, Style_Lookup_Map const& style_lookup, Buildable_Face_Tree_State & tree, Pc_Input_State const& pc_input, Schema_Menu_Open_Strategy const& how_to_open)❰
+◀private: static▶ void ☀Handle_Menu(Frame_Elements & elements, Character_Maps const& font_chars, Position const& pos, Schema_Path_Settings const& settings, Style_Lookup_Map const& style_lookup, Buildable_Face_Tree_State & tree, Pc_Input_State const& pc_input, Schema_Menu_Open_Strategy const& how_to_open)❰
 
     //keyboard input
     auto select_key_state = pc_input.keyboard.key_states[tree.menu.key_control.select_active];
@@ -147,13 +147,13 @@ class
             //user clicked a menu item
             if (pc_input.mouse.left.clicked || pc_input.mouse.right.clicked){
                 tree.menu.visible = false;
-                Schema_Tree_Menu_Click_Handler::Handle_Menu_Click(font_chars, pos, tree, lookup,style_lookup, pc_input);
+                Schema_Tree_Menu_Click_Handler::Handle_Menu_Click(font_chars, pos, tree, settings,style_lookup, pc_input);
             }
             
             //user selected a menu item
             else if (select_key_state == Key_State::PRESSED){
                 tree.menu.visible = false;
-                Schema_Tree_Menu_Select_Handler::Handle_Menu_Select(font_chars, pos, tree, lookup,style_lookup, pc_input);
+                Schema_Tree_Menu_Select_Handler::Handle_Menu_Select(font_chars, pos, tree, settings,style_lookup, pc_input);
             }
             
             //user navigated up

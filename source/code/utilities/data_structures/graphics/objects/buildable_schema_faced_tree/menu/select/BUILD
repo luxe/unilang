@@ -84,5 +84,6 @@ hcp_hdrs_derive(
         "//code/utilities/peripheral/pc:pc_input_state",
         "//code/utilities/types/strings/transformers/removing:lib",
         "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_extra_drawer",
     ],
 )
