@@ -6,6 +6,31 @@ class
     Frame_Elements elements;
     
     
+    Move_Everything_Via_Mouse_Wheel(settings,pc_input);
+    Move_From_Dragging(settings,pc_input);
+    
+    //convert IDE elements to frame elements.
+    //i.e. turn c++ objects into draw-able things.
+    elements.types = Convert_All_Ide_Elements::Convert(settings.elements,settings,pc_input).types;
+    return elements;
+❱
+
+◀private: static▶ void ☀Move_From_Dragging(Ide_Settings & settings, Pc_Input_State const& pc_input)❰
+
+    //only move while mouse is down
+    if (!pc_input.mouse.right.down){
+        return;
+    }
+
+    bool was_performed = Adjust_First_Mouse_Over_Element_Via_View_Anchor(settings,pc_input);
+    
+    if (!was_performed){
+        Update_All_Positions_Via_View_Anchor(settings,pc_input);
+    }
+❱
+
+◀private: static▶ void ☀Move_Everything_Via_Mouse_Wheel(Ide_Settings & settings, Pc_Input_State const& pc_input)❰
+    
     //move from mouse wheel
     if (pc_input.mouse.wheel.movement != 0){
         Position pos;
@@ -13,18 +38,8 @@ class
         pos.y = pc_input.mouse.wheel.movement;
         Move_All_Ide_Elements::Move(settings,pos);
     }
-    
-    bool was_performed = Adjust_First_Mouse_Over_Element_Via_View_Anchor(settings,pc_input);
-    
-    if (!was_performed){
-        Update_All_Positions_Via_View_Anchor(settings);
-    }
-    
-    //convert IDE elements to frame elements.
-    //i.e. turn c++ objects into draw-able things.
-    elements.types = Convert_All_Ide_Elements::Convert(settings.elements,settings,pc_input).types;
-    return elements;
 ❱
+
 
 ◀private: static▶ bool ☀Adjust_First_Mouse_Over_Element_Via_View_Anchor(Ide_Settings & settings, Pc_Input_State const& pc_input)❰
 
@@ -44,7 +59,8 @@ class
     
 ❱
 
-◀private: static▶ void ☀Update_All_Positions_Via_View_Anchor(Ide_Settings & settings)❰
+◀private: static▶ void ☀Update_All_Positions_Via_View_Anchor(Ide_Settings & settings,Pc_Input_State const& pc_input)❰
+
     Move_All_Ide_Elements::Move(settings,settings.desktop.mouse.change);
 ❱
 
