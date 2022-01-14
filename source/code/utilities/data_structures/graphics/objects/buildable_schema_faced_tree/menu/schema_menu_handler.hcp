@@ -2,7 +2,7 @@ class
 ⚯
 ⚞⚟
 
-◀public: static▶ void ☀Handle_Menu_Logic(Frame_Elements & elements, Position const& pos, Character_Maps const& font_chars, Pc_Input_State const& pc_input, Buildable_Face_Tree_State & state, Schema_Path_Settings const& settings, Schema_Menu_Open_Strategy const& how_to_open)❰
+◀public: static▶ Ide_Elements ☀Handle_Menu_Logic(Frame_Elements & elements, Position const& pos, Character_Maps const& font_chars, Pc_Input_State const& pc_input, Buildable_Face_Tree_State & state, Schema_Path_Settings const& settings, Schema_Menu_Open_Strategy const& how_to_open)❰
 
 
     //was an element clicked?
@@ -10,7 +10,7 @@ class
     Possibly_Open_Menu(pc_input,pos,state,settings,how_to_open);
     
     //how to draw and handle menu clicks
-    Handle_Menu(elements,font_chars,pos,settings,settings.styles,state,pc_input,how_to_open);
+    return Handle_Menu(elements,font_chars,pos,settings,settings.styles,state,pc_input,how_to_open);
 ❱
 
 
@@ -132,12 +132,14 @@ class
     
 ❱
 
-◀private: static▶ void ☀Handle_Menu(Frame_Elements & elements, Character_Maps const& font_chars, Position const& pos, Schema_Path_Settings const& settings, Style_Lookup_Map const& style_lookup, Buildable_Face_Tree_State & tree, Pc_Input_State const& pc_input, Schema_Menu_Open_Strategy const& how_to_open)❰
+◀private: static▶ Ide_Elements ☀Handle_Menu(Frame_Elements & elements, Character_Maps const& font_chars, Position const& pos, Schema_Path_Settings const& settings, Style_Lookup_Map const& style_lookup, Buildable_Face_Tree_State & tree, Pc_Input_State const& pc_input, Schema_Menu_Open_Strategy const& how_to_open)❰
 
     //keyboard input
     auto select_key_state = pc_input.keyboard.key_states[tree.menu.key_control.select_active];
     auto up_key_state = pc_input.keyboard.key_states[tree.menu.key_control.navigate_up];
     auto down_key_state = pc_input.keyboard.key_states[tree.menu.key_control.navigate_down];
+    
+    Ide_Elements new_elements;
     
     if (tree.menu.visible){
         elements.types += Tree_Label_Drawer::Draw(font_chars,tree.menu.menu,tree.menu.pos,pc_input).types;
@@ -147,13 +149,13 @@ class
             //user clicked a menu item
             if (pc_input.mouse.left.clicked || pc_input.mouse.right.clicked){
                 tree.menu.visible = false;
-                Schema_Tree_Menu_Click_Handler::Handle_Menu_Click(font_chars, pos, tree, settings,style_lookup, pc_input);
+                new_elements = Schema_Tree_Menu_Click_Handler::Handle_Menu_Click(font_chars, pos, tree, settings,style_lookup, pc_input);
             }
             
             //user selected a menu item
             else if (select_key_state == Key_State::PRESSED){
                 tree.menu.visible = false;
-                Schema_Tree_Menu_Select_Handler::Handle_Menu_Select(font_chars, pos, tree, settings,style_lookup, pc_input);
+                new_elements = Schema_Tree_Menu_Select_Handler::Handle_Menu_Select(font_chars, pos, tree, settings,style_lookup, pc_input);
             }
             
             //user navigated up
@@ -170,5 +172,7 @@ class
             
         }
     }
+    
+    return new_elements;
 ❱
 
