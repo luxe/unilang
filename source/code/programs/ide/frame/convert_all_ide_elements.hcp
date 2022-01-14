@@ -3,19 +3,33 @@ class
 ⚞⚟
 
 ◀public: static▶ Frame_Elements ☀Convert(Ide_Elements & e, Ide_Settings const& settings, Pc_Input_State const& pc_input)❰
-
-    Frame_Elements elements;
+    
+    Draw_Results results;
+    
+    
+    //perform all the draw computations
     for (auto & it: e.types){
         std::visit(overloaded {
             [&](Positioned_Buildable_Face_Tree & x) {
-                elements.types += Buildable_Face_Tree_Drawer::Draw(settings.desktop.unilang_font_lookup,x,pc_input).types;
+                
+                //get results
+                auto draw_results = Buildable_Face_Tree_Drawer::Draw(settings.desktop.unilang_font_lookup,x,pc_input);
+                
+                //add
+                results.frame_elements.types += draw_results.types;
             },
             [&](Positioned_Buildable_Schema_Faced_Tree & x) {
-                elements.types += Buildable_Schema_Face_Tree_Drawer::Draw(settings.desktop.unilang_font_lookup,x,pc_input).frame_elements.types;
+                
+                //get results
+                auto draw_results = Buildable_Schema_Face_Tree_Drawer::Draw(settings.desktop.unilang_font_lookup,x,pc_input);
+                
+                //add
+                results.frame_elements.types += draw_results.frame_elements.types;
+                results.new_elements.types += draw_results.new_elements.types;
             },
             [&](Positioned_Image_Data & x) {
                 
-                elements.types.emplace_back(Convert_To_Texture(x));
+                results.frame_elements.types.emplace_back(Convert_To_Texture(x));
             },
             [&](Positioned_Animated_Image_Data & x) {
                 
@@ -25,15 +39,19 @@ class
                     x.frame = 0;
                 }
                 
-                elements.types.emplace_back(Convert_To_Texture(x));
+                results.frame_elements.types.emplace_back(Convert_To_Texture(x));
             },
             [&](Positioned_Select_Menu & x) {
                 //todo
-                elements.types += Select_Menu_Drawer::Draw(settings.desktop.unilang_font_lookup,x,pc_input).types;
+                results.frame_elements.types += Select_Menu_Drawer::Draw(settings.desktop.unilang_font_lookup,x,pc_input).types;
             },
         }, it.element);
     }
-    return elements;
+    
+    
+    
+    
+    return results.frame_elements;
 ❱
 
 ◀private: static▶ Positioned_Texture ☀Convert_To_Texture(Positioned_Image_Data const& img)❰
