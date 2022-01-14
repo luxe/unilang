@@ -17,3 +17,11 @@ hcp_hdrs_derive(
         "//code/utilities/deps/stl/variant:lib",
     ],
 )
+
+hcp_hdrs_derive(
+    name = "draw_results",
+    interface_deps = [
+        "//code/utilities/data_structures/graphics/objects:frame_elements",
+        "//code/programs/ide/settings/data:ide_elements",
+    ],
+)

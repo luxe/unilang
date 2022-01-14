@@ -15,6 +15,7 @@ hcp_hdrs_derive(
         "//code/utilities/data_structures/graphics/bitmap/premade:l_line",
         "//code/utilities/data_structures/graphics/bitmap/premade:vertical_line",
         "//code/utilities/data_structures/graphics/objects:frame_elements",
+        "//code/utilities/data_structures/graphics/objects:draw_results",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_action_doer",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_label_action",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:generic_menu_handler",
