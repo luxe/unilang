@@ -11,9 +11,9 @@ cc_library(
 )
 
 
-hcp(
+hcp_hdrs_derive(
     name = "guid_creator",
-    deps = [
+    interface_deps = [
         "//code/utilities/deps/external/crossguid:lib"
     ],
 )
