@@ -10,5 +10,9 @@ sh_test(
         #"linux-sandbox": "true",
         #"debug-before-execution": "true",
     },
-    tags = ["block-network","requires-network","no-sandbox"],
+    tags = [
+        "block-network",
+        "no-sandbox",
+        "requires-network",
+    ],
 )
