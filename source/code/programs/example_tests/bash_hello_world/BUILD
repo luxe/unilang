@@ -11,8 +11,9 @@ sh_test(
         #"debug-before-execution": "true",
     },
     tags = [
-        "block-network",
-        "no-sandbox",
-        "requires-network",
+        #"block-network",
+        #"no-sandbox",
+        #"requires-network",
+        "no-remote"
     ],
 )
