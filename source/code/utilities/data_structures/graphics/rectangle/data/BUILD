@@ -6,7 +6,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/hcp:hcp_and_hcp_pos.bzl", "hcp_and_hcp_pos")
 load("//bazel/rules/hcp:hcp_and_hcp_pos_hdrs_derive.bzl", "hcp_and_hcp_pos_hdrs_derive")
 
-hcp_and_hcp_pos_hdrs_derive"(
+hcp_and_hcp_pos_hdrs_derive(
     name = "interactive_retangle",
     interface_deps = [
         "//code/utilities/data_structures/position",

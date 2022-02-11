@@ -10,10 +10,9 @@ cc_library(
     hdrs = glob(["*.hpp"]),
 )
 
-
 hcp_hdrs_derive(
     name = "guid_creator",
     interface_deps = [
-        "//code/utilities/deps/external/crossguid:lib"
+        "//code/utilities/deps/external/crossguid:lib",
     ],
 )

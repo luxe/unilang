@@ -14,6 +14,6 @@ sh_test(
         #"block-network",
         #"no-sandbox",
         #"requires-network",
-        "no-remote"
+        "no-remote",
     ],
 )

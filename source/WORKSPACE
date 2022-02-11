@@ -64,17 +64,17 @@ llvm_register_toolchains()
 
 #############################################
 
-load("@bazel_toolchains//repositories:repositories.bzl", bazel_toolchains_repositories = "repositories")
-
-bazel_toolchains_repositories()
-
-#############################################
-
 load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
 
 go_rules_dependencies()
 
 go_register_toolchains()
+
+#############################################
+
+load("@bazel_toolchains//repositories:repositories.bzl", bazel_toolchains_repositories = "repositories")
+
+bazel_toolchains_repositories()
 
 #############################################
 
@@ -134,13 +134,19 @@ protobuf_deps()
 
 #############################################
 
-load("@io_bazel_rules_k8s//k8s:k8s.bzl", "k8s_repositories")
+load("@emsdk//bazel:deps.bzl", emsdk_deps = "deps")
 
-k8s_repositories()
+emsdk_deps()
 
-load("@io_bazel_rules_k8s//k8s:k8s_go_deps.bzl", k8s_go_deps = "deps")
+load("@emsdk//bazel:emscripten_deps.bzl", emsdk_emscripten_deps = "emscripten_deps")
 
-k8s_go_deps()
+emsdk_emscripten_deps(emscripten_version = "2.0.31")
+
+#############################################
+
+load("@com_github_grpc_grpc//bazel:grpc_deps.bzl", "grpc_deps")
+
+grpc_deps()
 
 #############################################
 
@@ -154,9 +160,13 @@ rules_appimage_setup()
 
 #############################################
 
-load("@com_github_grpc_grpc//bazel:grpc_deps.bzl", "grpc_deps")
+load("@io_bazel_rules_k8s//k8s:k8s.bzl", "k8s_repositories")
 
-grpc_deps()
+k8s_repositories()
+
+load("@io_bazel_rules_k8s//k8s:k8s_go_deps.bzl", k8s_go_deps = "deps")
+
+k8s_go_deps()
 
 #############################################
 

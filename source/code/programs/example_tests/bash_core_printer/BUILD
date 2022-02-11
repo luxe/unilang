@@ -5,5 +5,5 @@ package(
 sh_test(
     name = "main",
     srcs = ["main.sh"],
-    tags = ["no-remote"]
+    tags = ["no-remote"],
 )
