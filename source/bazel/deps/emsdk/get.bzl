@@ -8,7 +8,7 @@ def emsdk():
     http_archive(
         name = "emsdk",
         sha256 = "c9eb5580cea5869ec73b264750971b75c400d520742264dc117f5020a771cd30",
-        strip_prefix = "emsdk-c33c7be17f047355aa13a59f62a05100f9ff3257",
+        strip_prefix = "emsdk-c33c7be17f047355aa13a59f62a05100f9ff3257/bazel",
         urls = [
             "https://github.com/Unilang/emsdk/archive/c33c7be17f047355aa13a59f62a05100f9ff3257.tar.gz",
         ],

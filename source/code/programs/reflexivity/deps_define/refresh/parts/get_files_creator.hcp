@@ -103,7 +103,18 @@ class
     //add strip prefix
     if (!spec.locations[0].repo_name.empty() && !spec.locations[0].at_commit.empty()){
         Append(result,"        ");
-        Append_Key_Value(result,"strip_prefix",spec.locations[0].repo_name + "-" + spec.locations[0].at_commit);
+        
+        //decide value
+        std::string strip_prefix;
+        Append(strip_prefix,spec.locations[0].repo_name);
+        Append(strip_prefix,"-");
+        Append(strip_prefix,spec.locations[0].at_commit);
+        if (!spec.locations[0].further_prefix_strip.empty()){
+            Append(strip_prefix,"/");
+            Append(strip_prefix,spec.locations[0].further_prefix_strip);
+        }
+        
+        Append_Key_Value(result,"strip_prefix",strip_prefix);
         Append_With_Newline(result,",");
     }
     
