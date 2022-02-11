@@ -11,8 +11,9 @@ class
     Write_To_File(Get_General_Bazelrc_File_Path(),Create_General_Bazelrc_Contents());
     Write_To_File(Get_Sanitizer_Bazelrc_File_Path(),Create_Sanitizer_Bazelrc_Contents());
     Write_To_File(Get_Remote_Bazelrc_File_Path(),Create_Remote_Bazelrc_Contents());
+    Write_To_File(Get_Wasm_Bazelrc_File_Path(),Create_Wasm_Bazelrc_Contents());
 
-❱ 
+❱
 
 ◀private: static▶ std::string ☀Create_Bazelrc_Contents()❰
     std::string str;
@@ -20,7 +21,17 @@ class
     Append_With_Newline(str,"import %workspace%/bazel/config/bazelrc.general");
     Append_With_Newline(str,"import %workspace%/bazel/config/bazelrc.sanitizers");
     Append_With_Newline(str,"import %workspace%/bazel/config/bazelrc.remote");
+    Append_With_Newline(str,"import %workspace%/bazel/config/bazelrc.wasm");
     
+    return str;
+❱
+
+◀private: static▶ std::string ☀Create_Wasm_Bazelrc_Contents()❰
+    std::string str;
+    Append_With_Newline(str,Generated_Comment_Getter::Get());
+    Append_With_Newline(str,"build:wasm --crosstool_top=@emsdk//emscripten_toolchain:everything");
+    Append_With_Newline(str,"build:wasm --cpu=wasm");
+    Append_With_Newline(str,"build:wasm --host_crosstool_top=@bazel_tools//tools/cpp:toolchain");
     return str;
 ❱
 
@@ -279,5 +290,10 @@ class
 ◀private: static▶ std::string ☀Get_Remote_Bazelrc_File_Path()❰
     std::string f = Bazel_Derived_Root_Of_Repo();
     f += "source/bazel/config/bazelrc.remote";
+    return f;
+❱
+◀private: static▶ std::string ☀Get_Wasm_Bazelrc_File_Path()❰
+    std::string f = Bazel_Derived_Root_Of_Repo();
+    f += "source/bazel/config/bazelrc.wasm";
     return f;
 ❱
