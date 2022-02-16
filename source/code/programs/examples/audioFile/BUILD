@@ -10,6 +10,7 @@ cpp_main(
         "//code/utilities/assets:english_sounds",
         "//code/utilities/filesystem/files/temp:existing_temp_file",
         "//code/utilities/linguistics/speak:animal_crossing_speaker",
+        "//code/utilities/linguistics/speak:pinyin_speaker",
         "//code/utilities/peripheral/sound/wav:pitch_adjuster",
         "//code/utilities/peripheral/sound/wav:tempo_adjuster",
         "//code/utilities/peripheral/sound/wav:wav_file_join_settings",

@@ -7,12 +7,14 @@
 #include "code/utilities/peripheral/sound/wav/tempo_adjuster.hpp"
 #include "code/utilities/filesystem/files/temp/existing_temp_file.hpp"
 #include "code/utilities/linguistics/speak/animal_crossing_speaker.hpp"
+#include "code/utilities/linguistics/speak/pinyin_speaker.hpp"
 
 int main(int argc, char** argv){
     
     
     
-    std::string message = argv[1];
+    // std::string message = argv[1];
+    // Animal_Crossing_Speaker::Speak(message,"/home/laptop/Desktop/","out");
     
-    Animal_Crossing_Speaker::Speak(message,"/home/laptop/Desktop/","out");
+    Pinyin_Speaker::Speak("a","/home/laptop/Desktop/","out");
 }

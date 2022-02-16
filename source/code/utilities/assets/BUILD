@@ -18,6 +18,15 @@ hcp_hdrs_derive(
 )
 
 hcp_hdrs_derive(
+    name = "chinese_syllable_sounds",
+    data = ["@chinese_syllable_sounds//:all"],
+    interface_deps = [
+        "//code/utilities/linguistics/speak:chinese_tone",
+    
+    ],
+)
+
+hcp_hdrs_derive(
     name = "playing_card_assets",
     data = ["@playing_card_assets//:all"],
     implementation_deps = [
