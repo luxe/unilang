@@ -17,5 +17,7 @@ int main(int argc, char** argv){
     // std::string message = argv[1];
     // Animal_Crossing_Speaker::Speak(message,"/home/laptop/Desktop/","out");
     
-    Pinyin_Speaker::Speak("Nǐ hǎo",Full_Path_To_Desktop(),"out");
+    //Pinyin_Speaker::Speak("Nǐ hǎo",Full_Path_To_Desktop(),"out");
+    
+    Pinyin_Speaker::Speak("Nǐ hǎo wǒ de míngzì shì",Full_Path_To_Desktop(),"out");
 }
