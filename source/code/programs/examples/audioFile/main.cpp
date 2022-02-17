@@ -19,5 +19,8 @@ int main(int argc, char** argv){
     
     //Pinyin_Speaker::Speak("Nǐ hǎo",Full_Path_To_Desktop(),"out");
     
-    Pinyin_Speaker::Speak("Nǐ hǎo wǒ de míngzì shì",Full_Path_To_Desktop(),"out");
+    //Pinyin_Speaker::Speak("Nǐ hǎo wǒ de míngzì shì",Full_Path_To_Desktop(),"out");
+    
+    Pinyin_Speaker::Speak("Bàba",Full_Path_To_Desktop(),"out");
+    //Pinyin_Speaker::Speak("Bàba māmā hànbǎobāo",Full_Path_To_Desktop(),"out");
 }

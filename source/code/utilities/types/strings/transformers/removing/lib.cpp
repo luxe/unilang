@@ -8,6 +8,17 @@
 #include <iostream>
 
 
+
+std::string Without_File_Extension(std::string file_name) {
+    
+    while (file_name[file_name.size()-1] != '.') {
+        file_name = file_name.substr(0, file_name.size()-1);
+    }
+    file_name = file_name.substr(0, file_name.size()-1);
+    
+    return file_name;
+}
+
 std::string Remove_And_Get_First_Char(std::string & s){
     
     std::string result = "";

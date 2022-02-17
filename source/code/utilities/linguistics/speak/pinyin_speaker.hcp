@@ -9,7 +9,6 @@ class
 
    //decide how to output wav file
    std::string output_path = directory + file_name + ".mp3";
-   std::string actual_output_path = directory + file_name + "_MP3WRAP.mp3";
    Wav_File_Join_Settings settings;
    settings.output_path = output_path;
 
@@ -25,9 +24,8 @@ class
    }
    
    
-   Delete_File(actual_output_path);
    Mp3_File_Joiner::Join(settings);
-   execute(std::string("mplayer ") + actual_output_path);
+   //execute(std::string("mplayer ") + settings.output_path);
     
 ❱
 
@@ -39,23 +37,25 @@ class
     word.clear();
     while (!current_syllable.empty()){
         
-        //std::cout << current_syllable << " " << word << std::endl;
+        std::cout << current_syllable << " " << word << std::endl;
     
         
         //check if its valid pinyin
         auto sound_file = Chinese_Syllable_Sounds::From_Pinyin(current_syllable);
         if (sound_file != ""){
+            std::cout << "got it" << std::endl;
             sounds.emplace_back(sound_file);
             current_syllable = word;
             word.clear();
+            continue;
         }
         
         
         //pop off a letter
-        std::string temp;
-        temp += current_syllable.back();
-        current_syllable.pop_back();
-        word = temp + word;
+            std::string temp;
+            temp += current_syllable.back();
+            current_syllable.pop_back();
+            word = temp + word;
     }
 
     return sounds;

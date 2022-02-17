@@ -1,6 +1,11 @@
 #pragma once
 #include <string>
 
+
+
+std::string Without_File_Extension(std::string file_name);
+
+
 //REMOVING
 std::string& Remove_All_Instances_Of_Char(std::string & str, char const& c);
 std::string& Remove_First_Instance_Of_Char(std::string & str, char const& c);

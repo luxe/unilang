@@ -345,15 +345,6 @@ std::string& Remove_File_Extension(std::string & file_name) {
 	
 	return file_name;
 }
-std::string Without_File_Extension(std::string file_name) {
-	
-	while (file_name[file_name.size()-1] != '.') {
-		file_name = file_name.substr(0, file_name.size()-1);
-	}
-	file_name = file_name.substr(0, file_name.size()-1);
-	
-	return file_name;
-}
 
 bool String_Starts_With_String(std::string const& looking_in, std::string const& looking_for){
 	return (looking_in.substr(0, looking_for.size()) == looking_for);

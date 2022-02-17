@@ -1,15 +1,25 @@
 class
-❪string❫
-❪iostream❫
-❪"code/utilities/peripheral/sound/wav/wav_file_join_settings.hpp"❫
 ⚯
-❪"code/utilities/types/vectors/operators/lib.hpp"❫
-❪"code/utilities/program/call/lib.hpp"❫
 ⚞⚟
 
 //concatenate a list of wav file to create a new wav file
 ◀public: static▶ void ☀Join(Wav_File_Join_Settings const& settings)❰
 
+
+    //program does a dumb thing and appends _MP3WRAP to the end of the file.
+    //lets fix that
+    std::string weird_file_name;
+    weird_file_name = Without_File_Extension(settings.output_path);
+    weird_file_name += "_MP3WRAP.mp3";
+    Delete_File(weird_file_name);
+
+
+    if (settings.input_paths.size() == 1){
+        std::string command;
+        command += "cp " + settings.input_paths[0] + " " + settings.output_path;
+        execute(command);
+        return;
+    }
 
     //use another program to do this
     std::string command;
@@ -22,4 +32,12 @@ class
     
     std::cout << command << std::endl;
     execute(command);
+    
+    
+    
+    std::string command2;
+    command2 = "mv " + weird_file_name + " " + settings.output_path;
+    execute(command2);
+    
+    
 ❱
