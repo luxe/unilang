@@ -1,20 +1,5 @@
 class
-❪string❫
-❪iostream❫
-❪cstdlib❫
-❪iostream❫
-❪vector❫
 ⚯
-❪"code/utilities/random/lib"❫
-❪"code/utilities/filesystem/files/temp/existing_temp_file"❫
-❪"code/utilities/program/call/lib"❫
-❪"code/utilities/types/vectors/operators/lib"❫
-❪"code/utilities/peripheral/sound/wav/wav_file_join_settings"❫
-❪"code/utilities/peripheral/sound/wav/wav_file_joiner"❫
-❪"code/utilities/assets/english_sounds"❫
-❪"code/utilities/assets/chinese_syllable_sounds"❫
-❪"code/utilities/peripheral/sound/wav/pitch_adjuster"❫
-❪"code/utilities/peripheral/sound/wav/tempo_adjuster"❫
 
 ⚞⚟
 
@@ -22,7 +7,62 @@ class
 ◀public: static▶ void ☀Speak(std::string const& message, std::string const& directory, std::string const& file_name) ❰
 
 
-    //std::cout << 
+   //decide how to output wav file
+   std::string output_path = directory + file_name + ".mp3";
+   std::string actual_output_path = directory + file_name + "_MP3WRAP.mp3";
+   Wav_File_Join_Settings settings;
+   settings.output_path = output_path;
+
+   auto words = Split_By_Spaces(message);
+   for (auto word: words){
+        auto syllable_files = Get_Word_Syllable_Files(word);
+        for (auto const& syllable_file: syllable_files){
+            std::cout << syllable_file << std::endl;
+            settings.input_paths.emplace_back(syllable_file);
+        }
+        
+        //add a space after each word?
+   }
+   
+   
+   Delete_File(actual_output_path);
+   Mp3_File_Joiner::Join(settings);
+   execute(std::string("mplayer ") + actual_output_path);
     
 ❱
+
+◀private: static▶ std::vector<std::string> ☀Get_Word_Syllable_Files(std::string word) ❰
+
+    std::vector<std::string> sounds;
+
+    std::string current_syllable = word;
+    word.clear();
+    while (!current_syllable.empty()){
+        
+        //std::cout << current_syllable << " " << word << std::endl;
+    
+        
+        //check if its valid pinyin
+        auto sound_file = Chinese_Syllable_Sounds::From_Pinyin(current_syllable);
+        if (sound_file != ""){
+            sounds.emplace_back(sound_file);
+            current_syllable = word;
+            word.clear();
+        }
+        
+        
+        //pop off a letter
+        std::string temp;
+        temp += current_syllable.back();
+        current_syllable.pop_back();
+        word = temp + word;
+    }
+
+    return sounds;
+    
+    
+
+❱
+
+
 

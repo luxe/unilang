@@ -8,6 +8,7 @@
 #include "code/utilities/filesystem/files/temp/existing_temp_file.hpp"
 #include "code/utilities/linguistics/speak/animal_crossing_speaker.hpp"
 #include "code/utilities/linguistics/speak/pinyin_speaker.hpp"
+#include "code/utilities/filesystem/paths/lib.hpp"
 
 int main(int argc, char** argv){
     
@@ -16,5 +17,5 @@ int main(int argc, char** argv){
     // std::string message = argv[1];
     // Animal_Crossing_Speaker::Speak(message,"/home/laptop/Desktop/","out");
     
-    Pinyin_Speaker::Speak("a","/home/laptop/Desktop/","out");
+    Pinyin_Speaker::Speak("Nǐ hǎo",Full_Path_To_Desktop(),"out");
 }

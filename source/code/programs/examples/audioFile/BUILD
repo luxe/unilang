@@ -16,6 +16,7 @@ cpp_main(
         "//code/utilities/peripheral/sound/wav:wav_file_join_settings",
         "//code/utilities/peripheral/sound/wav:wav_file_joiner",
         "//code/utilities/types/vectors/operators:lib",
+        "//code/utilities/filesystem/paths:lib",
         "@AudioFile//:lib",
     ],
 )

@@ -22,6 +22,9 @@ hcp_hdrs_derive(
     data = ["@chinese_syllable_sounds//:all"],
     interface_deps = [
         "//code/utilities/linguistics/speak:chinese_tone",
+        "//code/utilities/types/multimap:lib",
+        "//code/utilities/types/map:lib",
+        "//code/utilities/types/strings/transformers/casing:lib",
     
     ],
 )
