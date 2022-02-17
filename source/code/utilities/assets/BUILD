@@ -25,6 +25,7 @@ hcp_hdrs_derive(
         "//code/utilities/types/multimap:lib",
         "//code/utilities/types/map:lib",
         "//code/utilities/types/strings/transformers/casing:lib",
+        "//code/utilities/types/wstrings/transformers/other:lib",
     
     ],
 )
