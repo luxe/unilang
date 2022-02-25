@@ -15,6 +15,8 @@ hcp_hdrs_derive(
     interface_deps = [
         "//code/utilities/code/properties/choices:choices_map",
         "//code/utilities/code:class_access",
+        "//code/utilities/code:storage_specifier",
+        "//code/utilities/code:interface",
         "//code/utilities/code/properties:schema_name_validator",
         "//code/utilities/types/map:lib",
     ],

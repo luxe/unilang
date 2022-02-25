@@ -1,0 +1,28 @@
+
+# Problem 1:
+# sudo dockerd
+# INFO[2021-12-16T17:50:33.970729702-05:00] Starting up                                  
+# failed to start daemon: pid file found, ensure docker is not running or delete /var/run/docker.pid
+
+# Solution:
+sudo rm -rf /var/run/docker.pid 
+sudo rm -rf /var/snap/docker/179/run/docker.pid
+sudo rm /var/snap/docker/471/run/docker.pid
+sudo rm /var/snap/docker/796/run/docker.pid
+
+# Problem 2:
+# sudo dockerd
+# failed to start daemon: error while opening volume store metadata database: timeout
+
+# Soluton:
+# https://stackoverflow.com/questions/43537790/docker-fails-to-start-due-to-volume-store-metadata-database-timeout
+ps axf | grep docker | grep -v grep | awk '{print "kill -9 " $1}' | sudo sh 
+sudo docker system prune --volumes -f && rm /var/lib/docker/volumes/metadata.db && docker-compose up -d
+
+#Can't stop docker
+#Solutin:
+sudo systemctl stop docker.socket
+sudo systemctl stop docker
+
+#Then start it
+sudo systemctl start docker

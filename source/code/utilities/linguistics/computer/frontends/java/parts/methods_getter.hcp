@@ -201,12 +201,29 @@ class
             auto pk = Resolve(structure,fk);
             
             //space out comment blocks
-            if (Is_Comment(structure,pk,settings) && !previous_was_comment){
-                x += "\n";
+            if (Is_Comment(structure,pk,settings)){
+                
+                if (!previous_was_comment){
+                    x += "\n\n";
+                    x += Get_Body_Statement(structure,pk,settings);
+                }
+                else{
+                    
+                    //This is so code formats better.
+                    x += Coninue_Existing_Comment(structure,pk,settings);
+                }
             }
+            else {
+                if (previous_was_comment){
+                    x += "\n";
+                }
+                x += Coninue_Existing_Comment(structure,pk,settings);
+            }
+            
+            
+            
             previous_was_comment = Is_Comment(structure,pk,settings);
             
-            x += Get_Body_Statement(structure,pk,settings);
             
     }
     return x;
@@ -224,11 +241,29 @@ class
             },
             [&](model::TodoStatement const& statement) {
                 str += "// TODO(thickey): " + First_Element_Or_Default(statement.text).value;
-                str += "\n";
+                //str += "\n";
             },
             [&](model::StatementsComment const& statement) {
                 str += "// " + First_Element_Or_Default(statement.text).value;
-                str += "\n";
+                //str += "\n";
+            },
+        }, any_statement);
+    
+    return str;
+❱
+
+◀private: static▶ std::string ☀Coninue_Existing_Comment(model::Module const& structure, model_variants::StatementName const& any_statement, Java_Settings const& settings)❰
+    std::string str;
+    
+        std::visit(overloaded {
+            [&](model::RawStatement const& statement) {
+                str += First_Element_Or_Default(statement.text).value;
+            },
+            [&](model::TodoStatement const& statement) {
+                str += " TODO(thickey): " + First_Element_Or_Default(statement.text).value;
+            },
+            [&](model::StatementsComment const& statement) {
+                str += " " + First_Element_Or_Default(statement.text).value;
             },
         }, any_statement);
     
