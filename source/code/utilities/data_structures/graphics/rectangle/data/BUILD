@@ -9,7 +9,6 @@ load("//bazel/rules/hcp:hcp_and_hcp_pos_hdrs_derive.bzl", "hcp_and_hcp_pos_hdrs_
 hcp_and_hcp_pos_hdrs_derive(
     name = "interactive_retangle",
     interface_deps = [
-        "//code/utilities/data_structures/position",
         "//code/utilities/data_structures/shapes/rectangle:rectangle_settings",
     ],
 )
