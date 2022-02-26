@@ -6,7 +6,7 @@
 #include "code/utilities/filesystem/files/creating/lib.hpp"
 #include "code/utilities/contributor/contributor.hpp"
 #include "code/utilities/linguistics/computer/frontends/java/settings/java_settings.hpp"
-#include "code/utilities/linguistics/computer/frontends/java/java_str_getter.hpp"
+#include "code/utilities/linguistics/computer/frontends/java/java_test_str_getter.hpp"
 #include "code/utilities/linguistics/computer/frontends/java/settings/java_default_rule_settings.hpp"
 
 int main(int argc, char** argv){
@@ -24,7 +24,7 @@ int main(int argc, char** argv){
     //convert to java code
     std::vector<Contributor> contributors;
     Java_Settings settings = Java_Default_Rule_Settings::Get();
-    std::string str = Java_Str_Getter::Get(code.module[0],contributors,settings);
+    std::string str = Java_Test_Str_Getter::Get(code.module[0],contributors,settings);
     
     //export
     Write_To_File(po.Output_File(),str);
