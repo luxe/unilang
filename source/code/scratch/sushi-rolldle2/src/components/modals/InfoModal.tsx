@@ -31,7 +31,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
 
       <p className="mt-6 italic text-sm text-gray-500 dark:text-gray-300">
               <p className="text-sm text-gray-500 dark:text-gray-300">
-        Sauce examples:
+        Dipping Sauces:
       </p>
       </p>
 
@@ -48,7 +48,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
         <Cell value="I" />
       </div>
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        The letter S is in the correct spot.
+        Wasabi! The letter S is in the correct spot.
       </p>
 
       <div className="flex justify-center mb-1 mt-4">
@@ -64,7 +64,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
         <Cell value="Y" />
       </div>
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        The letter U is in in the wrong spot.
+        Ginger! The letter U is in in the wrong spot.
       </p>
 
       <div className="flex justify-center mb-1 mt-4">
@@ -75,12 +75,12 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
         <Cell value="A" />
       </div>
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        The letter N is not in the word.
+        Soy! The letter N is not in the word.
       </p>
 
       <p className="mt-6 italic text-sm text-gray-500 dark:text-gray-300">
               <p className="text-sm text-gray-500 dark:text-gray-300">
-        All color hints apply to the entire word.  Hope your hungry!
+        Color hints apply to the entire word.  Hope your hungry!
       </p>
       </p>
     </BaseModal>

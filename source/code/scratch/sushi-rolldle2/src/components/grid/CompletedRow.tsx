@@ -1,6 +1,7 @@
 import { getGuessStatuses } from '../../lib/statuses'
 import { Cell } from './Cell'
 import { unicodeSplit } from '../../lib/words'
+import { MAX_WORD_LENGTH, MIDDLE_WORD_LENGTH } from '../../constants/settings'
 
 type Props = {
   guess: string
@@ -13,6 +14,11 @@ export const CompletedRow = ({ guess, isRevealing }: Props) => {
 
   return (
     <div className="flex justify-center mb-1">
+    
+      {splitGuess.length == MIDDLE_WORD_LENGTH && (
+        <Cell key={0} value={"🥬"} />
+      )}
+      
       {splitGuess.map((letter, i) => (
         <Cell
           key={i}
@@ -23,6 +29,11 @@ export const CompletedRow = ({ guess, isRevealing }: Props) => {
           isCompleted
         />
       ))}
+      
+      {splitGuess.length == MIDDLE_WORD_LENGTH && (
+        <Cell key={4} value={"🥬"} />
+      )}
+      
     </div>
   )
 }

@@ -5,7 +5,7 @@ export const VALID_GUESSES = [
 ]
 
 export const VALID_THREE_LETTER_GUESSES = [
-  'honey',
-  'bagel',
-  'riced',
+  'one',
+  'age',
+  'ice',
 ]

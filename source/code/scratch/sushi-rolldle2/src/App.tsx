@@ -20,6 +20,7 @@ import {
 } from './constants/strings'
 import {
   MAX_WORD_LENGTH,
+  MIDDLE_WORD_LENGTH,
   MAX_CHALLENGES,
   REVEAL_TIME_MS,
   GAME_LOST_INFO_DELAY,
@@ -179,7 +180,7 @@ function App() {
   
   const currentMaxWordLength = () => {
     if ({isDoingInnerGuesses}){
-      return 3;
+      return MIDDLE_WORD_LENGTH;
     }
     return MAX_WORD_LENGTH;
   }
@@ -245,7 +246,9 @@ function App() {
         setStats(addStatsForCompletedGame(stats, guesses.length))
         return setIsGameWon(true)
       }
-
+      
+      
+      // you lose the game
       if (guesses.length === MAX_CHALLENGES - 1) {
         setStats(addStatsForCompletedGame(stats, guesses.length + 1))
         setIsGameLost(true)
