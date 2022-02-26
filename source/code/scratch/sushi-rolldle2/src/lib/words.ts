@@ -1,10 +1,18 @@
-import { WORDS } from '../constants/wordlist'
-import { VALID_GUESSES } from '../constants/validGuesses'
+import { WORDS, THREE_LETTER_WORDS } from '../constants/wordlist'
+import { VALID_GUESSES, VALID_THREE_LETTER_GUESSES } from '../constants/validGuesses'
 import { WRONG_SPOT_MESSAGE, NOT_CONTAINED_MESSAGE } from '../constants/strings'
 import { getGuessStatuses } from './statuses'
 import { default as GraphemeSplitter } from 'grapheme-splitter'
 
-export const isWordInWordList = (word: string) => {
+export const isWordInWordList = (word: string, guessingInner: boolean) => {
+  
+  if (guessingInner){
+    return (
+      THREE_LETTER_WORDS.includes(localeAwareLowerCase(word)) ||
+      VALID_THREE_LETTER_GUESSES.includes(localeAwareLowerCase(word))
+    )
+  }
+  
   return (
     WORDS.includes(localeAwareLowerCase(word)) ||
     VALID_GUESSES.includes(localeAwareLowerCase(word))

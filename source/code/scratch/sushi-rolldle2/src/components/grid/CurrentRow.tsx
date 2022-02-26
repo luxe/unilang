@@ -5,21 +5,35 @@ import { unicodeSplit } from '../../lib/words'
 type Props = {
   guess: string
   className: string
+  guessingInner: boolean
 }
 
-export const CurrentRow = ({ guess, className }: Props) => {
+export const CurrentRow = ({ guess, className, guessingInner}: Props) => {
   const splitGuess = unicodeSplit(guess)
-  const emptyCells = Array.from(Array(MAX_WORD_LENGTH - splitGuess.length))
+  const emptyCells = Array.from(Array(guessingInner ? 3 - splitGuess.length: MAX_WORD_LENGTH - splitGuess.length))
   const classes = `flex justify-center mb-1 ${className}`
 
   return (
+          
+      
+      
     <div className={classes}>
+    
+      {guessingInner && (
+        <Cell key={0} value={"🥬"} />
+      )}
+      
       {splitGuess.map((letter, i) => (
         <Cell key={i} value={letter} />
       ))}
       {emptyCells.map((_, i) => (
-        <Cell key={i} value={"🍱"} />
+        <Cell key={i} value={"🍚"} />
       ))}
+      
+      {guessingInner && (
+        <Cell key={4} value={"🥬"} />
+      )}
+      
     </div>
   )
 }

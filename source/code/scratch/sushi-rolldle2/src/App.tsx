@@ -54,6 +54,7 @@ function App() {
     useAlert()
   const [currentGuess, setCurrentGuess] = useState('')
   const [isGameWon, setIsGameWon] = useState(false)
+  const [isDoingInnerGuesses, setDoingInnerGuesses] = useState(true)
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false)
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
@@ -168,12 +169,19 @@ function App() {
 
   const onChar = (value: string) => {
     if (
-      unicodeLength(`${currentGuess}${value}`) <= MAX_WORD_LENGTH &&
+      unicodeLength(`${currentGuess}${value}`) <= currentMaxWordLength() &&
       guesses.length < MAX_CHALLENGES &&
       !isGameWon
     ) {
       setCurrentGuess(`${currentGuess}${value}`)
     }
+  }
+  
+  const currentMaxWordLength = () => {
+    if ({isDoingInnerGuesses}){
+      return 3;
+    }
+    return MAX_WORD_LENGTH;
   }
 
   const onDelete = () => {
@@ -183,18 +191,22 @@ function App() {
   }
 
   const onEnter = () => {
+    
+    // enter does nothing if game is over
     if (isGameWon || isGameLost) {
       return
     }
 
-    if (!(unicodeLength(currentGuess) === MAX_WORD_LENGTH)) {
+    // you have to do a complete word (whatever that length may be)
+    if (!(unicodeLength(currentGuess) === currentMaxWordLength())) {
       setCurrentRowClass('jiggle')
       return showErrorAlert(NOT_ENOUGH_LETTERS_MESSAGE, {
         onClose: clearCurrentRowClass,
       })
     }
 
-    if (!isWordInWordList(currentGuess)) {
+    // make the word is valid
+    if (!isWordInWordList(currentGuess,isDoingInnerGuesses)) {
       setCurrentRowClass('jiggle')
       return showErrorAlert(WORD_NOT_FOUND_MESSAGE, {
         onClose: clearCurrentRowClass,
@@ -217,12 +229,12 @@ function App() {
     // chars have been revealed
     setTimeout(() => {
       setIsRevealing(false)
-    }, REVEAL_TIME_MS * MAX_WORD_LENGTH)
+    }, REVEAL_TIME_MS * currentMaxWordLength())
 
     const winningWord = isWinningWord(currentGuess)
 
     if (
-      unicodeLength(currentGuess) === MAX_WORD_LENGTH &&
+      unicodeLength(currentGuess) === currentMaxWordLength() &&
       guesses.length < MAX_CHALLENGES &&
       !isGameWon
     ) {
@@ -269,6 +281,7 @@ function App() {
         currentGuess={currentGuess}
         isRevealing={isRevealing}
         currentRowClassName={currentRowClass}
+        guessingInner={isDoingInnerGuesses}
       />
       <Keyboard
         onChar={onChar}
