@@ -24,8 +24,6 @@ export const isWinningWord = (word: string) => {
 }
 
 export const isMiddleCorrect = (word: string) => {
-  console.log(solution);
-  console.log(word);
   return solution[1] == word[0] && solution[2] == word[1] && solution[3] == word[2]
 }
 
@@ -88,7 +86,7 @@ export const localeAwareUpperCase = (text: string) => {
 
 export const getWordOfDay = () => {
   // January 1, 2022 Game Epoch
-  const epochMs = new Date('January 1, 2022 00:00:00').valueOf()
+  const epochMs = new Date('February 25, 2022 00:00:00').valueOf()
   const now = Date.now()
   const msInDay = 86400000
   const index = Math.floor((now - epochMs) / msInDay)

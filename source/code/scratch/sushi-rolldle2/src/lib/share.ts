@@ -1,7 +1,7 @@
 import { getGuessStatuses } from './statuses'
 import { solutionIndex } from './words'
 import { GAME_TITLE } from '../constants/strings'
-import { MAX_CHALLENGES } from '../constants/settings'
+import { MAX_CHALLENGES, MIDDLE_WORD_LENGTH } from '../constants/settings'
 
 export const shareStatus = (
   guesses: string[],
@@ -22,7 +22,7 @@ export const generateEmojiGrid = (guesses: string[], tiles: string[]) => {
   return guesses
     .map((guess) => {
       const status = getGuessStatuses(guess)
-      return guess
+      var row = guess
         .split('')
         .map((_, i) => {
           switch (status[i]) {
@@ -34,7 +34,18 @@ export const generateEmojiGrid = (guesses: string[], tiles: string[]) => {
               return tiles[2]
           }
         })
-        .join('')
+        .join('');
+        
+        if (guess.length == MIDDLE_WORD_LENGTH){
+          row = '🥬' + row;
+          row += '🥬';
+        }
+        
+        return row
+        
+        // if (guess.length == MIDDLE_WORD_LENGTH){
+        //   tiles
+        // }
     })
     .join('\n')
 }

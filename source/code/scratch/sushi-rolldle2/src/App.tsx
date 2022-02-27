@@ -3,6 +3,9 @@ import {
   ChartBarIcon,
   CogIcon,
 } from '@heroicons/react/outline'
+import useSound from 'use-sound'
+//import soundfile from './eat.mp3'
+// const alarm = require("./eat.mp3");
 import { useState, useEffect } from 'react'
 import { Grid } from './components/grid/Grid'
 import { Keyboard } from './components/keyboard/Keyboard'
@@ -182,10 +185,8 @@ function App() {
   
   const currentMaxWordLength = () => {
     if (isDoingInnerGuesses){
-      console.log("INNER");
       return MIDDLE_WORD_LENGTH;
     }
-    console.log("FULL");
     return MAX_WORD_LENGTH;
   }
 
@@ -194,6 +195,14 @@ function App() {
       new GraphemeSplitter().splitGraphemes(currentGuess).slice(0, -1).join('')
     )
   }
+  
+  const EatSound = () => {
+    // const [play] = useSound('./sounds/eat.mp3');
+    
+    var audio = new Audio('./eat.mp3');
+audio.play();
+
+};
 
   const onEnter = () => {
     
@@ -219,7 +228,7 @@ function App() {
       })
     }
 
-    // make the word is valid
+    // make sure the word is valid
     if (!isWordInWordList(currentGuess,isDoingInnerGuesses)) {
       setCurrentRowClass('jiggle')
       return showErrorAlert(WORD_NOT_FOUND_MESSAGE, {
@@ -237,6 +246,8 @@ function App() {
         })
       }
     }
+    
+    EatSound()
 
     setIsRevealing(true)
     // turn this back off after all
@@ -249,7 +260,6 @@ function App() {
     
     if (isMiddleCorrect(currentGuess)){
       setDoingInnerGuesses(false);
-      //console.log(this.props.);
     }
 
     if (

@@ -19,7 +19,7 @@ export const Alert = ({
     'fixed z-20 top-5 left-1/2 transform -translate-x-1/2 max-w-sm w-full shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden',
     {
       'bg-rose-500 text-white': variant === 'error',
-      'bg-blue-500 text-white': variant === 'success',
+      'bg-green-500 text-white': variant === 'success',
     }
   )
 

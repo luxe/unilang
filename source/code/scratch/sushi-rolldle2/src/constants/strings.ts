@@ -16,10 +16,12 @@ export const NOT_CONTAINED_MESSAGE = (letter: string) =>
 export const ENTER_TEXT = 'Enter'
 export const DELETE_TEXT = 'Delete'
 export const STATISTICS_TITLE = 'Meals'
-export const GUESS_DISTRIBUTION_TEXT = 'Yelp Ratings'
+export const GUESS_DISTRIBUTION_TEXT = 'Bites'
 export const NEW_WORD_TEXT = 'New meal in'
 export const SHARE_TEXT = 'Share'
 export const TOTAL_TRIES_TEXT = 'Total meals'
 export const SUCCESS_RATE_TEXT = 'Happiness'
 export const CURRENT_STREAK_TEXT = 'Current streak'
 export const BEST_STREAK_TEXT = 'Best streak'
+
+

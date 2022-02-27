@@ -17,5 +17,6 @@ cc_binary(
         "//code/utilities/random/rand_impls:posix_1_2001_example",
         "//code/utilities/linguistics/dictionary:three_letter_words",
         "//code/utilities/linguistics/dictionary:wordle",
+        "//code/utilities/types/strings/transformers/casing:lib",
     ],
 )

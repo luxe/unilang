@@ -10,7 +10,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
   return (
     <BaseModal title="How to Eat" isOpen={isOpen} handleClose={handleClose}>
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        Guess the middle word then the entire word
+        Guess the middle word then the full word.
       </p>
       
       <div className="flex justify-center mb-1 mt-4">
@@ -64,7 +64,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
         <Cell value="Y" />
       </div>
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        Ginger! The letter U is in in the wrong spot.
+        Ginger! The letter U is in the wrong spot.
       </p>
 
       <div className="flex justify-center mb-1 mt-4">
