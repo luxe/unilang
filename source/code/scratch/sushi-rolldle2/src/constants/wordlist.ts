@@ -5,7 +5,7 @@ export const WORDS = [
 ]
 
 
-export const THREE_LETTER_WORDS = [
+export const MIDDLE_WORDS = [
   'one',
   'age',
   'ice',

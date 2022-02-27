@@ -4,7 +4,7 @@ export const VALID_GUESSES = [
   'riced',
 ]
 
-export const VALID_THREE_LETTER_GUESSES = [
+export const VALID_MIDDLE_GUESSES = [
   'one',
   'age',
   'ice',

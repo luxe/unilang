@@ -14,6 +14,7 @@ import {
   WIN_MESSAGES,
   GAME_COPIED_MESSAGE,
   NOT_ENOUGH_LETTERS_MESSAGE,
+  EMPTY_LETTERS_MESSAGE,
   WORD_NOT_FOUND_MESSAGE,
   CORRECT_WORD_MESSAGE,
   HARD_MODE_ALERT_MESSAGE,
@@ -29,6 +30,7 @@ import {
 import {
   isWordInWordList,
   isWinningWord,
+  isMiddleCorrect,
   solution,
   findFirstUnusedReveal,
   unicodeLength,
@@ -179,9 +181,11 @@ function App() {
   }
   
   const currentMaxWordLength = () => {
-    if ({isDoingInnerGuesses}){
+    if (isDoingInnerGuesses){
+      console.log("INNER");
       return MIDDLE_WORD_LENGTH;
     }
+    console.log("FULL");
     return MAX_WORD_LENGTH;
   }
 
@@ -196,6 +200,15 @@ function App() {
     // enter does nothing if game is over
     if (isGameWon || isGameLost) {
       return
+    }
+    
+    
+    // you have to do a complete word
+    if ((unicodeLength(currentGuess) === 0)) {
+      setCurrentRowClass('jiggle')
+      return showErrorAlert(EMPTY_LETTERS_MESSAGE, {
+        onClose: clearCurrentRowClass,
+      })
     }
 
     // you have to do a complete word (whatever that length may be)
@@ -233,6 +246,11 @@ function App() {
     }, REVEAL_TIME_MS * currentMaxWordLength())
 
     const winningWord = isWinningWord(currentGuess)
+    
+    if (isMiddleCorrect(currentGuess)){
+      setDoingInnerGuesses(false);
+      //console.log(this.props.);
+    }
 
     if (
       unicodeLength(currentGuess) === currentMaxWordLength() &&

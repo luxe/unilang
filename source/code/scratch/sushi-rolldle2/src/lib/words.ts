@@ -1,5 +1,5 @@
-import { WORDS, THREE_LETTER_WORDS } from '../constants/wordlist'
-import { VALID_GUESSES, VALID_THREE_LETTER_GUESSES } from '../constants/validGuesses'
+import { WORDS, MIDDLE_WORDS } from '../constants/wordlist'
+import { VALID_GUESSES, VALID_MIDDLE_GUESSES } from '../constants/validGuesses'
 import { WRONG_SPOT_MESSAGE, NOT_CONTAINED_MESSAGE } from '../constants/strings'
 import { getGuessStatuses } from './statuses'
 import { default as GraphemeSplitter } from 'grapheme-splitter'
@@ -8,8 +8,8 @@ export const isWordInWordList = (word: string, guessingInner: boolean) => {
   
   if (guessingInner){
     return (
-      THREE_LETTER_WORDS.includes(localeAwareLowerCase(word)) ||
-      VALID_THREE_LETTER_GUESSES.includes(localeAwareLowerCase(word))
+      MIDDLE_WORDS.includes(localeAwareLowerCase(word)) ||
+      VALID_MIDDLE_GUESSES.includes(localeAwareLowerCase(word))
     )
   }
   
@@ -21,6 +21,12 @@ export const isWordInWordList = (word: string, guessingInner: boolean) => {
 
 export const isWinningWord = (word: string) => {
   return solution === word
+}
+
+export const isMiddleCorrect = (word: string) => {
+  console.log(solution);
+  console.log(word);
+  return solution[1] == word[0] && solution[2] == word[1] && solution[3] == word[2]
 }
 
 // build a set of previously revealed letters - present and correct

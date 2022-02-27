@@ -37,3 +37,21 @@ hcp(
         "@nuspell",
     ],
 )
+
+hcp(
+    name = "three_letter_words",
+    data = ["@scrabble_words//:all"],
+    deps = [
+        "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/streams/filestreams/read_all:lib",
+    ],
+)
+
+hcp(
+    name = "wordle",
+    data = ["@scrabble_words//:all"],
+    deps = [
+        "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/streams/filestreams/read_all:lib",
+    ],
+)

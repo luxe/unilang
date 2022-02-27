@@ -1,4 +1,5 @@
 import { solution, unicodeSplit } from './words'
+import { MIDDLE_WORD_LENGTH } from '../constants/settings'
 
 export type CharStatus = 'absent' | 'present' | 'correct'
 
@@ -14,11 +15,22 @@ export const getStatuses = (
         // make status absent
         return (charObj[letter] = 'absent')
       }
-
-      if (letter === splitSolution[i]) {
-        //make status correct
-        return (charObj[letter] = 'correct')
+      
+      if (word.length == MIDDLE_WORD_LENGTH){
+        
+        if (letter === splitSolution[i+1]) {
+          //make status correct
+          return (charObj[letter] = 'correct')
+        }
       }
+      else {
+        
+        if (letter === splitSolution[i]) {
+          //make status correct
+          return (charObj[letter] = 'correct')
+        }
+      }
+
 
       if (charObj[letter] !== 'correct') {
         //make status present
@@ -37,39 +49,84 @@ export const getGuessStatuses = (guess: string): CharStatus[] => {
   const solutionCharsTaken = splitSolution.map((_) => false)
 
   const statuses: CharStatus[] = Array.from(Array(guess.length))
+  
+  
+  // doing middle word
+  if (guess.length == MIDDLE_WORD_LENGTH){
+    
+    // handle all correct cases first
+    splitGuess.forEach((letter, i) => {
+      if (letter === splitSolution[i+1]) {
+        statuses[i] = 'correct'
+        solutionCharsTaken[i] = true
+        return
+      }
+    })
+    
+    
+    splitGuess.forEach((letter, i) => {
+      if (statuses[i]) return
 
-  // handle all correct cases first
-  splitGuess.forEach((letter, i) => {
-    if (letter === splitSolution[i]) {
-      statuses[i] = 'correct'
-      solutionCharsTaken[i] = true
-      return
-    }
-  })
+      if (!splitSolution.includes(letter)) {
+        // handles the absent case
+        statuses[i] = 'absent'
+        return
+      }
 
-  splitGuess.forEach((letter, i) => {
-    if (statuses[i]) return
+      // now we are left with "present"s
+      const indexOfPresentChar = splitSolution.findIndex(
+        (x, index) => x === letter && !solutionCharsTaken[index]
+      )
 
-    if (!splitSolution.includes(letter)) {
-      // handles the absent case
-      statuses[i] = 'absent'
-      return
-    }
+      if (indexOfPresentChar > -1) {
+        statuses[i] = 'present'
+        solutionCharsTaken[indexOfPresentChar] = true
+        return
+      } else {
+        statuses[i] = 'absent'
+        return
+      }
+    })
+    
+  }
+  
+  //doing full word
+  else {
+  
 
-    // now we are left with "present"s
-    const indexOfPresentChar = splitSolution.findIndex(
-      (x, index) => x === letter && !solutionCharsTaken[index]
-    )
+    // handle all correct cases first
+    splitGuess.forEach((letter, i) => {
+      if (letter === splitSolution[i]) {
+        statuses[i] = 'correct'
+        solutionCharsTaken[i] = true
+        return
+      }
+    })
 
-    if (indexOfPresentChar > -1) {
-      statuses[i] = 'present'
-      solutionCharsTaken[indexOfPresentChar] = true
-      return
-    } else {
-      statuses[i] = 'absent'
-      return
-    }
-  })
+    splitGuess.forEach((letter, i) => {
+      if (statuses[i]) return
+
+      if (!splitSolution.includes(letter)) {
+        // handles the absent case
+        statuses[i] = 'absent'
+        return
+      }
+
+      // now we are left with "present"s
+      const indexOfPresentChar = splitSolution.findIndex(
+        (x, index) => x === letter && !solutionCharsTaken[index]
+      )
+
+      if (indexOfPresentChar > -1) {
+        statuses[i] = 'present'
+        solutionCharsTaken[indexOfPresentChar] = true
+        return
+      } else {
+        statuses[i] = 'absent'
+        return
+      }
+    })
+  }
 
   return statuses
 }
