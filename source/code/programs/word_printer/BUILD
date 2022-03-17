@@ -18,5 +18,6 @@ cc_binary(
         "//code/utilities/linguistics/dictionary:three_letter_words",
         "//code/utilities/linguistics/dictionary:wordle",
         "//code/utilities/types/strings/transformers/casing:lib",
+        "//code/utilities/types/vectors/operators:lib"
     ],
 )
