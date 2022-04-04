@@ -6,15 +6,18 @@
 #include <queue>
 #include <utility>
 #include <functional>
+#include <vector>
 
 
 //TODO: turn into global functions
 template <typename T>
 class Unique_Counter{
   
+  //underlying data
   public:
   std::map<T,int> hash_table;
   
+  //transformers
   void Add(T const& t){
     auto search = hash_table.find(t);
     if(search != hash_table.end()) {
@@ -24,24 +27,31 @@ class Unique_Counter{
       hash_table.emplace(t,1);
     }
   }
+  void Add(std::vector<T> ts){
+    for (auto it: ts){
+      Add(it);
+    }
+  }
   
   void Add_Empty(T const& t){
     hash_table.emplace(t,0);
   }
   
+  
+  //observers
   size_t Number_Of_Unique_Entries() const{
     return hash_table.size();
   }
   
   T Most_Common() const{
-    auto it = std::max_element(hash_table.begin(),hash_table.end(),[](auto x, auto y){
+    auto it = std::max_element(hash_table.begin(),hash_table.end(),[](T x, T y){
       return x.second < y.second;
     });
     return it->first;
   }
   
   T Least_Common() const{
-    auto it = std::min_element(hash_table.begin(),hash_table.end(),[](auto x, auto y){
+    auto it = std::min_element(hash_table.begin(),hash_table.end(),[](T x, T y){
       return x.second < y.second;
     });
     return it->first;
@@ -77,6 +87,17 @@ class Unique_Counter{
     }
     return results;
   }
+  
+  
+  int TotalNumberPairs(){
+    int total = 0;
+    for (auto it: hash_table){
+      total += it.second / 2;
+    }
+    return total;
+  }
+  
+  
   
 private:
   std::priority_queue<std::pair<int,T>> Convert_To_P_Queue() const {

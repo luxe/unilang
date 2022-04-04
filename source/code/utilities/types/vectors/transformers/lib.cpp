@@ -12,6 +12,34 @@
 
 
 
+ void rotateLeft(std::vector<int> & vec){
+     int first = vec[0];
+     for (size_t i =1; i < vec.size(); ++i){
+         vec[i-1] = vec[i];
+     }
+     vec[vec.size()-1] = first;
+ }
+
+std::vector<int> rotateLeft(std::vector<int> vec, int numberOfTimes) {
+    std::vector<int> result = vec;
+    for (size_t i = 0; i < numberOfTimes; ++i){
+        rotateLeft(result);
+    }
+    return result;
+}
+
+std::vector<int> rotateLeftModVersion(std::vector<int> vec, int numberOfTimes){
+
+    vector<int> result = vec;
+    for(int i = 0; i < vec.size(); i++){
+        int newLocation = (i + (vec.size() - numberOfTimes)) % vec.size();
+        result[newLocation] = vec[i];
+    }
+
+    return result;
+}
+
+
 
 //math (string is treated as integer)
 void Add_Each_Line_By(std::vector<std::string> & v, int num){

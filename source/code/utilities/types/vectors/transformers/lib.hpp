@@ -21,6 +21,13 @@ template <typename T>
 bool In_Vector(std::vector<T> const& vec, T const& item);
 
 
+
+//rotating
+void rotateLeft(std::vector<int> & vec);
+std::vector<int> rotateLeft(std::vector<int> vec, int numberOfTimes);
+std::vector<int> rotateLeftModVersion(std::vector<int> vec, int numberOfTimes);
+
+
 template <class T>
 void erase_selected(std::vector<T>& v, const std::vector<int>& selection)
 {
