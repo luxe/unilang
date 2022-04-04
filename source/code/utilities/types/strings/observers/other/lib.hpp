@@ -38,3 +38,7 @@ void Alphabetize_And_Print(std::vector<T> results){
 size_t height(std::string const& str);
 
 int XorCheckSum(std::string const& s);
+
+
+//i.e: count number of valleys
+int CountNumberOfTimesBelowSurfaceArea(std::string path);

@@ -157,6 +157,28 @@ std::string All_Characters_After_Last_Found_String(std::string const& str, std::
 
 
 
+int CountNumberOfTimesBelowSurfaceArea(std::string path) {
+
+   int level = 0;
+   int valleys = 0;
+   char symbol_for_down = 'D';
+   for (auto it: path){
+      //down
+       if (it == symbol_for_down){
+           level--;
+       }
+       else {
+           level++;
+           if (level == 0){
+               valleys++;
+           }
+       }
+   }
+   
+   return valleys;
+   
+}
+
 
 
 
