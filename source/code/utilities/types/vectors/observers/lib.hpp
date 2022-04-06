@@ -18,6 +18,15 @@ size_t Longest_Element_Size(std::vector<std::string> strs);
 bool An_Element_Ends_With(std::vector<std::string> const& strs, std::string const& str);
 
 
+
+
+
+
+
+
+
+
+
 template <class T>
 bool All_Elements_Unique(std::vector<T> &x) {
     std::sort( x.begin(), x.end() ); // O(N log N)
@@ -572,6 +581,20 @@ bool All_Pass_Predicate(std::vector<T> const& vec, Fun fun){
   }
   
   return true;
+}
+
+
+
+//Counting
+template <typename T>
+T CountElement(std::vector<T> vec, T element){
+    return std::count_if(vec.begin(), vec.end(), [&](T i){return i == element;});
+}
+
+template <typename T>
+T CountMaxElements(std::vector<T> vec){
+    auto max = MaxElement(vec);
+    return CountElement(vec,max);
 }
 
 
