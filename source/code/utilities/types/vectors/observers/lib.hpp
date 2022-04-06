@@ -378,6 +378,16 @@ std::vector<T> GetZeros(std::vector<T> const& vec){
   return Filter(vec,[](T t){return t == 0;});
 }
 
+template <typename T>
+T MaxElement(std::vector<T> vec){
+    return *std::max_element(vec.begin(),vec.end());
+}
+
+template <typename T>
+T MinElement(std::vector<T> vec){
+    return *std::min_element(vec.begin(),vec.end());
+}
+
 
 
 

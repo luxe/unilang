@@ -324,6 +324,20 @@ void Remove_Elements_Of_Vector_Two_Found_In_Vector_One(std::vector<T> const& one
 }
 
 template <typename T>
+std::vector<T> RemoveMaxElement(std::vector<T> vec){
+    auto element = MaxElement(vec);
+    return Remove_Element(vec,element);
+}
+
+template <typename T>
+std::vector<T> RemoveMinElement(std::vector<T> vec){
+    auto element = MinElement(vec);
+    return Remove_Element(vec,element);
+}
+
+
+
+template <typename T>
 std::vector<T>& Lowercase(std::vector<T>& vec){
     std::for_each(vec.begin(),vec.end(),[](T & t){ Lowercase(t); return;});
     return vec;
