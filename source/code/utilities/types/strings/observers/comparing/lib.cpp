@@ -3,6 +3,7 @@
 #include "code/utilities/types/strings/transformers/removing/lib.hpp"
 #include "boost/algorithm/string/predicate.hpp"
 #include "levenshtein.h"
+#include <stringstream>
 
 //comparing two string
 bool Case_Insensitive_String_Compare(std::string const& str1, std::string const& str2){
@@ -35,4 +36,27 @@ bool Case_Sensitive_Compare(std::string const& str1, std::string const& str2){
 
 size_t Levenshtein_Distance(std::string const& str1, std::string const& str2){
 	return levenshtein_n(str1.c_str(), str1.size(), str2.c_str(), str2.size());
+}
+
+bool Numerical_String_Compare(const std::string& s1, const std::string& s2)
+{
+    //handle digit size differences
+    if (s1.size() < s2.size()){
+        return true;
+    }
+    if (s1.size() > s2.size()){
+        return false;
+    }
+    
+    //compare digits individually
+    for (size_t i = 0; i < s1.size(); ++i){
+        char c1 = s1[i];
+        char c2 = s2[i];
+        if (c1 != c2){
+            return c1 < c2;
+        }
+    }
+    
+    //they are equivalent
+    return false;
 }

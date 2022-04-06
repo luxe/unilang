@@ -10,3 +10,5 @@ bool Non_Case_Sensitive_Compare(std::string str1, std::string str2);
 bool Case_Sensitive_Compare(std::string const& str1, std::string const& str2);
 
 size_t Levenshtein_Distance(std::string const& str1, std::string const& str2);
+
+bool Numerical_String_Compare(const std::string& s1, const std::string& s2);
