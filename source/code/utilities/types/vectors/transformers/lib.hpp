@@ -88,6 +88,32 @@ int Accumulate(std::vector<T> const& v, Fun f){
     return total;
 }
 
+template <typename T>
+std::vector<T> AccumulateLeftToRightDigonal(std::vector<std::vector<T>> arr){
+    std::vector<T> result;
+    for (size_t i = 0; i < arr.size(); ++i){
+        result.emplace_back(arr[i][i]);
+    }
+    return result;
+}
+
+template <typename T>
+std::vector<T> AccumulateRightToLeftDigonal(std::vector<std::vector<T>> arr){
+    std::vector<T> result;
+    for (size_t i = 0; i < arr.size(); ++i){
+        result.emplace_back(arr[arr.size()-(i+1)][i]);
+    }
+    return result;
+}
+
+template <typename T>
+int computeDiagonalDifference(std::vector<std::vector<T>> arr) {
+    auto left = AccumulateLeftToRightDigonal(arr);
+    auto right = AccumulateRightToLeftDigonal(arr);
+    auto answer = Accumulate(right) - Accumulate(left);
+    return abs(answer);
+}
+
 
 
 
