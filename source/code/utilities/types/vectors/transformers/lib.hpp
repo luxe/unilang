@@ -199,6 +199,41 @@ std::vector<T>& Remove_Element(std::vector<T>& vec, T const& value){
 }
 
 template <typename T>
+std::vector<T>& Remove_Element_First_Found_Only(std::vector<T>& vec, T const& value){
+    for (size_t i = 0; i < vec.size(); ++i){
+        if (vec[i] == value){
+            vec.erase(vec.begin() + i);
+            return vec;
+        }
+    }
+    return vec;
+}
+
+template <typename T>
+std::vector<T> RemoveMaxElement(std::vector<T> vec){
+    auto element = MaxElement(vec);
+    return Remove_Element_First_Found_Only(vec,element);
+}
+
+template <typename T>
+std::vector<T> RemoveMinElement(std::vector<T> vec){
+    auto element = MinElement(vec);
+    return Remove_Element_First_Found_Only(vec,element);
+}
+
+template <typename T>
+std::vector<T> RemoveMaxElements(std::vector<T> vec){
+    auto element = MaxElement(vec);
+    return Remove_Element(vec,element);
+}
+
+template <typename T>
+std::vector<T> RemoveMinElements(std::vector<T> vec){
+    auto element = MinElement(vec);
+    return Remove_Element(vec,element);
+}
+
+template <typename T>
 std::vector<T>& Sort_And_Remove_Duplicates(std::vector<T>& vec){
     std::sort(vec.begin(), vec.end());
     vec.erase(std::unique(vec.begin(), vec.end()), vec.end());

@@ -390,7 +390,6 @@ T MinElement(std::vector<T> vec){
 
 
 
-
 template<typename T>
 const T& Get_Nth_Element(std::vector<T> const& container, size_t n) {
   return container[n];
