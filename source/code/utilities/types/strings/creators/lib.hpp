@@ -19,4 +19,6 @@ std::string Single_End_Tag(std::string const& tag_name, std::string const& key, 
 std::string End_Tag(std::string const& tag_name);
 std::string Create_XML_Attribute_Equals_Quoted_Value(std::string const& key, std::string const& value);
 
+std::string CreateStaircase(int size);
+
 

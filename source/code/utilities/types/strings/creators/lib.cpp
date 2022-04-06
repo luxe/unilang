@@ -91,3 +91,17 @@ std::string End_Tag(std::string const& tag_name)
   str += ">";
   return str;
 }
+
+std::string CreateStaircase(int size){
+  
+  std::string result;
+   for (size_t i = 0; i < n; ++i){
+       //print spaces
+       result += Create_String_Of_N_Strs(n-(i+1)," ");
+       
+       //print stairs
+       result += Create_String_Of_N_Strs(i+1,"#");
+       result += "\n";
+   }
+   return result;
+}

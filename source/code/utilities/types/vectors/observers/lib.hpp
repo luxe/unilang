@@ -363,6 +363,23 @@ std::vector<T> Filter(std::vector<T> const& vec, Fun pred){
   return new_vec;
 }
 
+template <typename T>
+std::vector<T> GetPositives(std::vector<T> const& vec){
+  return Filter(vec,[](T t){return t > 0;});
+}
+
+template <typename T>
+std::vector<T> GetNegatives(std::vector<T> const& vec){
+  return Filter(vec,[](T t){return t < 0;});
+}
+
+template <typename T>
+std::vector<T> GetZeros(std::vector<T> const& vec){
+  return Filter(vec,[](T t){return t == 0;});
+}
+
+
+
 
 template<typename T>
 const T& Get_Nth_Element(std::vector<T> const& container, size_t n) {
