@@ -599,6 +599,31 @@ T CountMaxElements(std::vector<T> vec){
 
 
 
+//Puzzling
+template <typename T>
+int minimumAbsoluteDifferenceBetweenAny2Elements(vector<T> arr) {
+    
+    //sort them so we can compare close elements in order
+    sort(arr.begin(),arr.end());
+    
+    //start with worst case
+    T min = INT_MAX;
+    
+    for (size_t i = 0; i < arr.size()-1; ++i){
+      
+        //track the minimum difference
+        min = std::min(abs(arr[i] - arr[i+1]),min);
+        
+        //you can't beat zero
+        if (min == 0){
+          return 0;
+        }
+    }
+    return min;
+
+}
+
+
 
 
 template<class InputIt, class MemberType>
