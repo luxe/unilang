@@ -601,7 +601,7 @@ T CountMaxElements(std::vector<T> vec){
 
 //Puzzling
 template <typename T>
-int minimumAbsoluteDifferenceBetweenAny2Elements(vector<T> arr) {
+int minimumAbsoluteDifferenceBetweenAny2Elements(std::vector<T> arr) {
     
     //sort them so we can compare close elements in order
     sort(arr.begin(),arr.end());

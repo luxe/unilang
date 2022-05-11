@@ -30,7 +30,7 @@ std::vector<int> rotateLeft(std::vector<int> vec, int numberOfTimes) {
 
 std::vector<int> rotateLeftModVersion(std::vector<int> vec, int numberOfTimes){
 
-    vector<int> result = vec;
+    std::vector<int> result = vec;
     for(int i = 0; i < vec.size(); i++){
         int newLocation = (i + (vec.size() - numberOfTimes)) % vec.size();
         result[newLocation] = vec[i];

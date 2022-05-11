@@ -95,9 +95,9 @@ std::string End_Tag(std::string const& tag_name)
 std::string CreateStaircase(int size){
   
   std::string result;
-   for (size_t i = 0; i < n; ++i){
+   for (size_t i = 0; i < size; ++i){
        //print spaces
-       result += Create_String_Of_N_Strs(n-(i+1)," ");
+       result += Create_String_Of_N_Strs(size-(i+1)," ");
        
        //print stairs
        result += Create_String_Of_N_Strs(i+1,"#");

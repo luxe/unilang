@@ -224,13 +224,13 @@ std::vector<T> RemoveMinElement(std::vector<T> vec){
 template <typename T>
 std::vector<T> RemoveMaxElements(std::vector<T> vec){
     auto element = MaxElement(vec);
-    return Remove_Element(vec,element);
+    return Remove_Element_First_Found_Only(vec,element);
 }
 
 template <typename T>
 std::vector<T> RemoveMinElements(std::vector<T> vec){
     auto element = MinElement(vec);
-    return Remove_Element(vec,element);
+    return Remove_Element_First_Found_Only(vec,element);
 }
 
 template <typename T>
@@ -358,17 +358,17 @@ void Remove_Elements_Of_Vector_Two_Found_In_Vector_One(std::vector<T> const& one
     }
 }
 
-template <typename T>
-std::vector<T> RemoveMaxElement(std::vector<T> vec){
-    auto element = MaxElement(vec);
-    return Remove_Element(vec,element);
-}
+// template <typename T>
+// std::vector<T> RemoveMaxElement(std::vector<T> vec){
+//     auto element = MaxElement(vec);
+//     return Remove_Element(vec,element);
+// }
 
-template <typename T>
-std::vector<T> RemoveMinElement(std::vector<T> vec){
-    auto element = MinElement(vec);
-    return Remove_Element(vec,element);
-}
+// template <typename T>
+// std::vector<T> RemoveMinElement(std::vector<T> vec){
+//     auto element = MinElement(vec);
+//     return Remove_Element(vec,element);
+// }
 
 
 
