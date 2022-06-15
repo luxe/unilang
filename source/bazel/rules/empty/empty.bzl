@@ -4,7 +4,6 @@ load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/data:data_getter.bzl", "data_getter")
 
 def empty_file(target_name, file_name):
-
     #create file
     native.genrule(
         name = target_name,

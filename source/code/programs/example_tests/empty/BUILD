@@ -4,4 +4,4 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-empty_file("main","foo")
+empty_file("main", "foo")

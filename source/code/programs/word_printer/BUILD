@@ -13,11 +13,11 @@ cc_binary(
     srcs = ["main.cpp"],
     deps = [
         "//code/utilities/deps/external/php_src:lib",
-        "//code/utilities/random:lib",
-        "//code/utilities/random/rand_impls:posix_1_2001_example",
         "//code/utilities/linguistics/dictionary:three_letter_words",
         "//code/utilities/linguistics/dictionary:wordle",
+        "//code/utilities/random:lib",
+        "//code/utilities/random/rand_impls:posix_1_2001_example",
         "//code/utilities/types/strings/transformers/casing:lib",
-        "//code/utilities/types/vectors/operators:lib"
+        "//code/utilities/types/vectors/operators:lib",
     ],
 )

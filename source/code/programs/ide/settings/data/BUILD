@@ -77,6 +77,6 @@ hcp_hdrs_derive(
 hcp_hdrs_derive(
     name = "ide_creation_settings",
     interface_deps = [
-    "//code/utilities/data_structures/position",
+        "//code/utilities/data_structures/position",
     ],
 )

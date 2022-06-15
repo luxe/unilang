@@ -4,6 +4,6 @@ package(
 
 sh_test(
     name = "main",
+    timeout = "short",
     srcs = ["main.sh"],
-    timeout="short",
 )
