@@ -39,6 +39,39 @@ std::vector<int> rotateLeftModVersion(std::vector<int> vec, int numberOfTimes){
     return result;
 }
 
+std::vector<std::vector<int>> get_hour_glass_patterns(std::vector<std::vector<int>> const& grid){
+    std::vector<std::vector<int>> results;
+    auto height = grid.size();
+    auto width = grid[0].size();
+    
+    for (size_t i = 0; i < height-2; ++i){
+        for (size_t j = 0; j < width-2; ++j){
+            std::vector<int> hourglass;
+            hourglass.emplace_back(grid[i][j]);
+            hourglass.emplace_back(grid[i][j+1]);
+            hourglass.emplace_back(grid[i][j+2]);
+            hourglass.emplace_back(grid[i+1][j+1]);
+            hourglass.emplace_back(grid[i+2][j]);
+            hourglass.emplace_back(grid[i+2][j+1]);
+            hourglass.emplace_back(grid[i+2][j+2]);
+            results.emplace_back(hourglass);
+        }
+    }
+    
+    return results;
+}
+
+int maximumhourglassSum(std::vector<std::vector<int>> arr) {
+    
+    int max_sum = INT_MIN;
+    for (auto glass: get_hour_glasses(arr)){
+        max_sum = std::max(max_sum,Accumulate(glass));
+    }
+    
+    return max_sum;
+}
+
+
 
 
 //math (string is treated as integer)

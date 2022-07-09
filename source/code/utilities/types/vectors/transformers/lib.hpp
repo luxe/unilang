@@ -68,6 +68,10 @@ void Transfer_An_Element(std::vector<T>& from, std::vector<T>& to){
     }
 }
 
+//programming problem:
+int maximumhourglassSum(std::vector<std::vector<int>> arr);
+std::vector<std::vector<int>> get_hour_glass_patterns(std::vector<std::vector<int>> const& grid);
+
 
 
 //math (string is treated as integer)
