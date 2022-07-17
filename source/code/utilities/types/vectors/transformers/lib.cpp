@@ -64,7 +64,7 @@ std::vector<std::vector<int>> get_hour_glass_patterns(std::vector<std::vector<in
 int maximumhourglassSum(std::vector<std::vector<int>> arr) {
     
     int max_sum = INT_MIN;
-    for (auto glass: get_hour_glasses(arr)){
+    for (auto glass: get_hour_glass_patterns(arr)){
         max_sum = std::max(max_sum,Accumulate(glass));
     }
     
