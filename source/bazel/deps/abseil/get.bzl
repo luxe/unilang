@@ -7,9 +7,9 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 def abseil():
     http_archive(
         name = "abseil",
-        sha256 = "bbe285994afb2751a49b7ed63c54e2230a774438a467a7ccaabb5d16156d211a",
-        strip_prefix = "abseil-cpp-93d155bc4414f6c121bb1f19dba9fdb27c8943bc",
+        sha256 = "8deb6cb2b38c407b57afc64cc1b7e6e97f4b6af31fd9094c20d3b5e627d4d30c",
+        strip_prefix = "abseil-cpp-2b403ec754ec342311720467277c346e413e3438",
         urls = [
-            "https://github.com/Unilang/abseil-cpp/archive/93d155bc4414f6c121bb1f19dba9fdb27c8943bc.tar.gz",
+            "https://github.com/Unilang/abseil-cpp/archive/2b403ec754ec342311720467277c346e413e3438.tar.gz",
         ],
     )
