@@ -6,7 +6,7 @@ cc_binary(
     srcs = ["main.cpp"],
 )
 
-# wasm_cc_binary(
-#     name = "hello-world-wasm",
-#     cc_target = ":hello-world",
-# )
+wasm_cc_binary(
+    name = "hello-world-wasm",
+    cc_target = ":hello-world",
+)
