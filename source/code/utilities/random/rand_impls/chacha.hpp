@@ -158,7 +158,7 @@ inline void chacha_engine<R>::generate_block() {
     for (int i = 0; i < 16; ++i) block[i] += input[i];
 }
 
-#ifdef __SSE2__
+#ifdef __SSE2_DONT_USE_THIS_PATH_BECAUSE_OF_BUILD_ERROR__
 #include "emmintrin.h"
 
 // Get an efficient _mm_roti_epi32 based on enabled features.
