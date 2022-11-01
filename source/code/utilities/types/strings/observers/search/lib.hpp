@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 int countSubstring(const std::string& str, const std::string& sub);
 

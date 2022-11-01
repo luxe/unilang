@@ -3,7 +3,7 @@
 #include "code/utilities/types/strings/transformers/removing/lib.hpp"
 #include "boost/algorithm/string/predicate.hpp"
 #include "levenshtein.h"
-#include <stringstream>
+#include <sstream>
 
 //comparing two string
 bool Case_Insensitive_String_Compare(std::string const& str1, std::string const& str2){

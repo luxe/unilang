@@ -27,7 +27,7 @@ class Unique_Counter{
       hash_table.emplace(t,1);
     }
   }
-  void Add(std::vector<T> ts){
+  void Add_Vec(std::vector<T> ts){
     for (auto it: ts){
       Add(it);
     }
@@ -44,14 +44,14 @@ class Unique_Counter{
   }
   
   T Most_Common() const{
-    auto it = std::max_element(hash_table.begin(),hash_table.end(),[](T x, T y){
+    auto it = std::max_element(hash_table.begin(),hash_table.end(),[](std::pair<T,int> x, std::pair<T,int> y){
       return x.second < y.second;
     });
     return it->first;
   }
   
   T Least_Common() const{
-    auto it = std::min_element(hash_table.begin(),hash_table.end(),[](T x, T y){
+    auto it = std::min_element(hash_table.begin(),hash_table.end(),[](std::pair<T,int> x, std::pair<T,int> y){
       return x.second < y.second;
     });
     return it->first;

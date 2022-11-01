@@ -16,5 +16,6 @@ cc_binary(
         "//code/utilities/linguistics/computer/frontends/java:java_str_getter",
         "//code/utilities/linguistics/computer/frontends/java/settings:java_default_rule_settings",
         "//code/utilities/linguistics/computer/frontends/java/settings:java_settings",
+        "//code/utilities/linguistics/computer/frontends/java:java_test_str_getter",
     ],
 )
