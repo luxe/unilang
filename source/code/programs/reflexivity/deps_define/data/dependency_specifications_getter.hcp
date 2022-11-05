@@ -110,7 +110,8 @@ class
     x.specs.emplace_back(Io_Bazel_Rules_M4());
     
     
-    //Rules
+    //Rules / Starlark
+    x.specs.emplace_back(platforms());
     x.specs.emplace_back(Io_Bazel_Rules_Go());
     x.specs.emplace_back(Bazel_Gazelle());
     x.specs.emplace_back(Io_Bazel_Rules_Docker());
@@ -118,7 +119,7 @@ class
     x.specs.emplace_back(Rules_Rust());
     x.specs.emplace_back(Rules_Fuzzing());
     x.specs.emplace_back(Rules_Python());
-    //x.specs.emplace_back(Rules_Pkg());
+    x.specs.emplace_back(Rules_Pkg());
     x.specs.emplace_back(Rules_Appimage());
     x.specs.emplace_back(Apple_Rules_Lint());
     x.specs.emplace_back(Bazel_Rules_Qt());
@@ -989,8 +990,8 @@ remote_apis_switched_rules_by_language(
 ◀private: static▶ Dependency_Specification ☀Protobuf()❰
     Dependency_Specification spec;
     spec.lib_name = "com_google_protobuf";
-    Add_Unilang_Github_Mirror(spec,"protobuf","66e3562aafce093d30473555248f22b3fdc88aad","ea97ff1804cb8508b78fc672c27f57e60087979ce7dbb3f66a1586a3dbf57cf2");
-    //Add_Unilang_Github_Mirror(spec,"protobuf","6c78c6621b74a3a8e93baafde38d91e2ac5f65cf","acc4297dc71bfe7701e0afcbd09f2f682f4fc8e02739eac08d61cd1f496b94d3");
+    //Add_Unilang_Github_Mirror(spec,"protobuf","66e3562aafce093d30473555248f22b3fdc88aad","ea97ff1804cb8508b78fc672c27f57e60087979ce7dbb3f66a1586a3dbf57cf2");
+    Add_Unilang_Github_Mirror(spec,"protobuf","6c78c6621b74a3a8e93baafde38d91e2ac5f65cf","acc4297dc71bfe7701e0afcbd09f2f682f4fc8e02739eac08d61cd1f496b94d3");
     spec.build_content_in_dependency=true;
     //spec.repo_mapping.push_back({"zlib","zlib_internal"});
     spec.repo_mapping.emplace_back("com_google_absl","abseil");
@@ -1007,7 +1008,7 @@ protobuf_deps()
     spec.lib_name = "googleapis";
     spec.patch.patch_cmds = Common_Patch_Cmds_Getter::Remove_Bazel_Stuff();
     //spec.patch.patch_cmds = Common_Patch_Cmds_Getter::Remove_Bazel_Workspace();
-    Add_Unilang_Github_Mirror(spec,"googleapis","3dbeac0d54125b123c8dfd39c774b37473c36944","1ca9e4c0de992c44c3c95cf72c3b93ec4c14b8916e42703ecce0eaf41a908557");
+    Add_Unilang_Github_Mirror(spec,"googleapis","013b7e1debee1257b07de01af2d71306f83f42ac","f7148954cca82a36aded3e676142a293841c0057299183b0551568062176a8d2");
     //spec.build_content_in_dependency=true;
     spec.workspace.priority = 10;
     spec.workspace.raw_starlark = 
@@ -2610,6 +2611,9 @@ cc_library(
 R"RAW_STRING(
 load("@com_github_grpc_grpc//bazel:grpc_deps.bzl", "grpc_deps")
 grpc_deps()
+
+#load("@com_github_grpc_grpc//bazel:grpc_extra_deps.bzl", "grpc_extra_deps")
+#grpc_extra_deps()
 )RAW_STRING";
     return spec;
 ❱
@@ -3956,6 +3960,13 @@ llvm_register_toolchains()
     spec.build_content_in_dependency=true;
     return spec;
 ❱
+◀private: static▶ Dependency_Specification ☀platforms()❰
+    Dependency_Specification spec;
+    spec.lib_name = "platforms";
+    Add_Unilang_Github_Mirror(spec,"platforms","f0f4da70368b2342a00443f230bb66d9093bb58b","4ff3cd591c8c940004f69d91e683a9a02882dbc7a3a5da1444242ca91bc87b57");
+    spec.build_content_in_dependency=true;
+    return spec;
+❱
 ◀private: static▶ Dependency_Specification ☀Io_Bazel_Rules_Go()❰
     Dependency_Specification spec;
     spec.lib_name = "io_bazel_rules_go";
@@ -4024,6 +4035,7 @@ load(
 
 _cc_image_repos()
 )RAW_STRING";
+spec.workspace.enable = false;
     return spec;
 ❱
 ◀private: static▶ Dependency_Specification ☀Rules_Swift()❰
@@ -4076,6 +4088,7 @@ jazzer_dependencies()
 load("@jazzer//:init.bzl", "jazzer_init")
 jazzer_init()
 )RAW_STRING";
+spec.workspace.enable = false;
     return spec;
 ❱
 ◀private: static▶ Dependency_Specification ☀Rules_Python()❰
@@ -4118,7 +4131,7 @@ load("@com_justbuchanan_rules_qt//tools:qt_toolchain.bzl", "register_qt_toolchai
 register_qt_toolchains()
 )RAW_STRING";
 
-
+    spec.workspace.enable = false;
     return spec;
 ❱
 
@@ -4139,6 +4152,7 @@ load("@io_bazel_rules_k8s//k8s:k8s_go_deps.bzl", k8s_go_deps = "deps")
 
 k8s_go_deps()
 )RAW_STRING";
+spec.workspace.enable = false;
     return spec;
 ❱
 
@@ -4197,6 +4211,7 @@ load(
 apple_support_dependencies()
 
 )RAW_STRING";
+spec.workspace.enable = false;
     return spec;
 ❱
 
@@ -4220,6 +4235,7 @@ load("@rules_appimage//:setup.bzl", "rules_appimage_setup")
 
 rules_appimage_setup()
 )RAW_STRING";
+    spec.workspace.enable = false;
     return spec;
 ❱
 

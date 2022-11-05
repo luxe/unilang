@@ -9,8 +9,8 @@ hcp(
 
     # software to deploy
     data = [
-        "//code/programs/repo_tools/no_remote_scan:no_remote_scan_debs",
-        "//code/programs/repo_tools/repo_stats:repo_stats_debs",
+        #"//code/programs/repo_tools/no_remote_scan:no_remote_scan_debs",
+        #"//code/programs/repo_tools/repo_stats:repo_stats_debs",
     ],
     deps = [
         "//code/programs/repo_tools/no_remote_scan:no_remote_scan_documentation_getter",

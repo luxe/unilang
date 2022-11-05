@@ -230,24 +230,24 @@ hcp(
     ],
 )
 
-distributable_data(
-    name = "chrome_drivers",
-    description = "chrome drivers for automating google chrome with selenium",
-    file_groups = ["@chrome_drivers//:all"],
-)
+# distributable_data(
+#     name = "chrome_drivers",
+#     description = "chrome drivers for automating google chrome with selenium",
+#     file_groups = ["@chrome_drivers//:all"],
+# )
 
-distributable_cpp_main(
-    name = "noogle",
-    depends = [
-        "zlib1g-dev",
-        "unzip",
-        "python3",
-        "python3-bs4",
-    ],
-    description = "google but numbers",
-    deps = [
-        "//code/programs/noogle:meta_settings",
-        "//code/programs/noogle:noogle_runner",
-        "//code/programs/noogle/program_options:lib",
-    ],
-)
+# distributable_cpp_main(
+#     name = "noogle",
+#     depends = [
+#         "zlib1g-dev",
+#         "unzip",
+#         "python3",
+#         "python3-bs4",
+#     ],
+#     description = "google but numbers",
+#     deps = [
+#         "//code/programs/noogle:meta_settings",
+#         "//code/programs/noogle:noogle_runner",
+#         "//code/programs/noogle/program_options:lib",
+#     ],
+# )

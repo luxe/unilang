@@ -12,8 +12,8 @@ set -euo pipefail
 # Regardless, we'll always want some kind of bare bones shell script to get/call other build tools.
 
 
-url=https://github.com/bazelbuild/bazel/releases/download/6.0.0-pre.20221020.1/bazel-6.0.0-pre.20221020.1-linux-x86_64
-sha256=b8bf93fc9fd780c2e3e5fe7222de70edc019076a8f53c8f67ce0054d955a5ede
+url=https://github.com/bazelbuild/bazel/releases/download/7.0.0-pre.20221026.2/bazel-7.0.0-pre.20221026.2-linux-x86_64
+sha256=0d1bf6fee67281b4a0d2897c5d9d704dbb20139345a43e3a010b6c014593fa63
 
 # paths to place bazel related artifacts.
 # CONSIDER(thickey): should we really install bazel in the user's home directory?
@@ -22,7 +22,7 @@ sha256=b8bf93fc9fd780c2e3e5fe7222de70edc019076a8f53c8f67ce0054d955a5ede
 # It may be recomended to have bazel write its cache to the home directory anyway.
 cache_root="${HOME}/.cache"
 install_dir="${cache_root}/bazel/${sha256}"
-bazel="${install_dir}/bazel"
+bazel="/home/luxe/.bin/scripts/project/src/scripts/all/bazelisk"
 if [[ -n "${BAZEL_PATH_OVERRIDE-}" ]]; then
     bazel=${BAZEL_PATH_OVERRIDE}
 fi
@@ -37,6 +37,7 @@ function robust_download() {
 
 
 function bootstrap_bazel() {
+    echo "Looking for " "${bazel}"
     if [[ ! -f "${bazel}" ]]; then
 
         ensure_barebone_binaries
@@ -89,7 +90,7 @@ function pre_bazel_download_setup_env() {
 
     # Setup install directory & delete it on failure
     mkdir -p "${install_dir}"
-    trap 'rm -rf "${install_dir}"' ERR INT TERM
+    #trap 'rm -rf "${install_dir}"' ERR INT TERM
 }
 
 

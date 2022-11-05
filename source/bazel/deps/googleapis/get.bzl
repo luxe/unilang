@@ -9,10 +9,10 @@ def googleapis():
     http_archive(
         name="googleapis" ,
         build_file="//bazel/deps/googleapis:build.BUILD" ,
-        sha256="1ca9e4c0de992c44c3c95cf72c3b93ec4c14b8916e42703ecce0eaf41a908557" ,
-        strip_prefix="googleapis-3dbeac0d54125b123c8dfd39c774b37473c36944" ,
+        sha256="f7148954cca82a36aded3e676142a293841c0057299183b0551568062176a8d2" ,
+        strip_prefix="googleapis-013b7e1debee1257b07de01af2d71306f83f42ac" ,
         urls = [
-            "https://github.com/Unilang/googleapis/archive/3dbeac0d54125b123c8dfd39c774b37473c36944.tar.gz",
+            "https://github.com/Unilang/googleapis/archive/013b7e1debee1257b07de01af2d71306f83f42ac.tar.gz",
         ],        patch_cmds = [
             "find . -name 'WORKSPACE' -type f -delete",
             "find . -name 'BUILD' -type f -delete",

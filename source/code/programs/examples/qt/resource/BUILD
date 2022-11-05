@@ -1,4 +1,4 @@
-load("@com_justbuchanan_rules_qt//:qt.bzl", "qt_resource")
+#load("@com_justbuchanan_rules_qt//:qt.bzl", "qt_resource")
 
 # simple demo binary that shows how to use qml
 # cc_binary(
@@ -12,9 +12,9 @@ load("@com_justbuchanan_rules_qt//:qt.bzl", "qt_resource")
 #     ],
 # )
 
-qt_resource(
-    name = "main_qrc",
-    files = [
-        "main.qml",
-    ],
-)
+# qt_resource(
+#     name = "main_qrc",
+#     files = [
+#         "main.qml",
+#     ],
+# )

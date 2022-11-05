@@ -20,6 +20,8 @@ def sfml():
             "sed -i 's/.*pthread_setspecific.*/ptr = value;/' src/SFML/System/Unix/ThreadLocalImpl.cpp",
             "sed -i 's/.*pthread_getspecific.*/return ptr;/' src/SFML/System/Unix/ThreadLocalImpl.cpp",
             "sed -i 's/.*pthread_key_t m_key.*/void* ptr=nullptr;/' src/SFML/System/Unix/ThreadLocalImpl.hpp",
+            "sed -i 's/<stb_image.h>/\"stb_image.h\"/' src/SFML/Graphics/ImageLoader.cpp",
+            "sed -i 's/<stb_image_write.h>/\"stb_image_write.h\"/' src/SFML/Graphics/ImageLoader.cpp",
         ],
 
     )

@@ -15,7 +15,7 @@ cc_grpc_library(
     srcs = ["build/bazel/semver/semver.proto"],
     proto_only = False,
     use_external = False,
-    well_known_protos = True,
+    #well_known_protos = True,
     deps = [],
 )
 
@@ -31,7 +31,7 @@ cc_grpc_library(
     srcs = ["build/bazel/remote/logstream/v1/remote_logstream.proto"],
     proto_only = False,
     use_external = False,
-    well_known_protos = True,
+    #well_known_protos = True,
     deps = [
     ],
 )
@@ -56,7 +56,7 @@ cc_grpc_library(
     srcs = ["build/bazel/remote/execution/v2/remote_execution.proto"],
     proto_only = False,
     use_external = False,
-    well_known_protos = True,
+    #well_known_protos = True,
     deps = [
         ":semver_cc_proto",
         "@googleapis//:google_api_annotations_cc_proto",
@@ -84,7 +84,7 @@ cc_grpc_library(
     srcs = ["build/bazel/remote/asset/v1/remote_asset.proto"],
     proto_only = False,
     use_external = False,
-    well_known_protos = True,
+    #well_known_protos = True,
     deps = [
         ":remote_execution_cc_proto",
         "@googleapis//:google_api_annotations_cc_proto",

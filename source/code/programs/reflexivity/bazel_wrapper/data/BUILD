@@ -18,9 +18,23 @@ hcp_hdrs_derive(
 )
 
 hcp_hdrs_derive(
+    name = "bazelisk_version_info",
+    interface_deps = [
+    ],
+)
+
+hcp_hdrs_derive(
+    name = "bazelisk_version_info_getter",
+    interface_deps = [
+        "//code/programs/reflexivity/bazel_wrapper/data:bazelisk_version_info",
+    ],
+)
+
+hcp_hdrs_derive(
     name = "bazel_wrapper_refresh_settings",
     interface_deps = [
         "//code/programs/reflexivity/bazel_wrapper/data:bazel_version_info",
+        "//code/programs/reflexivity/bazel_wrapper/data:bazelisk_version_info",
     ],
 )
 
@@ -28,6 +42,7 @@ hcp_hdrs_derive(
     name = "bazel_wrapper_refresh_settings_getter",
     interface_deps = [
         "//code/programs/reflexivity/bazel_wrapper/data:bazel_version_info_getter",
+        "//code/programs/reflexivity/bazel_wrapper/data:bazelisk_version_info_getter",
         "//code/programs/reflexivity/bazel_wrapper/data:bazel_wrapper_refresh_settings",
     ],
 )

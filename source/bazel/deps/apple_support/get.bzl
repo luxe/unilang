@@ -7,10 +7,10 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 
 def appleSupport():
     http_archive(
-        name="apple_support" ,
-        sha256="d4b34d2ba1091cc02d717d476f730163a6a683241b787ab127e182a26454ca60" ,
-        strip_prefix="build_bazel_apple_support-5329da75f64c1f839ba92e77c2df706de052279b" ,
+        name="build_bazel_apple_support" ,
+        sha256="434e3334464e28a5245974ccde61794c08348a0794ffdfe0ffdc3e685f36d0aa" ,
+        strip_prefix="apple_support-5329da75f64c1f839ba92e77c2df706de052279b" ,
         urls = [
-            "https://github.com/Unilang/build_bazel_apple_support/archive/5329da75f64c1f839ba92e77c2df706de052279b.tar.gz",
+            "https://github.com/Unilang/apple_support/archive/5329da75f64c1f839ba92e77c2df706de052279b.tar.gz",
         ],
     )

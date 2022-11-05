@@ -35,20 +35,36 @@ class
     Append_With_Newline(str,"");
     
     //find the bazel version to use
-    auto find_info = std::find_if(settings.infos.begin(),settings.infos.end(),[&](auto x){
+    auto found_bazel = std::find_if(settings.known_bazels.begin(),settings.known_bazels.end(),[&](auto x){
         return x.bazel_version == settings.bazel_version;
     });
-    if (find_info == settings.infos.end()){
+    if (found_bazel == settings.known_bazels.end()){
         std::cerr << "bazel version not found" << std::endl;
         exit(1);
+    }
+    
+    auto found_bazelisk = std::find_if(settings.known_bazelisks.begin(),settings.known_bazelisks.end(),[&](auto x){
+        return x.bazel_version == settings.bazelisk_version;
+    });
+    if (found_bazelisk == settings.known_bazelisks.end()){
+        std::cerr << "bazel version not found" << std::endl;
+        exit(1);
+    }
+    
+    //get settings
+    std::string url = Build_Url(*found_bazel);
+    std::string sha256 = found_bazel->sha256;
+    if (settings.use_bazelisk){
+        url = Build_Url(*found_bazelisk);
+        sha256 = found_bazelisk->sha256;
     }
     
     
     //url and hash
     Append(str,"url=");
-    Append_With_Newline(str,Build_Url(*find_info));
+    Append_With_Newline(str,url);
     Append(str,"sha256=");
-    Append_With_Newline(str,find_info->sha256);
+    Append_With_Newline(str,sha256);
     Append_With_Newline(str,"");
     
     
@@ -98,6 +114,18 @@ class
     url += settings.bazel_version;
     url += "/bazel-";
     url += settings.bazel_version;
+    url += "-";
+    url += settings.os;
+    url += "-";
+    url += settings.arch;
+    return url;
+❱
+◀private: static▶ std::string ☀Build_Url(Bazelisk_Version_Info const& settings)❰
+    //typical host by bazel team
+    std::string url;
+    url += "https://github.com/bazelbuild/bazelisk/releases/download/";
+    url += settings.bazel_version;
+    url += "/bazelisk";
     url += "-";
     url += settings.os;
     url += "-";
@@ -202,9 +230,12 @@ function pre_bazel_download_setup_env() {
     echo "INFO: Required bazel version not found."
     echo "downloading to ${bazel}..." >&2
 
-    # Setup install directory & delete it on failure
+    # Setup install directory
     mkdir -p "${install_dir}"
-    trap 'rm -rf "${install_dir}"' ERR INT TERM
+    
+    # delete it on failure
+    # deleting it on failure is quite annoying and causes many re-fetches.
+    # trap 'rm -rf "${install_dir}"' ERR INT TERM
 }
 )RAW";
 return str;

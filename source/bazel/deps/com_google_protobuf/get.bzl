@@ -8,10 +8,10 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 def comGoogleProtobuf():
     http_archive(
         name="com_google_protobuf" ,
-        sha256="ea97ff1804cb8508b78fc672c27f57e60087979ce7dbb3f66a1586a3dbf57cf2" ,
-        strip_prefix="protobuf-66e3562aafce093d30473555248f22b3fdc88aad" ,
+        #sha256="acc4297dc71bfe7701e0afcbd09f2f682f4fc8e02739eac08d61cd1f496b94d3" ,
+        strip_prefix="protobuf-bddf35da5afb2f27e30febfb72a75295a1b7bc04" ,
         urls = [
-            "https://github.com/Unilang/protobuf/archive/66e3562aafce093d30473555248f22b3fdc88aad.tar.gz",
+            "https://github.com/Unilang/protobuf/archive/bddf35da5afb2f27e30febfb72a75295a1b7bc04.tar.gz",
         ],        repo_mapping = {
             "@com_google_absl" : "@abseil",
         },

@@ -7,7 +7,7 @@ load("//bazel/rules/cpp:distributable_main.bzl", "distributable_cpp_main")
 load("//bazel/rules/data:package_binaries.bzl", "package_binaries")
 load("//bazel/rules/data:distributable_data.bzl", "distributable_data")
 load("//bazel/rules/cpp:main.bzl", "cpp_main")
-load("@rules_pkg//:pkg.bzl", "pkg_deb", "pkg_tar")
+#load("@rules_pkg//:pkg.bzl", "pkg_deb", "pkg_tar")
 
 hcp(
     name = "mario_runner",
@@ -58,34 +58,34 @@ cc_binary(
     ],
 )
 
-package_binaries(
-    name = "mario",
-    binary_targets = [":mario"],
-)
+# package_binaries(
+#     name = "mario",
+#     binary_targets = [":mario"],
+# )
 
-pkg_tar(
-    name = "mario_all_deb_data",
-    extension = "tar.gz",
-    deps = [
-        ":mario-data",
-        "//code/programs/games/mario/assets:mario_assets-data",
-    ],
-)
+# pkg_tar(
+#     name = "mario_all_deb_data",
+#     extension = "tar.gz",
+#     deps = [
+#         ":mario-data",
+#         "//code/programs/games/mario/assets:mario_assets-data",
+#     ],
+# )
 
-MAINTAINER = "Trevor Hickey <TrevorJamesHickey@gmail.com>"
+# MAINTAINER = "Trevor Hickey <TrevorJamesHickey@gmail.com>"
 
-DEFAULT_VERSION = "1.0"
+# DEFAULT_VERSION = "1.0"
 
-DEFAULT_HOMEPAGE = "none"
+# DEFAULT_HOMEPAGE = "none"
 
-pkg_deb(
-    name = "mario-debian-amd64",
-    architecture = "amd64",
-    data = ":mario_all_deb_data",
-    depends = ["libsdl2-mixer-2.0-0"],
-    description = "mario on your desktop",
-    homepage = DEFAULT_HOMEPAGE,
-    maintainer = MAINTAINER,
-    package = "mario",
-    version = DEFAULT_VERSION,
-)
+# pkg_deb(
+#     name = "mario-debian-amd64",
+#     architecture = "amd64",
+#     data = ":mario_all_deb_data",
+#     depends = ["libsdl2-mixer-2.0-0"],
+#     description = "mario on your desktop",
+#     homepage = DEFAULT_HOMEPAGE,
+#     maintainer = MAINTAINER,
+#     package = "mario",
+#     version = DEFAULT_VERSION,
+# )

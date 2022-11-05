@@ -28,17 +28,17 @@ mp3_to_wav("mario_death")
 
 wav_artifact("mario_death")
 
-distributable_data(
-    name = "mario_assets",
-    description = "sprites for mario",
-    file_groups = [
-        ":mario-stand_image_data",
-        ":mario-walk1_image_data",
-        ":mario-walk2_image_data",
-        ":mario-walk3_image_data",
-        ":mario-duck_image_data",
-        ":main_theme_mp3_data",
-        ":mario_jump_wav_data",
-        ":mario_death_wav_data",
-    ],
-)
+# distributable_data(
+#     name = "mario_assets",
+#     description = "sprites for mario",
+#     file_groups = [
+#         ":mario-stand_image_data",
+#         ":mario-walk1_image_data",
+#         ":mario-walk2_image_data",
+#         ":mario-walk3_image_data",
+#         ":mario-duck_image_data",
+#         ":main_theme_mp3_data",
+#         ":mario_jump_wav_data",
+#         ":mario_death_wav_data",
+#     ],
+# )

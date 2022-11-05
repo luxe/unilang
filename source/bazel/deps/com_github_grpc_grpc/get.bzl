@@ -8,9 +8,17 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 def comGithubGrpcGrpc():
     http_archive(
         name="com_github_grpc_grpc" ,
-        sha256="84121929a98d37ece2ac2a0879473c1144c7904aedd1abea6d5637890fe204a4" ,
-        strip_prefix="grpc-08ee2a34873b961f56dd9a9160043ae44312c933" ,
+        #sha256="84121929a98d37ece2ac2a0879473c1144c7904aedd1abea6d5637890fe204a4" ,
+        strip_prefix="grpc-6c3ad4c4ed3fecca4dcbef7a6200208c6fc05d7e" ,
         urls = [
-            "https://github.com/Unilang/grpc/archive/08ee2a34873b961f56dd9a9160043ae44312c933.tar.gz",
+            "https://github.com/Unilang/grpc/archive/6c3ad4c4ed3fecca4dcbef7a6200208c6fc05d7e.tar.gz",
+        ],
+            patch_cmds = [
+            "sed -i 's/csharp_names.h/names.h/' src/compiler/config_protobuf.h",
+            "sed -i 's/objectivec_helpers.h/helpers.h/' src/compiler/objective_c_generator.cc",
+            "sed -i 's/objectivec_helpers.h/helpers.h/' src/compiler/objective_c_generator_helpers.h",
+            "sed -i 's/helpers.h>/helpers.h>\\n#include <google\\/protobuf\\/compiler\\/objectivec\\/names.h>\\n/' src/compiler/objective_c_generator_helpers.h",
+            "sed -i 's/::google::protobuf::util::Status/absl::Status/' include/grpcpp/impl/codegen/config_protobuf.h",
+            
         ],
     )

@@ -26,14 +26,14 @@ def boost():
     # Boost 2 (the rules to build boost code)
     http_archive(
         name = "com_github_nelhage_rules_boost",
-        sha256 = "3dade7836dd5dc21935a5e4a9fbf40605957be31088bf47397dff6f9a0d700bb",
+        sha256 = "50e1e2508f51875de2bf7509a62d70fa2430662d396d23203b1f9885ce9372f8",
         patches = [
             "//bazel/deps/boost/patches:p1.patch",
         ],
-        strip_prefix = "rules_boost-67c383977a82196164498431f98864135beed7f0",
+        strip_prefix = "rules_boost-96e9b631f104b43a53c21c87b01ac538ad6f3b48",
         urls = [
-            "https://github.com/unilang/rules_boost/archive/67c383977a82196164498431f98864135beed7f0.zip",
-            "https://github.com/nelhage/rules_boost/archive/67c383977a82196164498431f98864135beed7f0.zip",
+            "https://github.com/unilang/rules_boost/archive/96e9b631f104b43a53c21c87b01ac538ad6f3b48.zip",
+            "https://github.com/nelhage/rules_boost/archive/96e9b631f104b43a53c21c87b01ac538ad6f3b48.zip",
         ],
     )
 
