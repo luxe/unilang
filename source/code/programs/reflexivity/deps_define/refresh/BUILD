@@ -14,5 +14,6 @@ hcp_hdrs_derive(
         "//code/programs/reflexivity/deps_define/refresh/parts:main_deps_file_creator",
         "//code/programs/reflexivity/deps_define/refresh/parts:workspace_files_creator",
         "//code/programs/reflexivity/deps_define/refresh/parts:wrapper_target_creator",
+        "//code/programs/reflexivity/deps_define/refresh/parts:deps_table_creator",
     ],
 )
