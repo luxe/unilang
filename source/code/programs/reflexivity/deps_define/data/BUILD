@@ -83,3 +83,19 @@ hcp_hdrs_derive(
     interface_deps = [
     ],
 )
+
+
+
+
+# Used for creating an HTML table:
+hcp_hdrs_derive(
+    name = "dependency_specification_table_entry",
+    interface_deps = [
+        "//code/programs/reflexivity/deps_define/data:build_definitions",
+        "//code/programs/reflexivity/deps_define/data:dependency_location",
+        "//code/programs/reflexivity/deps_define/data:patch_file",
+        "//code/programs/reflexivity/deps_define/data:patch_settings",
+        "//code/programs/reflexivity/deps_define/data:workspace_settings",
+        "//code/programs/reflexivity/deps_define/data:repo_dependency_integration",
+    ],
+)

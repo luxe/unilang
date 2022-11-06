@@ -105,6 +105,7 @@ hcp_hdrs_derive(
     interface_deps = [
         "//code/programs/reflexivity/comment:generated_comment_getter",
         "//code/programs/reflexivity/deps_define/data:dependency_specifications_getter",
+        "//code/programs/reflexivity/deps_define/data:dependency_specification_table_entry",
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/filesystem/files/deleting:lib",
         "//code/utilities/filesystem/paths:lib",
@@ -118,5 +119,8 @@ hcp_hdrs_derive(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/formats/json/converters:type_to_json_string",
         "//code/utilities/formats/json/transformers:transformers",
+        "//code/utilities/formats/json/observers:observers",
+        "//code/utilities/deps/stl/regex:lib",
+        "//code/utilities/types/strings/observers/regex:lib",
     ],
 )

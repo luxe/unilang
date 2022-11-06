@@ -6,39 +6,112 @@ class
 ◀public: static▶ void ☀Create(Dependency_Specifications const& all_specs)❰
 
 
-    //std::cout << Type_To_Json_String::As_Flattened_JSON_String(all_specs.specs[0]) << std::endl;
-
-
-
-
-
-
-    // ger flattened version of object
-    nlohmann::json r = all_specs.specs[0];
-    r = r.flatten();
+    std::cout << Create_Table_Html(all_specs) << std::endl;
     
     
+    // auto table_entries = Convert_To_Table_Entries(all_specs);
+    // for (auto it: table_entries){
+    //     nlohmann::json j = it;
+    //     std::vector<std::string> keys = Observers::Get_Keys(j);
+            
+    //     for (auto const& p: j.items()){
+    //         std::cout << p.key() << " " << p.value() << std::endl;
+    //     }
+    // }
+❱
+
+
+◀private: static▶ std::string ☀Create_Table_Html(Dependency_Specifications const& all_specs)❰
+    std::string str;
+    Append_With_Newline(str,"<table id='data_table' class='display' style='width:100%'>");
     
-    // get all keys
-    std::vector<std::string> keys;
-    for (auto const& it: r.items()){
-        keys.emplace_back(it.key());
+    auto table_entries = Convert_To_Table_Entries(all_specs);
+    Append_With_Newline(str,Get_Html_Table_Header(table_entries));
+    
+    
+    Append_With_Newline(str,"<tbody>");
+    for (auto it: table_entries){
+        Append_With_Newline(str,Get_Html_Table_Row(it));
     }
+    Append_With_Newline(str,"</tbody>");
+    
+    Append_With_Newline(str,"</table>");
     
     
-    
-    
-    //fix keys
-    for (auto it: keys){
+    return str;
+❱
+
+
+◀private: static▶ std::string ☀Get_Html_Table_Header(std::vector<Dependency_Specification_Table_Entry> const& all_entries)❰
+    std::string str;
+    Append_With_Newline(str,"<thead><tr>");
+        nlohmann::json j = all_entries[0];
+        std::vector<std::string> keys = Observers::Get_Keys(j);
+        for (auto const& key: keys){
+            Append(str,"<th>");
+            Append(str,key);
+            Append_With_Newline(str,"</th>");
+        }
         
-        auto replace = it;
-        replace.erase(0,1);
-        Transformers::Replace_Key(r,it,replace);
+    Append_With_Newline(str,"</tr></thead>");
+    return str;
+❱
+
+◀private: static▶ std::string ☀Get_Html_Table_Row(Dependency_Specification_Table_Entry const& entry)❰
+    std::string str;
+    Append_With_Newline(str,"<tr>");
+        nlohmann::json j = entry;
+        std::vector<std::string> vals = Observers::Get_Values(j);
+        for (auto const& val: vals){
+            Append(str,"<th>");
+            Append(str,val);
+            Append_With_Newline(str,"</th>");
+        }
+        
+    Append_With_Newline(str,"</tr>");
+    return str;
+❱
+
+◀private: static▶ std::vector<Dependency_Specification_Table_Entry> ☀Convert_To_Table_Entries(Dependency_Specifications const& all_specs)❰
+    std::vector<Dependency_Specification_Table_Entry> results;
+    
+    //convert the data structure to a flat table entry representation of the data structure.
+    for (auto const& it: all_specs.specs){
+        Dependency_Specification_Table_Entry entry;
+        entry.lib_name = it.lib_name;
+        entry.download_rule = it.download_rule;
+        if (!it.locations.empty()){
+            entry.owner_name = it.locations[0].owner_name;
+            entry.repo_name = it.locations[0].repo_name;
+            entry.sha256 = it.locations[0].sha256;
+            entry.at_commit = it.locations[0].at_commit;
+            entry.format = it.locations[0].format;
+            entry.further_prefix_strip = it.locations[0].further_prefix_strip;
+            entry.direct_url = it.locations[0].direct_url;
+        }
+        entry.system = it.system;
+        entry.system_path = it.system_path;
+        
+        entry.patch_commands = it.patch.patch_cmds.size();
+        entry.patch_files = it.patch.patch_files.size();
+        entry.repo_mappings = it.repo_mapping.size();
+        entry.build_content_in_dependency = it.build_content_in_dependency;
+        
+        entry.has_build_file_content = !it.build_defs.raw_starlark.empty();
+        entry.has_workspace_content = !it.workspace.raw_starlark.empty();
+        
+        entry.workspace_enabled = it.workspace.enable;
+        entry.workspace_priority = it.workspace.priority;
+        entry.wrapper_targets = it.dep_integration.wrapper_targets.size();
+        
+        
+        
+        
+        
+        results.emplace_back(entry);
     }
     
     
-    
-    for (auto const& it: r.items()){
-        std::cout << it.key() << std::endl;
-    }
+    return results;
+
 ❱
