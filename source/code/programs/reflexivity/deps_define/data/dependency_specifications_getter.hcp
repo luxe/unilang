@@ -709,6 +709,12 @@ cc_library(
 ◀private: static▶ Dependency_Specification ☀Boost()❰
     Dependency_Specification spec;
     spec.lib_name  = "boost";
+    spec.workspace.priority = 11;
+    spec.workspace.raw_starlark = 
+R"RAW_STRING(
+load("@com_github_nelhage_rules_boost//:boost/boost.bzl", "boost_deps")
+boost_deps()
+)RAW_STRING";
     return spec; 
 ❱
 ◀private: static▶ Dependency_Specification ☀Gmp()❰
@@ -991,7 +997,7 @@ remote_apis_switched_rules_by_language(
     Dependency_Specification spec;
     spec.lib_name = "com_google_protobuf";
     //Add_Unilang_Github_Mirror(spec,"protobuf","66e3562aafce093d30473555248f22b3fdc88aad","ea97ff1804cb8508b78fc672c27f57e60087979ce7dbb3f66a1586a3dbf57cf2");
-    Add_Unilang_Github_Mirror(spec,"protobuf","6c78c6621b74a3a8e93baafde38d91e2ac5f65cf","acc4297dc71bfe7701e0afcbd09f2f682f4fc8e02739eac08d61cd1f496b94d3");
+    Add_Unilang_Github_Mirror(spec,"protobuf","bddf35da5afb2f27e30febfb72a75295a1b7bc04","4245a2b7e5efc52a78ac7ca5f5da4f3f174f9c252d9b4f4423ff03119149abb0");
     spec.build_content_in_dependency=true;
     //spec.repo_mapping.push_back({"zlib","zlib_internal"});
     spec.repo_mapping.emplace_back("com_google_absl","abseil");
@@ -1041,7 +1047,7 @@ switched_rules_by_language(
     Dependency_Specification spec;
     spec.lib_name = "build_stack_rules_proto";
     //Add_Unilang_Github_Mirror(spec,"rules_proto","d86ca6bc56b1589677ec59abfa0bed784d6b7767","36f11f56f6eb48a81eb6850f4fb6c3b4680e3fc2d3ceb9240430e28d32c47009");
-    Add_Unilang_Github_Mirror(spec,"rules_proto","b2913e6340bcbffb46793045ecac928dcf1b34a5","d456a22a6a8d577499440e8408fc64396486291b570963f7b157f775be11823e");
+    Add_Unilang_Github_Mirror(spec,"rules_proto","a5ee3d29b564ba27ce0aca9c73c9d62fcc2931dc","d585b85a096421e510784632a4460949f414af417bc928dd13dc0fc8681c9343");
 
     spec.build_content_in_dependency=true;
     spec.workspace.priority = 7;
@@ -2277,6 +2283,8 @@ cc_library(
     spec.patch.patch_cmds.emplace_back("sed -i 's/.*pthread_setspecific.*/ptr = value;/' src/SFML/System/Unix/ThreadLocalImpl.cpp");
     spec.patch.patch_cmds.emplace_back("sed -i 's/.*pthread_getspecific.*/return ptr;/' src/SFML/System/Unix/ThreadLocalImpl.cpp");
     spec.patch.patch_cmds.emplace_back("sed -i 's/.*pthread_key_t m_key.*/void* ptr=nullptr;/' src/SFML/System/Unix/ThreadLocalImpl.hpp");
+    spec.patch.patch_cmds.emplace_back("sed -i 's/<stb_image.h>/\\\"stb_image.h\\\"/' src/SFML/Graphics/ImageLoader.cpp");
+    spec.patch.patch_cmds.emplace_back("sed -i 's/<stb_image_write.h>/\\\"stb_image_write.h\\\"/' src/SFML/Graphics/ImageLoader.cpp");
     
     
     return spec;
@@ -2603,8 +2611,14 @@ cc_library(
     spec.lib_name = "com_github_grpc_grpc";
     //Add_Unilang_Github_Mirror(spec,"grpc","d6e8c4fdb1c851e48b343fcd82b401a51fd192b3","fbf6d2a560176eb5e5fb7402257da2c73230692df7c3d9a814fa890c7ef9e180");
     //Add_Unilang_Github_Mirror(spec,"grpc","ac6f3a78188ee157a38973e7847a02aba80f4d1f","b3a6378b08680d9c39bf91968b2bbb6a419d203a9d4ca7debd82dbe866014ec9");
-    Add_Unilang_Github_Mirror(spec,"grpc","08ee2a34873b961f56dd9a9160043ae44312c933","84121929a98d37ece2ac2a0879473c1144c7904aedd1abea6d5637890fe204a4");
+    Add_Unilang_Github_Mirror(spec,"grpc","6c3ad4c4ed3fecca4dcbef7a6200208c6fc05d7e","1aebc5b6c7132c84c1d65c535859882bf1e9f29bbb7e3ac120402c54c0a73021");
     //spec.repo_mapping.push_back({"zlib","zlib_internal"});
+    spec.patch.patch_cmds.emplace_back("sed -i 's/csharp_names.h/names.h/' src/compiler/config_protobuf.h");
+    spec.patch.patch_cmds.emplace_back("sed -i 's/objectivec_helpers.h/helpers.h/' src/compiler/objective_c_generator.cc");
+    spec.patch.patch_cmds.emplace_back("sed -i 's/objectivec_helpers.h/helpers.h/' src/compiler/objective_c_generator_helpers.h");
+    spec.patch.patch_cmds.emplace_back("sed -i 's/helpers.h>/helpers.h>\\\\n#include <google\\\\/protobuf\\\\/compiler\\\\/objectivec\\\\/names.h>\\\\n/' src/compiler/objective_c_generator_helpers.h");
+    spec.patch.patch_cmds.emplace_back("sed -i 's/::google::protobuf::util::Status/absl::Status/' include/grpcpp/impl/codegen/config_protobuf.h");
+
     spec.build_content_in_dependency=true;
     spec.workspace.priority = 9;
     spec.workspace.raw_starlark = 
@@ -4062,6 +4076,7 @@ R"RAW_STRING(
 load("@io_bazel_rules_rust//rust:repositories.bzl", "rust_repositories")
 rust_repositories()
 )RAW_STRING";
+    spec.workspace.enable = false;
     return spec;
 ❱
 ◀private: static▶ Dependency_Specification ☀Rules_Fuzzing()❰
@@ -4167,7 +4182,7 @@ spec.workspace.enable = false;
 ◀private: static▶ Dependency_Specification ☀apple_support()❰
     Dependency_Specification spec;
     spec.lib_name = "apple_support";
-    Add_Unilang_Github_Mirror(spec,"build_bazel_apple_support","5329da75f64c1f839ba92e77c2df706de052279b","d4b34d2ba1091cc02d717d476f730163a6a683241b787ab127e182a26454ca60");
+    Add_Unilang_Github_Mirror(spec,"apple_support","5329da75f64c1f839ba92e77c2df706de052279b","434e3334464e28a5245974ccde61794c08348a0794ffdfe0ffdc3e685f36d0aa");
     spec.build_content_in_dependency=true;
     return spec;
 ❱
