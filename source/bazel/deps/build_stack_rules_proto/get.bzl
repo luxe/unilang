@@ -8,7 +8,7 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 def buildStackRulesProto():
     http_archive(
         name="build_stack_rules_proto" ,
-        #sha256="d456a22a6a8d577499440e8408fc64396486291b570963f7b157f775be11823e" ,
+        sha256="d585b85a096421e510784632a4460949f414af417bc928dd13dc0fc8681c9343" ,
         strip_prefix="rules_proto-a5ee3d29b564ba27ce0aca9c73c9d62fcc2931dc" ,
         urls = [
             "https://github.com/Unilang/rules_proto/archive/a5ee3d29b564ba27ce0aca9c73c9d62fcc2931dc.tar.gz",

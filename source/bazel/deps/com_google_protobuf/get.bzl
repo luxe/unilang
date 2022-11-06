@@ -8,7 +8,7 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 def comGoogleProtobuf():
     http_archive(
         name="com_google_protobuf" ,
-        #sha256="acc4297dc71bfe7701e0afcbd09f2f682f4fc8e02739eac08d61cd1f496b94d3" ,
+        sha256="4245a2b7e5efc52a78ac7ca5f5da4f3f174f9c252d9b4f4423ff03119149abb0" ,
         strip_prefix="protobuf-bddf35da5afb2f27e30febfb72a75295a1b7bc04" ,
         urls = [
             "https://github.com/Unilang/protobuf/archive/bddf35da5afb2f27e30febfb72a75295a1b7bc04.tar.gz",

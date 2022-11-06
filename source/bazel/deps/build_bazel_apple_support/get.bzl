@@ -5,9 +5,9 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 
-def appleSupport():
+def buildBazelAppleSupport():
     http_archive(
-        name="apple_support" ,
+        name="build_bazel_apple_support" ,
         sha256="434e3334464e28a5245974ccde61794c08348a0794ffdfe0ffdc3e685f36d0aa" ,
         strip_prefix="apple_support-5329da75f64c1f839ba92e77c2df706de052279b" ,
         urls = [
