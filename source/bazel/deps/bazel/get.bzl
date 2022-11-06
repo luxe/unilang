@@ -14,7 +14,9 @@ def bazel():
         urls = [
             "https://github.com/Unilang/bazel/archive/2895cd5ce6797a22279dc7482926371ae9ea78b5.tar.gz",
         ],        patch_cmds = [
+            "find . -name 'WORKSPACE' -type f -delete",
             "find . -name 'BUILD' -type f -delete",
+            "find ./* -mindepth 1 -name 'BUILD.bazel' -type f -delete",
             "sed -i 's/repeated string direct_artifact_ids/repeated bytes direct_artifact_ids/' src/main/protobuf/analysis.proto",
             "sed -i 's/repeated string output_ids/repeated bytes output_ids/' src/main/protobuf/analysis.proto",
             "sed -i 's/repeated string transitive_dep_set_ids/repeated bytes transitive_dep_set_ids/' src/main/protobuf/analysis.proto",
