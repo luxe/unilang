@@ -117,5 +117,6 @@ hcp_hdrs_derive(
         "//code/utilities/types/vectors/converters:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/formats/json/converters:type_to_json_string",
+        "//code/utilities/formats/json/transformers:transformers",
     ],
 )
