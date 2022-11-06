@@ -43,6 +43,7 @@ hcp_hdrs_derive(
     name = "common_patch_cmds_getter",
     interface_deps = [
         "//code/programs/reflexivity/deps_define/data:dependency_specifications",
+        "//code/utilities/types/strings/transformers/escape:lib",
     ],
 )
 

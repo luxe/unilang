@@ -50,3 +50,19 @@ std::string As_Escaped_Single_Quote_String_Content_For_Shell(std::string str){
         }
         return new_string;
 }
+
+//This is to escape characters in a section of a sed command.  
+//Given command: s/X/Y/g
+//You would pass in X or Y into this function.
+std::string As_Escaped_Sed_Section(std::string str){
+        std::string new_string;
+        for (auto const& it: str){
+                if (it == None_Of('\'','\\')){
+                        new_string += it;
+                }else{
+                        new_string += '\\';
+                        new_string += it;
+                }
+        }
+        return new_string;
+}

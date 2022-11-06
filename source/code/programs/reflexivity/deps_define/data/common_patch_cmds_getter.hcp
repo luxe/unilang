@@ -4,13 +4,15 @@ class
 ⚞⚟
 
 
-//ironically, integrating a bazel repository with another bazel repository has been really difficult
+//Ironically, integrating a bazel repository with another bazel repository has difficulties.  
+//There are many conflicting visibility and attempted resolution problems.
 //workspace files and BUILD from the 3rd party repo are often incompatible when brought in.
 //Even if I point to my own BUILD file, the build files in the third party repos are still detected and conflict and cause issues.
 //I don't understand how people integrate other bazel repos.  You just throw a million things in your workspace file??  Even that rarely works for me,  and none of it can be pinned,
 //so you pull from all sorts of hosts indirectly you don't own. It would break all the time.
 //For now,  I'll just delete all the BUILD/WORSPACE files for particular bazel third party repos that I want to integrate and re-implement the BUILD rules myself.
-//sad, I know.  But eventually I'll find better techniques for leveraging self-hosted bazel rules
+//sad, I know.  But eventually I'll find better techniques for leveraging self-hosted bazel rules.
+//This may also be solved when bazel has a new module dependency system.
 ◀public: static▶ std::vector<std::string> ☀Remove_Bazel_Stuff()❰
     std::vector<std::string> x;
     x.emplace_back("find . -name 'WORKSPACE' -type f -delete");
@@ -25,4 +27,14 @@ class
     std::vector<std::string> x;
     x.emplace_back("find . -name 'WORKSPACE' -type f -delete");
     return x;
+❱
+
+◀public: static▶ std::string ☀Replace_Command(std::string const& find, std::string const& replace, std::string const& file)❰
+    std::string command = "sed -i 's/";
+    command += As_Escaped_Sed_Section(find);
+    command += "/";
+    command += As_Escaped_Sed_Section(replace);
+    command += "/' ";
+    command += file;
+    return command;
 ❱
