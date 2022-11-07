@@ -894,11 +894,27 @@ cc_grpc_library(
 )RAW_STRING";
 
 
-    Wrapper_Target target;
-    target.name = "bazel_spawn_proto";
-    target.includes.emplace_back("src/main/protobuf/spawn.pb.h");
-    target.deps.emplace_back("@bazel//:spawn_proto_cpp");
-    spec.dep_integration.wrapper_targets.emplace_back(target);
+    {
+        Wrapper_Target target;
+        target.name = "bazel_spawn_proto";
+        target.includes.emplace_back("src/main/protobuf/spawn.pb.h");
+        target.deps.emplace_back("@bazel//:spawn_proto_cpp");
+        spec.dep_integration.wrapper_targets.emplace_back(target);
+    }
+    {
+        Wrapper_Target target;
+        target.name = "bazel_analysis_proto";
+        target.includes.emplace_back("src/main/protobuf/analysis.pb.h");
+        target.deps.emplace_back("@bazel//:analysis_proto_cpp");
+        spec.dep_integration.wrapper_targets.emplace_back(target);
+    }
+    {
+        Wrapper_Target target;
+        target.name = "bazel_remote_execution_proto";
+        target.includes.emplace_back("src/main/protobuf/remote_execution_log.pb.h");
+        target.deps.emplace_back("@bazel//:remote_execution_log_cpp");
+        spec.dep_integration.wrapper_targets.emplace_back(target);
+    }
     
     
     return spec;
@@ -1009,6 +1025,19 @@ R"RAW_STRING(
 load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 protobuf_deps()
 )RAW_STRING";
+
+    Wrapper_Target target;
+    target.name = "protobuf";
+    target.includes.emplace_back("<google/protobuf/util/json_util.h>");
+    target.includes.emplace_back("<google/protobuf/util/delimited_message_util.h>");
+    target.includes.emplace_back("<google/protobuf/io/zero_copy_stream_impl.h>");
+    target.includes.emplace_back("<google/protobuf/util/delimited_message_util.h>");
+    target.includes.emplace_back("<google/protobuf/text_format.h>");
+    
+
+    target.deps.emplace_back("@com_google_protobuf//:protobuf");
+    spec.dep_integration.wrapper_targets.emplace_back(target);
+    
     return spec;
 ❱
 ◀private: static▶ Dependency_Specification ☀Google_Apis()❰
@@ -2504,9 +2533,18 @@ cc_library(
 ◀private: static▶ Dependency_Specification ☀Crow()❰
     Dependency_Specification spec;
     spec.lib_name = "crow";
+    //project abandoned.  use https://github.com/CrowCpp/crow
     Add_Unilang_Github_Mirror(spec,"crow","49edf898a5b9a39a0d69072cc2434c4f23692908","cd2c780b57c54a42f964ef7e6eaee0cd95f3fee97466c23d5dab87fd80cde696");
     
-    //project abandoned.  use https://github.com/CrowCpp/crow
+    Wrapper_Target target;
+    target.name = "crow";
+    target.includes.emplace_back("include/crow.h");
+    target.deps.emplace_back("@crow");
+    target.deps.emplace_back("@boost//:optional");
+    target.deps.emplace_back("@boost//:algorithm");
+    target.deps.emplace_back("@boost//:asio");
+    spec.dep_integration.wrapper_targets.emplace_back(target);
+    
     return spec;
 ❱
 ◀private: static▶ Dependency_Specification ☀Cpp_Httplib()❰

@@ -21,7 +21,7 @@ public:
   FinishableSafeQueue(FinishableSafeQueue const& q)
   : q(q.q)
   , finished(q.finished)
-  {};
+  {}
 
   // Add an element to the queue.
   void add(T t)

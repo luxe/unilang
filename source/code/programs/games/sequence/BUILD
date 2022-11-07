@@ -24,10 +24,7 @@ hcp(
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "@boost//:algorithm",
-        "@boost//:asio",
-        "@boost//:optional",
-        "@crow",
+        "//code/utilities/deps/external/crow:lib",
     ],
 )
 
@@ -44,10 +41,7 @@ hcp(
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "@boost//:algorithm",
-        "@boost//:asio",
-        "@boost//:optional",
-        "@crow",
+        "//code/utilities/deps/external/crow:lib",
     ],
 )
 
@@ -56,9 +50,6 @@ cpp_main(
     deps = [
         "//code/programs/games/sequence:task_executer",
         "//code/utilities/program/call:lib",
-        "@boost//:algorithm",
-        "@boost//:asio",
-        "@boost//:optional",
-        "@crow",
+        "//code/utilities/deps/external/crow:lib",
     ],
 )

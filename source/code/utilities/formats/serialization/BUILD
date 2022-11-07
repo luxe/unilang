@@ -19,6 +19,6 @@ cc_library(
         "//code/utilities/formats/json/converters:json_file_io",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/streams/filestreams/read_all:lib",
-        "@com_google_protobuf//:protobuf",
+        "//code/utilities/deps/external/protobuf:lib",
     ],
 )

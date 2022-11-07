@@ -268,7 +268,7 @@ size_t Adjust_Index_Capped(std::vector<T> const& v, int i){
   }
   
   //in range, get
-  return i;
+  return static_cast<size_t>(i);
 }
 
 template<typename T>

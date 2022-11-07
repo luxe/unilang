@@ -7,11 +7,7 @@
 #include <unistd.h>
 #include "code/utilities/formats/json/converters/lib.hpp"
 #include "code/utilities/formats/json/converters/json_file_io.hpp"
-#include <google/protobuf/util/json_util.h>
-#include <google/protobuf/util/delimited_message_util.h>
-#include <google/protobuf/io/zero_copy_stream_impl.h>
-#include <google/protobuf/util/delimited_message_util.h>
-#include <google/protobuf/text_format.h>
+#include "code/utilities/deps/external/protobuf/lib.hpp"
 #include "code/utilities/streams/filestreams/read_all/lib.hpp"
 
 
