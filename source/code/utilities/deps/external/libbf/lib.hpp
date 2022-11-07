@@ -3,7 +3,7 @@
 
 
 #pragma once
-#include "code/utilities/deps/external/warning_guards/lib.hpp"
-THIRD_PARTY_HEADERS_BEGIN
+// Supress all compiler warnings
+#pragma GCC system_header
 #include "bf/all.hpp"
-THIRD_PARTY_HEADERS_END
+

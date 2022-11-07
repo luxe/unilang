@@ -5,31 +5,36 @@ class
 
 ◀public: static▶ void ☀Create(Dependency_Specifications const& all_specs)❰
 
+    auto settings = Pragma_Warning_Supression_Settings_Getter::Get_System_Header_Pragma_Config();
+
     //move into the folder where all the deps are
     Temporarily_Move_To_Path_To_Call_Function(Bazel_External_Dep_Targets_Directory(),[&](){
         
         for (auto it: all_specs.specs){
             for (auto target: it.dep_integration.wrapper_targets){
-                Create_Wrapper_Target(target);
+                Create_Wrapper_Target(target,settings);
             }
         }
     
     });
 ❱
 
-◀private: static▶ void ☀Create_Wrapper_Target(Wrapper_Target const& target)❰
+◀private: static▶ void ☀Create_Wrapper_Target(Wrapper_Target const& target, Pragma_Warning_Supression_Settings const& settings)❰
 
     Create_Path_If_It_Doesnt_Already_Exist(target.name);
-    Create_Build_File(target);
-    Create_Lib_Files(target);
+    Create_Build_File(target,settings);
+    Create_Lib_Files(target,settings);
     
 ❱
 
-◀private: static▶ void ☀Create_Build_File(Wrapper_Target target)❰
+◀private: static▶ void ☀Create_Build_File(Wrapper_Target target, Pragma_Warning_Supression_Settings const& settings)❰
 
 
+    //add warning supression deps
     if (target.supress_header_warnings){
-        target.deps.emplace_back("//code/utilities/deps/external/warning_guards:lib");
+        for (auto it: settings.deps){
+            target.deps.emplace_back(it);
+        }
     }
 
 
@@ -55,7 +60,7 @@ class
 
 ❱
 
-◀private: static▶ void ☀Create_Lib_Files(Wrapper_Target const& target)❰
+◀private: static▶ void ☀Create_Lib_Files(Wrapper_Target const& target, Pragma_Warning_Supression_Settings const& settings)❰
 
     std::string header;
     std::string source;
@@ -63,8 +68,11 @@ class
     Append_With_Newline(header,"#pragma once");
     
     if (target.supress_header_warnings){
-        Append_With_Newline(header,"#include \"code/utilities/deps/external/warning_guards/lib.hpp\"");
-        Append_With_Newline(header,"THIRD_PARTY_HEADERS_BEGIN");
+        for (auto it: settings.headers){
+            Append_With_Newline(header,"#include " + it);
+        }
+        Append_With_Newline(header,"// Supress all compiler warnings");
+        Append_With_Newline(header,settings.start_guard);
     }
     
     
@@ -83,7 +91,7 @@ class
     }
     
     if (target.supress_header_warnings){
-        Append_With_Newline(header,"THIRD_PARTY_HEADERS_END");
+        Append_With_Newline(header,settings.end_guard);
     }
     
     Append_With_Newline(source,"#include \"lib.hpp\"");
@@ -92,3 +100,5 @@ class
     Write_To_File_With_Auto_Gen_Comment(target.name + "/lib.cpp",Source_Language::CPP,source);
 
 ❱
+
+

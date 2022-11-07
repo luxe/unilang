@@ -6,6 +6,19 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/cpp:main.bzl", "cpp_main")
 
 hcp_hdrs_derive(
+    name = "pragma_warning_supression_settings",
+    interface_deps = [
+    ],
+)
+
+hcp_hdrs_derive(
+    name = "pragma_warning_supression_settings_getter",
+    interface_deps = [
+        "//code/programs/reflexivity/deps_define/refresh/parts:pragma_warning_supression_settings",
+    ],
+)
+
+hcp_hdrs_derive(
     name = "main_deps_file_creator",
     interface_deps = [
         "//code/programs/reflexivity/comment:generated_comment_getter",
@@ -97,6 +110,7 @@ hcp_hdrs_derive(
         "//code/utilities/types/strings/transformers/search_replace:lib",
         "//code/utilities/types/vectors/converters:lib",
         "//code/utilities/types/vectors/observers:lib",
+        "//code/programs/reflexivity/deps_define/refresh/parts:pragma_warning_supression_settings_getter",
     ],
 )
 

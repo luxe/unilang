@@ -8,7 +8,7 @@ name = "lib",
 srcs = glob(["*.cpp"]),
 hdrs = glob(["*.hpp"]),
 deps = [
-"@btl_bloomfilter//:lib","//code/utilities/deps/external/warning_guards:lib"
+"@btl_bloomfilter//:lib"
 ],
 data = [
 
