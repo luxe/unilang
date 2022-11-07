@@ -121,6 +121,10 @@ hcp_hdrs_derive(
         "//code/utilities/formats/json/transformers:transformers",
         "//code/utilities/formats/json/observers:observers",
         "//code/utilities/deps/stl/regex:lib",
+        "//code/utilities/formats/html:basic_html_template_getter",
         "//code/utilities/types/strings/observers/regex:lib",
+        "//code/utilities/filesystem/files/temp:temp_file",
+        "//code/utilities/output/upload:file_upload_settings",
+        "//code/utilities/output/upload:file_uploader",
     ],
 )

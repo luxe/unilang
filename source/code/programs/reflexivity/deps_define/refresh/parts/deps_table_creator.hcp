@@ -6,18 +6,50 @@ class
 ◀public: static▶ void ☀Create(Dependency_Specifications const& all_specs)❰
 
 
-    std::cout << Create_Table_Html(all_specs) << std::endl;
+    // Build up html components
+    Basic_Html_Template_Settings settings;
+    settings.import_scripts.emplace_back("https://code.jquery.com/jquery-3.5.1.js");
+    settings.import_scripts.emplace_back("https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js");
+    
+    settings.css_imports.emplace_back("https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css");
+    
+    settings.js = R"RAW_STRING(
+
+$(document).ready(function () {
+    $('#data_table').DataTable({
+        paging: true,
+        ordering: true,
+        info: false,
+        compact: true,
+        autoWidth: false,
+        scrollX: true,
+    });
+});
+
+)RAW_STRING";
+    settings.body = Create_Table_Html(all_specs);
+    auto page = Basic_Html_Template_Getter::Get(settings);
+    
+    // write to file
+    auto path = "/tmp/bazel_deps_table.html";
+    Temp_File tmp(path,page);
     
     
-    // auto table_entries = Convert_To_Table_Entries(all_specs);
-    // for (auto it: table_entries){
-    //     nlohmann::json j = it;
-    //     std::vector<std::string> keys = Observers::Get_Keys(j);
-            
-    //     for (auto const& p: j.items()){
-    //         std::cout << p.key() << " " << p.value() << std::endl;
-    //     }
-    // }
+    //upload it
+    File_Upload_Settings upload_settings;
+    upload_settings.local_file_name = path;
+    upload_settings.remote_file_name = "unilang/deps.html";
+    
+    //dropbox specific
+    upload_settings.upload_to_dropbox = false;
+    
+    //github specific
+    upload_settings.upload_to_github = true;
+    upload_settings.github_settings.pull_first = false;
+    upload_settings.github_settings.update = false;
+    
+    File_Uploader::Upload(upload_settings);
+
 ❱
 
 
@@ -63,9 +95,9 @@ class
         nlohmann::json j = entry;
         std::vector<std::string> vals = Observers::Get_Values(j);
         for (auto const& val: vals){
-            Append(str,"<th>");
+            Append(str,"<td>");
             Append(str,val);
-            Append_With_Newline(str,"</th>");
+            Append_With_Newline(str,"</td>");
         }
         
     Append_With_Newline(str,"</tr>");

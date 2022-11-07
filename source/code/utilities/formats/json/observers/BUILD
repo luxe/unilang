@@ -11,5 +11,6 @@ hcp(
         "//code/utilities/formats/json/converters:type_to_json_string",
         "//code/utilities/streams/filestreams:lib",
         "//code/utilities/streams/filestreams/read_all:lib",
+        "//code/utilities/types/strings/transformers/removing:lib",
     ],
 )
