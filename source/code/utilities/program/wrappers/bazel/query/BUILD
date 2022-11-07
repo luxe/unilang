@@ -23,7 +23,7 @@ hcp(
         "//code/utilities/types/strings/transformers/removing:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "@bazel//:build_proto_cpp",
+        "//code/utilities/deps/external/bazel_build_proto:lib",
         "//code/utilities/deps/external/bazel_spawn_proto:lib",
     ],
 )

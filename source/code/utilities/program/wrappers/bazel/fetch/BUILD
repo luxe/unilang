@@ -24,9 +24,9 @@ hcp(
         "//code/utilities/program/wrappers/bazel/query:query_deps_flags",
         "//code/utilities/deps/external/bazel_analysis_proto:lib",
         "//code/utilities/deps/external/bazel_spawn_proto:lib",
-        "@bazel//:build_event_stream_cpp",
-        "@bazel//:build_proto_cpp",
-        "@bazel//:workspace_log_proto_cpp",
+        "//code/utilities/deps/external/bazel_build_event_stream_proto:lib",
+        "//code/utilities/deps/external/bazel_build_proto:lib",
+        "//code/utilities/deps/external/bazel_workspace_log_proto:lib",
     ],
 )
 
