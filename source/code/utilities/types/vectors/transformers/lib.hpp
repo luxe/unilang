@@ -187,7 +187,7 @@ template <typename T>
 void Safely_Add_To_Vector_At_Index(std::vector<T> & vec, size_t at_index, T const& item){
     
     //buffer with the item as needed
-    for (int i = vec.size(); i < at_index+1; ++i){
+    for (size_t i = vec.size(); i < at_index+1; ++i){
         vec.emplace_back(item);
     }
     

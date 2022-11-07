@@ -144,7 +144,7 @@ void Set_Previous_Index_In_Round_Robin(T const& t, size_t & i){
 
 template <typename T>
 size_t Longest_Element_Size_Of_Pair_First(std::vector<std::pair<std::string,T>> const& strs){
-  int size = 0;
+  size_t size = 0;
   for (auto const& it: strs){
     if (it.first.size() > size){
       size = it.first.size();
@@ -155,7 +155,7 @@ size_t Longest_Element_Size_Of_Pair_First(std::vector<std::pair<std::string,T>> 
 
 template <typename T>
 size_t Longest_Element_Size_Of_Pair_Second(std::vector<std::pair<T,std::string>> const& strs){
-  int size = 0;
+  size_t size = 0;
   for (auto const& it: strs){
     if (it.second.size() > size){
       size = it.second.size();
@@ -166,7 +166,7 @@ size_t Longest_Element_Size_Of_Pair_Second(std::vector<std::pair<T,std::string>>
 
 template <typename T>
 size_t Largest_Element_Size_Of_Pair_First(std::vector<std::pair<int,T>> const& strs){
-  int val = 0;
+  size_t val = 0;
   for (auto const& it: strs){
     if (it.first > val){
       val = it.first;
@@ -177,7 +177,7 @@ size_t Largest_Element_Size_Of_Pair_First(std::vector<std::pair<int,T>> const& s
 
 template <typename T>
 size_t Largest_Element_Size_Of_Pair_Second(std::vector<std::pair<T,int>> const& strs){
-  int val = 0;
+  size_t val = 0;
   for (auto const& it: strs){
     if (it.second > val){
       val = it.second;
