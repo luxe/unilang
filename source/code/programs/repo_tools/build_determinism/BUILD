@@ -77,7 +77,7 @@ hcp(
     deps = [
         "//code/programs/repo_tools/build_determinism/data:spawn_pairings",
         "//code/utilities/types/map:lib",
-        "@bazel//:spawn_proto_cpp",
+        "//code/utilities/deps/external/bazel_spawn_proto:lib",
     ],
 )
 
@@ -90,7 +90,7 @@ hcp(
         "//code/programs/repo_tools/build_determinism/data:spawn_pairings",
         "//code/utilities/output/printers:lib",
         "//code/utilities/types/map:lib",
-        "@bazel//:spawn_proto_cpp",
+        "//code/utilities/deps/external/bazel_spawn_proto:lib",
     ],
 )
 
@@ -112,7 +112,7 @@ hcp(
         "//code/programs/repo_tools/build_determinism/data:spawn_pairings",
         "//code/utilities/output/printers:lib",
         "//code/utilities/types/map:lib",
-        "@bazel//:spawn_proto_cpp",
+        "//code/utilities/deps/external/bazel_spawn_proto:lib",
     ],
 )
 
@@ -121,7 +121,7 @@ hcp(
     deps = [
         "//code/programs/repo_tools/build_determinism:determinism_problem_getter",
         "//code/programs/repo_tools/build_determinism/data:determinism_problem",
-        "@bazel//:spawn_proto_cpp",
+        "//code/utilities/deps/external/bazel_spawn_proto:lib",
     ],
 )
 
@@ -163,7 +163,7 @@ hcp(
         "//code/utilities/types/strings/observers/path:lib",
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/types/vectors/observers:lib",
-        "@bazel//:spawn_proto_cpp",
+        "//code/utilities/deps/external/bazel_spawn_proto:lib",
     ],
 )
 

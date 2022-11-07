@@ -28,13 +28,13 @@ hcp(
 hcp(
     name = "spawn_pairings",
     deps = [
-        "@bazel//:spawn_proto_cpp",
+        "//code/utilities/deps/external/bazel_spawn_proto:lib",
     ],
 )
 
 hcp(
     name = "determinism_pairings",
     deps = [
-        "@bazel//:spawn_proto_cpp",
+        "//code/utilities/deps/external/bazel_spawn_proto:lib",
     ],
 )

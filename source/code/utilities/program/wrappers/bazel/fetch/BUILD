@@ -22,10 +22,10 @@ hcp(
         "//code/utilities/program/inputs/flags/data:flags",
         "//code/utilities/program/wrappers/bazel:run_environment",
         "//code/utilities/program/wrappers/bazel/query:query_deps_flags",
-        "@bazel//:analysis_proto_cpp",
+        "//code/utilities/deps/external/bazel_analysis_proto:lib",
+        "//code/utilities/deps/external/bazel_spawn_proto:lib",
         "@bazel//:build_event_stream_cpp",
         "@bazel//:build_proto_cpp",
-        "@bazel//:spawn_proto_cpp",
         "@bazel//:workspace_log_proto_cpp",
     ],
 )
@@ -52,7 +52,7 @@ hcp(
         "//code/utilities/types/strings/transformers/removing:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "@bazel//:analysis_proto_cpp",
-        "@bazel//:spawn_proto_cpp",
+        "//code/utilities/deps/external/bazel_analysis_proto:lib",
+        "//code/utilities/deps/external/bazel_spawn_proto:lib",
     ],
 )
