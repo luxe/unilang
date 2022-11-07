@@ -8,7 +8,7 @@ name = "lib",
 srcs = glob(["*.cpp"]),
 hdrs = glob(["*.hpp"]),
 deps = [
-"@cxx_url"
+"@cxx_url","//code/utilities/deps/external/warning_guards:lib"
 ],
 data = [
 

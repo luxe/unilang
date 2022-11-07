@@ -3,4 +3,7 @@
 
 
 #pragma once
+#include "code/utilities/deps/external/warning_guards/lib.hpp"
+THIRD_PARTY_HEADERS_BEGIN
 #include "single_include/indicators/indicators.hpp"
+THIRD_PARTY_HEADERS_END
