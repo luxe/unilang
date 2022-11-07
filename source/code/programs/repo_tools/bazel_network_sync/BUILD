@@ -14,7 +14,7 @@ hcp(
         "//code/utilities/program/wrappers/bazel:bazel_runner",
         "//code/utilities/program/wrappers/bazel/sync:bazel_sync_logger",
         "//code/utilities/program/wrappers/strace:network_ip_getter",
-        "@bazel//:workspace_log_proto_cpp",
+        "//code/utilities/deps/external/bazel_workspace_log_proto:lib",
     ],
 )
 

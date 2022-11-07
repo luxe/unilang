@@ -18,6 +18,6 @@ hcp(
         "//code/utilities/program/call/process_spawn:process_results",
         "//code/utilities/program/call/process_spawn:process_spawner",
         "//code/utilities/program/call/process_spawn/timed:timed_process_results",
-        "@pstreams//:lib",
+        "//code/utilities/deps/external/pstreams:lib",
     ],
 )
