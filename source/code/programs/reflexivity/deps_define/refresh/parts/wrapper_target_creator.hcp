@@ -25,7 +25,13 @@ class
     
 ❱
 
-◀private: static▶ void ☀Create_Build_File(Wrapper_Target const& target)❰
+◀private: static▶ void ☀Create_Build_File(Wrapper_Target target)❰
+
+
+    if (target.supress_header_warnings){
+        target.data_deps.emplace_back("//code/utilities/deps/external/warning_guards:lib");
+    }
+
 
     std::string x;
     Append_With_Newline(x,"package(default_visibility = [\"//visibility:public\"])");
@@ -55,6 +61,13 @@ class
     std::string source;
     
     Append_With_Newline(header,"#pragma once");
+    
+    if (target.supress_header_warnings){
+        Append_With_Newline(header,"#include \"code/utilities/deps/external/warning_guards/lib.hpp\"");
+        Append_With_Newline(header,"THIRD_PARTY_HEADERS_BEGIN");
+    }
+    
+    
     for (auto const& it: target.includes){
         Append(header,"#include ");
         
@@ -67,6 +80,10 @@ class
         else{
             Append_With_Newline(header, "\"" + it + "\"");
         }
+    }
+    
+    if (target.supress_header_warnings){
+        Append_With_Newline(header,"THIRD_PARTY_HEADERS_END");
     }
     
     Append_With_Newline(source,"#include \"lib.hpp\"");

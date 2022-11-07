@@ -8,7 +8,8 @@ name = "lib",
 srcs = glob(["*.cpp"]),
 hdrs = glob(["*.hpp"]),
 deps = [
-"@bazel//:spawn_proto_cpp"
+"@bazel//:spawn_proto_cpp",
+"//code/utilities/deps/external/warning_guards:lib",
 ],
 data = [
 
