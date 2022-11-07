@@ -159,6 +159,7 @@ class
     x.specs.emplace_back(tuple());
     x.specs.emplace_back(include_what_you_use());
     x.specs.emplace_back(indicators());
+    x.specs.emplace_back(warning_guards());
 
     //adding PHP core for its rand impl
     x.specs.emplace_back(php_src());
@@ -1177,6 +1178,37 @@ cc_library(
     target.name = "indicators";
     target.includes.emplace_back("single_include/indicators/indicators.hpp");
     target.deps.emplace_back("@indicators");
+    spec.dep_integration.wrapper_targets.emplace_back(target);
+    
+    
+    
+    return spec;
+❱
+◀private: static▶ Dependency_Specification ☀warning_guards()❰
+    Dependency_Specification spec;
+    spec.lib_name = "warning_guards";
+    Add_Unilang_Github_Mirror(spec,"warning_guards","8a4759c8a2fe160a26a9e90ae842b5970719d39e","7d804efd836f9d4dd6b1812bf8861ed650928accd0ccaa379858b79b4f7ee573");
+    
+
+    spec.build_defs.raw_starlark = 
+R"RAW_STRING(
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "warning_guards",
+    hdrs = glob(
+        [
+            "include/**/*.h",
+            "include/**/*.cpp",
+        ],
+    ),
+)
+)RAW_STRING";
+
+    Wrapper_Target target;
+    target.name = "warning_guards";
+    target.includes.emplace_back("include/warning_guards/warning_guards.h");
+    target.deps.emplace_back("@warning_guards");
     spec.dep_integration.wrapper_targets.emplace_back(target);
     
     
