@@ -19,10 +19,7 @@ hcp(
         "//code/utilities/image:data_uri_getter",
         "//code/utilities/program/call:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "@boost//:algorithm",
-        "@boost//:asio",
-        "@boost//:optional",
-        "@crow",
+        "//code/utilities/deps/external/crow:lib",
     ],
 )
 
@@ -30,10 +27,7 @@ hcp(
     name = "player_state",
     deps = [
         "//code/utilities/data_structures:playing_card",
-        "@boost//:algorithm",
-        "@boost//:asio",
-        "@boost//:optional",
-        "@crow",
+        "//code/utilities/deps/external/crow:lib",
     ],
 )
 
@@ -41,9 +35,6 @@ hcp(
     name = "board_space",
     deps = [
         "//code/utilities/data_structures:playing_card",
-        "@boost//:algorithm",
-        "@boost//:asio",
-        "@boost//:optional",
-        "@crow",
+        "//code/utilities/deps/external/crow:lib",
     ],
 )

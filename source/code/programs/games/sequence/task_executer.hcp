@@ -43,7 +43,7 @@ class
     
     
     //start server
-    game.server.port(game.port).multithreaded().run();
+    game.server.port(static_cast<std::uint16_t>(game.port)).multithreaded().run();
     
 ❱
 
@@ -93,10 +93,13 @@ class
                 state.connection = &conn;
                 })
         .onclose([&](crow::websocket::connection& conn, const std::string& reason){
+            (void)conn;
                 CROW_LOG_INFO << "websocket connection closed: " << reason;
                 state.connection = nullptr;
                 })
         .onmessage([&](crow::websocket::connection& conn, const std::string& data, bool is_binary){
+                        (void)conn;
+                        (void)is_binary;
             std::lock_guard<std::mutex> _(game.mtx);
                     std::cout << "UPDATE" << std::endl;
                     Update_Game_State(game,data,0);
@@ -112,14 +115,18 @@ class
     CROW_ROUTE(game.server, "/ws_p2") //can't be dynamic :(
         .websocket()
         .onopen([&](crow::websocket::connection& conn){
+            (void)conn;
                 CROW_LOG_INFO << "new websocket connection";
                 state.connection = &conn;
                 })
         .onclose([&](crow::websocket::connection& conn, const std::string& reason){
+            (void)conn;
                 CROW_LOG_INFO << "websocket connection closed: " << reason;
                 state.connection = nullptr;
                 })
         .onmessage([&](crow::websocket::connection& conn, const std::string& data, bool is_binary){
+            (void)conn;
+            (void)is_binary;
             std::lock_guard<std::mutex> _(game.mtx);
             std::cout << "UPDATE" << std::endl;
                     Update_Game_State(game,data,1);
@@ -200,22 +207,21 @@ class
             auto index1 = std::atoi(parts[0].c_str());
             auto index2 = std::atoi(parts[1].c_str());
             std::cout << index1 << " " << index2 << std::endl;
-            if (Is_Valid_Move(game,state,index1,index2)){
-                Make_Move(game,state,index1,index2);
+            if (Is_Valid_Move(game,state,static_cast<size_t>(index1),static_cast<size_t>(index2))){
+                Make_Move(game,state,static_cast<size_t>(index1),static_cast<size_t>(index2));
                 return true;
             }
     }
     
     return false;
-    std::cout << data << std::endl;
 ❱
 
-◀private: static▶ bool  ☀Is_Valid_Move(Game_State & game, Player_State & state, int index1, int index2)❰
+◀private: static▶ bool  ☀Is_Valid_Move(Game_State & game, Player_State & state, size_t index1, size_t index2)❰
     if (state.card_selected == -1){
         return false;
     }
     
-    auto selected_hand = state.hand[state.card_selected];
+    auto selected_hand = state.hand[static_cast<size_t>(state.card_selected)];
     auto selected_space = game.board[index1][index2];
     
     //handle 2 eye jacks
@@ -249,9 +255,9 @@ class
     
 ❱
 
-◀private: static▶ void  ☀Make_Move(Game_State & game, Player_State & state, int index1, int index2)❰
+◀private: static▶ void  ☀Make_Move(Game_State & game, Player_State & state, size_t index1, size_t index2)❰
     
-    auto selected_hand = state.hand[state.card_selected];
+    auto selected_hand = state.hand[static_cast<size_t>(state.card_selected)];
     
     //remove piece
     if (Is_Remove_Jack(selected_hand)){
