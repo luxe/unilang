@@ -67,7 +67,7 @@ std::string urandom(size_t amount);
 
 
 template<typename T>
-auto Get_Random_Index(T const& container) -> std::size_t {
+auto Get_Random_Index(T const& container) -> int {
   std::random_device random_device;
   std::mt19937 engine{random_device()};
   std::uniform_int_distribution<int> dist(0, container.size() - 1);
@@ -147,7 +147,7 @@ T RandomRealFromRange(T low, T high){
 }
 
 template <typename T>
-T RandomIntFromRange(T low, T high){
+int RandomIntFromRange(T low, T high){
     std::random_device random_device;
     std::mt19937 engine{random_device()};
     std::uniform_int_distribution<T> dist(low, high);
