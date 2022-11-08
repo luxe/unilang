@@ -21,7 +21,7 @@ def static_tree_variants(tree, references):
 
     #compile cpp object
     real_deps = []
-    real_deps += ["@tree"]
+    real_deps += ["//code/utilities/deps/external/tree:lib"]
     real_deps += ["@boost//:serialization"]
     real_deps += ["@nlohmann_json//:nlohmann_json"]
     real_deps += ["//code/utilities/code:concept_static_tree_structs"]

@@ -225,14 +225,26 @@ struct Tuple_And_T_Comparer <Compare_Operation, X, Tuple, Index, 0>
 
   template <typename ORDER>
   static bool compare (const X& x, const Tuple& tuple, AND_DISPATCH const& BO, ORDER const& order){
+    (void)x;
+    (void)tuple;
+    (void)BO;
+    (void)order;
     return true;
   }
   template <typename ORDER>
   static bool compare (const X& x, const Tuple& tuple, NAND_DISPATCH const& BO, ORDER const& order){
+    (void)x;
+    (void)tuple;
+    (void)BO;
+    (void)order;
     return true;
   }
   template <typename ORDER>
   static bool compare (const X& x, const Tuple& tuple, OR_DISPATCH const& BO, ORDER const& order){
+    (void)x;
+    (void)tuple;
+    (void)BO;
+    (void)order;
     return false;
   }
 
@@ -338,14 +350,26 @@ struct Tuple_And_Tuple_Comparer <Compare_Operation, Left, Left_Index, 0, Right, 
 
   template <typename BO_RIGHT>
   static bool compare (Left const& left, Right const& right, OR_DISPATCH const& bo_left, BO_RIGHT const& bo_right){
+    (void)left;
+    (void)right;
+    (void)bo_left;
+    (void)bo_right;
     return false;
   }
   template <typename BO_RIGHT>
   static bool compare (Left const& left, Right const& right, AND_DISPATCH const& bo_left, BO_RIGHT const& bo_right){
+    (void)left;
+    (void)right;
+    (void)bo_left;
+    (void)bo_right;
     return true;
   }
   template <typename BO_RIGHT>
   static bool compare (Left const& left, Right const& right, NAND_DISPATCH const& bo_left, BO_RIGHT const& bo_right){
+    (void)left;
+    (void)right;
+    (void)bo_left;
+    (void)bo_right;
     return true;
   }
 };

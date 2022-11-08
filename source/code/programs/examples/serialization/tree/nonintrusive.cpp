@@ -2,7 +2,7 @@
 #include "nlohmann/json.hpp"
 #include <sstream>
 #include "gtest/gtest.h"
-#include "src/tree.hh"
+#include "code/utilities/deps/external/tree/lib.hpp"
 #include "code/utilities/formats/json/overloads/tree_json_converters.hpp"
 #include "code/utilities/formats/json/converters/lib.hpp"
 

@@ -2,7 +2,7 @@
 #include <string>
 #include <utility>
 #include <sstream>
-#include "src/tree.hh"
+#include "code/utilities/deps/external/tree/lib.hpp"
 
 // convert a tree to/from a "depth list"
 // a "depth list" represents the nodes in a preorder list with their depths attached

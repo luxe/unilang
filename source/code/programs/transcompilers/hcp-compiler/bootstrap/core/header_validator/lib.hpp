@@ -15,6 +15,7 @@ static void Exit_With_Error(std::string const& str);
 
 
 friend std::ostream &operator<<( std::ostream & out, Header_Validator const& self){
+	(void)self;
 	return out;
 }
 

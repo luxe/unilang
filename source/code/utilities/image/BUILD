@@ -9,7 +9,7 @@ load("//bazel/rules/hcp:hcp_and_hcp_pos_hdrs_derive.bzl", "hcp_and_hcp_pos_hdrs_
 cpp_object(
     name = "stb_image",
     deps = [
-        "@stb",
+        "//code/utilities/deps/external/stb_image:lib",
     ],
 )
 

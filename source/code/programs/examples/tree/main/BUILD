@@ -6,5 +6,5 @@ package(
 
 cpp_main(
     name = "main",
-    deps = ["@tree"],
+    deps = ["//code/utilities/deps/external/tree:lib"],
 )

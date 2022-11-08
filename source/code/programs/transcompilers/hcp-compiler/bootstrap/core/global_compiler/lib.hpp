@@ -19,6 +19,7 @@ static void Dump_HPP(std::wofstream & outfile, Class_Structure const& structure,
 
 
 friend std::ostream &operator<<( std::ostream & out, Global_Compiler const& self){
+	(void)self;
 	return out;
 }
 

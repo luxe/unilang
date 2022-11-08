@@ -8,7 +8,7 @@ load("//bazel/rules/cpp:gtest.bzl", "gtest")
 cpp_object(
     name = "depth_list",
     deps = [
-        "@tree",
+        "//code/utilities/deps/external/tree:lib"
     ],
 )
 

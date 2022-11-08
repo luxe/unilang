@@ -20,7 +20,7 @@ def static_tree_structs(name):
 
     #compile cpp object
     real_deps = []
-    real_deps += ["@tree"]
+    real_deps += ["//code/utilities/deps/external/tree:lib"]
     real_deps += ["@boost//:serialization"]
     real_deps += ["@nlohmann_json//:nlohmann_json"]
     real_deps += ["//code/utilities/formats/json/overloads:tree_json_converters"]

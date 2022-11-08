@@ -1,2 +1,2 @@
 #pragma once
-#include "stb_image.h"
+#include "code/utilities/deps/external/stb_image/lib.hpp"

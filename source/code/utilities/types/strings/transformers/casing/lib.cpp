@@ -9,18 +9,18 @@
 
 std::string& CapitalizeFirstChar(std::string & s){
         if (!s.empty()){
-                s[0] = toupper(s[0]);
+                s[0] = static_cast<char>(toupper(s[0]));
         }
 	return s;
 }
 std::string& LowercaseFirstChar(std::string & s){
         if (!s.empty()){
-                s[0] = tolower(s[0]);
+                s[0] = static_cast<char>(tolower(s[0]));
         }
 		return s;
 }
 std::string& CapitalizeCharIndex(std::string & s, size_t const& index){
-    s[index] = toupper(s[index]);
+    s[index] = static_cast<char>(toupper(s[index]));
     return s;
 }
 std::string& Uppercase(std::string &str){

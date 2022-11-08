@@ -232,7 +232,7 @@ void* FileReadToNewBuffer( char const *filename, size_t& out_size)
 	
 	CloseFile(fp);
 
-	buffer[read] = NULL; 
+	buffer[read] = '\0'; 
 	return buffer;  
 }
 

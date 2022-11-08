@@ -159,13 +159,13 @@ class
     x.specs.emplace_back(tuple());
     x.specs.emplace_back(include_what_you_use());
     x.specs.emplace_back(indicators());
-    x.specs.emplace_back(warning_guards());
 
     //adding PHP core for its rand impl
     x.specs.emplace_back(php_src());
     
     //compiler warnings
     x.specs.emplace_back(leathers());
+    x.specs.emplace_back(warning_guards());
     
     //blockchain / bitcoin / cryptocurrency
     x.specs.emplace_back(bitcoin_iterate());
@@ -1128,7 +1128,30 @@ cpp_proto_compile()
     Dependency_Specification spec;
     spec.lib_name = "stb";
     Add_Unilang_Github_Mirror(spec,"stb","052dce117ed989848a950308bd99eef55525dfb1","978de595fcc62448dbdc8ca8def7879fbe63245dd7f57c1898270e53a0abf95b");
+    spec.build_defs.raw_starlark = 
+R"RAW_STRING(
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "stb",
+    srcs = glob([
+        "*.c",
+    ]),
+    hdrs = glob([
+        "*.h",
+    ]),
+    strip_include_prefix = "",
+)
+)RAW_STRING";
+
+    Wrapper_Target target;
+    target.name = "stb_image";
+    target.includes.emplace_back("stb_image.h");
+    target.deps.emplace_back("@stb");
+    spec.dep_integration.wrapper_targets.emplace_back(target);
+    
     return spec;
+
 ❱
 ◀private: static▶ Dependency_Specification ☀Backward_Cpp()❰
     Dependency_Specification spec;
@@ -1646,6 +1669,14 @@ cc_library(
     copts = ["-Wno-everything"],
 )
 )RAW_STRING";
+
+    Wrapper_Target target;
+    target.name = "tree";
+    target.includes.emplace_back("<iostream>");
+    target.includes.emplace_back("<string>");
+    target.includes.emplace_back("src/tree.hh");
+    target.deps.emplace_back("@tree");
+    spec.dep_integration.wrapper_targets.emplace_back(target);
 
     return spec;
 ❱
@@ -2824,6 +2855,41 @@ grpc_deps()
     spec.lib_name = "uuid";
     Add_Unilang_Github_Mirror(spec,"uuid","f895102e2ddaf86387a62c3544abb78c0a5cfbae","9283885688c5ab1c90c9e4072484b14937062a634632400a356ded8972317afd");
     spec.patch.patch_cmds.emplace_back("mv src uuid");
+
+    spec.build_defs.raw_starlark = 
+R"RAW_STRING(
+package(default_visibility = ["//visibility:public"])
+
+hdrs = glob(
+    include = [
+        "uuid/**/*.h",
+    ],
+    exclude = [
+    ],
+)
+
+srcs = glob(
+    include = [
+        "uuid/**/*.c",
+    ],
+    exclude = [
+        "uuid/gen_uuid_nt.c",
+    ],
+)
+
+cc_library(
+    name = "uuid",
+    srcs = srcs,
+    hdrs = hdrs,
+    copts = ["-fdeclspec", "-Wno-everything"],
+    includes = [
+        ".",
+        "uuid",
+    ],
+    deps = [],
+)
+)RAW_STRING";
+
     return spec;
 ❱
 ◀private: static▶ Dependency_Specification ☀Dtl()❰
@@ -3315,6 +3381,48 @@ cc_library(
     Add_Unilang_Github_Mirror(spec,"vorbis","0a4beb1d04f802c48016b11fb939690e24173168","5dc382c4c00de0742e9d1433e9b332cd1c28cdce5145d02961614083d955f1dd");
     spec.patch.patch_files.emplace_back("p1");
     spec.patch.patch_args.emplace_back("-p1");
+    
+    
+    spec.build_defs.raw_starlark = 
+R"RAW_STRING(
+package(default_visibility = ["//visibility:public"])
+
+#glob the files we care about
+hdrs = glob(
+    include = [
+        "include/**/*.h",
+        "lib/**/*.h",
+    ],
+    exclude = [
+    ],
+)
+
+srcs = glob(
+    include = [
+        "lib/**/*.c",
+    ],
+    exclude = [
+        "lib/psytune.c",
+        #"lib/sharedbook.c",
+        "lib/barkmel.c",
+    ],
+)
+
+cc_library(
+    name = "vorbis",
+    srcs = srcs,
+    hdrs = hdrs,
+    includes = [
+        "include",
+        "lib",
+    ],
+    copts = ["-Wno-everything"],
+    deps = ["@ogg"],
+)
+)RAW_STRING";
+
+
+
     return spec;
 ❱
 ◀private: static▶ Dependency_Specification ☀ogg()❰
