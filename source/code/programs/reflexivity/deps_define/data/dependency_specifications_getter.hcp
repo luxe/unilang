@@ -1929,6 +1929,109 @@ cc_library(
     spec.patch.patch_files.emplace_back("ks_tables");
     spec.patch.patch_files.emplace_back("config");
     spec.patch.patch_args.emplace_back("-p1");
+    
+
+    spec.build_defs.raw_starlark = 
+R"RAW_STRING(
+package(
+    default_visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "x11_hdrs",
+    hdrs = glob([
+        "src/config.h",
+        "include/X11/*.h",
+        "src/**/*.h",
+        "include/**/*.h",
+        "**/*.h",
+    ]),
+    copts = [
+        "-DXLOCALELIBDIR=\\\"/usr/local/lib/X11/locale\\\"",
+        "-DHAVE_SYS_IOCTL_H",
+        "-DXCMSDIR=\\\"FOO\\\"",
+        "-DHAVE_CONFIG_H",
+        #"-DUSE_DYNAMIC_LC",
+    ],
+    includes = [
+        ".",
+        "X11",
+        "X11/Xtrans/",
+        "include",
+        "include/X11",
+        "src",
+        "src/xcms",
+        "src/xkb",
+        "src/xlibi18n",
+    ],
+)
+
+srcs = glob(
+    [
+        #"src/**/*.h",
+        "src/**/*.c",
+        "modules/**/*.c",
+    ],
+    exclude = [
+        "src/os2Stubs.c",
+        #"src/xlibi18n/lcInit.c",
+        #"src/xlibi18n/lcWrap.c",
+        #"src/Xrm.c",
+        #"src/KeyBind.c",
+        #"src/Font.c",
+        #"src/LoadFont.c",
+        #"src/xkb/XKBBind.c",
+    ],
+)
+
+cc_library(
+    name = "x11",
+    srcs = srcs,
+    copts = [
+        "-DXLOCALELIBDIR=\\\"/usr/local/lib/X11/locale\\\"",
+        "-DHAVE_SYS_IOCTL_H",
+        "-DXCMSDIR=\\\"FOO\\\"",
+        "-DHAVE_CONFIG_H",
+        #"-DUSE_DYNAMIC_LC",
+    ],
+    includes = [
+        ".",
+        "X11",
+        "X11/Xtrans/",
+        "include",
+        "include/X11",
+        "src",
+        "src/xcms",
+        "src/xkb",
+        "src/xlibi18n",
+    ],
+    copts = ["-Wno-everything"],
+    linkstatic = True,
+    deps = [
+        ":x11_hdrs",
+        "@Xau",
+        "@Xaw",
+        "@Xtrans",
+        "@xcb",
+        "@Xmu",
+        "@xkbcommon",
+        "@libXpm",
+        "@xorg_libXext",
+        #"@xorg_libXext",
+        "@xorg_libXi",
+        "@xorg_libXt",
+        "@xorg_xorgproto",
+        "@xorg_libXcursor",
+        "@xorg_libXrandr",
+        "@xorg_libXinerama",
+        # "@system//:X11",
+        # "@system//:X11_hdrs",
+    ],
+)
+)RAW_STRING";
+
+
+
     return spec;
 ❱
 ◀private: static▶ Dependency_Specification ☀Xtrans()❰
@@ -1982,6 +2085,67 @@ cc_library(
     spec.patch.patch_cmds.emplace_back("sed -i '1s/^/#include <wchar.h>\\\\n/' src/TextAction.c");
     spec.patch.patch_files.emplace_back("p1");
     spec.patch.patch_args.emplace_back("-p1");
+
+    spec.build_defs.raw_starlark = 
+R"RAW_STRING(
+package(default_visibility = ["//visibility:public"])
+
+hdrs = glob(
+    include = [
+        "include/**/*.h",
+        "src/**/*.h",
+    ],
+    exclude = [
+    ],
+)
+
+cc_library(
+    name = "Xaw_headers",
+    hdrs = hdrs,
+    copts = [
+    ],
+    includes = [
+        ".",
+    ],
+    deps = [
+    ],
+)
+
+srcs = glob(
+    include = [
+        "src/**/*.c",
+    ],
+    exclude = [
+    ],
+)
+
+cc_library(
+    name = "Xaw",
+    srcs = srcs,
+    copts = [
+        "-DHAVE_CONFIG_H",
+    ],
+    includes = [
+        ".",
+        "include",
+        "src",
+    ],
+    copts = ["-Wno-everything"],
+    deps = [
+        ":Xaw_headers",
+        "@Xmu//:Xmu_headers",
+        #"@libXpm",
+        "@xorg_libXt",
+        "@xorg_libSM",
+        "@xorg_libXext//:Xorg_libXext_headers",
+        "@libXpm//:libXpm_headers",
+        "@x11//:x11_hdrs",
+    ],
+)
+)RAW_STRING";
+
+
+    
     return spec;
 ❱
 
@@ -2325,6 +2489,56 @@ cc_library(
     Dependency_Specification spec;
     spec.lib_name = "glut";
     Add_Unilang_Github_Mirror(spec,"glut","8cd96cb440f1f2fac3a154227937be39d06efa53","e1d4e2d38aad559c329859a0dc45c8fc8ff3ec5a1001587d5ca3d7a2b57f9a38");
+    
+    
+    spec.build_defs.raw_starlark = 
+R"RAW_STRING(
+package(default_visibility = ["//visibility:public"])
+
+#glob the files we care about
+hdrs = glob(
+    include = [
+        "include/**/*.h",
+        "lib/**/*.h",
+    ],
+    exclude = [
+    ],
+)
+
+srcs = glob(
+    include = [
+        "lib/glut/**/*.c",
+        "lib/mui/**/*.c",
+    ],
+    exclude = [
+        "lib/glut/win32_util.c",
+        "lib/glut/win32_winproc.c",
+        "lib/glut/win32_menu.c",
+        "lib/glut/win32_glx.c",
+        "lib/glut/win32_x11.c",
+        "lib/glut/glut_wglext.c",
+        "lib/mui/browser.c",
+    ],
+)
+
+cc_library(
+    name = "glut",
+    srcs = srcs,
+    hdrs = hdrs,
+    includes = [
+        "include",
+        "lib/glut",
+    ],
+    copts = ["-Wno-everything"],
+    deps = [
+        "@mesa_glu",
+        "@x11",
+    ],
+)
+)RAW_STRING";
+
+
+
     return spec;
 ❱
 
@@ -4131,7 +4345,7 @@ bazel_toolchains_repositories()
 ◀private: static▶ Dependency_Specification ☀Grail_Bazel_Toolchain()❰
     Dependency_Specification spec;
     spec.lib_name = "com_grail_bazel_toolchain";
-    Add_Unilang_Github_Mirror(spec,"bazel-toolchain","f2d1ba2c9d713b2aa6e7063f6d11dd3d64aa402a","6bf2b30c8ab190eee44e1843f0cff457a5379250ad8239155dcf5bd38e4cc70f");
+    Add_Unilang_Github_Mirror(spec,"bazel-toolchain","056aeaa01900f5050a9fed9b11e2d365a684831a","93aa940bcaa2bfdd8153d4d029bad1ccc6c0601e29ffff3a23e1d89aba5f61fa");
     spec.build_content_in_dependency=true;
     
     spec.workspace.priority = 2;
@@ -4166,6 +4380,10 @@ llvm_toolchain(
     sysroot = {
         "linux": "@ubuntu_20_04_clang_11_sysroot//:sysroot",
         "darwin": "@ubuntu_20_04_clang_11_sysroot//:sysroot",
+        
+        #"linux-x86_64": "@ubuntu_20_04_clang_11_sysroot//:sysroot",
+        #"linux-aarch64": "@ubuntu_20_04_clang_11_sysroot//:sysroot",
+        #"darwin-x86_64": "@ubuntu_20_04_clang_11_sysroot//:sysroot",
     },
 )
 
