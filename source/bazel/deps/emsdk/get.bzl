@@ -8,9 +8,9 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 def emsdk():
     http_archive(
         name="emsdk" ,
-        sha256="1546a493149ad9b566056a1ff9d629ff3a0359fb77be8955b93e1615d5721c02" ,
-        strip_prefix="emsdk-005063304bb4e575f97b7c5f50368f937c06cb54/bazel" ,
+        sha256="d18d951f192bded1f7cb99f0d402663a2aa61db11d17f15a587ab22c37b0ee42" ,
+        strip_prefix="emsdk-71780a80de0d4d8772406ab34549c5a5e26d7e51/bazel" ,
         urls = [
-            "https://github.com/Unilang/emsdk/archive/005063304bb4e575f97b7c5f50368f937c06cb54.tar.gz",
+            "https://github.com/Unilang/emsdk/archive/71780a80de0d4d8772406ab34549c5a5e26d7e51.tar.gz",
         ],
     )
