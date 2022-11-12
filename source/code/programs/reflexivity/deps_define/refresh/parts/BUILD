@@ -37,6 +37,24 @@ hcp_hdrs_derive(
 )
 
 hcp_hdrs_derive(
+    name = "deps_config_creator",
+    interface_deps = [
+        "//code/programs/reflexivity/comment:generated_comment_getter",
+        "//code/programs/reflexivity/deps_define/data:dependency_specifications_getter",
+        "//code/utilities/filesystem/files/creating:lib",
+        "//code/utilities/filesystem/files/deleting:lib",
+        "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/linguistics/computer/file_extension:file_extension_getter",
+        "//code/utilities/types/strings/transformers/appending:lib",
+        "//code/utilities/types/strings/transformers/casing:case_modifier",
+        "//code/utilities/types/strings/transformers/casing:lib",
+        "//code/utilities/types/strings/transformers/removing:lib",
+        "//code/utilities/types/strings/transformers/search_replace:lib",
+        "//code/utilities/types/vectors/converters:lib",
+    ],
+)
+
+hcp_hdrs_derive(
     name = "get_files_creator",
     interface_deps = [
         "//code/programs/reflexivity/comment:generated_comment_getter",
