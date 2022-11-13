@@ -66,6 +66,7 @@ class
     
     Append_With_Newline(result,"load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_archive\")");
     Append_With_Newline(result,"load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_file\")");
+    Append_With_Newline(result,"load(\"//bazel/deps:deps_config.bzl\", \"main_mirror_url\")");
     Append_With_Newline(result,"");
     Append(result,"def ");
     Append(result,Fix_Casing_For_Bazel(spec.lib_name));
@@ -79,44 +80,11 @@ class
     Append_Key_Value(result,"name",As_Removed_Dashes(spec.lib_name));
     Append_With_Newline(result,",");
     
-    //add build file
-    if (!spec.build_content_in_dependency){
-        Append(result,"        ");
-        Append_Key_Value(result,"build_file","//bazel/deps/" + folder_name + ":build.BUILD");
-        Append_With_Newline(result,",");
-    }
-
-    // is it executable
-    if (spec.download_rule == "http_file"){
-        Append(result,"        ");
-        Append_Key_True(result,"executable");
-        Append_With_Newline(result,",");
-    }
-    
-    //add sha256
-    if (!spec.locations[0].sha256.empty()){
-        Append(result,"        ");
-        Append_Key_Value(result,"sha256",spec.locations[0].sha256);
-        Append_With_Newline(result,",");
-    }   
-    
-    //add strip prefix
-    if (!spec.locations[0].repo_name.empty() && !spec.locations[0].at_commit.empty()){
-        Append(result,"        ");
-        
-        //decide value
-        std::string strip_prefix;
-        Append(strip_prefix,spec.locations[0].repo_name);
-        Append(strip_prefix,"-");
-        Append(strip_prefix,spec.locations[0].at_commit);
-        if (!spec.locations[0].further_prefix_strip.empty()){
-            Append(strip_prefix,"/");
-            Append(strip_prefix,spec.locations[0].further_prefix_strip);
-        }
-        
-        Append_Key_Value(result,"strip_prefix",strip_prefix);
-        Append_With_Newline(result,",");
-    }
+    //add all the properties
+    Add_Build_File(result,folder_name,spec);
+    Add_Executable_Flag(result,spec);
+    Add_Sha256(result,spec);
+    Add_Strip_Prefix(result,spec);
     
     //add urls
     Append(result,"        ");
@@ -167,6 +135,49 @@ class
     Append_With_Newline(result,")");
     
     return result;
+❱
+
+◀private: static▶ void ☀Add_Build_File(std::string & result, std::string const& folder_name, Dependency_Specification const& spec)❰
+
+    if (!spec.build_content_in_dependency){
+        Append(result,"        ");
+        Append_Key_Value(result,"build_file","//bazel/deps/" + folder_name + ":build.BUILD");
+        Append_With_Newline(result,",");
+    }
+❱
+◀private: static▶ void ☀Add_Executable_Flag(std::string & result, Dependency_Specification const& spec)❰
+
+    if (spec.download_rule == "http_file"){
+        Append(result,"        ");
+        Append_Key_True(result,"executable");
+        Append_With_Newline(result,",");
+    }
+❱
+
+◀private: static▶ void ☀Add_Sha256(std::string & result, Dependency_Specification const& spec)❰
+    if (!spec.locations[0].sha256.empty()){
+        Append(result,"        ");
+        Append_Key_Value(result,"sha256",spec.locations[0].sha256);
+        Append_With_Newline(result,",");
+    }   
+❱
+◀private: static▶ void ☀Add_Strip_Prefix(std::string & result, Dependency_Specification const& spec)❰
+    if (!spec.locations[0].repo_name.empty() && !spec.locations[0].at_commit.empty()){
+        Append(result,"        ");
+        
+        //decide value
+        std::string strip_prefix;
+        Append(strip_prefix,spec.locations[0].repo_name);
+        Append(strip_prefix,"-");
+        Append(strip_prefix,spec.locations[0].at_commit);
+        if (!spec.locations[0].further_prefix_strip.empty()){
+            Append(strip_prefix,"/");
+            Append(strip_prefix,spec.locations[0].further_prefix_strip);
+        }
+        
+        Append_Key_Value(result,"strip_prefix",strip_prefix);
+        Append_With_Newline(result,",");
+    }
 ❱
 
 ◀private: static▶ void ☀Append_Download_Rule_Name(std::string & result, Dependency_Specification const& it)❰

@@ -4,6 +4,7 @@
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
+load("//bazel/deps:deps_config.bzl", "main_mirror_url")
 
 def xorgLibXinerama():
     http_archive(
