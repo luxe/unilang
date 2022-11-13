@@ -142,7 +142,7 @@ class
     
     for (auto const& it: spec.locations){
         Append(result,"            ");
-        Append_In_DQuotes(result,Decide_Url(it));
+        Append(result,Decide_Url(it));
         Append_With_Newline(result,",");
     }
     Append(result,"        ");
@@ -162,11 +162,19 @@ class
 
 ◀private: static▶ std::string ☀Decide_Url(Dependency_Location const& it)❰
 
+    std::string default_owner = "Unilang";
+    std::string default_format = "tar.gz";
+
+
     if (!it.direct_url.empty()){
-        return it.direct_url;
+        return Append_In_DQuotes(it.direct_url);
+    }
+    
+    if (it.owner_name == default_owner && it.format == default_format){
+        return std::string("main_mirror_url(") + it.repo_name + "," + it.at_commit + ")";
     }
 
-    return Github_Url_Getter::Common_Http_Archive_Url(it.owner_name,it.repo_name,it.at_commit,it.format);
+    return Append_In_DQuotes(Github_Url_Getter::Common_Http_Archive_Url(it.owner_name,it.repo_name,it.at_commit,it.format));
 ❱
 
 ◀private: static▶ void ☀Add_Patch_Files(std::string & result, Dependency_Specification spec, std::string const& folder_name)❰
