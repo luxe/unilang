@@ -4,6 +4,17 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/cpp:main.bzl", "cpp_main")
+load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
+
+enum_cpp(
+    name = "dependency_providence",
+    values = [
+        "original",
+        "mirror",
+    ],
+)
+
+
 
 hcp_hdrs_derive(
     name = "dependency_specifications",
@@ -50,6 +61,7 @@ hcp_hdrs_derive(
 hcp_hdrs_derive(
     name = "dependency_location",
     interface_deps = [
+        "//code/programs/reflexivity/deps_define/data:dependency_providence",
     ],
 )
 
