@@ -13,6 +13,6 @@ def mpmcQueue():
         sha256="675004f332c74390c16efea98f30ebc636a2855434bdbfa24eaa703501a6ae0f" ,
         strip_prefix="MPMCQueue-5883e32b07e8a60c22d532d9120ea5c11348aea9" ,
         urls = [
-            "https://github.com/Unilang/MPMCQueue/archive/5883e32b07e8a60c22d532d9120ea5c11348aea9.tar.gz",
+            main_mirror_url("MPMCQueue","5883e32b07e8a60c22d532d9120ea5c11348aea9"),
         ],
     )

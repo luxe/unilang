@@ -13,6 +13,6 @@ def lcov():
         sha256="97615b9cbb3fae1d1c655c7201b9aa61d59dd8c18eae2a4f94dcea747aa6ecf4" ,
         strip_prefix="lcov-a5dd9529f9232b8d901a4d6eb9ae54cae179e5b3" ,
         urls = [
-            "https://github.com/Unilang/lcov/archive/a5dd9529f9232b8d901a4d6eb9ae54cae179e5b3.tar.gz",
+            main_mirror_url("lcov","a5dd9529f9232b8d901a4d6eb9ae54cae179e5b3"),
         ],
     )

@@ -13,6 +13,6 @@ def soloud():
         sha256="3b87374dfa5da58a6ebca6a23280fa5519728b7fb2607e4037988cabe7dbdb2c" ,
         strip_prefix="soloud-6ee8ffb91a02764c7b8f331ee2177096d46bdd7c" ,
         urls = [
-            "https://github.com/Unilang/soloud/archive/6ee8ffb91a02764c7b8f331ee2177096d46bdd7c.tar.gz",
+            main_mirror_url("soloud","6ee8ffb91a02764c7b8f331ee2177096d46bdd7c"),
         ],
     )

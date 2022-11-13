@@ -13,7 +13,7 @@ def xorgLibXfixes():
         sha256="ed38275d3b662b7b9be6da5db75b891f596a52bf21dcb1547324d76c37347b99" ,
         strip_prefix="xorg-libXfixes-174a94975af710247719310cfc53bd13e1f3b44d" ,
         urls = [
-            "https://github.com/Unilang/xorg-libXfixes/archive/174a94975af710247719310cfc53bd13e1f3b44d.tar.gz",
+            main_mirror_url("xorg-libXfixes","174a94975af710247719310cfc53bd13e1f3b44d"),
         ],        patches = [
             "//bazel/deps/xorg_libXfixes/patches:p1.patch",
         ],

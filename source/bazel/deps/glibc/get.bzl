@@ -13,6 +13,6 @@ def glibc():
         sha256="4f73cc1025bb8d8a26151d75748bb5325e9f5501a9809ed3edcb193e1876232d" ,
         strip_prefix="glibc-146fea07640387c78e334933de24b6353e1f0eba" ,
         urls = [
-            "https://github.com/Unilang/glibc/archive/146fea07640387c78e334933de24b6353e1f0eba.tar.gz",
+            main_mirror_url("glibc","146fea07640387c78e334933de24b6353e1f0eba"),
         ],
     )

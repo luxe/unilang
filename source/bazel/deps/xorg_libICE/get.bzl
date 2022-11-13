@@ -13,7 +13,7 @@ def xorgLibICE():
         sha256="236a51f17ce2bba509be970e8b8ff4aef4ab3e5edcc3234cd817671d01d8e288" ,
         strip_prefix="xorg-libICE-ff5e59f32255913bb1cdf51441b98c9107ae165b" ,
         urls = [
-            "https://github.com/Unilang/xorg-libICE/archive/ff5e59f32255913bb1cdf51441b98c9107ae165b.tar.gz",
+            main_mirror_url("xorg-libICE","ff5e59f32255913bb1cdf51441b98c9107ae165b"),
         ],        patches = [
             "//bazel/deps/xorg_libICE/patches:p1.patch",
         ],

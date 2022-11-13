@@ -13,6 +13,6 @@ def fonts():
         sha256="61e27b6ab94c4dad458134213bdfc6b6220b5dd27c6a1e8595b904c2eb8c3ffe" ,
         strip_prefix="fonts-321745a0b69c45b8568d9ac84e887032ad844b25" ,
         urls = [
-            "https://github.com/Unilang/fonts/archive/321745a0b69c45b8568d9ac84e887032ad844b25.tar.gz",
+            main_mirror_url("fonts","321745a0b69c45b8568d9ac84e887032ad844b25"),
         ],
     )

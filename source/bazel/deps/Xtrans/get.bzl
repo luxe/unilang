@@ -13,7 +13,7 @@ def xtrans():
         sha256="e4a2eea83173ae8f932eda4d440bdde958baddffc74c93eae420fb9f71e17916" ,
         strip_prefix="xorg-libxtrans-3b5df889f58a99980a35a7b4a18eb4e7d2abeac4" ,
         urls = [
-            "https://github.com/Unilang/xorg-libxtrans/archive/3b5df889f58a99980a35a7b4a18eb4e7d2abeac4.tar.gz",
+            main_mirror_url("xorg-libxtrans","3b5df889f58a99980a35a7b4a18eb4e7d2abeac4"),
         ],        patch_cmds = [
             "sed -i '1s/^/#include <Xtransint.h>\\n/' Xtrans.c",
             "sed -i '1s/^/#include <Xtrans.h>\\n/' Xtranslcl.c",

@@ -13,6 +13,6 @@ def tinycolormap():
         sha256="3525d912824184f2519215e933757d30bc84d06b85b1ddc0b2ec262af15d41dc" ,
         strip_prefix="tinycolormap-a1f736a31f8f8b71a986228a2ab0492730c1e807" ,
         urls = [
-            "https://github.com/Unilang/tinycolormap/archive/a1f736a31f8f8b71a986228a2ab0492730c1e807.tar.gz",
+            main_mirror_url("tinycolormap","a1f736a31f8f8b71a986228a2ab0492730c1e807"),
         ],
     )

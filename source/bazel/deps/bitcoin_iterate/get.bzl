@@ -13,6 +13,6 @@ def bitcoinIterate():
         sha256="c2f6bded0d31d6adebd3fc434b3797b74f9af0a3b88cbadffbe96a84c3dd09ab" ,
         strip_prefix="bitcoin-iterate-64da14fdd5d6f853c19f450078784751341cbc27" ,
         urls = [
-            "https://github.com/Unilang/bitcoin-iterate/archive/64da14fdd5d6f853c19f450078784751341cbc27.tar.gz",
+            main_mirror_url("bitcoin-iterate","64da14fdd5d6f853c19f450078784751341cbc27"),
         ],
     )

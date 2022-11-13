@@ -13,6 +13,6 @@ def plutovg():
         sha256="09214f273259d61f0c9cd0477d4d995eca78f7397c9a1a888397bc8605d17530" ,
         strip_prefix="plutovg-91ebcfc3cca193ac9267eaf1fdff342a6583738b" ,
         urls = [
-            "https://github.com/Unilang/plutovg/archive/91ebcfc3cca193ac9267eaf1fdff342a6583738b.tar.gz",
+            main_mirror_url("plutovg","91ebcfc3cca193ac9267eaf1fdff342a6583738b"),
         ],
     )

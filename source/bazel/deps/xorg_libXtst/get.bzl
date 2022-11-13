@@ -13,7 +13,7 @@ def xorgLibXtst():
         sha256="0a6e749520f1d4c2a3b44f549f240b592ba9e625f1577ba26fa28652f1b41bf9" ,
         strip_prefix="xorg-libXtst-769598f20386845f5839fbc68dfed1f4245197be" ,
         urls = [
-            "https://github.com/Unilang/xorg-libXtst/archive/769598f20386845f5839fbc68dfed1f4245197be.tar.gz",
+            main_mirror_url("xorg-libXtst","769598f20386845f5839fbc68dfed1f4245197be"),
         ],        patches = [
             "//bazel/deps/xorg_libXtst/patches:p1.patch",
         ],

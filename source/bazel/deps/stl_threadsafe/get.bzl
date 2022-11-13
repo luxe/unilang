@@ -13,6 +13,6 @@ def stlThreadsafe():
         sha256="5350eba594f7899f125e607217662e4027b0c3cb78541b3964e02b9ac36e410f" ,
         strip_prefix="STL-Threadsafe-08b2d9e7f487121088a817071d1d42b2736996e9" ,
         urls = [
-            "https://github.com/Unilang/STL-Threadsafe/archive/08b2d9e7f487121088a817071d1d42b2736996e9.tar.gz",
+            main_mirror_url("STL-Threadsafe","08b2d9e7f487121088a817071d1d42b2736996e9"),
         ],
     )

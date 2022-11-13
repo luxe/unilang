@@ -13,6 +13,6 @@ def buildtools():
         sha256="bacae31ebfa1dbed55b9db531038d1e2c5fae9c7d056f9ff9947ae9bcfe0c6ae" ,
         strip_prefix="buildtools-c98e381e8651e97d6da52122b288ec2ba6c392ec" ,
         urls = [
-            "https://github.com/Unilang/buildtools/archive/c98e381e8651e97d6da52122b288ec2ba6c392ec.tar.gz",
+            main_mirror_url("buildtools","c98e381e8651e97d6da52122b288ec2ba6c392ec"),
         ],
     )

@@ -13,6 +13,6 @@ def getch():
         sha256="38f05f2e3d7db2440227a9f55ae0e979a983559ae107d8db6392668ebb81b12d" ,
         strip_prefix="simple-getch-16c0dc6b00c4decb71b82b26ff082ead236a0058" ,
         urls = [
-            "https://github.com/Unilang/simple-getch/archive/16c0dc6b00c4decb71b82b26ff082ead236a0058.tar.gz",
+            main_mirror_url("simple-getch","16c0dc6b00c4decb71b82b26ff082ead236a0058"),
         ],
     )

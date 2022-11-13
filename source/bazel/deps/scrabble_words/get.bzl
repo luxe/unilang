@@ -13,6 +13,6 @@ def scrabbleWords():
         sha256="42514a4e7d409e8ed45fbfb13539a7d1d87693e4e1d78c92531e4f24766c42c4" ,
         strip_prefix="scrabble_words-28a758a38c44baa5cd299d857dc3955bb0dbb9bf" ,
         urls = [
-            "https://github.com/Unilang/scrabble_words/archive/28a758a38c44baa5cd299d857dc3955bb0dbb9bf.tar.gz",
+            main_mirror_url("scrabble_words","28a758a38c44baa5cd299d857dc3955bb0dbb9bf"),
         ],
     )

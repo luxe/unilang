@@ -13,7 +13,7 @@ def libXxf86vm():
         sha256="f067f5e0383d845b1c20b71cb029f92161cf11fbf410cccb502898d68d6acdb2" ,
         strip_prefix="libXxf86vm-92d18649e92566ccc3abeba244adabda249cce1b" ,
         urls = [
-            "https://github.com/Unilang/libXxf86vm/archive/92d18649e92566ccc3abeba244adabda249cce1b.tar.gz",
+            main_mirror_url("libXxf86vm","92d18649e92566ccc3abeba244adabda249cce1b"),
         ],        patches = [
             "//bazel/deps/libXxf86vm/patches:p1.patch",
         ],

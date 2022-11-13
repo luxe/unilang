@@ -13,6 +13,6 @@ def apacheThrift():
         sha256="e05119a1b046c7af1bec092e1edf4ab5ef5546f6954a8f7aa015536a31909e7d" ,
         strip_prefix="thrift-6e5c0f6e315ea1cd8526789558bfd10d6cee2173" ,
         urls = [
-            "https://github.com/Unilang/thrift/archive/6e5c0f6e315ea1cd8526789558bfd10d6cee2173.tar.gz",
+            main_mirror_url("thrift","6e5c0f6e315ea1cd8526789558bfd10d6cee2173"),
         ],
     )

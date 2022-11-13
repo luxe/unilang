@@ -13,7 +13,7 @@ def pixman():
         sha256="201917adc8a5be5074f9bddc5c3f5e514949f7fea5a801d04e3fb759af6c990f" ,
         strip_prefix="pixman-6f8b8b383f3e9c2c8b9ec22fac73e9e84d0232d3" ,
         urls = [
-            "https://github.com/Unilang/pixman/archive/6f8b8b383f3e9c2c8b9ec22fac73e9e84d0232d3.tar.gz",
+            main_mirror_url("pixman","6f8b8b383f3e9c2c8b9ec22fac73e9e84d0232d3"),
         ],        patches = [
             "//bazel/deps/pixman/patches:p1.patch",
         ],

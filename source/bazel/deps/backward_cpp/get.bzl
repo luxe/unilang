@@ -13,6 +13,6 @@ def backwardCpp():
         sha256="16ea32d5337735ed3e7eacd71d90596a89bc648c557bb6007c521a2cb6b073cc" ,
         strip_prefix="backward-cpp-aa3f253efc7281148e9159eda52b851339fe949e" ,
         urls = [
-            "https://github.com/Unilang/backward-cpp/archive/aa3f253efc7281148e9159eda52b851339fe949e.tar.gz",
+            main_mirror_url("backward-cpp","aa3f253efc7281148e9159eda52b851339fe949e"),
         ],
     )

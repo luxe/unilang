@@ -12,6 +12,6 @@ def ioBazelRulesK8s():
         sha256="a08850199d6900328ef899906717fb1dfcc6cde62701c63725748b2e6ca1d5d9" ,
         strip_prefix="rules_k8s-d05cbea5c56738ef02c667c10951294928a1d64a" ,
         urls = [
-            "https://github.com/Unilang/rules_k8s/archive/d05cbea5c56738ef02c667c10951294928a1d64a.tar.gz",
+            main_mirror_url("rules_k8s","d05cbea5c56738ef02c667c10951294928a1d64a"),
         ],
     )

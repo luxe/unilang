@@ -13,6 +13,6 @@ def tippecanoe():
         sha256="9169a734cebd6d541e57f0fba98c7ef1d76b9afd9eb335f538d803e847bc41b4" ,
         strip_prefix="tippecanoe-a17bd79f7788952d8ecc046c4b47315640f92d93" ,
         urls = [
-            "https://github.com/Unilang/tippecanoe/archive/a17bd79f7788952d8ecc046c4b47315640f92d93.tar.gz",
+            main_mirror_url("tippecanoe","a17bd79f7788952d8ecc046c4b47315640f92d93"),
         ],
     )

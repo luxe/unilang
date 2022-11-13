@@ -13,7 +13,7 @@ def xaw():
         sha256="c30f3e7bbe6bf949bca40e2c0421f3bdae7d43753ae9f92d303ac44cf5de5e5a" ,
         strip_prefix="xorg-libXaw-197e9d055f3cd351ae73551955ff463294b965bf" ,
         urls = [
-            "https://github.com/Unilang/xorg-libXaw/archive/197e9d055f3cd351ae73551955ff463294b965bf.tar.gz",
+            main_mirror_url("xorg-libXaw","197e9d055f3cd351ae73551955ff463294b965bf"),
         ],        patches = [
             "//bazel/deps/Xaw/patches:p1.patch",
         ],

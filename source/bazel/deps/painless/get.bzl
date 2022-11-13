@@ -13,6 +13,6 @@ def painless():
         sha256="173dbc4bdeb113c3a78fed58807bd5ca4b94abfd304edc8b902f2711e8b35cef" ,
         strip_prefix="painless-4ab94066f73379389c08cd53cecb2545d7c52486" ,
         urls = [
-            "https://github.com/Unilang/painless/archive/4ab94066f73379389c08cd53cecb2545d7c52486.tar.gz",
+            main_mirror_url("painless","4ab94066f73379389c08cd53cecb2545d7c52486"),
         ],
     )

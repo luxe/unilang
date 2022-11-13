@@ -13,6 +13,6 @@ def emscriptenClang():
         sha256="9b4878c75a8ed1d8c7c2e2d3d968deb81c14a36d437b77de59e9abc76ed08c74" ,
         strip_prefix="emscripten-fastcomp-clang-52c8673a54b402372b85ac751df38f41928765e5" ,
         urls = [
-            "https://github.com/Unilang/emscripten-fastcomp-clang/archive/52c8673a54b402372b85ac751df38f41928765e5.tar.gz",
+            main_mirror_url("emscripten-fastcomp-clang","52c8673a54b402372b85ac751df38f41928765e5"),
         ],
     )

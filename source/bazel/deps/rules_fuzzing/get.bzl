@@ -12,6 +12,6 @@ def rulesFuzzing():
         sha256="1ecdd245e5a256b0e52523c44a7b71dfda7be26d78e898c0dddc70cc43609e8b" ,
         strip_prefix="rules_fuzzing-e409c0ce41a5d9b93cd6bf64fa3ca0ec15c1e873" ,
         urls = [
-            "https://github.com/Unilang/rules_fuzzing/archive/e409c0ce41a5d9b93cd6bf64fa3ca0ec15c1e873.tar.gz",
+            main_mirror_url("rules_fuzzing","e409c0ce41a5d9b93cd6bf64fa3ca0ec15c1e873"),
         ],
     )

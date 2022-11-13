@@ -13,6 +13,6 @@ def includeWhatYouUse():
         sha256="d5558cd419c8d46bdc958064cb97f963d1ea793866414c025906ec15033512ed" ,
         strip_prefix="include-what-you-use-bff9327eb2aac72f78cbf49a2cc76843b57ae9af" ,
         urls = [
-            "https://github.com/Unilang/include-what-you-use/archive/bff9327eb2aac72f78cbf49a2cc76843b57ae9af.tar.gz",
+            main_mirror_url("include-what-you-use","bff9327eb2aac72f78cbf49a2cc76843b57ae9af"),
         ],
     )

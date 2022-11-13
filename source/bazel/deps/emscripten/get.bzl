@@ -13,6 +13,6 @@ def emscripten():
         sha256="d265533ae9914ec13ee2d82f0714ccfa585c02a145b6c268c22792940838b54b" ,
         strip_prefix="emscripten-913505e3bbbeacf7dae0ceb62559f10d9e6be693" ,
         urls = [
-            "https://github.com/Unilang/emscripten/archive/913505e3bbbeacf7dae0ceb62559f10d9e6be693.tar.gz",
+            main_mirror_url("emscripten","913505e3bbbeacf7dae0ceb62559f10d9e6be693"),
         ],
     )

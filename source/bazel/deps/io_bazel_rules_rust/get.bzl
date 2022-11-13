@@ -12,6 +12,6 @@ def ioBazelRulesRust():
         sha256="8e1bae501e0df40e8feb2497ebab37c84930bf00b332f8f55315dfc08d85c30a" ,
         strip_prefix="rules_rust-df18ddbece5b68f86e63414ea4b50d691923039a" ,
         urls = [
-            "https://github.com/Unilang/rules_rust/archive/df18ddbece5b68f86e63414ea4b50d691923039a.tar.gz",
+            main_mirror_url("rules_rust","df18ddbece5b68f86e63414ea4b50d691923039a"),
         ],
     )

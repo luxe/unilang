@@ -13,6 +13,6 @@ def asmjit():
         sha256="e1097de5bf57d6801dd38373b6c495b4612f74ecd9bff5db9aa4db4ab93c76a2" ,
         strip_prefix="asmjit-3d510b3540776d4961f5eac83af3643d31cde18b" ,
         urls = [
-            "https://github.com/Unilang/asmjit/archive/3d510b3540776d4961f5eac83af3643d31cde18b.tar.gz",
+            main_mirror_url("asmjit","3d510b3540776d4961f5eac83af3643d31cde18b"),
         ],
     )

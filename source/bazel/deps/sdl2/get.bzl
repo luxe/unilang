@@ -13,7 +13,7 @@ def sdl2():
         sha256="d532a339c0d33c4a090983a32017798e9108873dce445e4b617a0f726f90d081" ,
         strip_prefix="SDL-mirror-36ea2544f08508f42d5193e175d3a269c3b95bdf" ,
         urls = [
-            "https://github.com/Unilang/SDL-mirror/archive/36ea2544f08508f42d5193e175d3a269c3b95bdf.tar.gz",
+            main_mirror_url("SDL-mirror","36ea2544f08508f42d5193e175d3a269c3b95bdf"),
         ],        patches = [
             "//bazel/deps/sdl2/patches:config.patch",
             "//bazel/deps/sdl2/patches:gen_files.patch",

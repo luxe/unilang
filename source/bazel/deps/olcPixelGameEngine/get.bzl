@@ -13,6 +13,6 @@ def olcPixelGameEngine():
         sha256="ab65c698e5254ce12217d817750d1b1aa0a3720abb7178ed06419ee8cf7df25e" ,
         strip_prefix="olcPixelGameEngine-8418b7d616c417ea46129d981380046004804fb3" ,
         urls = [
-            "https://github.com/Unilang/olcPixelGameEngine/archive/8418b7d616c417ea46129d981380046004804fb3.tar.gz",
+            main_mirror_url("olcPixelGameEngine","8418b7d616c417ea46129d981380046004804fb3"),
         ],
     )

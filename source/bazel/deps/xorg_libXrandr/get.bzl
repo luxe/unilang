@@ -13,7 +13,7 @@ def xorgLibXrandr():
         sha256="f03c4a89f1cfcdad9973e9f0371d74d1a4984484d193a376f63caa3953a4570c" ,
         strip_prefix="xorg-libXrandr-55dcda4518eda8ae03ef25ea29d3c994ad71eb0a" ,
         urls = [
-            "https://github.com/Unilang/xorg-libXrandr/archive/55dcda4518eda8ae03ef25ea29d3c994ad71eb0a.tar.gz",
+            main_mirror_url("xorg-libXrandr","55dcda4518eda8ae03ef25ea29d3c994ad71eb0a"),
         ],        patches = [
             "//bazel/deps/xorg_libXrandr/patches:p1.patch",
         ],

@@ -13,6 +13,6 @@ def openalSoft():
         sha256="0234a10ea8c593d3b362ccc9a0b98c86723f455ea3ddb10175a78712ac713ac0" ,
         strip_prefix="openal-soft-024d5d900aa7f9e3435459b0a8cfe354dc8e21fd" ,
         urls = [
-            "https://github.com/Unilang/openal-soft/archive/024d5d900aa7f9e3435459b0a8cfe354dc8e21fd.tar.gz",
+            main_mirror_url("openal-soft","024d5d900aa7f9e3435459b0a8cfe354dc8e21fd"),
         ],
     )

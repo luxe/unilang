@@ -13,6 +13,6 @@ def uftrace():
         sha256="dc0ac80fdadb950886654317c11d4df08763d713aee91c8bcd0028a22d742a37" ,
         strip_prefix="uftrace-a7f87b7a086b1f1829d084c21044ebb7709ef7b6" ,
         urls = [
-            "https://github.com/Unilang/uftrace/archive/a7f87b7a086b1f1829d084c21044ebb7709ef7b6.tar.gz",
+            main_mirror_url("uftrace","a7f87b7a086b1f1829d084c21044ebb7709ef7b6"),
         ],
     )

@@ -13,6 +13,6 @@ def audioFile():
         sha256="aa893a464546b686dd4d2555eafe2a0e9f4a96713328cf6e37603d7e9af02348" ,
         strip_prefix="AudioFile-1c77de76f4f396f1019088f3cd9da5141148ee76" ,
         urls = [
-            "https://github.com/Unilang/AudioFile/archive/1c77de76f4f396f1019088f3cd9da5141148ee76.tar.gz",
+            main_mirror_url("AudioFile","1c77de76f4f396f1019088f3cd9da5141148ee76"),
         ],
     )

@@ -13,6 +13,6 @@ def spdlog():
         sha256="236bd43fe30ace4db2a3fa0861db3671fe07f84bfdbdd30babc8965a9a0203ac" ,
         strip_prefix="spdlog-bdfc7d2a5a4ad9cc1cebe1feb7e6fcc703840d71" ,
         urls = [
-            "https://github.com/Unilang/spdlog/archive/bdfc7d2a5a4ad9cc1cebe1feb7e6fcc703840d71.tar.gz",
+            main_mirror_url("spdlog","bdfc7d2a5a4ad9cc1cebe1feb7e6fcc703840d71"),
         ],
     )

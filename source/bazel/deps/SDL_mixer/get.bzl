@@ -13,6 +13,6 @@ def sDLMixer():
         sha256="5f67669340a4475fcad03b357b80c272ff31f05b550af528c4c58644a493c666" ,
         strip_prefix="SDL_mixer-e012c219253eaba6040abef04ece88cb4daa41fa" ,
         urls = [
-            "https://github.com/Unilang/SDL_mixer/archive/e012c219253eaba6040abef04ece88cb4daa41fa.tar.gz",
+            main_mirror_url("SDL_mixer","e012c219253eaba6040abef04ece88cb4daa41fa"),
         ],
     )

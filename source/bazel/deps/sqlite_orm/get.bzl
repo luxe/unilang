@@ -13,6 +13,6 @@ def sqliteOrm():
         sha256="7c2a02ec48e48078a61817627c09ef0a5540b06b5fb2990976f63b18d05c4c83" ,
         strip_prefix="sqlite_orm-de4e2bd01040090b163e1ee87f1dd6600e143270" ,
         urls = [
-            "https://github.com/Unilang/sqlite_orm/archive/de4e2bd01040090b163e1ee87f1dd6600e143270.tar.gz",
+            main_mirror_url("sqlite_orm","de4e2bd01040090b163e1ee87f1dd6600e143270"),
         ],
     )

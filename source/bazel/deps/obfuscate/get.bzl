@@ -13,6 +13,6 @@ def obfuscate():
         sha256="fda8221e08853a2d15e4c9004ceaf96ecb0fd5f86830d48dff0b218c6fc63353" ,
         strip_prefix="Obfuscate-88915d0afa46448570207e36aa8cc5f714709c50" ,
         urls = [
-            "https://github.com/Unilang/Obfuscate/archive/88915d0afa46448570207e36aa8cc5f714709c50.tar.gz",
+            main_mirror_url("Obfuscate","88915d0afa46448570207e36aa8cc5f714709c50"),
         ],
     )

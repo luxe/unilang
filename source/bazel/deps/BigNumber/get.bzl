@@ -13,6 +13,6 @@ def bigNumber():
         sha256="a77ef3362a9ed5986cc158d45fab8e6797ba4cabeb26b92d89d4333d55a08c3f" ,
         strip_prefix="BigNumber-4a65e2d4149a61632f9b31fff8aaddd0187681dd" ,
         urls = [
-            "https://github.com/Unilang/BigNumber/archive/4a65e2d4149a61632f9b31fff8aaddd0187681dd.tar.gz",
+            main_mirror_url("BigNumber","4a65e2d4149a61632f9b31fff8aaddd0187681dd"),
         ],
     )

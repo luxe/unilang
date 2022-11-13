@@ -13,7 +13,7 @@ def statsdCpp():
         sha256="e758e633326ff96144226c8b1cee13f96ca23339caa338c652e53061bcf4457a" ,
         strip_prefix="statsd-cpp-abed359419ebd9ff8d8374c46e6d209c2619d8e0" ,
         urls = [
-            "https://github.com/Unilang/statsd-cpp/archive/abed359419ebd9ff8d8374c46e6d209c2619d8e0.tar.gz",
+            main_mirror_url("statsd-cpp","abed359419ebd9ff8d8374c46e6d209c2619d8e0"),
         ],        patch_cmds = [
             "mv include/version.hpp.in include/version.hpp",
         ],

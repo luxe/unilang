@@ -13,6 +13,6 @@ def glut():
         sha256="e1d4e2d38aad559c329859a0dc45c8fc8ff3ec5a1001587d5ca3d7a2b57f9a38" ,
         strip_prefix="glut-8cd96cb440f1f2fac3a154227937be39d06efa53" ,
         urls = [
-            "https://github.com/Unilang/glut/archive/8cd96cb440f1f2fac3a154227937be39d06efa53.tar.gz",
+            main_mirror_url("glut","8cd96cb440f1f2fac3a154227937be39d06efa53"),
         ],
     )

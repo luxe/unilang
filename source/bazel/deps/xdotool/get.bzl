@@ -13,7 +13,7 @@ def xdotool():
         sha256="ad218add49f48979b8e21c2ee7609c97cc24771f4fee63118b28b9ac801483a0" ,
         strip_prefix="xdotool-a7903d0fdad57e12209b77d9126587a6f9aa87dc" ,
         urls = [
-            "https://github.com/Unilang/xdotool/archive/a7903d0fdad57e12209b77d9126587a6f9aa87dc.tar.gz",
+            main_mirror_url("xdotool","a7903d0fdad57e12209b77d9126587a6f9aa87dc"),
         ],        patches = [
             "//bazel/deps/xdotool/patches:p1.patch",
         ],

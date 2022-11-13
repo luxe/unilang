@@ -13,6 +13,6 @@ def freetype2():
         sha256="21773ee5ff55565cda9e9beae39eb36d966079dd1c73085320c0c73328e728a7" ,
         strip_prefix="freetype2-fbbcf50367403a6316a013b51690071198962920" ,
         urls = [
-            "https://github.com/Unilang/freetype2/archive/fbbcf50367403a6316a013b51690071198962920.tar.gz",
+            main_mirror_url("freetype2","fbbcf50367403a6316a013b51690071198962920"),
         ],
     )

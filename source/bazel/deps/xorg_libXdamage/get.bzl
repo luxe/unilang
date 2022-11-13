@@ -13,7 +13,7 @@ def xorgLibXdamage():
         sha256="5639c66abeb72dd34870ceac33666a485a1180bb752f6422e22dc7a090875c66" ,
         strip_prefix="xorg-libXdamage-8c8f9c1e356e9481fdf5a7bd1927dbfdac196310" ,
         urls = [
-            "https://github.com/Unilang/xorg-libXdamage/archive/8c8f9c1e356e9481fdf5a7bd1927dbfdac196310.tar.gz",
+            main_mirror_url("xorg-libXdamage","8c8f9c1e356e9481fdf5a7bd1927dbfdac196310"),
         ],        patches = [
             "//bazel/deps/xorg_libXdamage/patches:p1.patch",
         ],

@@ -13,6 +13,6 @@ def sqliteModernCpp():
         sha256="ca9d11dbf012b17f59dc1f2a053fc2af418ccdc49354d4479805224b6c1a07e0" ,
         strip_prefix="sqlite_modern_cpp-34f9b076348d731e0f952a8ff264a26230ce287b" ,
         urls = [
-            "https://github.com/Unilang/sqlite_modern_cpp/archive/34f9b076348d731e0f952a8ff264a26230ce287b.tar.gz",
+            main_mirror_url("sqlite_modern_cpp","34f9b076348d731e0f952a8ff264a26230ce287b"),
         ],
     )

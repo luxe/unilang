@@ -13,7 +13,7 @@ def xorgLibXcursor():
         sha256="2d38e476bd958d420b05d702bf07f81e8167bc920e0ff160c1f06b411b4941fb" ,
         strip_prefix="xorg-libXcursor-75b10c972d15c036a692ef4590a81a6c54d384f6" ,
         urls = [
-            "https://github.com/Unilang/xorg-libXcursor/archive/75b10c972d15c036a692ef4590a81a6c54d384f6.tar.gz",
+            main_mirror_url("xorg-libXcursor","75b10c972d15c036a692ef4590a81a6c54d384f6"),
         ],        patches = [
             "//bazel/deps/xorg_libXcursor/patches:p1.patch",
         ],

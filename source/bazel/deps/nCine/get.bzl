@@ -13,6 +13,6 @@ def nCine():
         sha256="78964d315e2da1f42f8597c5cd21137015c326bec6bc7fdb128dc86ed3ace285" ,
         strip_prefix="nCine-43f5fe8e82e9daa21e4d1feea9ca41ed4cce7454" ,
         urls = [
-            "https://github.com/Unilang/nCine/archive/43f5fe8e82e9daa21e4d1feea9ca41ed4cce7454.tar.gz",
+            main_mirror_url("nCine","43f5fe8e82e9daa21e4d1feea9ca41ed4cce7454"),
         ],
     )

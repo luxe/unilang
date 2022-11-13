@@ -13,6 +13,6 @@ def glm():
         sha256="51b79f24e75bc239dcec184f0c349b093482ddf12cbd3e255776106ac083e4ff" ,
         strip_prefix="glm-67d647ae4645a9787c1f87efa3279e8ec5f506e3" ,
         urls = [
-            "https://github.com/Unilang/glm/archive/67d647ae4645a9787c1f87efa3279e8ec5f506e3.tar.gz",
+            main_mirror_url("glm","67d647ae4645a9787c1f87efa3279e8ec5f506e3"),
         ],
     )

@@ -13,6 +13,6 @@ def corange():
         sha256="5a57e417b722d67b6297419e156f179aa1968186deeff306462447d66e454b7a" ,
         strip_prefix="Corange-3c99c2e25c338b27ee831406aaed0159ec3a77a2" ,
         urls = [
-            "https://github.com/Unilang/Corange/archive/3c99c2e25c338b27ee831406aaed0159ec3a77a2.tar.gz",
+            main_mirror_url("Corange","3c99c2e25c338b27ee831406aaed0159ec3a77a2"),
         ],
     )

@@ -13,6 +13,6 @@ def tree():
         sha256="0781e19d4279cb1ca0b088496050f10c80e9533e4da83d7aa307f99fa46a2c7f" ,
         strip_prefix="tree.hh-c0201bbd57e5711a0de87af31c54b68c64818131" ,
         urls = [
-            "https://github.com/Unilang/tree.hh/archive/c0201bbd57e5711a0de87af31c54b68c64818131.tar.gz",
+            main_mirror_url("tree.hh","c0201bbd57e5711a0de87af31c54b68c64818131"),
         ],
     )

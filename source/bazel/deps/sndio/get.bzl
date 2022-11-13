@@ -13,6 +13,6 @@ def sndio():
         sha256="340c194ac170c256917741d56d019b21b4d0d3405747155fc514d14521cf3887" ,
         strip_prefix="sndio-4ac8a8cae7585ce9f7eb5bf8cbaa85b0c7939fb1" ,
         urls = [
-            "https://github.com/Unilang/sndio/archive/4ac8a8cae7585ce9f7eb5bf8cbaa85b0c7939fb1.tar.gz",
+            main_mirror_url("sndio","4ac8a8cae7585ce9f7eb5bf8cbaa85b0c7939fb1"),
         ],
     )

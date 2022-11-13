@@ -13,7 +13,7 @@ def ncurses():
         sha256="a76cc838501ae16392bf748242fabe1108a479a9c5e8a6f905954e619c919f2a" ,
         strip_prefix="ncurses-9193d076200365eeb5ff932acdbbdcc5e452292c" ,
         urls = [
-            "https://github.com/Unilang/ncurses/archive/9193d076200365eeb5ff932acdbbdcc5e452292c.tar.gz",
+            main_mirror_url("ncurses","9193d076200365eeb5ff932acdbbdcc5e452292c"),
         ],        patches = [
             "//bazel/deps/ncurses/patches:p1.patch",
         ],

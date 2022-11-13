@@ -12,6 +12,6 @@ def abseil():
         sha256="8deb6cb2b38c407b57afc64cc1b7e6e97f4b6af31fd9094c20d3b5e627d4d30c" ,
         strip_prefix="abseil-cpp-2b403ec754ec342311720467277c346e413e3438" ,
         urls = [
-            "https://github.com/Unilang/abseil-cpp/archive/2b403ec754ec342311720467277c346e413e3438.tar.gz",
+            main_mirror_url("abseil-cpp","2b403ec754ec342311720467277c346e413e3438"),
         ],
     )

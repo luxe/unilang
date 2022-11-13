@@ -13,6 +13,6 @@ def cairo():
         sha256="b1d1344b33f72fc239227e58d98acbe500946a520671e239ae3de89c7a72027d" ,
         strip_prefix="cairo-cbc241d338ca7bf927a7cfe23cb15c58491373e0" ,
         urls = [
-            "https://github.com/Unilang/cairo/archive/cbc241d338ca7bf927a7cfe23cb15c58491373e0.tar.gz",
+            main_mirror_url("cairo","cbc241d338ca7bf927a7cfe23cb15c58491373e0"),
         ],
     )

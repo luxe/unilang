@@ -13,6 +13,6 @@ def nameof():
         sha256="b0fd0ce9bd04153c9efa14922feba675921ec3fa54f98ab0269a417e77c1b52f" ,
         strip_prefix="nameof-7e974384b2f2215f183d89988df2693efeeddd51" ,
         urls = [
-            "https://github.com/Unilang/nameof/archive/7e974384b2f2215f183d89988df2693efeeddd51.tar.gz",
+            main_mirror_url("nameof","7e974384b2f2215f183d89988df2693efeeddd51"),
         ],
     )

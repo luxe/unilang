@@ -13,7 +13,7 @@ def ibus():
         sha256="d2fee505277e2d168678ad49eaf91f57203cb4ef68c843981faca7f15e67500c" ,
         strip_prefix="ibus-f591381e3c892947ecaffe9131b9039ab9014498" ,
         urls = [
-            "https://github.com/Unilang/ibus/archive/f591381e3c892947ecaffe9131b9039ab9014498.tar.gz",
+            main_mirror_url("ibus","f591381e3c892947ecaffe9131b9039ab9014498"),
         ],        patches = [
             "//bazel/deps/ibus/patches:config.patch",
             "//bazel/deps/ibus/patches:src_gen.patch",

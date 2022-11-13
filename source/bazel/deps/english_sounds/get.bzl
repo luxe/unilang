@@ -13,6 +13,6 @@ def englishSounds():
         sha256="b30fd69cbcbf9afef6b6bb92d7729eb9f809f3436b558cfff38689a263053335" ,
         strip_prefix="english_sounds-0fdbe05b76b93732c97573148412a2bfbc4bd7fa" ,
         urls = [
-            "https://github.com/Unilang/english_sounds/archive/0fdbe05b76b93732c97573148412a2bfbc4bd7fa.tar.gz",
+            main_mirror_url("english_sounds","0fdbe05b76b93732c97573148412a2bfbc4bd7fa"),
         ],
     )

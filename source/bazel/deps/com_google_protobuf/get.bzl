@@ -12,7 +12,7 @@ def comGoogleProtobuf():
         sha256="4245a2b7e5efc52a78ac7ca5f5da4f3f174f9c252d9b4f4423ff03119149abb0" ,
         strip_prefix="protobuf-bddf35da5afb2f27e30febfb72a75295a1b7bc04" ,
         urls = [
-            "https://github.com/Unilang/protobuf/archive/bddf35da5afb2f27e30febfb72a75295a1b7bc04.tar.gz",
+            main_mirror_url("protobuf","bddf35da5afb2f27e30febfb72a75295a1b7bc04"),
         ],        repo_mapping = {
             "@com_google_absl" : "@abseil",
         },

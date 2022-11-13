@@ -13,7 +13,7 @@ def bloomfilter():
         sha256="45317ecb4175eab26fbac3321aa3dadc9de682bce60e64b8b254caf5f931d5af" ,
         strip_prefix="bloomfilter-a8deacb0289779edee4682124bc348910e1c44c0" ,
         urls = [
-            "https://github.com/Unilang/bloomfilter/archive/a8deacb0289779edee4682124bc348910e1c44c0.tar.gz",
+            main_mirror_url("bloomfilter","a8deacb0289779edee4682124bc348910e1c44c0"),
         ],        patches = [
             "//bazel/deps/bloomfilter/patches:p1.patch",
         ],

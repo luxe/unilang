@@ -13,6 +13,6 @@ def csv():
         sha256="148640bf0cad34c5b6e6886cfea03cd79fe33d67606f18668012ecdb070fd9f0" ,
         strip_prefix="csv-13e04e5b31b585855c7d7e7f3c65e47ae863569b" ,
         urls = [
-            "https://github.com/Unilang/csv/archive/13e04e5b31b585855c7d7e7f3c65e47ae863569b.tar.gz",
+            main_mirror_url("csv","13e04e5b31b585855c7d7e7f3c65e47ae863569b"),
         ],
     )

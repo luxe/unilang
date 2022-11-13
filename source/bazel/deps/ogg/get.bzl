@@ -13,7 +13,7 @@ def ogg():
         sha256="727861aa1796ec1c630477d736856dabb438b04dca31a8a74a9f426e22eef029" ,
         strip_prefix="ogg-0bbcba4e7cf32324170470569c4527ffd0002870" ,
         urls = [
-            "https://github.com/Unilang/ogg/archive/0bbcba4e7cf32324170470569c4527ffd0002870.tar.gz",
+            main_mirror_url("ogg","0bbcba4e7cf32324170470569c4527ffd0002870"),
         ],        patches = [
             "//bazel/deps/ogg/patches:p1.patch",
         ],

@@ -12,6 +12,6 @@ def rulesPkg():
         sha256="8dd026880cccdae2ac46cd520576c6d989f604d6c55fa39e58103a1145d691f3" ,
         strip_prefix="rules_pkg-914b0e5ef85bef5d464707a95f88f384570b2456" ,
         urls = [
-            "https://github.com/Unilang/rules_pkg/archive/914b0e5ef85bef5d464707a95f88f384570b2456.tar.gz",
+            main_mirror_url("rules_pkg","914b0e5ef85bef5d464707a95f88f384570b2456"),
         ],
     )

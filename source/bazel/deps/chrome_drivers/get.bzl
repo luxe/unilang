@@ -13,6 +13,6 @@ def chromeDrivers():
         sha256="0114af2c9bd94c3b376400fe4521de1b783d5396afde3e9d4751313304db8b9b" ,
         strip_prefix="chrome-drivers-bde0941ca2e9821a9c35a2bdbdd897ad0e586886" ,
         urls = [
-            "https://github.com/Unilang/chrome-drivers/archive/bde0941ca2e9821a9c35a2bdbdd897ad0e586886.tar.gz",
+            main_mirror_url("chrome-drivers","bde0941ca2e9821a9c35a2bdbdd897ad0e586886"),
         ],
     )

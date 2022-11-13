@@ -13,7 +13,7 @@ def xorgLibSM():
         sha256="d75853ecf1c8e46a3a3cb4441e70e5264f17cd1ced6646db81e3276d65720d74" ,
         strip_prefix="xorg-libSM-b347e9f8ef3ae027c049741ab5c0c8dac45c9eb2" ,
         urls = [
-            "https://github.com/Unilang/xorg-libSM/archive/b347e9f8ef3ae027c049741ab5c0c8dac45c9eb2.tar.gz",
+            main_mirror_url("xorg-libSM","b347e9f8ef3ae027c049741ab5c0c8dac45c9eb2"),
         ],        patches = [
             "//bazel/deps/xorg_libSM/patches:p1.patch",
         ],

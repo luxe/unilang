@@ -13,6 +13,6 @@ def parallelHashmap():
         sha256="2caccf932870dace92d53a481e00c1011d5fee44d4ead618aa1f69441a237dea" ,
         strip_prefix="parallel-hashmap-87cbc5ad5322ecadd0caf44e7d89ef7d549ffb95" ,
         urls = [
-            "https://github.com/Unilang/parallel-hashmap/archive/87cbc5ad5322ecadd0caf44e7d89ef7d549ffb95.tar.gz",
+            main_mirror_url("parallel-hashmap","87cbc5ad5322ecadd0caf44e7d89ef7d549ffb95"),
         ],
     )

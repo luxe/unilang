@@ -13,6 +13,6 @@ def littleBigInt():
         sha256="2010b3c97591cd2208017b994cb3a6fece6e8bdb0815d54e3690fac77f8efa95" ,
         strip_prefix="little-big-int-6db1f7cba88a7dccf02008118b57e780a89a2361" ,
         urls = [
-            "https://github.com/Unilang/little-big-int/archive/6db1f7cba88a7dccf02008118b57e780a89a2361.tar.gz",
+            main_mirror_url("little-big-int","6db1f7cba88a7dccf02008118b57e780a89a2361"),
         ],
     )

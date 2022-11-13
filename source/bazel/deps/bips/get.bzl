@@ -13,6 +13,6 @@ def bips():
         sha256="21c8a09b294268556851a254dd92a8777d6d308a2fc29bc106cab37c42d9ce9f" ,
         strip_prefix="bips-bd943663d6908679ca4f94276589ef402f865739" ,
         urls = [
-            "https://github.com/Unilang/bips/archive/bd943663d6908679ca4f94276589ef402f865739.tar.gz",
+            main_mirror_url("bips","bd943663d6908679ca4f94276589ef402f865739"),
         ],
     )

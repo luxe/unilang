@@ -13,7 +13,7 @@ def imtui():
         sha256="a3c857905567255f2329593f98c86044c6ca1f8ee335f31205b0deefbd3ebf00" ,
         strip_prefix="imtui-f4d4b1eb8e57770a7c329b8dc76127013fa31a11" ,
         urls = [
-            "https://github.com/Unilang/imtui/archive/f4d4b1eb8e57770a7c329b8dc76127013fa31a11.tar.gz",
+            main_mirror_url("imtui","f4d4b1eb8e57770a7c329b8dc76127013fa31a11"),
         ],        patch_cmds = [
             "find . -type f -name '*.h' -exec sed -i 's/imgui\\/imgui/imgui/g' {} \\;",
             "find . -type f -name '*.h' -exec sed -i 's/<ncurses.h>/<curses.h>/g' {} \\;",

@@ -13,6 +13,6 @@ def hashLib4CPP():
         sha256="b2bf7eec9cbe593b16104ffe9e200f51b33fa0e70b10a047cc9c90b17d5aa4ce" ,
         strip_prefix="HashLib4CPP-ec6c056df3a9093e731d9a3d60e429554783089e" ,
         urls = [
-            "https://github.com/Unilang/HashLib4CPP/archive/ec6c056df3a9093e731d9a3d60e429554783089e.tar.gz",
+            main_mirror_url("HashLib4CPP","ec6c056df3a9093e731d9a3d60e429554783089e"),
         ],
     )

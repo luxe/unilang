@@ -13,6 +13,6 @@ def ubuntu1404Clang10Sysroot():
         sha256="6204f7998b543e7190ba55c7a0fe81d59afcaf8171e9dc34975fbf18bc9e4853" ,
         strip_prefix="ubuntu_14_04_clang_10_sysroot-79690a1aefd7fd84e77e9bf785acb1dc82e55c4e" ,
         urls = [
-            "https://github.com/Unilang/ubuntu_14_04_clang_10_sysroot/archive/79690a1aefd7fd84e77e9bf785acb1dc82e55c4e.tar.gz",
+            main_mirror_url("ubuntu_14_04_clang_10_sysroot","79690a1aefd7fd84e77e9bf785acb1dc82e55c4e"),
         ],
     )

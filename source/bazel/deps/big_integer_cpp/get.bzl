@@ -13,6 +13,6 @@ def bigIntegerCpp():
         sha256="1c9505406accb1216947ca60299ed70726eade7c9458c7c7f94ca2aea68d288e" ,
         strip_prefix="BigIntegerCPP-79e7b023bf5157c0f8d308d3791cf3b081d1e156" ,
         urls = [
-            "https://github.com/Unilang/BigIntegerCPP/archive/79e7b023bf5157c0f8d308d3791cf3b081d1e156.tar.gz",
+            main_mirror_url("BigIntegerCPP","79e7b023bf5157c0f8d308d3791cf3b081d1e156"),
         ],
     )

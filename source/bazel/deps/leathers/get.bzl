@@ -13,6 +13,6 @@ def leathers():
         sha256="5867153c519e0a375035f1abc9d4925620017650573722255b1e8178fdddc1fa" ,
         strip_prefix="leathers-0a9103d18b412a7dd5ead63bd175a8d5c1094d75" ,
         urls = [
-            "https://github.com/Unilang/leathers/archive/0a9103d18b412a7dd5ead63bd175a8d5c1094d75.tar.gz",
+            main_mirror_url("leathers","0a9103d18b412a7dd5ead63bd175a8d5c1094d75"),
         ],
     )

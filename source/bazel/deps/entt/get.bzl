@@ -13,6 +13,6 @@ def entt():
         sha256="0d8466250334485374c38c92d1cb822932898119ffb729fd41c3e84e6e99c6e7" ,
         strip_prefix="entt-688e6ad79fcc443d395351f15e447005b668d8dc" ,
         urls = [
-            "https://github.com/Unilang/entt/archive/688e6ad79fcc443d395351f15e447005b668d8dc.tar.gz",
+            main_mirror_url("entt","688e6ad79fcc443d395351f15e447005b668d8dc"),
         ],
     )

@@ -13,7 +13,7 @@ def x11():
         sha256="b422eaeaf9c62d8a8fd344d29e21a31dc7f6b50d0005f0d25daf6006230c41ad" ,
         strip_prefix="xorg-libX11-b8766a438461e20b5c6f7a6111b703d4cb71501f" ,
         urls = [
-            "https://github.com/Unilang/xorg-libX11/archive/b8766a438461e20b5c6f7a6111b703d4cb71501f.tar.gz",
+            main_mirror_url("xorg-libX11","b8766a438461e20b5c6f7a6111b703d4cb71501f"),
         ],        patches = [
             "//bazel/deps/x11/patches:ks_tables.patch",
             "//bazel/deps/x11/patches:config.patch",

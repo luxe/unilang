@@ -13,6 +13,6 @@ def nlohmannJson():
         sha256="1f4217bb75eff1c38d4fe85494303e733c93aa5075c5fbfae9d76c54ee2b3089" ,
         strip_prefix="json-21516f2bae552a49cc1ba1c11746be3730361d8d" ,
         urls = [
-            "https://github.com/Unilang/json/archive/21516f2bae552a49cc1ba1c11746be3730361d8d.tar.gz",
+            main_mirror_url("json","21516f2bae552a49cc1ba1c11746be3730361d8d"),
         ],
     )

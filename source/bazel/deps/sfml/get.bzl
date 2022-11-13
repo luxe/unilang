@@ -13,7 +13,7 @@ def sfml():
         sha256="6b013624aa9a916da2d37180772031e963098494538f59a14f40e00db23c9077" ,
         strip_prefix="SFML-257e50beb886f1edebeebbde1903169da4eca39f" ,
         urls = [
-            "https://github.com/Unilang/SFML/archive/257e50beb886f1edebeebbde1903169da4eca39f.tar.gz",
+            main_mirror_url("SFML","257e50beb886f1edebeebbde1903169da4eca39f"),
         ],        patch_cmds = [
             "sed -i 's/.*m_key(0).*/ptr(nullptr)/' src/SFML/System/Unix/ThreadLocalImpl.cpp",
             "sed -i 's/.*pthread_key_create.*/ptr = nullptr;/' src/SFML/System/Unix/ThreadLocalImpl.cpp",

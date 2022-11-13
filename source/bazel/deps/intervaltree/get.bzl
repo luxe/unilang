@@ -13,6 +13,6 @@ def intervaltree():
         sha256="32dcbabbfbd870dcfb64675b8d47fa6b718d4b87de6ebac9cbdc792d0fc182d4" ,
         strip_prefix="intervaltree-e8082c74a6f5c18de99d8b4cc4a55e2e62a1150d" ,
         urls = [
-            "https://github.com/Unilang/intervaltree/archive/e8082c74a6f5c18de99d8b4cc4a55e2e62a1150d.tar.gz",
+            main_mirror_url("intervaltree","e8082c74a6f5c18de99d8b4cc4a55e2e62a1150d"),
         ],
     )

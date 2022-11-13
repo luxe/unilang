@@ -13,6 +13,6 @@ def deathHandler():
         sha256="b67c3f7a2fa6bd42588f231dc9de61a2d49b2bbab61735000ef05b2bfa272ad9" ,
         strip_prefix="DeathHandler-6b8599b81d54734e42f09c146cbde1049f1e8b69" ,
         urls = [
-            "https://github.com/Unilang/DeathHandler/archive/6b8599b81d54734e42f09c146cbde1049f1e8b69.tar.gz",
+            main_mirror_url("DeathHandler","6b8599b81d54734e42f09c146cbde1049f1e8b69"),
         ],
     )

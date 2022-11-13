@@ -13,6 +13,6 @@ def tuple():
         sha256="42b2dbe0bc94085aeacf1c246bdcca6ce63ffe7388951e64eb0eaadf97e937cb" ,
         strip_prefix="tuple-ceeceea5833260f22de3d7f44528adfe32c20639" ,
         urls = [
-            "https://github.com/Unilang/tuple/archive/ceeceea5833260f22de3d7f44528adfe32c20639.tar.gz",
+            main_mirror_url("tuple","ceeceea5833260f22de3d7f44528adfe32c20639"),
         ],
     )

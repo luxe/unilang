@@ -13,6 +13,6 @@ def opencvExtra():
         sha256="97617893f02afa2eb614ef354513f385c94767c5d1ba71eea148747f13ac838c" ,
         strip_prefix="opencv_extra-b540994702a410614ac7bf00ecd8a790eff6d0fd" ,
         urls = [
-            "https://github.com/Unilang/opencv_extra/archive/b540994702a410614ac7bf00ecd8a790eff6d0fd.tar.gz",
+            main_mirror_url("opencv_extra","b540994702a410614ac7bf00ecd8a790eff6d0fd"),
         ],
     )

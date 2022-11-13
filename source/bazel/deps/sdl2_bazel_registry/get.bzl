@@ -12,6 +12,6 @@ def sdl2BazelRegistry():
         sha256="2f3009e9a7c5ccd9c4dafb111252e27293c2bbb2b704e75df7ba1161d11a0696" ,
         strip_prefix="sdl2-ffccd0be0f102cc628bb71cd52cbc1fbd27dac62" ,
         urls = [
-            "https://github.com/Unilang/sdl2/archive/ffccd0be0f102cc628bb71cd52cbc1fbd27dac62.tar.gz",
+            main_mirror_url("sdl2","ffccd0be0f102cc628bb71cd52cbc1fbd27dac62"),
         ],
     )

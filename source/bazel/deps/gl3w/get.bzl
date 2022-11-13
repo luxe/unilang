@@ -13,7 +13,7 @@ def gl3w():
         sha256="399cab5d702a80e281c8e37fe1b3abc9d9a3517502c72053e16e75afaaa0dd35" ,
         strip_prefix="gl3w-7729692af8a2322cddb636b90393a42c130b1c85" ,
         urls = [
-            "https://github.com/Unilang/gl3w/archive/7729692af8a2322cddb636b90393a42c130b1c85.tar.gz",
+            main_mirror_url("gl3w","7729692af8a2322cddb636b90393a42c130b1c85"),
         ],        patches = [
             "//bazel/deps/gl3w/patches:p1.patch",
         ],

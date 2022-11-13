@@ -13,7 +13,7 @@ def gmp():
         sha256="341237cd00ec7b72f609d8246569ceda322992efcee853ac21c43ce8bf310de9" ,
         strip_prefix="GMP-cc09e59afe9a23de9e7d0ef10598a395d7e8c850" ,
         urls = [
-            "https://github.com/Unilang/GMP/archive/cc09e59afe9a23de9e7d0ef10598a395d7e8c850.tar.gz",
+            main_mirror_url("GMP","cc09e59afe9a23de9e7d0ef10598a395d7e8c850"),
         ],        patches = [
             "//bazel/deps/gmp/patches:p1.patch",
         ],

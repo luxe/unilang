@@ -13,6 +13,6 @@ def monocypher():
         sha256="7b57f854379a7743c21f8a0836081cf05dd2b126f285f576921f2044dd13d4ad" ,
         strip_prefix="monocypher-45524e41fc84054b0e15304195fa5d3b61e816b5" ,
         urls = [
-            "https://github.com/Unilang/monocypher/archive/45524e41fc84054b0e15304195fa5d3b61e816b5.tar.gz",
+            main_mirror_url("monocypher","45524e41fc84054b0e15304195fa5d3b61e816b5"),
         ],
     )

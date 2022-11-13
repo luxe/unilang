@@ -13,6 +13,6 @@ def hiberlite():
         sha256="6b290db813962e2bfc571d16d8d346916cf923cef128205ff18478e37d006586" ,
         strip_prefix="hiberlite-ffd558a4917b33668d1001b4bba8e11b508be06a" ,
         urls = [
-            "https://github.com/Unilang/hiberlite/archive/ffd558a4917b33668d1001b4bba8e11b508be06a.tar.gz",
+            main_mirror_url("hiberlite","ffd558a4917b33668d1001b4bba8e11b508be06a"),
         ],
     )

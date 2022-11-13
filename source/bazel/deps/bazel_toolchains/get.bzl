@@ -12,6 +12,6 @@ def bazelToolchains():
         sha256="8b344cef978d2079a797496b5e92142ce80f7d19ead64ca947b9adfd245812f3" ,
         strip_prefix="bazel-toolchains-1-463914fa8f1359e51458d11de8112815f6a035c5" ,
         urls = [
-            "https://github.com/Unilang/bazel-toolchains-1/archive/463914fa8f1359e51458d11de8112815f6a035c5.tar.gz",
+            main_mirror_url("bazel-toolchains-1","463914fa8f1359e51458d11de8112815f6a035c5"),
         ],
     )

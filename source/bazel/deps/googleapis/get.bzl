@@ -13,7 +13,7 @@ def googleapis():
         sha256="f7148954cca82a36aded3e676142a293841c0057299183b0551568062176a8d2" ,
         strip_prefix="googleapis-013b7e1debee1257b07de01af2d71306f83f42ac" ,
         urls = [
-            "https://github.com/Unilang/googleapis/archive/013b7e1debee1257b07de01af2d71306f83f42ac.tar.gz",
+            main_mirror_url("googleapis","013b7e1debee1257b07de01af2d71306f83f42ac"),
         ],        patch_cmds = [
             "find . -name 'WORKSPACE' -type f -delete",
             "find . -name 'BUILD' -type f -delete",

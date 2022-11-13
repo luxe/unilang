@@ -12,6 +12,6 @@ def platforms():
         sha256="4ff3cd591c8c940004f69d91e683a9a02882dbc7a3a5da1444242ca91bc87b57" ,
         strip_prefix="platforms-f0f4da70368b2342a00443f230bb66d9093bb58b" ,
         urls = [
-            "https://github.com/Unilang/platforms/archive/f0f4da70368b2342a00443f230bb66d9093bb58b.tar.gz",
+            main_mirror_url("platforms","f0f4da70368b2342a00443f230bb66d9093bb58b"),
         ],
     )

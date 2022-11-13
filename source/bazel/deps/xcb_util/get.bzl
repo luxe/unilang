@@ -13,7 +13,7 @@ def xcbUtil():
         sha256="fad7112b1f325fd1da26083e0765e1c9746b9910d9f39291aeffdb14ed278078" ,
         strip_prefix="xcb-util-e3d56200f322c6e25a80381d27fe37205826a4c1" ,
         urls = [
-            "https://github.com/Unilang/xcb-util/archive/e3d56200f322c6e25a80381d27fe37205826a4c1.tar.gz",
+            main_mirror_url("xcb-util","e3d56200f322c6e25a80381d27fe37205826a4c1"),
         ],        patches = [
             "//bazel/deps/xcb_util/patches:p1.patch",
         ],

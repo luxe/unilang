@@ -12,7 +12,7 @@ def glog():
         sha256="bae42ec37b50e156071f5b92d2ff09aa5ece56fd8c58d2175fc1ffea85137664" ,
         strip_prefix="glog-0a2e5931bd5ff22fd3bf8999eb8ce776f159cda6" ,
         urls = [
-            "https://github.com/Unilang/glog/archive/0a2e5931bd5ff22fd3bf8999eb8ce776f159cda6.tar.gz",
+            main_mirror_url("glog","0a2e5931bd5ff22fd3bf8999eb8ce776f159cda6"),
         ],        repo_mapping = {
             "@com_github_gflags_gflags" : "@gflags",
         },

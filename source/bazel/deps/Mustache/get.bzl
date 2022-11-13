@@ -13,6 +13,6 @@ def mustache():
         sha256="cf568d7c56ed17ddcbcf40664a8303a24ba868c30b8916d3490bec5af77e33f8" ,
         strip_prefix="Mustache-c34f602c8014677da7e6bec48b8e913e832a6868" ,
         urls = [
-            "https://github.com/Unilang/Mustache/archive/c34f602c8014677da7e6bec48b8e913e832a6868.tar.gz",
+            main_mirror_url("Mustache","c34f602c8014677da7e6bec48b8e913e832a6868"),
         ],
     )

@@ -13,6 +13,6 @@ def libbf():
         sha256="09c868ef3dc62fb81d7128e8c3c0f9bb1de603192af7e83f25bf414598867bcb" ,
         strip_prefix="libbf-5478275d8a4e9a5cc163b44c34517c515bd898ec" ,
         urls = [
-            "https://github.com/Unilang/libbf/archive/5478275d8a4e9a5cc163b44c34517c515bd898ec.tar.gz",
+            main_mirror_url("libbf","5478275d8a4e9a5cc163b44c34517c515bd898ec"),
         ],
     )

@@ -13,6 +13,6 @@ def swoosh():
         sha256="d84923d4ab6fcbe293cc1b5fe88492011e9bfea6abca93293aa8361b82e4ab41" ,
         strip_prefix="Swoosh-249785d9a0365e52cb81eb63790a7b8b15105bec" ,
         urls = [
-            "https://github.com/Unilang/Swoosh/archive/249785d9a0365e52cb81eb63790a7b8b15105bec.tar.gz",
+            main_mirror_url("Swoosh","249785d9a0365e52cb81eb63790a7b8b15105bec"),
         ],
     )

@@ -13,7 +13,7 @@ def xorgLibXinerama():
         sha256="981e6d6ec2d5282ba8cc7234990ff1ee664607e835858c127bdb14ab3d0afc1d" ,
         strip_prefix="xorg-libXinerama-56777107b0c517ba58304d6a247bf65f7a27eb96" ,
         urls = [
-            "https://github.com/Unilang/xorg-libXinerama/archive/56777107b0c517ba58304d6a247bf65f7a27eb96.tar.gz",
+            main_mirror_url("xorg-libXinerama","56777107b0c517ba58304d6a247bf65f7a27eb96"),
         ],        patches = [
             "//bazel/deps/xorg_libXinerama/patches:p1.patch",
         ],

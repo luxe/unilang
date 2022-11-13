@@ -13,6 +13,6 @@ def ubuntu2004Clang11Sysroot():
         sha256="4d07d996b2fdd1381c3f1b940cf9d4a6bc9abb3923b7759672f8c47e2c165702" ,
         strip_prefix="ubuntu_20_04_clang_11_sysroot-be13d45d482ae05a0a6794fb71cb31b7e24bc90c" ,
         urls = [
-            "https://github.com/Unilang/ubuntu_20_04_clang_11_sysroot/archive/be13d45d482ae05a0a6794fb71cb31b7e24bc90c.tar.gz",
+            main_mirror_url("ubuntu_20_04_clang_11_sysroot","be13d45d482ae05a0a6794fb71cb31b7e24bc90c"),
         ],
     )

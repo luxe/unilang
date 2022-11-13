@@ -13,6 +13,6 @@ def snappy():
         sha256="455611dcee5470001aa6ebc84ddc195f91b0579f60f4aa7673beb4cd683c02b9" ,
         strip_prefix="snappy-156cd8939c5fba7fa68ae08db843377ecc07b4b5" ,
         urls = [
-            "https://github.com/Unilang/snappy/archive/156cd8939c5fba7fa68ae08db843377ecc07b4b5.tar.gz",
+            main_mirror_url("snappy","156cd8939c5fba7fa68ae08db843377ecc07b4b5"),
         ],
     )

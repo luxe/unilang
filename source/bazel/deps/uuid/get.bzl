@@ -13,7 +13,7 @@ def uuid():
         sha256="9283885688c5ab1c90c9e4072484b14937062a634632400a356ded8972317afd" ,
         strip_prefix="uuid-f895102e2ddaf86387a62c3544abb78c0a5cfbae" ,
         urls = [
-            "https://github.com/Unilang/uuid/archive/f895102e2ddaf86387a62c3544abb78c0a5cfbae.tar.gz",
+            main_mirror_url("uuid","f895102e2ddaf86387a62c3544abb78c0a5cfbae"),
         ],        patch_cmds = [
             "mv src uuid",
         ],

@@ -12,6 +12,6 @@ def googleapiCommonProtos():
         sha256="3cc5d56cf02dbf2e41022d84135cff48d0720d229b13806a6fc799b2ad3693c5" ,
         strip_prefix="api-common-protos-0fcae75a2c20a140137e3a9c48a87d15ceffabd7" ,
         urls = [
-            "https://github.com/Unilang/api-common-protos/archive/0fcae75a2c20a140137e3a9c48a87d15ceffabd7.tar.gz",
+            main_mirror_url("api-common-protos","0fcae75a2c20a140137e3a9c48a87d15ceffabd7"),
         ],
     )

@@ -13,7 +13,7 @@ def xcbUtilWm():
         sha256="b30675911336660c4af2ac50d89e29ad10b859bc9934c7eb74a6dc401d74dce5" ,
         strip_prefix="xcb__util-wm-24eb17df2e1245885e72c9d4bbb0a0f69f0700f2" ,
         urls = [
-            "https://github.com/Unilang/xcb__util-wm/archive/24eb17df2e1245885e72c9d4bbb0a0f69f0700f2.tar.gz",
+            main_mirror_url("xcb__util-wm","24eb17df2e1245885e72c9d4bbb0a0f69f0700f2"),
         ],        patches = [
             "//bazel/deps/xcb_util_wm/patches:p1.patch",
         ],

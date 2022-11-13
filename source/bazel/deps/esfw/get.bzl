@@ -13,6 +13,6 @@ def esfw():
         sha256="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" ,
         strip_prefix="esfw-f5f42f4b9a1c34512b779b2c5544ae42fdf97afa" ,
         urls = [
-            "https://github.com/Unilang/esfw/archive/f5f42f4b9a1c34512b779b2c5544ae42fdf97afa.tar.gz",
+            main_mirror_url("esfw","f5f42f4b9a1c34512b779b2c5544ae42fdf97afa"),
         ],
     )

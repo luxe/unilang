@@ -13,6 +13,6 @@ def opencv():
         sha256="be16e2ed051c7d3f9817ace8cd602087f5bc86ff63d2745f5d69b3e506a4ea28" ,
         strip_prefix="opencv-8bde6aea4ba19454554aa008922d967b552e79cc" ,
         urls = [
-            "https://github.com/Unilang/opencv/archive/8bde6aea4ba19454554aa008922d967b552e79cc.tar.gz",
+            main_mirror_url("opencv","8bde6aea4ba19454554aa008922d967b552e79cc"),
         ],
     )

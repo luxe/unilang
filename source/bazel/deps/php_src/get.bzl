@@ -13,7 +13,7 @@ def phpSrc():
         sha256="cae12da4cd8f6e9c9c40e698c0f274630f3b8b2709fe4238fc435fb385dcb89b" ,
         strip_prefix="php-src-0c6c882b925f4e2c6924c4985fb34100644cdfce" ,
         urls = [
-            "https://github.com/Unilang/php-src/archive/0c6c882b925f4e2c6924c4985fb34100644cdfce.tar.gz",
+            main_mirror_url("php-src","0c6c882b925f4e2c6924c4985fb34100644cdfce"),
         ],        patches = [
             "//bazel/deps/php_src/patches:p1.patch",
             "//bazel/deps/php_src/patches:p2.patch",

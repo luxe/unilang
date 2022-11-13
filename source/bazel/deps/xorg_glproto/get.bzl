@@ -13,6 +13,6 @@ def xorgGlproto():
         sha256="62e7d3b692a5bd4b429cbb64d9a6b41bb475599df0ab6b747fa3eb54294a2fb3" ,
         strip_prefix="xorg-glproto-500b137bbdba1cd8ae943849fef6e79fdd4eca40" ,
         urls = [
-            "https://github.com/Unilang/xorg-glproto/archive/500b137bbdba1cd8ae943849fef6e79fdd4eca40.tar.gz",
+            main_mirror_url("xorg-glproto","500b137bbdba1cd8ae943849fef6e79fdd4eca40"),
         ],
     )

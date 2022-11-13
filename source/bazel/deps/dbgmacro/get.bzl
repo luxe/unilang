@@ -13,6 +13,6 @@ def dbgMacro():
         sha256="570e0720c6c10583b85f7bc25f72f7c8a9cf4637456be2e5a835a598d8cb96a6" ,
         strip_prefix="dbg-macro-4f7a7a5555ccc3ef2bd41b8fba6acbfa9af701a8" ,
         urls = [
-            "https://github.com/Unilang/dbg-macro/archive/4f7a7a5555ccc3ef2bd41b8fba6acbfa9af701a8.tar.gz",
+            main_mirror_url("dbg-macro","4f7a7a5555ccc3ef2bd41b8fba6acbfa9af701a8"),
         ],
     )

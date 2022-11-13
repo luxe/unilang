@@ -13,6 +13,6 @@ def semver():
         sha256="31057740ff329914961566dc517f17ba431581b9ca01f9e856c1d5fc0bff1539" ,
         strip_prefix="semver-e19dee33b26049a85427ad187934f15409b237d0" ,
         urls = [
-            "https://github.com/Unilang/semver/archive/e19dee33b26049a85427ad187934f15409b237d0.tar.gz",
+            main_mirror_url("semver","e19dee33b26049a85427ad187934f15409b237d0"),
         ],
     )

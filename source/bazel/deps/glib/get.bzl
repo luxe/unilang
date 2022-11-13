@@ -13,7 +13,7 @@ def glib():
         sha256="80753e02bd0baddfa03807dccc6da4e063f272026f07fd0e05e17c6e5353b07e" ,
         strip_prefix="glib-2ba0f14b5298f49dcc3b376d2bdf6505b2c32bd3" ,
         urls = [
-            "https://github.com/Unilang/glib/archive/2ba0f14b5298f49dcc3b376d2bdf6505b2c32bd3.tar.gz",
+            main_mirror_url("glib","2ba0f14b5298f49dcc3b376d2bdf6505b2c32bd3"),
         ],        patches = [
             "//bazel/deps/glib/patches:glib_config.patch",
             "//bazel/deps/glib/patches:glib_config2.patch",

@@ -12,6 +12,6 @@ def ioBazelRulesGo():
         sha256="693542a4d8ed25eda1ebb3cae03330210ede99401b490dded05a0d47b8402baa" ,
         strip_prefix="rules_go-64bfa14993c7841aaefbbe1f1aecaad72f302974" ,
         urls = [
-            "https://github.com/Unilang/rules_go/archive/64bfa14993c7841aaefbbe1f1aecaad72f302974.tar.gz",
+            main_mirror_url("rules_go","64bfa14993c7841aaefbbe1f1aecaad72f302974"),
         ],
     )

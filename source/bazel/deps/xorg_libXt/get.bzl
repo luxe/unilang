@@ -13,7 +13,7 @@ def xorgLibXt():
         sha256="d154ab7b84da70d5df5cd7be6b2a6cd16f13524937c20c4ecfc28fcdcb253bfe" ,
         strip_prefix="xorg-libXt-51cbf52b7668ad46a428dabe8e79e6819e825b20" ,
         urls = [
-            "https://github.com/Unilang/xorg-libXt/archive/51cbf52b7668ad46a428dabe8e79e6819e825b20.tar.gz",
+            main_mirror_url("xorg-libXt","51cbf52b7668ad46a428dabe8e79e6819e825b20"),
         ],        patches = [
             "//bazel/deps/xorg_libXt/patches:p1.patch",
         ],

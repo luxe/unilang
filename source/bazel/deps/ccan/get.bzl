@@ -13,7 +13,7 @@ def ccan():
         sha256="c7f0e35d7edae36dd08d4ca1bcbc4d14a73086490b0af579b2ffe8df9d15d44f" ,
         strip_prefix="ccan-ec95c3c5f795ce9019809fec5578fabb22ec8c56" ,
         urls = [
-            "https://github.com/Unilang/ccan/archive/ec95c3c5f795ce9019809fec5578fabb22ec8c56.tar.gz",
+            main_mirror_url("ccan","ec95c3c5f795ce9019809fec5578fabb22ec8c56"),
         ],        patches = [
             "//bazel/deps/ccan/patches:p1.patch",
         ],

@@ -12,6 +12,6 @@ def buildBazelRulesApple():
         sha256="57c51d04282753458dc0066f187c4b5226c5e396a396e2279dfdc3d4362b3546" ,
         strip_prefix="rules_apple-d37fa4fb115632866ee9ec7416cdd2dbf6a7ef18" ,
         urls = [
-            "https://github.com/Unilang/rules_apple/archive/d37fa4fb115632866ee9ec7416cdd2dbf6a7ef18.tar.gz",
+            main_mirror_url("rules_apple","d37fa4fb115632866ee9ec7416cdd2dbf6a7ef18"),
         ],
     )

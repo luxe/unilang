@@ -13,7 +13,7 @@ def flac():
         sha256="96a46aba218bb65826a8a650eb2d4f3b4c207543d10fe2b5248d91a77ab10e18" ,
         strip_prefix="flac-ce6dd6b5732e319ef60716d9cc9af6a836a4011a" ,
         urls = [
-            "https://github.com/Unilang/flac/archive/ce6dd6b5732e319ef60716d9cc9af6a836a4011a.tar.gz",
+            main_mirror_url("flac","ce6dd6b5732e319ef60716d9cc9af6a836a4011a"),
         ],        patches = [
             "//bazel/deps/flac/patches:p1.patch",
         ],

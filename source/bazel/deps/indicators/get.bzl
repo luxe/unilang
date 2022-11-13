@@ -13,6 +13,6 @@ def indicators():
         sha256="4f051ff20f6f2f1d926ca322d18e74650de77d77b9d02c55fd804e1cd410f40a" ,
         strip_prefix="indicators-b85eadb47c1d0f0edbb4da9c3b6384ec6486b24a" ,
         urls = [
-            "https://github.com/Unilang/indicators/archive/b85eadb47c1d0f0edbb4da9c3b6384ec6486b24a.tar.gz",
+            main_mirror_url("indicators","b85eadb47c1d0f0edbb4da9c3b6384ec6486b24a"),
         ],
     )

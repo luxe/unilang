@@ -13,6 +13,6 @@ def wave():
         sha256="ac7be574beaef4e08a1c050f46ebcc7c185722d6d8d0d75bfeaf952221500afb" ,
         strip_prefix="wave-a782663d90b5a199e51ef59fc64bbe5a4aa02c38" ,
         urls = [
-            "https://github.com/Unilang/wave/archive/a782663d90b5a199e51ef59fc64bbe5a4aa02c38.tar.gz",
+            main_mirror_url("wave","a782663d90b5a199e51ef59fc64bbe5a4aa02c38"),
         ],
     )

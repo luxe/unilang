@@ -13,6 +13,6 @@ def gperf():
         sha256="a5125e935b2dbfe93f8329baa56699b27e46c15e16ce666973510a454e3c7ee0" ,
         strip_prefix="gperftools-9e5b1628737c67b4587f937164572774592978c4" ,
         urls = [
-            "https://github.com/Unilang/gperftools/archive/9e5b1628737c67b4587f937164572774592978c4.tar.gz",
+            main_mirror_url("gperftools","9e5b1628737c67b4587f937164572774592978c4"),
         ],
     )

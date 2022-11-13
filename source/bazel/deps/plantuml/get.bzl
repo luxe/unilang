@@ -13,6 +13,6 @@ def plantuml():
         sha256="684149be1def4fcb1c146ca07cfad0d0baec68014dc689dc32212d0b29db2949" ,
         strip_prefix="plantuml-9ba7d08d5247cac5ec47a5f0052da3aaad0e8479" ,
         urls = [
-            "https://github.com/Unilang/plantuml/archive/9ba7d08d5247cac5ec47a5f0052da3aaad0e8479.tar.gz",
+            main_mirror_url("plantuml","9ba7d08d5247cac5ec47a5f0052da3aaad0e8479"),
         ],
     )

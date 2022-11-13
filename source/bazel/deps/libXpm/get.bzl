@@ -13,7 +13,7 @@ def libXpm():
         sha256="56c3d912c1125a42d85ef3829f5d7f45fc9a147786bd4f93783780e868d4a255" ,
         strip_prefix="libXpm-42ca8d956276bc00bec09e410d76daf053ae35f9" ,
         urls = [
-            "https://github.com/Unilang/libXpm/archive/42ca8d956276bc00bec09e410d76daf053ae35f9.tar.gz",
+            main_mirror_url("libXpm","42ca8d956276bc00bec09e410d76daf053ae35f9"),
         ],        patches = [
             "//bazel/deps/libXpm/patches:p1.patch",
         ],

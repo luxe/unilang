@@ -13,6 +13,6 @@ def libbase58():
         sha256="73b4c9bbb2002f781df6b92e40a5ed2b38ef74dfbf90ce83dc6e18af52e7a4b8" ,
         strip_prefix="libbase58-b1dd03fa8d1be4be076bb6152325c6b5cf64f678" ,
         urls = [
-            "https://github.com/Unilang/libbase58/archive/b1dd03fa8d1be4be076bb6152325c6b5cf64f678.tar.gz",
+            main_mirror_url("libbase58","b1dd03fa8d1be4be076bb6152325c6b5cf64f678"),
         ],
     )

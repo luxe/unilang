@@ -13,6 +13,6 @@ def visitStruct():
         sha256="ded2088b102ec566ba6db1b444e1ff823960d901d8bfd38156ef0211a5da38ea" ,
         strip_prefix="visit_struct-8c91d2283c7050593df5b692a13cb0ea99ba81d5" ,
         urls = [
-            "https://github.com/Unilang/visit_struct/archive/8c91d2283c7050593df5b692a13cb0ea99ba81d5.tar.gz",
+            main_mirror_url("visit_struct","8c91d2283c7050593df5b692a13cb0ea99ba81d5"),
         ],
     )

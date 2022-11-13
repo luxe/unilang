@@ -13,6 +13,6 @@ def bloom():
         sha256="e13157aa4c0bd9bd6a23ffde21e3964dda0465e5e02bed774002dd9ddc0b5e3f" ,
         strip_prefix="bloom-7309d713e0f02189e059a997bdb5e5dd3ea4a6a1" ,
         urls = [
-            "https://github.com/Unilang/bloom/archive/7309d713e0f02189e059a997bdb5e5dd3ea4a6a1.tar.gz",
+            main_mirror_url("bloom","7309d713e0f02189e059a997bdb5e5dd3ea4a6a1"),
         ],
     )

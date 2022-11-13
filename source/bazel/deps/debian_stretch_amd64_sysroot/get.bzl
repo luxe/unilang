@@ -13,6 +13,6 @@ def debianStretchAmd64Sysroot():
         sha256="0f3729d5b77147f3276512afffb89ee74bb3c55fa175f8bbf2903d2ff867a11c" ,
         strip_prefix="debian_stretch_amd64_sysroot-733762a3256bdbb173e6617d451f473f810fd8bf" ,
         urls = [
-            "https://github.com/Unilang/debian_stretch_amd64_sysroot/archive/733762a3256bdbb173e6617d451f473f810fd8bf.tar.gz",
+            main_mirror_url("debian_stretch_amd64_sysroot","733762a3256bdbb173e6617d451f473f810fd8bf"),
         ],
     )

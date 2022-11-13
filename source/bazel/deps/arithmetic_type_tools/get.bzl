@@ -13,6 +13,6 @@ def arithmeticTypeTools():
         sha256="887fe101708ed0478e98aae9446a28dc278790d86d219f4eaf7c0a4ca7841eac" ,
         strip_prefix="arithmetic_type_tools-2336d0c40671795b7d33bb27679453d2c56a5526" ,
         urls = [
-            "https://github.com/Unilang/arithmetic_type_tools/archive/2336d0c40671795b7d33bb27679453d2c56a5526.tar.gz",
+            main_mirror_url("arithmetic_type_tools","2336d0c40671795b7d33bb27679453d2c56a5526"),
         ],
     )

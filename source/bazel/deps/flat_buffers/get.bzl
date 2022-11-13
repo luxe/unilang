@@ -13,6 +13,6 @@ def flatBuffers():
         sha256="c6a6ce90c75c76ae0d05f16864df499d8cc9c00dbfc456ae08f5ae60d61bd3e4" ,
         strip_prefix="flatbuffers-db972be264078bf83e112836c0b685a7020e96b8" ,
         urls = [
-            "https://github.com/Unilang/flatbuffers/archive/db972be264078bf83e112836c0b685a7020e96b8.tar.gz",
+            main_mirror_url("flatbuffers","db972be264078bf83e112836c0b685a7020e96b8"),
         ],
     )

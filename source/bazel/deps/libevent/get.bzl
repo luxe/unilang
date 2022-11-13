@@ -13,7 +13,7 @@ def libevent():
         sha256="9b436b404793be621c6e01cea573e1a06b5db26dad25a11c6a8c6f8526ed264c" ,
         strip_prefix="libevent-eee26deed38fc7a6b6780b54628b007a2810efcd" ,
         urls = [
-            "https://github.com/Unilang/libevent/archive/eee26deed38fc7a6b6780b54628b007a2810efcd.tar.gz",
+            main_mirror_url("libevent","eee26deed38fc7a6b6780b54628b007a2810efcd"),
         ],        patches = [
             "//bazel/deps/libevent/patches:p1.patch",
         ],

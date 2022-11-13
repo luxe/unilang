@@ -13,6 +13,6 @@ def saturating():
         sha256="0ac340a93d327e5a8272e4078d04aefd0c2a47e3d1537e5ffc344bdbc6a20e1f" ,
         strip_prefix="saturating-1917e3212ed7c91b2f3c0ab1c5680bea86f809b7" ,
         urls = [
-            "https://github.com/Unilang/saturating/archive/1917e3212ed7c91b2f3c0ab1c5680bea86f809b7.tar.gz",
+            main_mirror_url("saturating","1917e3212ed7c91b2f3c0ab1c5680bea86f809b7"),
         ],
     )

@@ -13,6 +13,6 @@ def qRCodeGenerator():
         sha256="1c281781d834e703ec40750ee0e0924567d8edc469d6f43083600e0195a74044" ,
         strip_prefix="QR-Code-generator-8518684c0f33d004fa93971be2c6a8eca3167d1e" ,
         urls = [
-            "https://github.com/Unilang/QR-Code-generator/archive/8518684c0f33d004fa93971be2c6a8eca3167d1e.tar.gz",
+            main_mirror_url("QR-Code-generator","8518684c0f33d004fa93971be2c6a8eca3167d1e"),
         ],
     )

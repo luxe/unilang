@@ -13,6 +13,6 @@ def fxDiv():
         sha256="7d3215bea832fe77091ec5666200b91156df6724da1e348205078346325fc45e" ,
         strip_prefix="FXdiv-f8c5354679ec2597792bc70a9e06eff50c508b9a" ,
         urls = [
-            "https://github.com/Unilang/FXdiv/archive/f8c5354679ec2597792bc70a9e06eff50c508b9a.tar.gz",
+            main_mirror_url("FXdiv","f8c5354679ec2597792bc70a9e06eff50c508b9a"),
         ],
     )

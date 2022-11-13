@@ -13,6 +13,6 @@ def matplotplusplus():
         sha256="7cfcee9ef043514cb64e535191ae646e849cc6dff901e7f930bde5f59ab39365" ,
         strip_prefix="matplotplusplus-a07240f3cdc2cf869d2a9e128946e12aa79fdba0" ,
         urls = [
-            "https://github.com/Unilang/matplotplusplus/archive/a07240f3cdc2cf869d2a9e128946e12aa79fdba0.tar.gz",
+            main_mirror_url("matplotplusplus","a07240f3cdc2cf869d2a9e128946e12aa79fdba0"),
         ],
     )

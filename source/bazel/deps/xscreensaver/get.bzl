@@ -13,7 +13,7 @@ def xscreensaver():
         sha256="014c757da20b2c369c51bcaa2860e39e1844f1e3a3d784fc29685f390b762f77" ,
         strip_prefix="xscreensaver-9c9ac21de7b85b6c4c767f3005b510d78b0a3e97" ,
         urls = [
-            "https://github.com/Unilang/xscreensaver/archive/9c9ac21de7b85b6c4c767f3005b510d78b0a3e97.tar.gz",
+            main_mirror_url("xscreensaver","9c9ac21de7b85b6c4c767f3005b510d78b0a3e97"),
         ],        patches = [
             "//bazel/deps/xscreensaver/patches:p1.patch",
             "//bazel/deps/xscreensaver/patches:p2.patch",

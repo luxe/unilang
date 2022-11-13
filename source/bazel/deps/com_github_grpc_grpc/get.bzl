@@ -12,7 +12,7 @@ def comGithubGrpcGrpc():
         sha256="1aebc5b6c7132c84c1d65c535859882bf1e9f29bbb7e3ac120402c54c0a73021" ,
         strip_prefix="grpc-6c3ad4c4ed3fecca4dcbef7a6200208c6fc05d7e" ,
         urls = [
-            "https://github.com/Unilang/grpc/archive/6c3ad4c4ed3fecca4dcbef7a6200208c6fc05d7e.tar.gz",
+            main_mirror_url("grpc","6c3ad4c4ed3fecca4dcbef7a6200208c6fc05d7e"),
         ],        patch_cmds = [
             "sed -i 's/csharp_names.h/names.h/' src/compiler/config_protobuf.h",
             "sed -i 's/objectivec_helpers.h/helpers.h/' src/compiler/objective_c_generator.cc",

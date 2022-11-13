@@ -13,6 +13,6 @@ def bitset2():
         sha256="d92003fe37b64bf85ea1ad578590d29c2bfe9a498abbabe2ade1dd26ad2ae247" ,
         strip_prefix="bitset2-d61e4b0222aced39f7eb5860fb213d5f34ad7607" ,
         urls = [
-            "https://github.com/Unilang/bitset2/archive/d61e4b0222aced39f7eb5860fb213d5f34ad7607.tar.gz",
+            main_mirror_url("bitset2","d61e4b0222aced39f7eb5860fb213d5f34ad7607"),
         ],
     )

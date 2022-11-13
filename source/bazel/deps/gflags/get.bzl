@@ -12,6 +12,6 @@ def gflags():
         sha256="ed82ef64389409e378fc6ae55b8b60f11a0b4bbb7e004d5ef9e791f40af19a6e" ,
         strip_prefix="gflags-f7388c6655e699f777a5a74a3c9880b9cfaabe59" ,
         urls = [
-            "https://github.com/Unilang/gflags/archive/f7388c6655e699f777a5a74a3c9880b9cfaabe59.tar.gz",
+            main_mirror_url("gflags","f7388c6655e699f777a5a74a3c9880b9cfaabe59"),
         ],
     )

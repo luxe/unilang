@@ -13,6 +13,6 @@ def librepr():
         sha256="474d1c6590e3d78ae9082d770a114b11b23e8c26855c2f728dbdecab25737efd" ,
         strip_prefix="librepr-bd5e1f745c59966588e67d475c62be61ded9dc8d" ,
         urls = [
-            "https://github.com/Unilang/librepr/archive/bd5e1f745c59966588e67d475c62be61ded9dc8d.tar.gz",
+            main_mirror_url("librepr","bd5e1f745c59966588e67d475c62be61ded9dc8d"),
         ],
     )

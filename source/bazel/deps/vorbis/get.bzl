@@ -13,7 +13,7 @@ def vorbis():
         sha256="5dc382c4c00de0742e9d1433e9b332cd1c28cdce5145d02961614083d955f1dd" ,
         strip_prefix="vorbis-0a4beb1d04f802c48016b11fb939690e24173168" ,
         urls = [
-            "https://github.com/Unilang/vorbis/archive/0a4beb1d04f802c48016b11fb939690e24173168.tar.gz",
+            main_mirror_url("vorbis","0a4beb1d04f802c48016b11fb939690e24173168"),
         ],        patches = [
             "//bazel/deps/vorbis/patches:p1.patch",
         ],

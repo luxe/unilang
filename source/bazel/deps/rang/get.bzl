@@ -13,6 +13,6 @@ def rang():
         sha256="1f1cdf9016af45fbb37c8992041547c8ccc1edf2fc04d121d86c894c0e45a8b1" ,
         strip_prefix="rang-cabe04d6d6b05356fa8f9741704924788f0dd762" ,
         urls = [
-            "https://github.com/Unilang/rang/archive/cabe04d6d6b05356fa8f9741704924788f0dd762.tar.gz",
+            main_mirror_url("rang","cabe04d6d6b05356fa8f9741704924788f0dd762"),
         ],
     )

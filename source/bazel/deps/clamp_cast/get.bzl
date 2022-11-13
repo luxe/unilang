@@ -13,6 +13,6 @@ def clampCast():
         sha256="d657420395e9068f259471e45f8e216313e5b3cb18ab4b1f2fb1b961e4004d7c" ,
         strip_prefix="clamp_cast-fb7fe06331972a2a58358ae7897ea2dad78dd1f4" ,
         urls = [
-            "https://github.com/Unilang/clamp_cast/archive/fb7fe06331972a2a58358ae7897ea2dad78dd1f4.tar.gz",
+            main_mirror_url("clamp_cast","fb7fe06331972a2a58358ae7897ea2dad78dd1f4"),
         ],
     )

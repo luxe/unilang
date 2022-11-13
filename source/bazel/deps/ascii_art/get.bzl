@@ -13,6 +13,6 @@ def asciiArt():
         sha256="f9c39de719465379496a44f02e2886074af962a3d2497bb0a9d2fbb91af935cd" ,
         strip_prefix="ascii_art-fede354e511b5be12726a67abaa3d561ffc763db" ,
         urls = [
-            "https://github.com/Unilang/ascii_art/archive/fede354e511b5be12726a67abaa3d561ffc763db.tar.gz",
+            main_mirror_url("ascii_art","fede354e511b5be12726a67abaa3d561ffc763db"),
         ],
     )

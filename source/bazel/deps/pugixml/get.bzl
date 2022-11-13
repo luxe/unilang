@@ -13,6 +13,6 @@ def pugixml():
         sha256="d5558cd419c8d46bdc958064cb97f963d1ea793866414c025906ec15033512ed" ,
         strip_prefix="pugixml-c4bae8d8185858435bdf22cd98ba7e58e67d9041" ,
         urls = [
-            "https://github.com/Unilang/pugixml/archive/c4bae8d8185858435bdf22cd98ba7e58e67d9041.tar.gz",
+            main_mirror_url("pugixml","c4bae8d8185858435bdf22cd98ba7e58e67d9041"),
         ],
     )

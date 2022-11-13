@@ -13,6 +13,6 @@ def sQLiteCpp():
         sha256="e4d6c672bb622f16d7da64e91f747a37c9c1fcd827d6ce92f7a8f7a75d2544b4" ,
         strip_prefix="SQLiteCpp-44bd9c4f38e7552f411944a3208cddfa759406ce" ,
         urls = [
-            "https://github.com/Unilang/SQLiteCpp/archive/44bd9c4f38e7552f411944a3208cddfa759406ce.tar.gz",
+            main_mirror_url("SQLiteCpp","44bd9c4f38e7552f411944a3208cddfa759406ce"),
         ],
     )

@@ -13,6 +13,6 @@ def nasm():
         sha256="d3e1949883f77d631e256523c0e77098cf6ffd7eda1489a99d9f09fcd7225d95" ,
         strip_prefix="nasm-e91f5cc1322eed4da0de81656276e021bf352c3d" ,
         urls = [
-            "https://github.com/Unilang/nasm/archive/e91f5cc1322eed4da0de81656276e021bf352c3d.tar.gz",
+            main_mirror_url("nasm","e91f5cc1322eed4da0de81656276e021bf352c3d"),
         ],
     )

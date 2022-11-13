@@ -13,7 +13,7 @@ def expat():
         sha256="35133afefe3ce180cf368efb49b04642249e3b2dc50846f525ee5609939bb45f" ,
         strip_prefix="libexpat-5801a1b70adeb59964be51e61ac753be8ebe75e8" ,
         urls = [
-            "https://github.com/Unilang/libexpat/archive/5801a1b70adeb59964be51e61ac753be8ebe75e8.tar.gz",
+            main_mirror_url("libexpat","5801a1b70adeb59964be51e61ac753be8ebe75e8"),
         ],        patches = [
             "//bazel/deps/expat/patches:p1.patch",
         ],

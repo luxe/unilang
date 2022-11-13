@@ -13,6 +13,6 @@ def puyoPuyoAssets():
         sha256="8acfbf5b95c0520df76370d481d2898e9c7f0e2233232694c5105f12644a572b" ,
         strip_prefix="PuyoPuyoAssets-c44e7bf9cff612fb63948fa96c51ff13a2ac8e41" ,
         urls = [
-            "https://github.com/Unilang/PuyoPuyoAssets/archive/c44e7bf9cff612fb63948fa96c51ff13a2ac8e41.tar.gz",
+            main_mirror_url("PuyoPuyoAssets","c44e7bf9cff612fb63948fa96c51ff13a2ac8e41"),
         ],
     )

@@ -13,6 +13,6 @@ def buildfarm():
         sha256="de2a18bbe1e6770be0cd54e93630fb1ee7bce937bff708eed16329033fbfe32b" ,
         strip_prefix="bazel-buildfarm-355f816acf3531e9e37d860acf9ebbb89c9041c2" ,
         urls = [
-            "https://github.com/Unilang/bazel-buildfarm/archive/355f816acf3531e9e37d860acf9ebbb89c9041c2.tar.gz",
+            main_mirror_url("bazel-buildfarm","355f816acf3531e9e37d860acf9ebbb89c9041c2"),
         ],
     )

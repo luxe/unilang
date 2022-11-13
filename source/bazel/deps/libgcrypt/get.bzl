@@ -13,7 +13,7 @@ def libgcrypt():
         sha256="2c45f8573db60156926bcaf8601032029a1e82afef5baac949c0911ba4631f97" ,
         strip_prefix="libgcrypt-1a83df98b198902ee6d71549231a3af37088d452" ,
         urls = [
-            "https://github.com/Unilang/libgcrypt/archive/1a83df98b198902ee6d71549231a3af37088d452.tar.gz",
+            main_mirror_url("libgcrypt","1a83df98b198902ee6d71549231a3af37088d452"),
         ],        patches = [
             "//bazel/deps/libgcrypt/patches:p1.patch",
         ],

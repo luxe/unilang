@@ -12,6 +12,6 @@ def coVscoBazelToolchains():
         sha256="f5c0fdbcb32dc5a276789312d0b3c6b86f8c769177e6778c134fd2bc55057e42" ,
         strip_prefix="bazel-toolchains-519efd0b3275e4cf1ffa03f3c3fb80c7d8f7c60d" ,
         urls = [
-            "https://github.com/Unilang/bazel-toolchains/archive/519efd0b3275e4cf1ffa03f3c3fb80c7d8f7c60d.tar.gz",
+            main_mirror_url("bazel-toolchains","519efd0b3275e4cf1ffa03f3c3fb80c7d8f7c60d"),
         ],
     )

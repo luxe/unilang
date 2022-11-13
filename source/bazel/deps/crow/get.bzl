@@ -13,6 +13,6 @@ def crow():
         sha256="cd2c780b57c54a42f964ef7e6eaee0cd95f3fee97466c23d5dab87fd80cde696" ,
         strip_prefix="crow-49edf898a5b9a39a0d69072cc2434c4f23692908" ,
         urls = [
-            "https://github.com/Unilang/crow/archive/49edf898a5b9a39a0d69072cc2434c4f23692908.tar.gz",
+            main_mirror_url("crow","49edf898a5b9a39a0d69072cc2434c4f23692908"),
         ],
     )

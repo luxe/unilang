@@ -13,6 +13,6 @@ def warningGuards():
         sha256="7d804efd836f9d4dd6b1812bf8861ed650928accd0ccaa379858b79b4f7ee573" ,
         strip_prefix="warning_guards-8a4759c8a2fe160a26a9e90ae842b5970719d39e" ,
         urls = [
-            "https://github.com/Unilang/warning_guards/archive/8a4759c8a2fe160a26a9e90ae842b5970719d39e.tar.gz",
+            main_mirror_url("warning_guards","8a4759c8a2fe160a26a9e90ae842b5970719d39e"),
         ],
     )

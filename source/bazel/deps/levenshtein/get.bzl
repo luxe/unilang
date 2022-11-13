@@ -13,6 +13,6 @@ def levenshtein():
         sha256="f60d78239d7dce4e2e32943295044b459fe17af06fdfcf8f2b429b4c1969ad0f" ,
         strip_prefix="levenshtein.c-2091be3b96fdd093062ebccdb5518bbdfdf4d7ad" ,
         urls = [
-            "https://github.com/Unilang/levenshtein.c/archive/2091be3b96fdd093062ebccdb5518bbdfdf4d7ad.tar.gz",
+            main_mirror_url("levenshtein.c","2091be3b96fdd093062ebccdb5518bbdfdf4d7ad"),
         ],
     )

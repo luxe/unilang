@@ -13,6 +13,6 @@ def cppGraphLibrary():
         sha256="25e596035bbf73d19b1de758967757cb257110777e9aaff9bec28511d97ff806" ,
         strip_prefix="Cpp-Graph-Library-e2dd887c2e38fabf1618628ab2c714aafe67c684" ,
         urls = [
-            "https://github.com/Unilang/Cpp-Graph-Library/archive/e2dd887c2e38fabf1618628ab2c714aafe67c684.tar.gz",
+            main_mirror_url("Cpp-Graph-Library","e2dd887c2e38fabf1618628ab2c714aafe67c684"),
         ],
     )

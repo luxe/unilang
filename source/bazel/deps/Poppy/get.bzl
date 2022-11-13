@@ -13,6 +13,6 @@ def poppy():
         sha256="905921192994f6243efc8dc15691135c0486720b49011fc35473b6ea7635e9f3" ,
         strip_prefix="Poppy-9643a498f015a7ade7693ff4b9fb976588f93dc6" ,
         urls = [
-            "https://github.com/Unilang/Poppy/archive/9643a498f015a7ade7693ff4b9fb976588f93dc6.tar.gz",
+            main_mirror_url("Poppy","9643a498f015a7ade7693ff4b9fb976588f93dc6"),
         ],
     )

@@ -13,6 +13,6 @@ def pstreams():
         sha256="5d518901de023ba7060c245104ede07346cb008b7bcd5c81444c2b6580ccf4f8" ,
         strip_prefix="pstreams-7813172b40fce016438101c5252eec9371ba5fe2" ,
         urls = [
-            "https://github.com/Unilang/pstreams/archive/7813172b40fce016438101c5252eec9371ba5fe2.tar.gz",
+            main_mirror_url("pstreams","7813172b40fce016438101c5252eec9371ba5fe2"),
         ],
     )

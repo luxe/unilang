@@ -13,6 +13,6 @@ def prettyPrint():
         sha256="15d9c8580a79e17f15cf80e974353cac6cf255612441ddcf75606e17a2308538" ,
         strip_prefix="cxx-prettyprint-9ab26d228f2960f50b38ad37fe0159b7381f7533" ,
         urls = [
-            "https://github.com/Unilang/cxx-prettyprint/archive/9ab26d228f2960f50b38ad37fe0159b7381f7533.tar.gz",
+            main_mirror_url("cxx-prettyprint","9ab26d228f2960f50b38ad37fe0159b7381f7533"),
         ],
     )

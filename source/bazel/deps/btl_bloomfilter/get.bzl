@@ -13,6 +13,6 @@ def btlBloomfilter():
         sha256="a6f8ff3e213d6b60fc92e75cb7381f920decb027f14a1630ddc330b34b3a37c5" ,
         strip_prefix="btl_bloomfilter-0f19567306806bc3890e31f3f3d01285b9b4d158" ,
         urls = [
-            "https://github.com/Unilang/btl_bloomfilter/archive/0f19567306806bc3890e31f3f3d01285b9b4d158.tar.gz",
+            main_mirror_url("btl_bloomfilter","0f19567306806bc3890e31f3f3d01285b9b4d158"),
         ],
     )

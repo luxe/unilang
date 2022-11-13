@@ -13,7 +13,7 @@ def mesa():
         sha256="7998af53dbac10902a23bf9aadd42c458dd5df7d9a7cbc92b9bc227779f33f54" ,
         strip_prefix="mesa-d1f9d1e26a2aab71d6ba6edcf195b972f12cff80" ,
         urls = [
-            "https://github.com/Unilang/mesa/archive/d1f9d1e26a2aab71d6ba6edcf195b972f12cff80.tar.gz",
+            main_mirror_url("mesa","d1f9d1e26a2aab71d6ba6edcf195b972f12cff80"),
         ],        patches = [
             "//bazel/deps/mesa/patches:p1.patch",
         ],

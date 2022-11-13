@@ -13,7 +13,7 @@ def xau():
         sha256="f3f7dabba13edcc0bfa20f0feca37b6fe43a0754d49987bf2bdd3829e2756881" ,
         strip_prefix="xorg-libXau-42e152c6f2d1bd839e77c5e97f3a509d890c3237" ,
         urls = [
-            "https://github.com/Unilang/xorg-libXau/archive/42e152c6f2d1bd839e77c5e97f3a509d890c3237.tar.gz",
+            main_mirror_url("xorg-libXau","42e152c6f2d1bd839e77c5e97f3a509d890c3237"),
         ],        patches = [
             "//bazel/deps/Xau/patches:p1.patch",
         ],

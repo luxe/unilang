@@ -13,7 +13,7 @@ def libtiff():
         sha256="c18b37467d2ad20bd2778c25d3be76fe4d43b421ff358dbdda8a192393fcf0e3" ,
         strip_prefix="libtiff-9f657ff8a7411c95ffe83ec39e3e881c3fec6bb0" ,
         urls = [
-            "https://github.com/Unilang/libtiff/archive/9f657ff8a7411c95ffe83ec39e3e881c3fec6bb0.tar.gz",
+            main_mirror_url("libtiff","9f657ff8a7411c95ffe83ec39e3e881c3fec6bb0"),
         ],        patches = [
             "//bazel/deps/libtiff/patches:p1.patch",
         ],

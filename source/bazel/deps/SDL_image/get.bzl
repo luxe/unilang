@@ -13,6 +13,6 @@ def sDLImage():
         sha256="f33b3d6c41a4be188414515ee76cd8a281d5866c1a1c4fc277f74c50dd64d4a5" ,
         strip_prefix="SDL_image-b7c6f50dc61c7a02894caed798179ad71a4e452a" ,
         urls = [
-            "https://github.com/Unilang/SDL_image/archive/b7c6f50dc61c7a02894caed798179ad71a4e452a.tar.gz",
+            main_mirror_url("SDL_image","b7c6f50dc61c7a02894caed798179ad71a4e452a"),
         ],
     )

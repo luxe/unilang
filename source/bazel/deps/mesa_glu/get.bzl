@@ -13,7 +13,7 @@ def mesaGlu():
         sha256="11e1eff80197b0d192040c520522dfa6919170c202b7c00b647ee70a3ee10887" ,
         strip_prefix="mesa-glu-dd4e18eb7557a31a3c8318d6612801329877c745" ,
         urls = [
-            "https://github.com/Unilang/mesa-glu/archive/dd4e18eb7557a31a3c8318d6612801329877c745.tar.gz",
+            main_mirror_url("mesa-glu","dd4e18eb7557a31a3c8318d6612801329877c745"),
         ],        patch_cmds = [
             "sed -i 's/register/ /g' src/libnurbs/internals/varray.cc",
             "sed -i '1s/^/#include <limits.h>\\n/' src/libtess/priorityq-heap.c",

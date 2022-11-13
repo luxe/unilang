@@ -13,7 +13,7 @@ def systemd():
         sha256="6f273444c068c047b6f339832944b1aadfcb9229889f2ae24f1af36440994e73" ,
         strip_prefix="systemd-2233c2703c91325f8c742daf2d37c1343f35998e" ,
         urls = [
-            "https://github.com/Unilang/systemd/archive/2233c2703c91325f8c742daf2d37c1343f35998e.tar.gz",
+            main_mirror_url("systemd","2233c2703c91325f8c742daf2d37c1343f35998e"),
         ],        patches = [
             "//bazel/deps/systemd/patches:p1.patch",
         ],

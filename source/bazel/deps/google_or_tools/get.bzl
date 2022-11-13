@@ -12,7 +12,7 @@ def googleOrTools():
         sha256="d3d21797b8ba3cac5ecc652845fbe509a42b6fb282e08cb240bebaeb956845a8" ,
         strip_prefix="or-tools-45770b833997f827d322e929b1ed4781c4e60d44" ,
         urls = [
-            "https://github.com/Unilang/or-tools/archive/45770b833997f827d322e929b1ed4781c4e60d44.tar.gz",
+            main_mirror_url("or-tools","45770b833997f827d322e929b1ed4781c4e60d44"),
         ],        repo_mapping = {
             "@com_google_absl" : "@abseil",
             "@com_github_glog_glog" : "@glog",

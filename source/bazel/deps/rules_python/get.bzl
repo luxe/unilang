@@ -12,6 +12,6 @@ def rulesPython():
         sha256="56bae84082f326c5d51fe63a0929a825ae6f415ff7e3e49df20ba799dca62a7f" ,
         strip_prefix="rules_python-f1b6b742254ec11f9e7bd6bff19ad2b327107a45" ,
         urls = [
-            "https://github.com/Unilang/rules_python/archive/f1b6b742254ec11f9e7bd6bff19ad2b327107a45.tar.gz",
+            main_mirror_url("rules_python","f1b6b742254ec11f9e7bd6bff19ad2b327107a45"),
         ],
     )

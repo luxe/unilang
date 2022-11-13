@@ -13,6 +13,6 @@ def cpr():
         sha256="656ee0b0d6d79280a0aa6f58c08bb2afdc0b67fd745c3c405b3453bd195e14dd" ,
         strip_prefix="cpr-3d14e61ed247a90a07db26fb107beb3086a035d6" ,
         urls = [
-            "https://github.com/Unilang/cpr/archive/3d14e61ed247a90a07db26fb107beb3086a035d6.tar.gz",
+            main_mirror_url("cpr","3d14e61ed247a90a07db26fb107beb3086a035d6"),
         ],
     )

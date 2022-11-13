@@ -13,6 +13,6 @@ def pybind11():
         sha256="1a1ccf8779332a7d6d0db9034d42df188867cbaf52eb71d74451f79aa8ce2040" ,
         strip_prefix="pybind11-25abf7efba0b2990f5a6dfb0a31bc65c0f2f4d17" ,
         urls = [
-            "https://github.com/Unilang/pybind11/archive/25abf7efba0b2990f5a6dfb0a31bc65c0f2f4d17.tar.gz",
+            main_mirror_url("pybind11","25abf7efba0b2990f5a6dfb0a31bc65c0f2f4d17"),
         ],
     )

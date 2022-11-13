@@ -13,6 +13,6 @@ def stduuid():
         sha256="116472b411165a57c728a4b293484626a68332d49ed3b6dc980c3de9a14a8a58" ,
         strip_prefix="stduuid-207f06bd56b5d02b8bf4c4305e91f0da8fedbcb4" ,
         urls = [
-            "https://github.com/Unilang/stduuid/archive/207f06bd56b5d02b8bf4c4305e91f0da8fedbcb4.tar.gz",
+            main_mirror_url("stduuid","207f06bd56b5d02b8bf4c4305e91f0da8fedbcb4"),
         ],
     )

@@ -13,6 +13,6 @@ def zlib():
         sha256="6d4d6640ca3121620995ee255945161821218752b551a1a180f4215f7d124d45" ,
         strip_prefix="zlib-cacf7f1d4e3d44d871b605da3b647f07d718623f" ,
         urls = [
-            "https://github.com/Unilang/zlib/archive/cacf7f1d4e3d44d871b605da3b647f07d718623f.tar.gz",
+            main_mirror_url("zlib","cacf7f1d4e3d44d871b605da3b647f07d718623f"),
         ],
     )

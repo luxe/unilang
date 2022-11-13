@@ -13,7 +13,7 @@ def xorgLibxshmfence():
         sha256="bd300affe41db9a9c889a6aa88dcd96147ce7fbcc1d2984248fdcbcff0b1b598" ,
         strip_prefix="xorg-libxshmfence-db7966bee2ec46b835d0bb374f35ae631a0edbd1" ,
         urls = [
-            "https://github.com/Unilang/xorg-libxshmfence/archive/db7966bee2ec46b835d0bb374f35ae631a0edbd1.tar.gz",
+            main_mirror_url("xorg-libxshmfence","db7966bee2ec46b835d0bb374f35ae631a0edbd1"),
         ],        patches = [
             "//bazel/deps/xorg_libxshmfence/patches:p1.patch",
         ],

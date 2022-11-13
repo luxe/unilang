@@ -12,6 +12,6 @@ def ioBazelRulesDocker():
         sha256="b6dc35134f1563b95db4fcfffd9c2e8673709c0b6b3b4a112b1b5bdbd843caa4" ,
         strip_prefix="rules_docker-454981e65fa100d37b19210ee85fedb2f7af9626" ,
         urls = [
-            "https://github.com/Unilang/rules_docker/archive/454981e65fa100d37b19210ee85fedb2f7af9626.tar.gz",
+            main_mirror_url("rules_docker","454981e65fa100d37b19210ee85fedb2f7af9626"),
         ],
     )

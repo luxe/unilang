@@ -13,6 +13,6 @@ def raylib():
         sha256="590420a2666bd5b14ddbdfc4daef863a87c1334a821f8fd95864eeee2d0cac99" ,
         strip_prefix="raylib-b5eb104b08ed9983b1294d203d06d0141622f92c" ,
         urls = [
-            "https://github.com/Unilang/raylib/archive/b5eb104b08ed9983b1294d203d06d0141622f92c.tar.gz",
+            main_mirror_url("raylib","b5eb104b08ed9983b1294d203d06d0141622f92c"),
         ],
     )
