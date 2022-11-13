@@ -85,35 +85,10 @@ class
     Add_Executable_Flag(result,spec);
     Add_Sha256(result,spec);
     Add_Strip_Prefix(result,spec);
-    
-    //add urls
-    Append(result,"        ");
-    Append_With_Newline(result,"urls = [");
-    
-    for (auto const& it: spec.locations){
-        Append(result,"            ");
-        Append_In_DQuotes(result,Decide_Url(it));
-        Append_With_Newline(result,",");
-    }
-    
-    Append(result,"        ");
-    Append(result,"],");
-    
+    Add_Urls(result,spec);
     Add_Patch_Files(result,spec,folder_name);
-    
-    //add patch args
-    if (!spec.patch.patch_args.empty()){
-        Append(result,"        ");
-        Append(result,As_Named_Python_List_Of_Strings("patch_args",spec.patch.patch_args));
-        Append_With_Newline(result,",");
-    }
-    
-    //add patch commands
-    if (!spec.patch.patch_cmds.empty()){
-        Append(result,"        ");
-        Append(result,As_Named_Python_List_Of_Strings("patch_cmds",spec.patch.patch_cmds));
-        Append_With_Newline(result,",");
-    }
+    Add_Patch_Args(result,spec);
+    Add_Patch_Cmds(result,spec);
     
     //add repo mapping
     if (!spec.repo_mapping.empty()){
@@ -179,6 +154,18 @@ class
         Append_With_Newline(result,",");
     }
 ❱
+◀private: static▶ void ☀Add_Urls(std::string & result, Dependency_Specification const& spec)❰
+    Append(result,"        ");
+    Append_With_Newline(result,"urls = [");
+    
+    for (auto const& it: spec.locations){
+        Append(result,"            ");
+        Append_In_DQuotes(result,Decide_Url(it));
+        Append_With_Newline(result,",");
+    }
+    Append(result,"        ");
+    Append(result,"],");
+❱
 
 ◀private: static▶ void ☀Append_Download_Rule_Name(std::string & result, Dependency_Specification const& it)❰
 
@@ -219,6 +206,20 @@ class
     }
 ❱
 
+◀private: static▶ void ☀Add_Patch_Args(std::string & result, Dependency_Specification spec)❰
+    if (!spec.patch.patch_args.empty()){
+        Append(result,"        ");
+        Append(result,As_Named_Python_List_Of_Strings("patch_args",spec.patch.patch_args));
+        Append_With_Newline(result,",");
+    }
+❱
+◀private: static▶ void ☀Add_Patch_Cmds(std::string & result, Dependency_Specification spec)❰
+    if (!spec.patch.patch_cmds.empty()){
+        Append(result,"        ");
+        Append(result,As_Named_Python_List_Of_Strings("patch_cmds",spec.patch.patch_cmds));
+        Append_With_Newline(result,",");
+    }
+❱
 
 ◀private: static▶ std::string ☀Create_Local_Get_File_Content(Dependency_Specification spec, std::string const& folder_name)❰
 
