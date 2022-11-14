@@ -16,6 +16,12 @@ hcp(
     ],
 )
 
+
+# Program purpose:
+# Sometimes intermediate files are so large that they can't be uploaded to remote execution / caching systems.
+# The implicit limitation seems to be ~2GB due to a serialized protobuf limit.
+# Finding these large files is not obvious because they might be outputs generated from an action.
+# The trick is to do a build, and then run aquery on a target and analyze the files to find the offenders.
 distributable_cpp_main(
     name = "aquery_size",
     depends = [

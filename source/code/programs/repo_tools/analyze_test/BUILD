@@ -27,6 +27,8 @@ hcp(
     ],
 )
 
+# Program purpose:
+# Automate some of the various ways to run tests, accumulate statistics, make variations, etc to understand the test better as a black box.
 distributable_cpp_main(
     name = "analyze_test",
     depends = [

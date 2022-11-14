@@ -18,6 +18,9 @@ hcp(
     ],
 )
 
+# Purpose of program:
+# Run bazel's sync phase and capture all network traffic.
+# Sometimes dependencies fetch other dependencies so the network endpoints are not obvious.
 distributable_cpp_main(
     name = "bazel_network_sync",
     depends = [
