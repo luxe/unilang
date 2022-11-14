@@ -26,10 +26,3 @@ hcp(
         "//code/utilities/web/endpoints/gcal/data:gcal_sorted_events",
     ],
 )
-
-hcp(
-    name = "gexf_attribute",
-    deps = [
-        "//code/utilities/formats/json/extraction:json_extraction_settings",
-    ],
-)
