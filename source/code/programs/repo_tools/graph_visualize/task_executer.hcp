@@ -1,14 +1,5 @@
 class
-❪iostream❫
-❪string❫
-❪utility❫
-❪vector❫
-❪queue❫
 ❪"code/programs/repo_tools/graph_visualize/program_options/program_options"❫
-❪"code/utilities/build/build_repo_establisher/build_repo_establisher"❫
-❪"code/utilities/program/wrappers/bazel/bazel_runner"❫
-❪"code/utilities/formats/serialization/protobuf"❫
-❪"code/utilities/program/wrappers/bazel/query/bazel_aquery_runner"❫
 ⚯
 ⚞⚟
 
@@ -32,28 +23,70 @@ class
     
     
     
+    Gexf_Data gexf_data;
+    gexf_data.metadata.creator = "luxe";
+    gexf_data.metadata.description = "bazel graph";
+    gexf_data.metadata.keywords.emplace_back("bazel");
+    gexf_data.metadata.keywords.emplace_back("execution");
+    
+    Add_Nodes(gexf_data,spawns);
+    Add_Edges(gexf_data,spawns);
+    
+    
+    
+    
+    
+❱
+
+
+◀private: static▶ void ☀Add_Nodes(Gexf_Data & gexf_data, std::unordered_map<std::string,tools::protos::SpawnExec> const& spawns) ❰
+
     for (auto const& it: spawns) {
-        // for (auto input: it.second.inputs()){
-            
-        //     if (!Begins_With(input.path(),"external/ubuntu_20_04_clang_11_sysroot") && !Begins_With(input.path(),"external/llvm_toolchain/")){
-        //         std::cout << input.path() << std::endl;
-        //     }
-            
-        // for (auto output: it.second.actual_outputs()){
-            
-        //     if (!Begins_With(output.path(),"external/ubuntu_20_04_clang_11_sysroot") && !Begins_With(output.path(),"external/llvm_toolchain/")){
-        //         std::cout << output.path() << std::endl;
-        //     }
-        // }
         
+        
+        // record all input files as nodes
+        for (auto input: it.second.inputs()){
+            
+            if (Should_Record_Path(input.path())){
+                gexf_data.node_edge_data.nodes.insert(input.path());
+            }
+        }
+        
+        // record all output files as nodes
+        for (auto output: it.second.actual_outputs()){
+            
+            if (Should_Record_Path(output.path())){
+                gexf_data.node_edge_data.nodes.insert(output.path());
+            }
+        }
+        
+        //record all the hashes representing the unique action as nodes
+        //gexf_data.node_edge_data.nodes.insert(it.second.digest().hash());
+        
+        
+        //TODO update proto
         //std::cout << it.second.target_label() << std::endl;
-        
-        
-        // std::cout << it.first << std::endl;
-        // std::cout << "--------------" << std::endl;
-        // std::cout << Protobuf_Message_To_Json(it.second) << std::endl;
     }
     
-    
-    
+❱
+
+◀private: static▶ void ☀Add_Edges(Gexf_Data & gexf_data, std::unordered_map<std::string,tools::protos::SpawnExec> const& spawns) ❰
+
+    for (auto const& it: spawns) {
+        for (auto input: it.second.inputs()){
+            if (Should_Record_Path(input.path())){
+                Timed_Connection c;
+                c.connection.source = input.path();
+                //c.connection.target = it.second.digest().hash();
+                c.connection.type = Edge_Type::DIRECTED;
+                gexf_data.node_edge_data.edges.Add(Type_To_Json_String::As_JSON_String(c));
+            }
+            
+            
+        }
+    }
+❱
+
+◀private: static▶ bool ☀Should_Record_Path(std::string const& path) ❰
+    return !Begins_With(path,"external/ubuntu_20_04_clang_11_sysroot") && !Begins_With(path,"external/llvm_toolchain/");
 ❱

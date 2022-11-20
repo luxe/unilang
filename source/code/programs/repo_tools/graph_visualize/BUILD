@@ -16,10 +16,9 @@ distributable_cpp_main(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "task_executer",
-    deps = [
-        "//code/programs/repo_tools/graph_visualize/program_options:lib",
+    interface_deps = [
         "//code/utilities/build/build_repo_establisher",
         "//code/utilities/build/build_repo_establisher:build_repo_settings",
         "//code/utilities/build/profiler:branch_profile_compilation_timer",
@@ -38,5 +37,11 @@ hcp(
         "//code/utilities/formats/serialization:protobuf",
         "//code/utilities/program/wrappers/bazel/query:bazel_aquery_runner",
         "//code/utilities/types/strings/observers/other:lib",
+        "//code/utilities/formats/gexf/data:gexf_data",
+        "//code/utilities/formats/json/converters:type_to_json_string",
+        "//code/utilities/data_structures/graph/basic:timed_connection",
     ],
+    deps = [
+    "//code/programs/repo_tools/graph_visualize/program_options:lib",
+    ]
 )
