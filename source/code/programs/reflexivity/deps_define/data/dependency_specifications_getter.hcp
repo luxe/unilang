@@ -741,13 +741,13 @@ package(default_visibility = ["//visibility:public"])
 ◀private: static▶ Dependency_Specification ☀Bazel()❰
     Dependency_Specification spec;
     spec.lib_name = "bazel";
-    Add_Unilang_Github_Mirror(spec,"bazel","2895cd5ce6797a22279dc7482926371ae9ea78b5","e3138b869f19c480c1bb28e553cfd7d67ecaf8d86df66ba70dc7e156b40c0aab");
+    Add_Unilang_Github_Mirror(spec,"bazel","0c4de9185837ee585aa05b187a3487c433d9c038","dd186dba8a485885e541db6835c433e8df4aae7b65818a346620218e1d5df22d");
     spec.patch.patch_cmds = Common_Patch_Cmds_Getter::Remove_Bazel_Stuff();
     
-    spec.patch.patch_cmds.emplace_back(Common_Patch_Cmds_Getter::Replace_Command("repeated string direct_artifact_ids","repeated bytes direct_artifact_ids","src/main/protobuf/analysis.proto"));
-    spec.patch.patch_cmds.emplace_back(Common_Patch_Cmds_Getter::Replace_Command("repeated string output_ids","repeated bytes output_ids", "src/main/protobuf/analysis.proto"));
-    spec.patch.patch_cmds.emplace_back(Common_Patch_Cmds_Getter::Replace_Command("repeated string transitive_dep_set_ids","repeated bytes transitive_dep_set_ids","src/main/protobuf/analysis.proto"));
-    spec.patch.patch_cmds.emplace_back(Common_Patch_Cmds_Getter::Replace_Command("repeated string input_dep_set_ids","repeated bytes input_dep_set_ids", "src/main/protobuf/analysis.proto"));
+    spec.patch.patch_cmds.emplace_back(Common_Patch_Cmds_Getter::Replace_Command("repeated string direct_artifact_ids","repeated bytes direct_artifact_ids","src/main/protobuf/analysis_v2.proto"));
+    spec.patch.patch_cmds.emplace_back(Common_Patch_Cmds_Getter::Replace_Command("repeated string output_ids","repeated bytes output_ids", "src/main/protobuf/analysis_v2.proto"));
+    spec.patch.patch_cmds.emplace_back(Common_Patch_Cmds_Getter::Replace_Command("repeated string transitive_dep_set_ids","repeated bytes transitive_dep_set_ids","src/main/protobuf/analysis_v2.proto"));
+    spec.patch.patch_cmds.emplace_back(Common_Patch_Cmds_Getter::Replace_Command("repeated string input_dep_set_ids","repeated bytes input_dep_set_ids", "src/main/protobuf/analysis_v2.proto"));
     
     spec.build_defs.raw_starlark = 
 R"RAW_STRING(
@@ -768,6 +768,9 @@ cc_proto_library(
 proto_library(
     name = "spawn_proto",
     srcs = ["src/main/protobuf/spawn.proto"],
+    deps = [
+        "@com_google_protobuf//:duration_proto",
+    ]
 )
 
 cc_proto_library(
@@ -787,7 +790,7 @@ cc_proto_library(
 
 proto_library(
     name = "analysis_proto",
-    srcs = ["src/main/protobuf/analysis.proto"],
+    srcs = ["src/main/protobuf/analysis_v2.proto"],
     deps = [":build_proto"],
 )
 
@@ -803,7 +806,8 @@ proto_library(
         "@com_google_protobuf//:any_proto",
         "@com_google_protobuf//:duration_proto",
         "@com_google_protobuf//:empty_proto",
-        #"@com_google_protobuf//:timestamp",
+        "@com_google_protobuf//:timestamp_proto",
+        ":failure_details",
         ":command_line",
         ":invocation_policy",
     ],
@@ -846,16 +850,16 @@ cc_proto_library(
 )
 
 
-# proto_library(
-#     name = "failure_details",
-#     srcs = ["src/main/protobuf/failure_details.proto"],
-#     deps = ["@com_google_protobuf//:descriptor_proto"]
-# )
+proto_library(
+    name = "failure_details",
+    srcs = ["src/main/protobuf/failure_details.proto"],
+    deps = ["@com_google_protobuf//:descriptor_proto"]
+)
 
-# cc_proto_library(
-#     name = "failure_details_cpp",
-#     deps = [":failure_details"],
-# )
+cc_proto_library(
+    name = "failure_details_cpp",
+    deps = [":failure_details"],
+)
 
 # for parsing grpc log
 proto_library(
@@ -904,7 +908,7 @@ cc_grpc_library(
     {
         Wrapper_Target target;
         target.name = "bazel_analysis_proto";
-        target.includes.emplace_back("src/main/protobuf/analysis.pb.h");
+        target.includes.emplace_back("src/main/protobuf/analysis_v2.pb.h");
         target.deps.emplace_back("@bazel//:analysis_proto_cpp");
         spec.dep_integration.wrapper_targets.emplace_back(target);
     }

@@ -20,6 +20,9 @@ cc_proto_library(
 proto_library(
     name = "spawn_proto",
     srcs = ["src/main/protobuf/spawn.proto"],
+    deps = [
+        "@com_google_protobuf//:duration_proto",
+    ]
 )
 
 cc_proto_library(
@@ -39,7 +42,7 @@ cc_proto_library(
 
 proto_library(
     name = "analysis_proto",
-    srcs = ["src/main/protobuf/analysis.proto"],
+    srcs = ["src/main/protobuf/analysis_v2.proto"],
     deps = [":build_proto"],
 )
 
@@ -55,7 +58,8 @@ proto_library(
         "@com_google_protobuf//:any_proto",
         "@com_google_protobuf//:duration_proto",
         "@com_google_protobuf//:empty_proto",
-        #"@com_google_protobuf//:timestamp",
+        "@com_google_protobuf//:timestamp_proto",
+        ":failure_details",
         ":command_line",
         ":invocation_policy",
     ],
@@ -98,16 +102,16 @@ cc_proto_library(
 )
 
 
-# proto_library(
-#     name = "failure_details",
-#     srcs = ["src/main/protobuf/failure_details.proto"],
-#     deps = ["@com_google_protobuf//:descriptor_proto"]
-# )
+proto_library(
+    name = "failure_details",
+    srcs = ["src/main/protobuf/failure_details.proto"],
+    deps = ["@com_google_protobuf//:descriptor_proto"]
+)
 
-# cc_proto_library(
-#     name = "failure_details_cpp",
-#     deps = [":failure_details"],
-# )
+cc_proto_library(
+    name = "failure_details_cpp",
+    deps = [":failure_details"],
+)
 
 # for parsing grpc log
 proto_library(

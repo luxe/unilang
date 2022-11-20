@@ -5,5 +5,5 @@
 #pragma once
 // Supress all compiler warnings
 #pragma GCC system_header
-#include "src/main/protobuf/analysis.pb.h"
+#include "src/main/protobuf/analysis_v2.pb.h"
 
