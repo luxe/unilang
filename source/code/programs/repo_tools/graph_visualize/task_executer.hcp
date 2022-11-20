@@ -33,7 +33,9 @@ class
     Add_Edges(gexf_data,spawns);
     
     
-    
+    std::map<std::string,nlohmann::json> node_data;
+    auto file_results = Gexf_Formatter::Format(gexf_data,node_data);
+    Write_To_File("/home/luxe/Desktop/bazel_graph.gexf",file_results);
     
     
 ❱
@@ -62,10 +64,8 @@ class
         
         //record all the hashes representing the unique action as nodes
         //gexf_data.node_edge_data.nodes.insert(it.second.digest().hash());
+        gexf_data.node_edge_data.nodes.insert(it.second.target_label());
         
-        
-        //TODO update proto
-        //std::cout << it.second.target_label() << std::endl;
     }
     
 ❱
@@ -77,7 +77,19 @@ class
             if (Should_Record_Path(input.path())){
                 Timed_Connection c;
                 c.connection.source = input.path();
-                //c.connection.target = it.second.digest().hash();
+                c.connection.target = it.second.target_label();
+                c.connection.type = Edge_Type::DIRECTED;
+                gexf_data.node_edge_data.edges.Add(Type_To_Json_String::As_JSON_String(c));
+            }
+            
+            
+        }
+        
+        for (auto output: it.second.actual_outputs()){
+            if (Should_Record_Path(output.path())){
+                Timed_Connection c;
+                c.connection.source = it.second.target_label();
+                c.connection.target = output.path();
                 c.connection.type = Edge_Type::DIRECTED;
                 gexf_data.node_edge_data.edges.Add(Type_To_Json_String::As_JSON_String(c));
             }
@@ -85,6 +97,9 @@ class
             
         }
     }
+    
+    
+    
 ❱
 
 ◀private: static▶ bool ☀Should_Record_Path(std::string const& path) ❰

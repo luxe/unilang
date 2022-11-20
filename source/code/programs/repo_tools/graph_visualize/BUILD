@@ -38,6 +38,7 @@ hcp_hdrs_derive(
         "//code/utilities/program/wrappers/bazel/query:bazel_aquery_runner",
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/formats/gexf/data:gexf_data",
+        "//code/utilities/formats/gexf:gexf_formatter",
         "//code/utilities/formats/json/converters:type_to_json_string",
         "//code/utilities/data_structures/graph/basic:timed_connection",
     ],
