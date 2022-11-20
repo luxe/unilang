@@ -5,13 +5,12 @@ load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
-hcp(
+hcp_hdrs_derive(
     name = "connections_exporter",
-    deps = [
-        "//code/programs/gcalviz/exporters/data:edge_data",
-        "//code/programs/gcalviz/exporters/data:node_edge_data",
-        "//code/programs/gcalviz/exporters/formatters:gexf_formatter",
-        "//code/programs/gcalviz/exporters/formatters:graphml_formatter",
+    interface_deps = [
+        "//code/utilities/data_structures/graph/basic:timed_connection",
+        "//code/utilities/data_structures/graph/basic:node_edge_data",
+        "//code/utilities/formats/gexf:gexf_formatter",
         "//code/utilities/data_structures/counters/unique_counter",
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/filesystem/paths:lib",
@@ -29,9 +28,9 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "metrics_exporter",
-    deps = [
+    interface_deps = [
         "//code/utilities/data_structures/counters/unique_counter",
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/filesystem/paths:lib",
@@ -48,9 +47,9 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "email_exporter",
-    deps = [
+    interface_deps = [
         "//code/utilities/data_structures/counters/unique_counter",
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/filesystem/paths:lib",
@@ -69,9 +68,9 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "email_user_info_exporter",
-    deps = [
+    interface_deps = [
         "//code/utilities/data_structures/counters/unique_counter",
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/filesystem/paths:lib",
@@ -92,13 +91,13 @@ hcp(
         "//code/utilities/web/automate/navigation:browser_navigator",
         "//code/utilities/web/endpoints/gcal/data:gcal_rooms",
         "//code/utilities/web/endpoints/gcal/data:gcal_sorted_events",
-        "@pybind11",
+        "//code/utilities/deps/external/pybind11:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "user_location_info_exporter",
-    deps = [
+    interface_deps = [
         "//code/utilities/data_structures/counters/unique_counter",
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/filesystem/paths:lib",
@@ -118,6 +117,6 @@ hcp(
         "//code/utilities/web/automate/navigation:browser_navigator",
         "//code/utilities/web/endpoints/gcal/data:gcal_rooms",
         "//code/utilities/web/endpoints/gcal/data:gcal_sorted_events",
-        "@pybind11",
+        "//code/utilities/deps/external/pybind11:lib",
     ],
 )
