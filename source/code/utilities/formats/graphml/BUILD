@@ -5,10 +5,11 @@ load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
-hcp(
+hcp_hdrs_derive(
     name = "graphml_formatter",
-    deps = [
-        "//code/programs/gcalviz/exporters/data:node_edge_data",
+    interface_deps = [
+        "//code/utilities/data_structures/graph/basic:node_edge_data",
+        "//code/utilities/data_structures/graph/basic:timed_connection",
         "//code/utilities/data_structures/counters/unique_counter",
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/filesystem/paths:lib",

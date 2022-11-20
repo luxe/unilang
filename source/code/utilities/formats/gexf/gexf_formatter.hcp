@@ -1,46 +1,26 @@
 class
-❪iostream❫
-❪string❫
-❪set❫
-❪map❫
-❪"code/programs/gcalviz/exporters/data/node_edge_data"❫
-❪"code/programs/gcalviz/exporters/data/edge_data"❫
-❪"code/utilities/time/date/rfc333_datetime_to_epoch_converter"❫
-❪"code/utilities/time/date/rfc333_datetime_within_range_checker"❫
-❪"code/utilities/web/endpoints/gcal/data/gcal_sorted_events"❫
-❪"code/programs/gcalviz/exporters/formatters/gexf_attribute"❫
 ⚯
-❪"code/utilities/types/strings/transformers/search_replace/lib"❫
-❪"code/utilities/filesystem/files/creating/lib"❫
-❪"code/utilities/formats/json/converters/lib"❫
-❪"code/utilities/data_structures/counters/unique_counter/unique_counter"❫
-❪"code/utilities/types/strings/transformers/appending/lib"❫
-❪"code/utilities/filesystem/paths/lib"❫
-❪"code/utilities/types/strings/observers/comparing/lib"❫
-❪"code/utilities/types/strings/observers/other/lib"❫
-❪"code/utilities/formats/json/extraction/json_extractor"❫
-❪"code/utilities/formats/xml/xml_string_escaper"❫
 ⚞⚟
 
-◀public: static▶ std::string ☀Format(Node_Edge_Data const& node_edge_data, std::map<std::string,nlohmann::json> const& user_data)❰
-    std::string file_results = Start(node_edge_data);
-    Append(file_results,Build_Node_Section(node_edge_data,user_data));
-    Append(file_results,Build_Edge_Section(node_edge_data));
+◀public: static▶ std::string ☀Format(Gexf_Data const& data, std::map<std::string,nlohmann::json> const& user_data)❰
+    std::string file_results = Start(data);
+    Append(file_results,Build_Node_Section(data,user_data));
+    Append(file_results,Build_Edge_Section(data.node_edge_data));
     Append(file_results,End());
     return file_results;
 ❱
 
-◀private: static▶ std::string ☀Build_Node_Section(Node_Edge_Data const& node_edge_data, std::map<std::string,nlohmann::json> const& user_data)❰
+◀private: static▶ std::string ☀Build_Node_Section(Gexf_Data const& data, std::map<std::string,nlohmann::json> const& user_data)❰
 
     std::string file_results;
     Append_With_Newline(file_results,"<nodes>");
-    for (auto const& node: node_edge_data.nodes){
+    for (auto const& node: data.node_edge_data.nodes){
         Append(file_results,"<node ");
         Append_Key_Value(file_results,"id",node);
         Append_Key_Value(file_results,"label",node);
         Append_With_Newline(file_results,">");
         
-        Append_With_Newline(file_results,Get_Node_Attributes_For_User(node,user_data));
+        Append_With_Newline(file_results,Get_Node_Attributes_For_User(node,data.attrs,user_data));
         
         Append_With_Newline(file_results,"</node>");
     }
@@ -48,9 +28,8 @@ class
     return file_results;
 ❱
 
-◀private: static▶ std::string ☀Get_Node_Attributes_For_User(std::string const& id, std::map<std::string,nlohmann::json> const& user_data)❰
+◀private: static▶ std::string ☀Get_Node_Attributes_For_User(std::string const& id, std::vector<Gexf_Attribute> const& attrs, std::map<std::string,nlohmann::json> const& user_data)❰
     std::string result;
-    auto attrs = Get_Gexf_Attribute_Spec();
     
     auto found = user_data.find(id);
     if (found != user_data.end()){
@@ -93,7 +72,7 @@ class
     std::string file_results;
     Append_With_Newline(file_results,"<edges>");
     for (auto const& edge: node_edge_data.edges.hash_table){
-        auto e = From_JSON_String<Edge_Data>(edge.first);
+        auto e = From_JSON_String<Timed_Connection>(edge.first);
         Append(file_results,"<edge ");
         Append_Key_Value(file_results,"source",e.connection.source);
         Append_Key_Value(file_results,"target",e.connection.target);
@@ -126,7 +105,7 @@ class
 
 
 ◀private: static▶ std::string ☀Epoch_To_YYY_MM_DD(unsigned long epoch)❰
-    time_t rawtime = epoch;
+    time_t rawtime = static_cast<time_t>(epoch);
     struct tm  ts;
     char       buf[80];
     ts = *localtime(&rawtime);
@@ -135,16 +114,11 @@ class
     return result;
 ❱
 
-◀private: static▶ std::string ☀Start(Node_Edge_Data const& node_edge_data)❰
+◀private: static▶ std::string ☀Start(Gexf_Data const& data)❰
     
         //settings
-        std::string graph_mode = Derive_Graph_Mode(node_edge_data);
-        std::string edge_type = Derive_Edge_Type(node_edge_data);
-        std::string time_format = "date";
-        std::string meta_modification_date = "";
-        std::string meta_creator = "Trevor Hickey";
-        std::string meta_description = "calnet output";
-        std::string meta_keywords = "social network, calnet";
+        std::string graph_mode = Derive_Graph_Mode(data.node_edge_data);
+        std::string edge_type = Derive_Edge_Type(data.node_edge_data);
 
         std::string str;
         
@@ -158,16 +132,16 @@ class
         
         //meta
         Append(str,"<meta ");
-        Append_Key_Value(str,"lastmodifieddate",meta_modification_date);
+        Append_Key_Value(str,"lastmodifieddate",data.metadata.modification_date);
         Append_With_Newline(str,">");
         Append_With_Newline(str,"<creator>");
-        Append_With_Newline(str,meta_creator);
+        Append_With_Newline(str,data.metadata.creator);
         Append_With_Newline(str,"</creator>");
         Append_With_Newline(str,"<description>");
-        Append_With_Newline(str,meta_description);
+        Append_With_Newline(str,data.metadata.description);
         Append_With_Newline(str,"</description>");
         Append_With_Newline(str,"<keywords>");
-        Append_With_Newline(str,meta_keywords);
+        Append_With_Newline(str,Get_As_Comma_Seperated_String(data.metadata.keywords));
         Append_With_Newline(str,"</keywords>");
         Append_With_Newline(str,"</meta>");
         
@@ -175,21 +149,20 @@ class
         Append(str,"<graph ");
         Append_Key_Value(str,"mode",graph_mode);
         Append_Key_Value(str,"defaultedgetype",edge_type);
-        Append_Key_Value(str,"timeformat",time_format);
+        Append_Key_Value(str,"timeformat",data.metadata.time_format);
         Append_With_Newline(str,">");
         
         //attribute definitions
         Append_With_Newline(str,"<attributes class=\"node\">");
-        auto attrs = Get_Gexf_Attribute_Spec();
-        for (size_t i = 0; i < attrs.size(); ++i){
+        for (size_t i = 0; i < data.attrs.size(); ++i){
             Append(str,"<attribute ");
             Append_Key_Value(str,"id",std::to_string(i));
-            Append_Key_Value(str,"title",attrs[i].title);
-            Append_Key_Value(str,"type",attrs[i].type);
+            Append_Key_Value(str,"title",data.attrs[i].title);
+            Append_Key_Value(str,"type",data.attrs[i].type);
             Append_With_Newline(str,">");
             
             Append(str,"<default>");
-            Append(str,attrs[i].default_value);
+            Append(str,data.attrs[i].default_value);
             Append_With_Newline(str,"</default>");
             Append_With_Newline(str,"</attribute>");
             
@@ -203,23 +176,29 @@ class
 
 
 ◀private: static▶ std::string ☀Derive_Graph_Mode(Node_Edge_Data const& node_edge_data)❰
-    for (auto const& edge: node_edge_data.edges.hash_table){
-        auto e = From_JSON_String<Edge_Data>(edge.first);
-        if (!e.interval.start.empty() && !e.interval.end.empty()){
-            return "dynamic";
-        }
-        else{
-            return "static";
-        }
+
+    // The graph is dynamic if there is timing information encoded.
+    // We can just look at a single element to decide this.
+    // Typically all the elements have intervals or none of them do.
+    if (node_edge_data.edges.hash_table.empty()){
+        
+        //not sure
+        return "slice";
+    }
+
+
+    auto edge = *node_edge_data.edges.hash_table.begin();
+    auto e = From_JSON_String<Timed_Connection>(edge.first);
+    if (!e.interval.start.empty() && !e.interval.end.empty()){
+        return "dynamic";
     }
     
-    //not sure
-    return "slice";
+    return "static";
 ❱
 ◀private: static▶ std::string ☀Derive_Edge_Type(Node_Edge_Data const& node_edge_data)❰
 
     for (auto const& edge: node_edge_data.edges.hash_table){
-        auto e = From_JSON_String<Edge_Data>(edge.first);
+        auto e = From_JSON_String<Timed_Connection>(edge.first);
         if (e.connection.type == Edge_Type::DIRECTED){
             return "directed";
         }

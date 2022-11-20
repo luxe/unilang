@@ -5,31 +5,31 @@ load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
-hcp(
+hcp_hdrs_derive(
     name = "node_edge_data",
-    deps = [
+    interface_deps = [
         "//code/utilities/data_structures/counters/unique_counter",
     ],
 )
 
-hcp(
-    name = "edge_data",
-    deps = [
-        ":connection",
-        ":event_interval",
+hcp_hdrs_derive(
+    name = "timed_connection",
+    interface_deps = [
+        "//code/utilities/data_structures/graph/basic:connection",
+        "//code/utilities/data_structures/graph/basic:event_interval",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "event_interval",
-    deps = [
+    interface_deps = [
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "connection",
-    deps = [
-        ":edge_type",
+    interface_deps = [
+        "//code/utilities/data_structures/graph/basic:edge_type",
     ],
 )
 
