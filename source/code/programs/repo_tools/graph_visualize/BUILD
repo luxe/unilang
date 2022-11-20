@@ -37,5 +37,6 @@ hcp(
         "//code/utilities/program/wrappers/bazel:bazel_runner",
         "//code/utilities/formats/serialization:protobuf",
         "//code/utilities/program/wrappers/bazel/query:bazel_aquery_runner",
+        "//code/utilities/types/strings/observers/other:lib",
     ],
 )
