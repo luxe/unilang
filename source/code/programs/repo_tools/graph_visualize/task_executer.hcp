@@ -43,6 +43,7 @@ class
 
 ◀private: static▶ void ☀Add_Nodes(Gexf_Data & gexf_data, std::unordered_map<std::string,tools::protos::SpawnExec> const& spawns) ❰
 
+    int i = 0;
     for (auto const& it: spawns) {
         
         
@@ -64,7 +65,9 @@ class
         
         //record all the hashes representing the unique action as nodes
         //gexf_data.node_edge_data.nodes.insert(it.second.digest().hash());
-        gexf_data.node_edge_data.nodes.insert(it.second.target_label());
+        //gexf_data.node_edge_data.nodes.insert(it.second.target_label());
+        gexf_data.node_edge_data.nodes.insert(std::string("node") + std::to_string(i));
+        ++i;
         
     }
     
@@ -72,12 +75,14 @@ class
 
 ◀private: static▶ void ☀Add_Edges(Gexf_Data & gexf_data, std::unordered_map<std::string,tools::protos::SpawnExec> const& spawns) ❰
 
+    int i = 0;
     for (auto const& it: spawns) {
         for (auto input: it.second.inputs()){
             if (Should_Record_Path(input.path())){
                 Timed_Connection c;
                 c.connection.source = input.path();
-                c.connection.target = it.second.target_label();
+                //c.connection.target = it.second.target_label();
+                c.connection.target = std::string("node") + std::to_string(i);
                 c.connection.type = Edge_Type::DIRECTED;
                 gexf_data.node_edge_data.edges.Add(Type_To_Json_String::As_JSON_String(c));
             }
@@ -88,7 +93,8 @@ class
         for (auto output: it.second.actual_outputs()){
             if (Should_Record_Path(output.path())){
                 Timed_Connection c;
-                c.connection.source = it.second.target_label();
+                //c.connection.source = it.second.target_label();
+                c.connection.source =  std::string("node") + std::to_string(i);
                 c.connection.target = output.path();
                 c.connection.type = Edge_Type::DIRECTED;
                 gexf_data.node_edge_data.edges.Add(Type_To_Json_String::As_JSON_String(c));
@@ -96,6 +102,8 @@ class
             
             
         }
+        
+        ++i;
     }
     
     
