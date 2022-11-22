@@ -87,15 +87,13 @@ class
 //https://github.com/zenotech/fox-toolkit
 
     
-    //Build Systems
+    //Build Systems (Pretty Bazel specific)
     x.specs.emplace_back(Bazel());
     x.specs.emplace_back(Bazel_Skylib());
     x.specs.emplace_back(BazelBuildTools());
     x.specs.emplace_back(Buildfarm());
     x.specs.emplace_back(Remote_APIs());
-
-    //bazel's way of making "toolchain containers" for remote execution
-    x.specs.emplace_back(rbe_default());
+    x.specs.emplace_back(rbe_default()); //bazel's way of making "toolchain containers" for remote execution
     
     //Google protobuf stuff
     x.specs.emplace_back(Protobuf());
@@ -112,6 +110,7 @@ class
     
     //Rules / Starlark
     x.specs.emplace_back(platforms());
+    x.specs.emplace_back(bazel_lib());
     x.specs.emplace_back(Io_Bazel_Rules_Go());
     x.specs.emplace_back(Bazel_Gazelle());
     x.specs.emplace_back(Io_Bazel_Rules_Docker());
@@ -4418,6 +4417,31 @@ llvm_register_toolchains()
     spec.lib_name = "platforms";
     Add_Unilang_Github_Mirror(spec,"platforms","f0f4da70368b2342a00443f230bb66d9093bb58b","4ff3cd591c8c940004f69d91e683a9a02882dbc7a3a5da1444242ca91bc87b57");
     spec.build_content_in_dependency=true;
+    return spec;
+❱
+◀private: static▶ Dependency_Specification ☀bazel_lib()❰
+    Dependency_Specification spec;
+    spec.lib_name = "bazel_lib";
+    Add_Unilang_Github_Mirror(spec,"bazel_lib","b1ee3675f28cc7089fb34b305d5ae09e77b76deb","ca7cd1463ad994778b212ba704a8144c9a27c638e11480e859897e9f65e6496f");
+    spec.build_content_in_dependency=true;
+    spec.workspace.raw_starlark = 
+R"RAW_STRING(
+load("@aspect_bazel_lib//lib:repositories.bzl", "aspect_bazel_lib_dependencies")
+
+aspect_bazel_lib_dependencies()
+
+# Register the following toolchain to use jq
+
+load("@aspect_bazel_lib//lib:repositories.bzl", "register_jq_toolchains")
+
+register_jq_toolchains()
+
+# Register the following toolchain to use yq
+
+load("@aspect_bazel_lib//lib:repositories.bzl", "register_yq_toolchains")
+
+register_yq_toolchains()
+)RAW_STRING";
     return spec;
 ❱
 ◀private: static▶ Dependency_Specification ☀Io_Bazel_Rules_Go()❰
