@@ -40,7 +40,5 @@ cc_library(
         ":hdrs",
         "@system//:SDL2",
         "@system//:SDL2_hdrs",
-        "@system//:X11",
-        "@system//:X11_hdrs",
     ],
 )

@@ -8,7 +8,7 @@ load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 hcp(
     name = "grpc_log_data",
     deps = [
-        "@bazel//:remote_execution_log_cpp",
+        "//code/utilities/deps/external/bazel_remote_execution_proto:lib",
     ],
 )
 

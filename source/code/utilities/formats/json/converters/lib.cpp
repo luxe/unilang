@@ -5,7 +5,8 @@
 bool Is_Valid_JSON_String(std::string const& json_string){
   bool valid = true;
   try{
-    nlohmann::json::parse(json_string);
+    auto parsed_object = nlohmann::json::parse(json_string);
+    (void)parsed_object;
   }catch(...){
     valid = false;
   }

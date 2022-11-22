@@ -249,7 +249,7 @@ T& Safe_Index_Capped(std::vector<T> & v, int i){
   if (i < 0){
     return v[0];
   }
-  if (i >= v.size()){
+  if (static_cast<size_t>(i) >= v.size()){
     return v[v.size()-1];
   }
   
@@ -263,7 +263,7 @@ size_t Adjust_Index_Capped(std::vector<T> const& v, int i){
   if (i < 0){
     return 0;
   }
-  if (i >= v.size()){
+  if (static_cast<size_t>(i) >= v.size()){
     return v.size()-1;
   }
   

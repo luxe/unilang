@@ -3,8 +3,8 @@
 template <typename T>
 struct BinaryNode {
     
-    BinaryNode(T val):
-    val(val) {}
+    BinaryNode(T val_in):
+    val(val_in) {}
     
     BinaryNode()
     {}

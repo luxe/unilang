@@ -43,8 +43,8 @@ extrudeSolidFromPolygon(GLfloat data[][2], unsigned int dataSize,
   if (tobj == NULL) {
     tobj = gluNewTess();  /* create and initialize a GLU
                              polygon tesselation object */
-    gluTessCallback(tobj, GLU_BEGIN, glBegin);
-    gluTessCallback(tobj, GLU_VERTEX, glVertex2fv);  /* semi-tricky */
+    gluTessCallback(tobj, GLU_BEGIN, (void (*)(void))glBegin);
+    gluTessCallback(tobj, GLU_VERTEX,(void (*)(void))glVertex2fv);  /* semi-tricky */
     gluTessCallback(tobj, GLU_END, glEnd);
   }
   glNewList(side, GL_COMPILE);

@@ -12,6 +12,8 @@
 #include <ctype.h>
 #include <math.h>
 #include <GL/glut.h>
+#include <string>
+#include <iostream>
 
 GLfloat light_diffuse[] =
 {1.0, 0.0, 0.0, 1.0};
@@ -153,7 +155,7 @@ keyboard(unsigned char key, int x, int y)
 void
 special(int key, int x, int y)
 {
-  char *name;
+  std::string name;
 
   switch (key) {
   case GLUT_KEY_F1:
@@ -220,7 +222,7 @@ special(int key, int x, int y)
     name = "UNKONW";
     break;
   }
-  printf("special: %s %d,%d\n", name, x, y);
+  std::cout << "special: " << name << " " << x << " " << y << std::endl;
 }
 
 void
