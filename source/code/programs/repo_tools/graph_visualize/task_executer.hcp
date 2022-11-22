@@ -8,6 +8,32 @@ class
 
 
 
+    auto spawns = Get_Spawn_Info(options);
+    
+    // auto results = Bazel_Aquery_Runner::Run_Aquery(repo_context.program_to_run_build,options.Target());
+    // std::cout << Protobuf_Message_To_Json(results.aquery_result) << std::endl;
+    
+
+    std::cout << "creating gephi file..." << std::endl;
+    
+    
+    Gexf_Data gexf_data;
+    Add_Metadata(gexf_data,spawns);
+    Add_Attributes(gexf_data,spawns);
+    Add_Nodes(gexf_data,spawns);
+    Add_Edges(gexf_data,spawns);
+    
+    
+    std::map<std::string,nlohmann::json> node_data;
+    auto file_results = Gexf_Formatter::Format(gexf_data,node_data);
+    Write_To_File("/home/luxe/Desktop/bazel_graph.gexf",file_results);
+    
+    
+❱
+
+
+◀private: static▶ std::vector<tools::protos::SpawnExec> ☀Get_Spawn_Info(Program_Options const& options) ❰
+
     auto cached_data = "/home/luxe/Desktop/execuion_log.bin";
     auto spawns = Fetch_Multiple_Protos_From_Cache_Or_Create2<tools::protos::SpawnExec>(cached_data,[&](){
         
@@ -25,29 +51,21 @@ class
         
     });
     
-    // auto results = Bazel_Aquery_Runner::Run_Aquery(repo_context.program_to_run_build,options.Target());
-    // std::cout << Protobuf_Message_To_Json(results.aquery_result) << std::endl;
-    
+    return spawns;
 
-    std::cout << "creating gephi file..." << std::endl;
-    
-    
-    Gexf_Data gexf_data;
+
+❱
+
+
+◀private: static▶ void ☀Add_Metadata(Gexf_Data & gexf_data, std::vector<tools::protos::SpawnExec> const& spawns) ❰
+
     gexf_data.metadata.creator = "luxe";
     gexf_data.metadata.description = "bazel graph";
     gexf_data.metadata.keywords.emplace_back("bazel");
     gexf_data.metadata.keywords.emplace_back("execution");
-    
-    Add_Nodes(gexf_data,spawns);
-    Add_Edges(gexf_data,spawns);
-    
-    
-    std::map<std::string,nlohmann::json> node_data;
-    auto file_results = Gexf_Formatter::Format(gexf_data,node_data);
-    Write_To_File("/home/luxe/Desktop/bazel_graph.gexf",file_results);
-    
-    
 ❱
+
+
 
 
 ◀private: static▶ void ☀Add_Nodes(Gexf_Data & gexf_data, std::vector<tools::protos::SpawnExec> const& spawns) ❰
