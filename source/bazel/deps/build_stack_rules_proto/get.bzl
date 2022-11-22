@@ -15,3 +15,4 @@ def buildStackRulesProto():
             main_mirror_url("rules_proto","a5ee3d29b564ba27ce0aca9c73c9d62fcc2931dc"),
         ],
     )
+

@@ -16,3 +16,4 @@ def fonts():
             main_mirror_url("fonts","321745a0b69c45b8568d9ac84e887032ad844b25"),
         ],
     )
+

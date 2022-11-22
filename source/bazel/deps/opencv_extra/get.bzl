@@ -16,3 +16,4 @@ def opencvExtra():
             main_mirror_url("opencv_extra","b540994702a410614ac7bf00ecd8a790eff6d0fd"),
         ],
     )
+

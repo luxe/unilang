@@ -16,3 +16,4 @@ def sqliteModernCpp():
             main_mirror_url("sqlite_modern_cpp","34f9b076348d731e0f952a8ff264a26230ce287b"),
         ],
     )
+

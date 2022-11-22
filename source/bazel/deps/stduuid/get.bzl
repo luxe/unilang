@@ -16,3 +16,4 @@ def stduuid():
             main_mirror_url("stduuid","207f06bd56b5d02b8bf4c4305e91f0da8fedbcb4"),
         ],
     )
+

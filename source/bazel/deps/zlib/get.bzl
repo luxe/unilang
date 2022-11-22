@@ -16,7 +16,7 @@ def zlib():
             main_mirror_url("zlib","cacf7f1d4e3d44d871b605da3b647f07d718623f"),
         ],
     )
-    
+
     http_archive(
         name="net_zlib_zlib" ,
         build_file="//bazel/deps/zlib:build.BUILD" ,
@@ -26,3 +26,4 @@ def zlib():
             main_mirror_url("zlib","cacf7f1d4e3d44d871b605da3b647f07d718623f"),
         ],
     )
+

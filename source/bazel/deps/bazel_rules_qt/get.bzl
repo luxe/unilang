@@ -15,3 +15,4 @@ def bazelRulesQt():
             main_mirror_url("bazel_rules_qt","50e93b0f9ec7f8e11adad943e0c4a8f1cb855316"),
         ],
     )
+

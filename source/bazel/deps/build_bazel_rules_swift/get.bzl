@@ -15,3 +15,4 @@ def buildBazelRulesSwift():
             main_mirror_url("rules_swift","b7a269355fc9852a885c5becbdeb1497cf787164"),
         ],
     )
+

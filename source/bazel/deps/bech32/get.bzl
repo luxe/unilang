@@ -16,3 +16,4 @@ def bech32():
             main_mirror_url("bech32","45bbf67d3dcc00dc960041563fc2dddd32a5f903"),
         ],
     )
+

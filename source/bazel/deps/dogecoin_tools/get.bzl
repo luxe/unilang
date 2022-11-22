@@ -15,3 +15,4 @@ def dogecoinTools():
             "https://github.com/dogecoin/dogecoin/releases/download/v1.14.4/dogecoin-1.14.4-x86_64-linux-gnu.tar.gz",
         ],
     )
+

@@ -15,3 +15,4 @@ def rulesAppimage():
             main_mirror_url("rules_appimage","1768e5767f99f679fb37f2be24d3d23b2cf06541"),
         ],
     )
+

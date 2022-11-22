@@ -16,3 +16,4 @@ def libjpeg():
             main_mirror_url("libjpeg","6c0fcb8ddee365e7abc4d332662b06900612e923"),
         ],
     )
+

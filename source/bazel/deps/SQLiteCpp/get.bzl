@@ -16,3 +16,4 @@ def sQLiteCpp():
             main_mirror_url("SQLiteCpp","44bd9c4f38e7552f411944a3208cddfa759406ce"),
         ],
     )
+

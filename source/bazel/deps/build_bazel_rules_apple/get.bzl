@@ -15,3 +15,4 @@ def buildBazelRulesApple():
             main_mirror_url("rules_apple","d37fa4fb115632866ee9ec7416cdd2dbf6a7ef18"),
         ],
     )
+

@@ -16,3 +16,4 @@ def spdlog():
             main_mirror_url("spdlog","bdfc7d2a5a4ad9cc1cebe1feb7e6fcc703840d71"),
         ],
     )
+

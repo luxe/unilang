@@ -16,3 +16,4 @@ def scrabbleWords():
             main_mirror_url("scrabble_words","28a758a38c44baa5cd299d857dc3955bb0dbb9bf"),
         ],
     )
+

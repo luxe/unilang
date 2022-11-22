@@ -16,3 +16,4 @@ def cppSqlitelib():
             main_mirror_url("cpp-sqlitelib","5f8da12d596d69f5a7152ee985fbbd009724cff2"),
         ],
     )
+

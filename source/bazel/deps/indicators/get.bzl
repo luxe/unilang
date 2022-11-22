@@ -16,3 +16,4 @@ def indicators():
             main_mirror_url("indicators","b85eadb47c1d0f0edbb4da9c3b6384ec6486b24a"),
         ],
     )
+

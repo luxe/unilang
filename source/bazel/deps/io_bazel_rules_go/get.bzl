@@ -15,3 +15,4 @@ def ioBazelRulesGo():
             main_mirror_url("rules_go","64bfa14993c7841aaefbbe1f1aecaad72f302974"),
         ],
     )
+

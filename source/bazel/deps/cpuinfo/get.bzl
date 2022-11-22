@@ -16,3 +16,4 @@ def cpuinfo():
             main_mirror_url("cpuinfo","d5e37adf1406cf899d7d9ec1d317c47506ccb970"),
         ],
     )
+

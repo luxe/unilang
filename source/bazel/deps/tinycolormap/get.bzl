@@ -16,3 +16,4 @@ def tinycolormap():
             main_mirror_url("tinycolormap","a1f736a31f8f8b71a986228a2ab0492730c1e807"),
         ],
     )
+

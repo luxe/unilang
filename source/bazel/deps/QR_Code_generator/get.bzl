@@ -16,3 +16,4 @@ def qRCodeGenerator():
             main_mirror_url("QR-Code-generator","8518684c0f33d004fa93971be2c6a8eca3167d1e"),
         ],
     )
+

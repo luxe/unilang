@@ -14,3 +14,4 @@ def trunk():
             "https://trunk.io/releases/trunk",
         ],
     )
+

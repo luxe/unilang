@@ -15,3 +15,4 @@ def bazelGazelle():
             main_mirror_url("bazel-gazelle","2f9261b27f1d2660e2952bc9a0e79e4e81691afe"),
         ],
     )
+

@@ -15,3 +15,4 @@ def ioBazelRulesK8s():
             main_mirror_url("rules_k8s","d05cbea5c56738ef02c667c10951294928a1d64a"),
         ],
     )
+

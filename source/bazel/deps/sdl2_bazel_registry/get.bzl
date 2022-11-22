@@ -15,3 +15,4 @@ def sdl2BazelRegistry():
             main_mirror_url("sdl2","ffccd0be0f102cc628bb71cd52cbc1fbd27dac62"),
         ],
     )
+

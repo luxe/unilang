@@ -16,3 +16,4 @@ def libmagic():
             main_mirror_url("libmagic","f3f079e766b5dceea1850b55bcc59ea6249a94f1"),
         ],
     )
+

@@ -16,3 +16,4 @@ def yamlCpp():
             main_mirror_url("yaml-cpp","283d06f9f796e779ac94b769dbd13f3a9786c305"),
         ],
     )
+

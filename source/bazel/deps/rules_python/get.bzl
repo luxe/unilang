@@ -15,3 +15,4 @@ def rulesPython():
             main_mirror_url("rules_python","f1b6b742254ec11f9e7bd6bff19ad2b327107a45"),
         ],
     )
+

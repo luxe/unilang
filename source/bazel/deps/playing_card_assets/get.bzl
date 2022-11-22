@@ -16,3 +16,4 @@ def playingCardAssets():
             main_mirror_url("playing_card_assets","30d8e60a198cc2673ff2bbdef754796e1317e79b"),
         ],
     )
+

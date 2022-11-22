@@ -16,3 +16,4 @@ def puyoPuyoAssets():
             main_mirror_url("PuyoPuyoAssets","c44e7bf9cff612fb63948fa96c51ff13a2ac8e41"),
         ],
     )
+

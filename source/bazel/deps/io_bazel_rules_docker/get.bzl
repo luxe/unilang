@@ -15,3 +15,4 @@ def ioBazelRulesDocker():
             main_mirror_url("rules_docker","454981e65fa100d37b19210ee85fedb2f7af9626"),
         ],
     )
+

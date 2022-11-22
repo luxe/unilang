@@ -15,3 +15,4 @@ def rulesFuzzing():
             main_mirror_url("rules_fuzzing","e409c0ce41a5d9b93cd6bf64fa3ca0ec15c1e873"),
         ],
     )
+

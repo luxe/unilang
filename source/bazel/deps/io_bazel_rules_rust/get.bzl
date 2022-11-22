@@ -15,3 +15,4 @@ def ioBazelRulesRust():
             main_mirror_url("rules_rust","df18ddbece5b68f86e63414ea4b50d691923039a"),
         ],
     )
+

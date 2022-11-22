@@ -16,3 +16,4 @@ def word2vec():
             main_mirror_url("word2vec","9b8b58001ba5d58babe1c62327a8501b62cd6179"),
         ],
     )
+

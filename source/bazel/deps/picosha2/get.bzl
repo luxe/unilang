@@ -16,3 +16,4 @@ def picosha2():
             main_mirror_url("PicoSHA2","b699e6c900be6e00152db5a3d123c1db42ea13d0"),
         ],
     )
+

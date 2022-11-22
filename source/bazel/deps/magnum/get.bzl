@@ -16,3 +16,4 @@ def magnum():
             main_mirror_url("magnum","6053cc6fc6761d8e7110d889f01924188106bef8"),
         ],
     )
+

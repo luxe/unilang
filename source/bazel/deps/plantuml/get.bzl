@@ -16,3 +16,4 @@ def plantuml():
             main_mirror_url("plantuml","9ba7d08d5247cac5ec47a5f0052da3aaad0e8479"),
         ],
     )
+

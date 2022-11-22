@@ -16,3 +16,4 @@ def apacheThrift():
             main_mirror_url("thrift","6e5c0f6e315ea1cd8526789558bfd10d6cee2173"),
         ],
     )
+

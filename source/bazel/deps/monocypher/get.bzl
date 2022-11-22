@@ -16,3 +16,4 @@ def monocypher():
             main_mirror_url("monocypher","45524e41fc84054b0e15304195fa5d3b61e816b5"),
         ],
     )
+

@@ -16,3 +16,4 @@ def nasm():
             main_mirror_url("nasm","e91f5cc1322eed4da0de81656276e021bf352c3d"),
         ],
     )
+
