@@ -11,6 +11,6 @@ hcp(
         "//code/utilities/build/build_repo_establisher:build_repo_settings",
         "//code/utilities/program/wrappers/bazel:bazel_runner",
         "//code/utilities/types/vectors/transformers:lib",
-        "@bazel//:workspace_log_proto_cpp",
+        "//code/utilities/deps/external/bazel_workspace_log_proto:lib",
     ],
 )

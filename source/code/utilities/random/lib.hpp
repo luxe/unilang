@@ -85,7 +85,7 @@ auto Get_N_Random_Indexes_With_No_Immediate_Duplicates(T const& container, int c
   std::vector<size_t> indexes;
   
   auto prev_index = Get_Random_Index(container);
-  for (size_t i = 0; i < count; ++i){
+  for (size_t i = 0; i < static_cast<size_t>(count); ++i){
     
       //keep generating a random until its new
       auto rando = Get_Random_Index(container);
@@ -115,7 +115,7 @@ template<typename T>
 auto Get_N_Random_Indexes_With_No_Duplicates(T const& container, int count) -> std::vector<size_t> {
   std::vector<size_t> indexes;
   std::set<size_t> seen;
-  for (size_t i = 0; i < count; ++i){
+  for (size_t i = 0; i < static_cast<size_t>(count); ++i){
     auto rando = Get_Random_Index(container);
     auto found = seen.find(rando);
     while (found != seen.end()){

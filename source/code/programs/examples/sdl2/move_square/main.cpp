@@ -111,6 +111,7 @@ int main()
                 case SDL_SCANCODE_RIGHT: 
                     dest.x += speed / 30; 
                     break; 
+                default:;
                 } 
             } 
         } 

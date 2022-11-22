@@ -102,7 +102,8 @@ help(void)
 void 
 init(void)
 {
-  texfntinit("code/programs/examples/glut/textext/Times-Italic.bw");
+  std::string font_path = "code/programs/examples/glut/textext/Times-Italic.bw";
+  texfntinit(font_path.c_str());
   glEnable(GL_TEXTURE_2D);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();

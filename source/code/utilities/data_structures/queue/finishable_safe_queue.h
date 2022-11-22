@@ -18,9 +18,9 @@ public:
   ~FinishableSafeQueue()
   {}
   
-  FinishableSafeQueue(FinishableSafeQueue const& q)
-  : q(q.q)
-  , finished(q.finished)
+  FinishableSafeQueue(FinishableSafeQueue const& q_in)
+  : q(q_in.q)
+  , finished(q_in.finished)
   {}
 
   // Add an element to the queue.
