@@ -1,4 +1,7 @@
 #pragma once
+// Supress all compiler warnings
+#pragma GCC system_header
+
 #include "inc/OrdinaryBloomFilter.hpp"
 #include "inc/FnvHash.hpp"
 
