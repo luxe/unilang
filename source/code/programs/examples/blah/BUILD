@@ -6,5 +6,5 @@ package(
 
 cpp_main(
     name = "main",
-    deps = ["@blah"],
+    deps = ["//code/utilities/deps/external/blah:lib"],
 )

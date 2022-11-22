@@ -1,4 +1,4 @@
-#include "include/blah.h"
+#include "code/utilities/deps/external/blah/lib.hpp"
 using namespace Blah;
 
 Batch batch;
