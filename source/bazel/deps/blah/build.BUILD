@@ -20,6 +20,7 @@ hdrs = glob(
 cc_library(
     name = "hdrs",
     hdrs = hdrs,
+    copts = ["-Wno-everything"],
     includes = [
         "include",
     ],
@@ -33,6 +34,7 @@ cc_library(
         "-DBLAH_USE_OPENGL",
         "-DSDL2_ENABLED",
         "-DBLAH_USE_SDL2",
+        "-Wno-everything",
     ],
     includes = [
     ],
@@ -40,5 +42,7 @@ cc_library(
         ":hdrs",
         "@system//:SDL2",
         "@system//:SDL2_hdrs",
+        "@system//:X11",
+        "@system//:X11_hdrs",
     ],
 )

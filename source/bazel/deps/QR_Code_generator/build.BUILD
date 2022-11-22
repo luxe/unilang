@@ -18,6 +18,7 @@ hdrs = glob(
 cc_library(
     name = "hdrs",
     hdrs = hdrs,
+    copts = ["-Wno-everything"],
     includes = [
         "cpp",
     ],
@@ -26,8 +27,7 @@ cc_library(
 cc_library(
     name = "lib",
     srcs = ["cpp/QrCode.cpp"],
-    copts = [
-    ],
+    copts = ["-Wno-everything"],
     includes = [
     ],
     deps = [
