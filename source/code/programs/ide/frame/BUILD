@@ -200,7 +200,7 @@ hcp_hdrs_derive(
         "//code/utilities/peripheral/pc:pc_input_state",
         "//code/utilities/types/variant:lib",
         "//code/utilities/types/vectors/operators:lib",
-        "//code/utilities/deps/external/boost/range:lib",
+        "//code/utilities/deps/external/boost_range:lib",
     ],
 )
 

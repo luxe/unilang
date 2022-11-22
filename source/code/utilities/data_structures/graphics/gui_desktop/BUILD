@@ -34,7 +34,7 @@ hcp_hdrs_derive(
         "//code/utilities/graphics/imgui/window:window_settings",
         "//code/utilities/graphics/sdl:sdl_init_settings",
         "//code/utilities/peripheral/pc:pc_input_state",
-        "//code/utilities/deps/external/boost/asio:lib",
+        "//code/utilities/deps/external/boost_asio:lib",
     ],
 )
 
