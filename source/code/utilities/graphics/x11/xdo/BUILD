@@ -7,6 +7,6 @@ cc_library(
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
     deps = [
-        "@xdotool",
+        "//code/utilities/deps/external/xdotool:lib",
     ],
 )

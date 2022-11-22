@@ -5,7 +5,7 @@ extern "C"
 {
 #endif
     
-#include "xdo.h"
+#include "code/utilities/deps/external/xdotool/lib.hpp"
     
 #ifdef __cplusplus
 } // extern "C"
