@@ -178,7 +178,7 @@ std::vector<T> Fetch_Multiple_Protos_From_Cache_Or_Create2(std::string filename,
     if (File_Exists(filename)){
         std::vector<std::string> jsons;
         std::cout << "reading json..." << std::endl;
-        Json_File_Io::Read_Compressed_Json_File(jsons,filename);
+        Json_File_Io::Read_Compressed_Json_File(jsons,filename,Json_Compression_Format::BSON);
         std::cout << "converting to proto..." << std::endl;
         return Vector_Json_To_Vector_Proto<T>(jsons);
         
