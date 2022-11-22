@@ -9,6 +9,7 @@
 #include <GL/glut.h>
 #include "code/utilities/formats/sgi/load_rgb.hpp"
 #include "textmap.hpp"
+#include <string>
 
 static float scale = .03;
 static char *string = "OpenGL rules";
@@ -103,7 +104,7 @@ void
 init(void)
 {
   std::string font_path = "code/programs/examples/glut/textext/Times-Italic.bw";
-  texfntinit(font_path.c_str());
+  texfntinit(const_cast<char*>(font_path.c_str()));
   glEnable(GL_TEXTURE_2D);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
