@@ -20,5 +20,6 @@ cc_library(
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/streams/filestreams/read_all:lib",
         "//code/utilities/deps/external/protobuf:lib",
+        "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
     ],
 )

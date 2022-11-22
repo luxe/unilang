@@ -9,6 +9,7 @@
 #include "code/utilities/formats/json/converters/json_file_io.hpp"
 #include "code/utilities/deps/external/protobuf/lib.hpp"
 #include "code/utilities/streams/filestreams/read_all/lib.hpp"
+#include "code/utilities/filesystem/files/observers/lstat_wrap/lib.hpp"
 
 
 
@@ -64,6 +65,35 @@ std::string Protobuf_Message_To_Inline_Json(T const& t){
     MessageToJsonString(t, &str, options);
     return str;
 }
+
+template <typename T>
+T Json_To_Protobuf_Message(std::string const& str){
+    T x;
+    google::protobuf::util::JsonParseOptions options;
+    JsonStringToMessage(str, &x, options);
+    return x;
+}
+
+
+template <typename T>
+std::vector<std::string> Vector_Proto_To_Vector_Json(std::vector<T> messages){
+    std::vector<std::string> results;
+    for (auto it: messages){
+        results.emplace_back(Protobuf_Message_To_Inline_Json(it));
+    }
+    return results;
+}
+
+
+template <typename T>
+std::vector<T> Vector_Json_To_Vector_Proto(std::vector<std::string> messages){
+    std::vector<T> results;
+    for (auto it: messages){
+        results.emplace_back(Json_To_Protobuf_Message<T>(it));
+    }
+    return results;
+}
+
 
 template <typename T>
 T Deserialize_From_Json_File(std::string const& path){
@@ -126,4 +156,35 @@ bool Serialize_Multiple_Protos_To_Bin_File(std::vector<T> messages, std::string 
     fout.Close();
     close(outfd);
     return success;
+}
+
+
+template <typename T, typename Fun>
+std::vector<T> Fetch_Multiple_Protos_From_Cache_Or_Create(std::string filename, Fun fun) {
+    
+    if (File_Exists(filename)){
+        return Deserialize_Multiple_Protos_From_Bin_File<T>(filename);
+    }
+    
+    auto result = fun();
+    Serialize_Multiple_Protos_To_Bin_File(result,filename);
+    return result;
+
+}
+
+template <typename T, typename Fun>
+std::vector<T> Fetch_Multiple_Protos_From_Cache_Or_Create2(std::string filename, Fun fun) {
+    
+    if (File_Exists(filename)){
+        std::vector<std::string> jsons;
+        Json_File_Io::Read_Json_From_File(jsons,filename);
+        return Vector_Json_To_Vector_Proto<T>(jsons);
+        
+    }
+    
+    auto result = fun();
+    auto jsons = Vector_Proto_To_Vector_Json(result);
+    Json_File_Io::Write_Json_To_File(jsons,filename);
+    return result;
+
 }

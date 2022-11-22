@@ -7,20 +7,29 @@ class
 ◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& options) ❰
 
 
-    // Get and Run
-    auto repo_context = Build_Repo_Establisher::Establish_Repo_For_Building(options.Run_Dir(),options.Url(),options.Branch());
+
+    auto cached_data = "/home/luxe/Desktop/execuion_log.bin";
+    auto spawns = Fetch_Multiple_Protos_From_Cache_Or_Create2<tools::protos::SpawnExec>(cached_data,[&](){
+        
+        // Get Repo
+        auto repo_context = Build_Repo_Establisher::Establish_Repo_For_Building(options.Run_Dir(),options.Url(),options.Branch());
+        
+        // Get spawn information
+        std::cout << "creating spawns object..." << std::endl;
+        auto spawns = Bazel_Runner::Get_Spawn_Information(repo_context.program_to_run_build,
+                                                                     repo_context.build_settings,
+                                                                     repo_context.bazel_setup_settings.config_settings,
+                                                                     options.Target());
+        return spawns;
+        
+        
+    });
     
     // auto results = Bazel_Aquery_Runner::Run_Aquery(repo_context.program_to_run_build,options.Target());
     // std::cout << Protobuf_Message_To_Json(results.aquery_result) << std::endl;
     
-    
-    
-    
-    auto spawns = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(repo_context.program_to_run_build,
-                                                                 repo_context.build_settings,
-                                                                 repo_context.bazel_setup_settings.config_settings,
-                                                                 options.Target());
-    
+
+    std::cout << "creating gephi file..." << std::endl;
     
     
     Gexf_Data gexf_data;
@@ -41,14 +50,14 @@ class
 ❱
 
 
-◀private: static▶ void ☀Add_Nodes(Gexf_Data & gexf_data, std::unordered_map<std::string,tools::protos::SpawnExec> const& spawns) ❰
+◀private: static▶ void ☀Add_Nodes(Gexf_Data & gexf_data, std::vector<tools::protos::SpawnExec> const& spawns) ❰
 
     int i = 0;
     for (auto const& it: spawns) {
         
         
         // record all input files as nodes
-        for (auto input: it.second.inputs()){
+        for (auto input: it.inputs()){
             
             if (Should_Record_Path(input.path())){
                 gexf_data.node_edge_data.nodes.insert(input.path());
@@ -56,7 +65,7 @@ class
         }
         
         // record all output files as nodes
-        for (auto output: it.second.actual_outputs()){
+        for (auto output: it.actual_outputs()){
             
             if (Should_Record_Path(output.path())){
                 gexf_data.node_edge_data.nodes.insert(output.path());
@@ -64,8 +73,8 @@ class
         }
         
         //record all the hashes representing the unique action as nodes
-        //gexf_data.node_edge_data.nodes.insert(it.second.digest().hash());
-        //gexf_data.node_edge_data.nodes.insert(it.second.target_label());
+        //gexf_data.node_edge_data.nodes.insert(it.digest().hash());
+        //gexf_data.node_edge_data.nodes.insert(it.target_label());
         gexf_data.node_edge_data.nodes.insert(std::string("node") + std::to_string(i));
         ++i;
         
@@ -73,15 +82,15 @@ class
     
 ❱
 
-◀private: static▶ void ☀Add_Edges(Gexf_Data & gexf_data, std::unordered_map<std::string,tools::protos::SpawnExec> const& spawns) ❰
+◀private: static▶ void ☀Add_Edges(Gexf_Data & gexf_data, std::vector<tools::protos::SpawnExec> const& spawns) ❰
 
     int i = 0;
     for (auto const& it: spawns) {
-        for (auto input: it.second.inputs()){
+        for (auto input: it.inputs()){
             if (Should_Record_Path(input.path())){
                 Timed_Connection c;
                 c.connection.source = input.path();
-                //c.connection.target = it.second.target_label();
+                //c.connection.target = it.target_label();
                 c.connection.target = std::string("node") + std::to_string(i);
                 c.connection.type = Edge_Type::DIRECTED;
                 gexf_data.node_edge_data.edges.Add(Type_To_Json_String::As_JSON_String(c));
@@ -90,10 +99,10 @@ class
             
         }
         
-        for (auto output: it.second.actual_outputs()){
+        for (auto output: it.actual_outputs()){
             if (Should_Record_Path(output.path())){
                 Timed_Connection c;
-                //c.connection.source = it.second.target_label();
+                //c.connection.source = it.target_label();
                 c.connection.source =  std::string("node") + std::to_string(i);
                 c.connection.target = output.path();
                 c.connection.type = Edge_Type::DIRECTED;
