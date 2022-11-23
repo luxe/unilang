@@ -5,6 +5,11 @@ class
 ◀public: static▶ Game_State ☀Get() ❰
     Game_State x;
     
+    //based on iphone game pigeon configuration
+    int row_amount = 8;
+    int col_amount = 8;
+    int color_max = 6;
+    
     
     //set base colors
     x.bg_color = sf::Color(45,45,45);
@@ -13,7 +18,8 @@ class
     
     // create board
     x.board_palette = Color_Palettes::Filler_Game_Palette();
-    x.game_state.grid = Grid_Generator::Generate();
+    x.game_state.grid = Grid_Generator::Generate(row_amount,col_amount,color_max);
+    x.game_state.color_max = color_max;
     
     
     int square_size = 100;
@@ -22,6 +28,7 @@ class
     
     
     Create_Board_Rendering(x,square_size,initial_x_offset,initial_y_offset);
+    Create_Choice_Rendering(x);
     
     return x;
 ❱
@@ -44,4 +51,42 @@ class
         x_offset = initial_x_offset;
         y_offset += square_size ;
     }
+❱
+
+◀private: static▶ void ☀Create_Choice_Rendering(Game_State & x)❰
+
+    int square_size = 25;
+    int initial_x_offset = 25;
+    int initial_y_offset = 50;
+    
+    
+    
+    int x_offset = initial_x_offset;
+    int y_offset = initial_y_offset;
+    for (auto color: x.board_palette){
+        
+          sf::RectangleShape square;
+            square = sf::RectangleShape(sf::Vector2f(square_size , square_size ));
+            square.setPosition((100*10) + square_size +x_offset,(100*2)+square_size +y_offset);
+            square.setFillColor(Converters::To_SFML(color));
+            x.player_1_choices.emplace_back(square);
+            
+            x_offset += square_size ;
+            
+    }
+    
+    x_offset = initial_x_offset;
+    y_offset = initial_y_offset;
+    for (auto color: x.board_palette){
+        
+          sf::RectangleShape square;
+            square = sf::RectangleShape(sf::Vector2f(square_size , square_size ));
+            square.setPosition((100*10) + square_size +x_offset,(100*3)+square_size +y_offset);
+            square.setFillColor(Converters::To_SFML(color));
+            x.player_2_choices.emplace_back(square);
+            
+            x_offset += square_size ;
+            
+    }
+
 ❱
