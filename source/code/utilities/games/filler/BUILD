@@ -14,5 +14,6 @@ hcp_hdrs_derive(
     interface_deps = [
         "//code/utilities/language_basic/std_hackery:std_aliases",
         "//code/utilities/random:lib",
+        "//code/utilities/types/vectors/observers:lib",
     ]
 )
