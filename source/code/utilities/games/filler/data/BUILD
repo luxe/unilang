@@ -10,7 +10,7 @@ load("//bazel/rules/cpp:distributable_main.bzl", "distributable_cpp_main")
 
 
 hcp_hdrs_derive(
-    name = "game_state",
+    name = "filler_game_state",
     interface_deps = [
         "//code/utilities/language_basic/std_hackery:std_aliases"
     ]
