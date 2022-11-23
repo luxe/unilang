@@ -39,6 +39,7 @@ hcp_hdrs_derive(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/observers:size_frequency_counter",
         "//code/utilities/types/vectors/transformers:lib",
+        "//code/programs/games/filler/gui/state:game_state_getter",
         "//code/utilities/deps/external/sfml:lib",
     ],
 )

@@ -6,8 +6,32 @@ class
     Game_State x;
     
     
+    //set base colors
     x.bg_color = sf::Color(45,45,45);
     x.letter_color = sf::Color(255,255,255);
+    
+    
+    // create board
+    x.board_palette = Color_Palettes::Filler_Game_Palette();
+    auto grid = Grid_Generator::Generate();
+    
+    
+    int x_offset = 0;
+    int y_offset = 0;
+    for (auto it: grid){
+        for (auto val: it){
+            
+            sf::RectangleShape square;
+            square = sf::RectangleShape(sf::Vector2f(25, 25));
+            square.setPosition(25+x_offset,25+y_offset);
+            square.setFillColor(Converters::To_SFML(x.board_palette[val]));
+            x.board.emplace_back(square);
+            
+            x_offset += 25;
+        }
+        x_offset = 0;
+        y_offset += 25;
+    }
     
     return x;
 ❱
