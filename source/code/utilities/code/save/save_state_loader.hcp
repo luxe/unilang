@@ -48,7 +48,7 @@ class
 
     //load raw json first so that we understand the version it was saved at
     auto json = Deserialize_Save_File(file_name);
-    int version = json["version"];
+    int version = Extract_Current_Version(json);
     
     //Provide forward compatibility on the json object by adjusting it to meet the needs of the current version.
     //After this adjustment it will be safe to deserialize.
@@ -57,6 +57,21 @@ class
     //Now that the json has been modified, we can deserialize the object.
     auto x = Json_To_Save_State(json);
     return x;
+❱
+
+◀private: static▶ int ☀Extract_Current_Version(nlohmann::json const& json)❰
+
+    // the version was previously stored in a data member called
+    // "version" but this conflicted with the generated boost serialization code causing a shadow warning.
+    // So instead, we've switched the name to "save version".
+    // This logic will extract the version the new way, and fallback to the old way if the saved data is older.
+    if (Json_Attribute_Checker::Has_Attribute(json,"save_version")){
+        int version = json["save_version"];
+        return version;
+    }
+    
+    int version = json["version"];
+    return version;
 ❱
 
 

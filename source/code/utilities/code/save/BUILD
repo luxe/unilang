@@ -23,6 +23,7 @@ hcp_hdrs_derive(
         "//code/utilities/code/save:save_state",
         "//code/utilities/formats/json/converters:json_file_io",
         "//code/utilities/formats/json/converters:lib",
+        "//code/utilities/formats/json/attribute_check:json_attribute_checker",
         "//code/utilities/program/wrappers/zenity/file_selector",
         "//code/utilities/formats/compression/zlib:zlib_compressor",
         "//code/programs/ide/frame:apply_schema_to_elements",
