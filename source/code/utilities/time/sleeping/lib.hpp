@@ -89,7 +89,7 @@ void For_Every_N_Milliseconds_With_Exception_Catching(int mseconds, Function f, 
     catch(std::exception const& e){
       std::cout << e.what() << std::endl;
     }
-    Sleep_For_N_Milliseconds(mseconds);
+    Sleep_For_N_Milliseconds(static_cast<unsigned int>(mseconds));
   }
 }
 

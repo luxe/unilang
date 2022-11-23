@@ -11,9 +11,11 @@ using ulongs = std::vector<unsigned long>;
 
 //2d lists
 using string_grid = std::vector<std::vector<std::string>>;
+using int_grid = std::vector<std::vector<int>>;
 
 //3d lists
 using string_grids = std::vector<std::vector<std::vector<std::string>>>;
+using int_grids = std::vector<std::vector<std::vector<int>>>;
 
 //maps
 using string_map = std::map<std::string,std::string>;
