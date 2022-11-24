@@ -25,7 +25,7 @@ int main()
     
     Standard_Sfml_Game_Loop::Run(
     "Math Game",
-    [&](sf::RenderWindow & window, sf::Time const& TimePerFrame){
+    [&](sf::RenderWindow & window, sf::Time const& TimePerFrame, std::array<bool, sf::Keyboard::KeyCount> const& keyState){
         State_Updater::Run_Frame_Logic(window,TimePerFrame,state,assets);
     },
     [&](sf::RenderWindow & window){
