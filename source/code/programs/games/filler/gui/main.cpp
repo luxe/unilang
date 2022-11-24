@@ -17,8 +17,8 @@ int main()
     
     Standard_Sfml_Game_Loop::Run(
     "Filler",
-    [&](sf::RenderWindow & window, sf::Time const& TimePerFrame){
-        State_Updater::Run_Frame_Logic(window,TimePerFrame,state,assets);
+    [&](sf::RenderWindow & window, sf::Time const& TimePerFrame, std::array<bool, sf::Keyboard::KeyCount> const& keyState){
+        State_Updater::Run_Frame_Logic(window,keyState,TimePerFrame,state,assets);
     },
     [&](sf::RenderWindow & window){
         Frame_Renderer::Run_Frame_Render(window,state,assets);

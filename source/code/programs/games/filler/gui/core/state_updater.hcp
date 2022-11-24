@@ -5,32 +5,67 @@ class
 
 
 
-◀public: static▶ void ☀Run_Frame_Logic(sf::RenderWindow & window, sf::Time const& TimePerFrame, Game_State & state, Assets & assets) ❰
+◀public: static▶ void ☀Run_Frame_Logic(sf::RenderWindow & window, std::array<bool, sf::Keyboard::KeyCount> const& keyState, sf::Time const& TimePerFrame, Game_State & state, Assets & assets) ❰
     
 
 
+    state.keyStateCurrent = keyState;
+                    
+                    
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)){
         state = Game_State_Getter::Get();
     }
     
     
     //player selection
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)){
+    if (!state.keyStatePrevious[sf::Keyboard::Q] && state.keyStateCurrent[sf::Keyboard::Q]){
         Set_Previous_Index_In_Round_Robin(state.p1.choices,state.p1.current_selection);
     }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)){
+    else if (!state.keyStatePrevious[sf::Keyboard::W] && state.keyStateCurrent[sf::Keyboard::W]){
         Set_Next_Index_In_Round_Robin(state.p1.choices,state.p1.current_selection);
     }
     
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::O)){
+    if (!state.keyStatePrevious[sf::Keyboard::O] && state.keyStateCurrent[sf::Keyboard::O]){
         Set_Previous_Index_In_Round_Robin(state.p2.choices,state.p2.current_selection);
     }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)){
+    else if (!state.keyStatePrevious[sf::Keyboard::P] && state.keyStateCurrent[sf::Keyboard::P]){
         Set_Next_Index_In_Round_Robin(state.p2.choices,state.p2.current_selection);
     }
     
     Assets_Loader::Adjust_Player_Selection(assets,state);
     
+    
+    state.keyStatePrevious = state.keyStateCurrent;
+    
 ❱
 
 
+◀private: static▶ void ☀Set_Peripheral_State(sf::RenderWindow & window, sf::Time const& TimePerFrame, Game_State & state, Assets & assets) ❰
+
+
+    sf::Event event;
+
+    // while there are pending events...
+    while (window.pollEvent(event))
+    {
+        // check the type of the event...
+        switch (event.type)
+        {
+            // window closed
+            case sf::Event::Closed:
+                window.close();
+                break;
+
+            // key pressed
+            case sf::Event::KeyPressed:
+                window.close();
+                std::cout << event.key.code << std::endl;
+                break;
+
+            // we don't process other types of events
+            default:
+                break;
+        }
+    }
+
+❱

@@ -55,7 +55,7 @@ class
     return window;
 ❱
 
-◀private: static▶ void ☀Handle_Events(sf::RenderWindow & window)❰
+◀private: static▶ void ☀Handle_Events(sf::RenderWindow & window, std::array<bool, sf::Keyboard::KeyCount> & keyState)❰
     
     // check all the window's events that were triggered since the last iteration of the loop
     sf::Event event;
@@ -74,6 +74,7 @@ class
                 if (event.key.code == sf::Keyboard::Escape){
                     window.close();
                 }
+                keyState[event.key.code] = true;
                 break;
 
             // we don't process other types of events
@@ -94,8 +95,14 @@ static void Run(std::string title, U logic, V render){
         return window->isOpen();
     },
     [&](sf::Time const& TimePerFrame){
-        Handle_Events(*window);
-        logic(*window,TimePerFrame);
+        
+        // the keyboard state
+        std::array<bool, sf::Keyboard::KeyCount> keyState;
+        keyState.fill(false);
+        
+        Handle_Events(*window,keyState);
+        
+        logic(*window,TimePerFrame,keyState);
     },
     [&](){
         render(*window);
