@@ -176,7 +176,7 @@ size_t Largest_Element_Size_Of_Pair_First(std::vector<std::pair<int,T>> const& s
   size_t val = 0;
   for (auto const& it: strs){
     if (it.first > val){
-      val = it.first;
+      val = static_cast<size_t>(it.first);
     }
   }
   return val;

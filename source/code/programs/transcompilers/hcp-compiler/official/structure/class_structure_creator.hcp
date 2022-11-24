@@ -20,10 +20,10 @@ class
 
 ◀public:▶
 //constructor and create function
-☀◈(Hcp_Settings const& settings, std::string const& hcp_file)◖
-: line_number(2) //we start at 2 because we read in the file_type (class / global)
+☀◈(Hcp_Settings const& settings_in, std::string const& hcp_file)◖
+: settings(settings_in)
+, line_number(2) //we start at 2 because we read in the file_type (class / global)
 , char_number(0)
-, settings(settings)
 ◗
 ❰
     file_name = Get_File_Name_From_File_Path(hcp_file);
@@ -31,10 +31,10 @@ class
     current_state = Structure_State::EXPECTING_HEADER_INCLUDE;
 ❱
 
-Class_Structure ☀Create(std::wifstream & infile, Hcp_Settings const& settings, std::wstring const& file_type)❰
+Class_Structure ☀Create(std::wifstream & infile, Hcp_Settings const& hcp_settings, std::wstring const& file_type)❰
 
     Class_Structure structure;
-    Add_Stuff_To_Structure(structure,settings, file_type);
+    Add_Stuff_To_Structure(structure,hcp_settings, file_type);
     
     Parse_The_Rest_Of_File(structure,infile);
     
@@ -47,10 +47,10 @@ Class_Structure ☀Create(std::wifstream & infile, Hcp_Settings const& settings,
 //create implementation
 ◀private:▶
 
-void ☀Add_Stuff_To_Structure(Class_Structure & structure, Hcp_Settings const& settings, std::wstring const& file_type)❰
+void ☀Add_Stuff_To_Structure(Class_Structure & structure, Hcp_Settings const& hcp_settings, std::wstring const& file_type)❰
 
     //some data based on the actual file
-    structure.data.path_data.basename = settings.output_basename;
+    structure.data.path_data.basename = hcp_settings.output_basename;
     structure.Add_File_Type(file_type);
     structure.Set_File_Name(file_name);
     structure.Set_Path_To_File_Name(path_to_file_name);
@@ -102,7 +102,15 @@ wchar_t ☀Set_Next_Char(std::wifstream & infile,Class_Structure & structure)❰
         case Structure_State::IN_DATA_MEMBER:
         structure.Add_To_After_Headers_Portion(c);
         break;
-        default:;
+        
+        case INVALID:
+        case EXPECTING_HEADER_INCLUDE:
+        case EXPECTING_SOURCE_INCLUDE:
+        case IN_HEADER_INCLUDE:
+        case IN_SOURCE_INCLUDE:
+        case IN_ESCAPE_CHAR:
+        case IN_SHELL_COMMAND:
+        break;
     }
     
 
