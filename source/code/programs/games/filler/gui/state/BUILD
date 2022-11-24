@@ -10,6 +10,16 @@ hcp_hdrs_derive(
         "//code/utilities/deps/external/sfml:lib",
         "//code/utilities/data_structures/color:rgb_color",
         "//code/utilities/games/filler/data:filler_game_state",
+        "//code/programs/games/filler/gui/state:user_state",
+    ],
+)
+
+hcp_hdrs_derive(
+    name = "user_state",
+    interface_deps = [
+        "//code/utilities/deps/external/sfml:lib",
+        "//code/utilities/data_structures/color:rgb_color",
+        "//code/utilities/games/filler/data:filler_game_state",
     ],
 )
 

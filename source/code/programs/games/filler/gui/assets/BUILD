@@ -6,7 +6,15 @@ load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 hcp_hdrs_derive(
     name = "assets",
     interface_deps = [
-"//code/utilities/deps/external/sfml:lib",
+        "//code/utilities/deps/external/sfml:lib",
+        "//code/programs/games/filler/gui/assets:user_assets",
+    ],
+)
+
+hcp_hdrs_derive(
+    name = "user_assets",
+    interface_deps = [
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 

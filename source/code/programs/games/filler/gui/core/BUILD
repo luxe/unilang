@@ -41,5 +41,6 @@ hcp_hdrs_derive(
         "//code/utilities/types/vectors/transformers:lib",
         "//code/programs/games/filler/gui/state:game_state_getter",
         "//code/utilities/deps/external/sfml:lib",
+        "//code/programs/games/filler/gui/assets:assets_loader",
     ],
 )
