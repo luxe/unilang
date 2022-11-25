@@ -85,7 +85,15 @@ wchar_t ☀Set_Next_Char(std::wifstream & infile,Class_Structure & structure)❰
         case Structure_State::IN_DATA_MEMBER:
         structure.Add_To_After_Headers_Portion(c);
         break;
-        default:;
+        
+        case Structure_State::INVALID:
+        case Structure_State::EXPECTING_HEADER_INCLUDE:
+        case Structure_State::EXPECTING_SOURCE_INCLUDE:
+        case Structure_State::IN_HEADER_INCLUDE:
+        case Structure_State::IN_SOURCE_INCLUDE:
+        case Structure_State::IN_ESCAPE_CHAR:
+        case Structure_State::IN_SHELL_COMMAND:
+        break;
     }
     
 
@@ -103,7 +111,18 @@ void ☀Process_Character(Class_Structure & structure)❰
         case Structure_State::IN_HPP_ONLY:              Process_Character_In_HPP_Only(structure);              break;
         case Structure_State::IN_CPP_ONLY:              Process_Character_In_CPP_Only(structure);              break;
         case Structure_State::IN_FUNCTION_BODY:         Process_Character_In_Function_Body(structure);         break;
-        default: Output_Compilation_Failure_Message(L"Class_Structure has reached an unexpected state while deciding how to handle a character");
+            
+            
+            
+        case Structure_State::INVALID:
+        case Structure_State::IN_INHERITANCE:
+        case Structure_State::IN_ESCAPE_CHAR:
+        case Structure_State::IN_SHELL_COMMAND:
+        case Structure_State::IN_DATA_MEMBER:
+        break;
+  
+  
+        //default: Output_Compilation_Failure_Message(L"Class_Structure has reached an unexpected state while deciding how to handle a character");
     }
 
     return;
@@ -254,7 +273,21 @@ void ☀Attempt_To_Print_Escape_Char_To_File(Class_Structure & structure)❰
         case Structure_State::IN_HPP_ONLY:        structure.Append_To_HPP_Code(c);         break;
         case Structure_State::IN_CPP_ONLY:        structure.Append_To_CPP_Code(c);         break;
         case Structure_State::IN_FUNCTION_BODY:   structure.Append_To_CPP_Code(c);         break;
-        default: Output_Compilation_Failure_Message(L"It does not make sense to escape a Unicode character here");
+            
+            
+        case Structure_State::INVALID:
+        case Structure_State::EXPECTING_HEADER_INCLUDE:
+        case Structure_State::EXPECTING_SOURCE_INCLUDE:
+        case Structure_State::IN_HEADER_INCLUDE:
+        case Structure_State::IN_SOURCE_INCLUDE:
+        case Structure_State::IN_INHERITANCE:
+        case Structure_State::IN_ESCAPE_CHAR:
+        case Structure_State::IN_SHELL_COMMAND:
+        case Structure_State::IN_DATA_MEMBER:
+        break;
+  
+  
+        //default: Output_Compilation_Failure_Message(L"It does not make sense to escape a Unicode character here");
     }
 ❱
 
@@ -275,11 +308,10 @@ void ☀Error_On_These_Other_Characters(std::wstring const& doing, std::vector<w
 
     return;
 ❱
-void ☀Output_Compilation_Failure_Message(std::wstring const& message)❰
+[[ noreturn ]] void ☀Output_Compilation_Failure_Message(std::wstring const& message)❰
     std::cerr << file_name << ":" << line_number << ":" << char_number << ": ";
     std::wcerr << message << '\n';
     exit(EXIT_FAILURE);
-    return;
 ❱
 
 ◀

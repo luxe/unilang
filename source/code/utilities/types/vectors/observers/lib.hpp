@@ -175,7 +175,7 @@ template <typename T>
 size_t Largest_Element_Size_Of_Pair_First(std::vector<std::pair<int,T>> const& strs){
   size_t val = 0;
   for (auto const& it: strs){
-    if (it.first > val){
+    if (static_cast<size_t>(it.first) > val){
       val = static_cast<size_t>(it.first);
     }
   }
@@ -186,8 +186,8 @@ template <typename T>
 size_t Largest_Element_Size_Of_Pair_Second(std::vector<std::pair<T,int>> const& strs){
   size_t val = 0;
   for (auto const& it: strs){
-    if (it.second > val){
-      val = it.second;
+    if (static_cast<size_t>(it.second) > val){
+      val = static_cast<size_t>(it.second);
     }
   }
   return val;
