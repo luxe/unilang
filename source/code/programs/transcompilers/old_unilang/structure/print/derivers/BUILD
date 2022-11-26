@@ -40,6 +40,5 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #         "//code/utilities/types/strings/transformers/appending:lib",
 #         "//code/utilities/types/strings/transformers/casing:case_modifier",
 #         "//code/utilities/units:unit_suffix_lookuper",
-#         "//code/utilities/units:units_to_variable_suffix_lookup_table",
 #     ],
 # )
