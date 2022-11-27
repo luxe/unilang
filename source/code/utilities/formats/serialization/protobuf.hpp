@@ -112,7 +112,8 @@ std::vector<T> Deserialize_Multiple_From_Json_File(std::string const& path){
     for (auto const& it: j_blobs){
         T x;
         google::protobuf::util::JsonParseOptions options;
-        JsonStringToMessage(it, &x, options);
+        auto result = JsonStringToMessage(it, &x, options);
+        (void)result;
         results.emplace_back(x);
     }
     
