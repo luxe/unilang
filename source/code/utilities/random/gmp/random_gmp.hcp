@@ -3,12 +3,14 @@ class
 ❪random❫
 ⚯
 ❪"code/utilities/math/gmp/lib"❫
-❪"code/utilities/random/gmp/fwd"❫
 ❪"code/utilities/types/strings/observers/hex/lib"❫
 ⚞⚟
 
 
 ◀public: static▶ std::string ☀RandomIntFromRange(std::string low_in, std::string high_in)❰
+
+    gmp_randclass gen(gmp_randinit_default);
+    
     //put into large number class
     mpz_class min(low_in);
     mpz_class max(high_in);
@@ -18,17 +20,20 @@ class
 
     //build seed
     std::random_device rd;
-    global::gen.seed(rd()); 
+    gen.seed(rd()); 
 
     //generate random number
     mpz_class str = mpz_class(mpz_class(max - min));
     size_t bit_size = mpz_sizeinbase ((str).get_mpz_t(), 2);
-    std::string number = to_string(min + ( global::gen.get_z_bits(bit_size) % ( max - min + mpz_class("1") ) ));
+    std::string number = to_string(min + ( gen.get_z_bits(bit_size) % ( max - min + mpz_class("1") ) ));
 
     return number;
 ❱
 
 ◀public: static▶ std::string ☀RandomIntFromRangeInBin(std::string low_in, std::string high_in)❰
+
+    gmp_randclass gen(gmp_randinit_default);
+    
     //put into large number class
     mpz_class min(low_in);
     mpz_class max(high_in);
@@ -38,12 +43,12 @@ class
 
     //build seed
     std::random_device rd;
-    global::gen.seed(rd()); 
+    gen.seed(rd()); 
 
     //generate random number
     mpz_class str = mpz_class(mpz_class(max - min));
     size_t bit_size = mpz_sizeinbase ((str).get_mpz_t(), 2);
-    mpz_class number = min + ( global::gen.get_z_bits(bit_size) % ( max - min + mpz_class("1") ) );
+    mpz_class number = min + ( gen.get_z_bits(bit_size) % ( max - min + mpz_class("1") ) );
 
     
     return number.get_str(2);
