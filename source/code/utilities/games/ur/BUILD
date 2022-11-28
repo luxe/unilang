@@ -21,5 +21,6 @@ hcp(
         "//code/utilities/types/map:lib",
         "//code/utilities/types/sets:lib",
         "//code/utilities/types/unordered_set:lib",
+        "//code/utilities/types/vectors/observers:lib",
     ],
 )

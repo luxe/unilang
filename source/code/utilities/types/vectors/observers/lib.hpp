@@ -117,6 +117,11 @@ std::vector<T> Find_3_Elements_That_Sum_To(std::vector<T> const& v, T sum){
 }
 
 
+template <typename T>
+T& Index(std::vector<T> const& t, int i){
+  return t[static_cast<size_t>(i)];
+}
+
 
 //Container Based
 template <typename T>
