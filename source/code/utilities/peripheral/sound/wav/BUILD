@@ -15,7 +15,7 @@ hcp(
     deps = [
         "//code/utilities/peripheral/sound/wav:wav_file_join_settings",
         "//code/utilities/types/vectors/operators:lib",
-        "@AudioFile//:lib",
+        "//code/utilities/deps/external/audio_file:lib",
     ],
 )
 
@@ -25,7 +25,7 @@ hcp(
         "//code/utilities/peripheral/sound/wav:wav_file_join_settings",
         "//code/utilities/program/call:lib",
         "//code/utilities/types/vectors/operators:lib",
-        "@AudioFile//:lib",
+        "//code/utilities/deps/external/audio_file:lib",
     ],
 )
 
@@ -35,6 +35,6 @@ hcp(
         "//code/utilities/peripheral/sound/wav:wav_file_join_settings",
         "//code/utilities/program/call:lib",
         "//code/utilities/types/vectors/operators:lib",
-        "@AudioFile//:lib",
+        "//code/utilities/deps/external/audio_file:lib",
     ],
 )
