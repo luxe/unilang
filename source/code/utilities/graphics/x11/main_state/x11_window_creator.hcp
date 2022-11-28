@@ -2,7 +2,7 @@ class
 ❪string❫
 ❪cstdlib❫
 ❪iostream❫
-❪X11/extensions/shape.h❫
+❪"code/utilities/deps/external/x11/lib"❫
 ❪"code/utilities/graphics/x11/main_state/setup_display_settings"❫
 ❪"code/utilities/graphics/x11/main_state/x11_display_getter"❫
 ❪"code/utilities/graphics/x11/main_state/x11_color_getter"❫
@@ -23,7 +23,7 @@ class
             //state.root = RootWindow(state.d,glx.vi->screen);
             state.root = Get_XScreensaver_Window();
             Do_Binding(state,glx,settings);
-        }
+            }
         else {
             state.root = RootWindow(state.d, state.screen);
         }
@@ -46,7 +46,12 @@ class
   swa.colormap = cmap;
   swa.border_pixel = 0;
   swa.event_mask = ExposureMask | ButtonPressMask | StructureNotifyMask;
-  state.root = XCreateWindow(state.d,RootWindow(state.d,glx.vi->screen),settings.window.pos.x, settings.window.pos.y,settings.window.dim.width,settings.window.dim.height,
+  state.root = XCreateWindow(state.d,
+        RootWindow(state.d,glx.vi->screen),
+        settings.window.pos.x,
+        settings.window.pos.y,
+        static_cast<unsigned int>(settings.window.dim.width),
+        static_cast<unsigned int>(settings.window.dim.height),
         0,glx.vi->depth,InputOutput,glx.vi->visual,
         CWBorderPixel | CWColormap | CWEventMask,
         &swa);
@@ -54,9 +59,10 @@ class
   Do_Binding(state,glx,settings);
 ❱
 
+
 ◀private: static▶ void ☀Do_Binding(Main_X11_State & state, Glx_Data & glx, Setup_Display_Settings const& settings)❰
 
-  char** argv;
+  char** argv = nullptr;
   int argc = 0;
   XSetStandardProperties(state.d,state.root,"glxsimple","glxsimple",None,argv,argc,NULL);
   
@@ -71,8 +77,14 @@ class
     auto background = WhitePixel(state.d, state.screen);
 
     //If you do want to see the actual window, you would create a simple window like this.
-    state.root = XCreateSimpleWindow(state.d, RootWindow(state.d, state.screen), settings.window.pos.x, settings.window.pos.y, settings.window.dim.width,
-                                 settings.window.dim.height, settings.window.border_width, border, background);
+    state.root = XCreateSimpleWindow(state.d, RootWindow(state.d, state.screen),
+                                     settings.window.pos.x,
+                                     settings.window.pos.y,
+                                     settings.window.dim.width,
+                                 settings.window.dim.height,
+                                 static_cast<unsigned int>(settings.window.border_width),
+                                 border,
+                                 background);
     XMapWindow(state.d, state.root);
 ❱
 
@@ -87,14 +99,14 @@ class
     }
     
 
-    int root_window_id = strtol (xwin, NULL, 0);
+    long root_window_id = strtol (xwin, NULL, 0);
     if (root_window_id == 0){
         std::cerr << "root_window_id == 0" << std::endl;
         exit(-1);
     }
     
     Window win;
-    win = root_window_id;
+    win = static_cast<unsigned int>(root_window_id);
     return win;
 ❱
 

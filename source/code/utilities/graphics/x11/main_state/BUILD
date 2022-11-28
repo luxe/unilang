@@ -11,8 +11,7 @@ hcp(
     deps = [
         "//code/utilities/graphics/glx:x11_to_opengl_bind_settings",
         "//code/utilities/graphics/x11/main_state:window_creation_settings",
-        "@system//:X11",
-        "@system//:X11_hdrs",
+        "//code/utilities/deps/external/x11:lib",
     ],
 )
 
@@ -21,8 +20,7 @@ hcp(
     deps = [
         "//code/utilities/data_structures/position",
         "//code/utilities/data_structures/shapes/rectangle:rectangle_settings",
-        "@system//:X11",
-        "@system//:X11_hdrs",
+        "//code/utilities/deps/external/x11:lib",
     ],
 )
 
@@ -38,8 +36,7 @@ hcp(
         "//code/utilities/graphics/x11/main_state:x11_color_getter",
         "//code/utilities/graphics/x11/main_state:x11_display_getter",
         "//code/utilities/graphics/x11/main_state:x11_window_creator",
-        "@system//:X11",
-        "@system//:X11_hdrs",
+        "//code/utilities/deps/external/x11:lib",
     ],
 )
 
@@ -53,8 +50,7 @@ hcp(
         "//code/utilities/graphics/x11/data:x11_window_geometry",
         "//code/utilities/graphics/x11/main_state:x11_color_getter",
         "//code/utilities/graphics/x11/main_state:x11_display_getter",
-        "@system//:X11",
-        "@system//:X11_hdrs",
+        "//code/utilities/deps/external/x11:lib",
     ],
 )
 
@@ -65,9 +61,7 @@ hcp(
         "//code/utilities/graphics/x11/data:main_x11_state",
         "//code/utilities/graphics/x11/data:x11_bg_fg_colors",
         "//code/utilities/graphics/x11/data:x11_window_geometry",
-        "@system//:X11",
-        "@system//:X11_hdrs",
-        "@system//:Xext",
+        "//code/utilities/deps/external/x11:lib",
     ],
 )
 
@@ -78,7 +72,6 @@ hcp(
         "//code/utilities/graphics/x11/data:main_x11_state",
         "//code/utilities/graphics/x11/data:x11_bg_fg_colors",
         "//code/utilities/graphics/x11/data:x11_window_geometry",
-        "@system//:X11",
-        "@system//:X11_hdrs",
+        "//code/utilities/deps/external/x11:lib",
     ],
 )
