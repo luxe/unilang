@@ -8,8 +8,6 @@ def hcp_hdrs_derive_specific(
         hcp_name,  #filename
         hpp_name,  #filename
         cpp_name,  #filename
-        # interface_hdrs,  #hdr
-        # implementation_hdrs,  #hdr
         interface_deps,  #deps & hdrs
         implementation_deps,  #deps & hdrs
         deps = [],  #deps
@@ -18,17 +16,6 @@ def hcp_hdrs_derive_specific(
     #the file names to use
     hcp_target_name = name + "_hcp"
 
-
-    
-    interface_hdrs_cmd = ""
-    # if len(interface_hdrs) != 0:
-    #     fail("should not use interface_hdrs any more")
-    #     interface_hdrs_cmd = "--interface-hdrs {}".format(" --interface-hdrs ".join(interface_hdrs))
-
-    implementation_hdrs_cmd = ""
-    # if len(implementation_hdrs) != 0:
-    #     fail("should not use implementation_hdrs any more")
-    #     implementation_hdrs_cmd = "--implementation-hdrs {}".format(" --implementation-hdrs ".join(implementation_hdrs))
 
     interface_deps_cmd = ""
     if len(interface_deps) != 0:
@@ -44,8 +31,8 @@ def hcp_hdrs_derive_specific(
         srcs = [hcp_name],
         outs = [hpp_name, cpp_name],
         tools = ["//code/programs/transcompilers/hcp-compiler/official_hdrs_derive:hcp-compiler"],
-        cmd = "$(location //code/programs/transcompilers/hcp-compiler/official_hdrs_derive:hcp-compiler) --input_files $(SRCS) -o $(@D) --output-base-name {} {} {} {} {}"
-            .format(name, interface_hdrs_cmd, implementation_hdrs_cmd, interface_deps_cmd, implementation_deps_cmd),
+        cmd = "$(location //code/programs/transcompilers/hcp-compiler/official_hdrs_derive:hcp-compiler) --input_files $(SRCS) -o $(@D) --output-base-name {} {} {}"
+            .format(name, interface_deps_cmd, implementation_deps_cmd),
     )
 
     #compiling hpp/cpp

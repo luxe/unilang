@@ -3,8 +3,6 @@ load("//bazel/rules/hcp/detail:hcp_pos_hdrs_derive_specific.bzl", "hcp_pos_hdrs_
 
 def hcp_pos_hdrs_derive(
         name,
-        # interface_hdrs = [],  #hdr
-        # implementation_hdrs = [],  #hdr
         interface_deps = [],  #deps & hdrs
         implementation_deps = [],  #deps & hdrs
         deps = [],
@@ -28,8 +26,6 @@ def hcp_pos_hdrs_derive(
         explicit_hcp_file,  #file
         explicit_hpp_file,  #file
         explicit_cpp_file,  #file
-        # interface_hdrs,  #hdr
-        # implementation_hdrs,  #hdr
         interface_deps,  #deps & hdrs
         implementation_deps,  #deps & hdrs
         real_deps,
