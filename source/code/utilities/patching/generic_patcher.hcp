@@ -15,21 +15,21 @@ template <typename Object, typename Patch>
 static void Apply_Any_Needed_Patches(Object & j, std::string const& patching_context, std::vector<Patch> const& patches, int version){
 
     //exit early if there are no patches to apply
-    if (version == patches.size()){
+    if (static_cast<size_t>(version) == patches.size()){
         SPDLOG_INFO(No_Patching_Needed_Message(version, patching_context));
         return;
     }
     
     //exit early if the file version is newer than the editor
-    if (version > patches.size()){
+    if (static_cast<size_t>(version) > patches.size()){
         SPDLOG_INFO(IDE_Is_Too_Old_Message(version, patching_context));
         exit(-1);
     }
     
     //apply the patches
-    for (int i = version; i < patches.size(); ++i){
+    for (int i = version; i < static_cast<int>(patches.size()); ++i){
         SPDLOG_INFO(Applying_Patch_Message(i,patching_context));
-        patches[i](j);
+        patches[static_cast<size_t>(i)](j);
     }
 
 }

@@ -4,10 +4,12 @@ class
 
 
 ◀public: static▶ int ☀Find(Ide_Settings & settings, Pc_Input_State const& pc_input)❰
+    
+    (void)pc_input;
 
     Position prev_pos = settings.desktop.previous_input.mouse.pos;
     bool was_performed = false;
-    int found_index = settings.elements.types.size()-1;
+    int found_index = static_cast<int>(settings.elements.types.size()-1);
     
     for (auto & it: boost::adaptors::reverse(settings.elements.types)){
         std::visit(overloaded {
@@ -26,9 +28,11 @@ class
                 was_performed = Mouse_Events_Checker::position_inside_rectangle(prev_pos,x.pos,rec);
             },
             [&](Positioned_Animated_Image_Data & x) {
+                (void)x;
                 //TODO
             },
             [&](Positioned_Select_Menu & x) {
+                (void)x;
             },
             [&](Positioned_Rectangle_Settings & x) {
                 was_performed = Mouse_Events_Checker::position_inside_rectangle(prev_pos,x.pos,x.shape);
