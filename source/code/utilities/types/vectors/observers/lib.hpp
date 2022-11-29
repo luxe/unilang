@@ -234,24 +234,24 @@ template<typename T>
 bool Safe_Is_Index_Equal(std::vector<T> const& v, int i, T t){
   
   //out of range
-  if (i < 0 || i >= v.size()){
+  if (i < 0 || static_cast<size_t>(i) >= v.size()){
     return false;
   }
   
   //in range, make check
-  return v[i] == t;
+  return v[static_cast<size_t>(i)] == t;
 }
 
 template<typename T>
 T Safe_Index_Get(std::vector<T> const& v, int i, T if_missing){
   
   //out of range
-  if (i < 0 || i >= v.size()){
+  if (i < 0 || static_cast<size_t>(i) >= v.size()){
     return if_missing;
   }
   
   //in range, get
-  return v[i];
+  return v[static_cast<size_t>(i)];
 }
 
 template<typename T>
@@ -266,7 +266,7 @@ T& Safe_Index_Capped(std::vector<T> & v, int i){
   }
   
   //in range, get
-  return v[i];
+  return v[static_cast<size_t>(i)];
 }
 
 template<typename T>
