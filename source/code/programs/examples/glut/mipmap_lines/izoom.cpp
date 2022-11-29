@@ -257,7 +257,10 @@ getzoomrow(zoom * z, short *buf, int y)
     }
   } else {
     f = z->yfilt + z->y;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsizeof-pointer-div"
     max = (int) (sizeof(f->dat) / sizeof(short) + (f->n - 1));
+#pragma GCC diagnostic pop
     while (z->ay <= max) {
       z->getfunc(z->abuf, z->ay++);
       row = z->filtrows[0];
