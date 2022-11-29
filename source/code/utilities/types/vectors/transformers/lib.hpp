@@ -31,7 +31,7 @@ std::vector<int> rotateLeftModVersion(std::vector<int> vec, int numberOfTimes);
 template <class T>
 void erase_selected(std::vector<T>& v, const std::vector<int>& selection)
 {
-    v.resize(std::distance(
+    v.resize(static_cast<size_t>(std::distance(
         v.begin(),
         std::stable_partition(v.begin(), v.end(),
              [&selection, &v](const T& item) {
@@ -39,7 +39,7 @@ void erase_selected(std::vector<T>& v, const std::vector<int>& selection)
                       selection.begin(),
                       selection.end(),
                       static_cast<int>(static_cast<const T*>(&item) - &v[0]));
-        })));
+        }))));
 }
 
 

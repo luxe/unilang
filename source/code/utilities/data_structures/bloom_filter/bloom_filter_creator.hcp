@@ -13,7 +13,7 @@ class
     double false_positive_rate = 0.1;
     
     // build and populate
-    bf::basic_bloom_filter x(false_positive_rate, as_size_t(total_size));
+    bf::basic_bloom_filter x(false_positive_rate, static_cast<uint16_t>(as_size_t(total_size)));
     File_Content_Traverser::For_Each_Line_Of_File_With_Progress_Bar(path,"Loading Bloom Filter",[&](std::string const& line){
         
         x.add(line);
@@ -37,7 +37,7 @@ class
     int number_of_hashes = 4;
     
     // build and populate
-    bloom::OrdinaryBloomFilter<std::string> x(number_of_hashes, as_size_t(total_size));
+    bloom::OrdinaryBloomFilter<std::string> x(number_of_hashes, static_cast<uint16_t>(as_size_t(total_size)));
     File_Content_Traverser::For_Each_Line_Of_File_With_Progress_Bar(path,"Loading Bloom Filter",[&](std::string const& line){
         
         x.Insert(line);
@@ -56,7 +56,7 @@ class
     const unsigned k = 5; //doesn't matter
     const unsigned numHashes = 16;
     
-    std::shared_ptr<BloomFilter> x = std::make_shared<BloomFilter>(as_size_t(total_size),numHashes, k);
+    std::shared_ptr<BloomFilter> x = std::make_shared<BloomFilter>(static_cast<uint16_t>(as_size_t(total_size)),numHashes, k);
     
     //deserialize if it already exists
     if (File_Exists(Bloom_Filter_Path(path))){
@@ -66,6 +66,7 @@ class
     //populate
     File_Content_Traverser::For_Each_Line_Of_File_With_Progress_Bar(path,"Loading Bloom Filter",[&](std::string const& line){
         
+        (void)line;
         //x->insert(line);
     });
     
