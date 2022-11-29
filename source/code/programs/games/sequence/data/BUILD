@@ -15,11 +15,11 @@ hcp(
         "//code/programs/games/sequence/data:player_state",
         "//code/utilities/assets:playing_card_assets",
         "//code/utilities/data_structures:playing_card",
+        "//code/utilities/deps/external/crow:lib",
         "//code/utilities/formats/html:basic_html_template_getter",
         "//code/utilities/image:data_uri_getter",
         "//code/utilities/program/call:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/deps/external/crow:lib",
     ],
 )
 

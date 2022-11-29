@@ -1,43 +1,47 @@
-
-
 sh_library(
     name = "a",
     srcs = ["a.sh"],
-    deps = [],
     data = [],
+    deps = [],
 )
 
 sh_library(
     name = "b",
     srcs = ["b.sh"],
-    deps = [],
     data = [],
+    deps = [],
 )
 
 sh_library(
     name = "c",
     srcs = ["c.sh"],
-    deps = [":a",":b"],
     data = [],
+    deps = [
+        ":a",
+        ":b",
+    ],
 )
 
 sh_library(
     name = "d",
     srcs = ["d.sh"],
-    deps = [],
     data = [],
+    deps = [],
 )
 
 sh_library(
     name = "e",
     srcs = ["e.sh"],
-    deps = [":c",":d"],
     data = [],
+    deps = [
+        ":c",
+        ":d",
+    ],
 )
 
 sh_binary(
     name = "f",
     srcs = ["f.sh"],
-    deps = [":e"],
     data = [],
+    deps = [":e"],
 )

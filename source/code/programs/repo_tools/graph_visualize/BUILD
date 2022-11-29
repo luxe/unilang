@@ -43,6 +43,6 @@ hcp_hdrs_derive(
         "//code/utilities/data_structures/graph/basic:timed_connection",
     ],
     deps = [
-    "//code/programs/repo_tools/graph_visualize/program_options:lib",
-    ]
+        "//code/programs/repo_tools/graph_visualize/program_options:lib",
+    ],
 )

@@ -17,7 +17,7 @@ hcp(
     ],
 )
 
-# Track the size of a file over time.  This is useful when files represent denylists.  
+# Track the size of a file over time.  This is useful when files represent denylists.
 # Ideally the file should be size zero, and we want to track which way the file entries are trending.
 distributable_cpp_main(
     name = "file_size_grapher",

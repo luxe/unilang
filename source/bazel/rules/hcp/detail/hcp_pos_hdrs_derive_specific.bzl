@@ -5,8 +5,8 @@ def hcp_pos_hdrs_derive_specific(
         hcp_name,  #filename
         hpp_name,  #filename
         cpp_name,  #filename
-        interface_hdrs,  #hdr
-        implementation_hdrs,  #hdr
+        # interface_hdrs,  #hdr
+        # implementation_hdrs,  #hdr
         interface_deps,  #deps & hdrs
         implementation_deps,  #deps & hdrs
         deps = [],  #deps
@@ -15,12 +15,12 @@ def hcp_pos_hdrs_derive_specific(
     hcp_target_name = name + "_pos_hcp"
 
     interface_hdrs_cmd = ""
-    if len(interface_hdrs) != 0:
-        interface_hdrs_cmd = "--interface-hdrs {}".format(" --interface-hdrs ".join(interface_hdrs))
+    # if len(interface_hdrs) != 0:
+    #     interface_hdrs_cmd = "--interface-hdrs {}".format(" --interface-hdrs ".join(interface_hdrs))
 
     implementation_hdrs_cmd = ""
-    if len(implementation_hdrs) != 0:
-        implementation_hdrs_cmd = "--implementation-hdrs {}".format(" --implementation-hdrs ".join(implementation_hdrs))
+    # if len(implementation_hdrs) != 0:
+    #     implementation_hdrs_cmd = "--implementation-hdrs {}".format(" --implementation-hdrs ".join(implementation_hdrs))
 
     interface_deps_cmd = ""
     if len(interface_deps) != 0:

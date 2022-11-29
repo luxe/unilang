@@ -15,6 +15,7 @@ hcp(
         "//code/programs/games/sequence/data:game_state",
         "//code/utilities/assets:playing_card_assets",
         "//code/utilities/data_structures:playing_card",
+        "//code/utilities/deps/external/crow:lib",
         "//code/utilities/formats/html:basic_html_template_getter",
         "//code/utilities/games/sequence:board_getter",
         "//code/utilities/games/sequence:deck_getter",
@@ -24,7 +25,6 @@ hcp(
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/deps/external/crow:lib",
     ],
 )
 
@@ -34,6 +34,7 @@ hcp(
         "//code/programs/games/sequence/data:game_state",
         "//code/utilities/assets:playing_card_assets",
         "//code/utilities/data_structures:playing_card",
+        "//code/utilities/deps/external/crow:lib",
         "//code/utilities/formats/html:basic_html_template_getter",
         "//code/utilities/image:data_uri_getter",
         "//code/utilities/program/call:lib",
@@ -41,7 +42,6 @@ hcp(
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/deps/external/crow:lib",
     ],
 )
 
@@ -49,7 +49,7 @@ cpp_main(
     name = "sequence",
     deps = [
         "//code/programs/games/sequence:task_executer",
-        "//code/utilities/program/call:lib",
         "//code/utilities/deps/external/crow:lib",
+        "//code/utilities/program/call:lib",
     ],
 )

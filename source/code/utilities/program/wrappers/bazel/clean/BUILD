@@ -8,6 +8,8 @@ load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 hcp(
     name = "bazel_clean_runner",
     deps = [
+        "//code/utilities/deps/external/bazel_analysis_proto:lib",
+        "//code/utilities/deps/external/bazel_spawn_proto:lib",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/formats/serialization:protobuf",
         "//code/utilities/program/call:lib",
@@ -27,7 +29,5 @@ hcp(
         "//code/utilities/types/strings/transformers/removing:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/deps/external/bazel_analysis_proto:lib",
-        "//code/utilities/deps/external/bazel_spawn_proto:lib",
     ],
 )

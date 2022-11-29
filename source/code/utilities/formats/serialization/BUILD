@@ -16,10 +16,10 @@ cc_library(
     srcs = ["protobuf.cpp"],
     hdrs = ["protobuf.hpp"],
     deps = [
+        "//code/utilities/deps/external/protobuf:lib",
+        "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
         "//code/utilities/formats/json/converters:json_file_io",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/streams/filestreams/read_all:lib",
-        "//code/utilities/deps/external/protobuf:lib",
-        "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
     ],
 )

@@ -76,8 +76,8 @@ hcp(
     name = "spawn_pairer",
     deps = [
         "//code/programs/repo_tools/build_determinism/data:spawn_pairings",
-        "//code/utilities/types/map:lib",
         "//code/utilities/deps/external/bazel_spawn_proto:lib",
+        "//code/utilities/types/map:lib",
     ],
 )
 
@@ -88,9 +88,9 @@ hcp(
         "//code/programs/repo_tools/build_determinism/data:determinism_pairings",
         "//code/programs/repo_tools/build_determinism/data:determinism_problem",
         "//code/programs/repo_tools/build_determinism/data:spawn_pairings",
+        "//code/utilities/deps/external/bazel_spawn_proto:lib",
         "//code/utilities/output/printers:lib",
         "//code/utilities/types/map:lib",
-        "//code/utilities/deps/external/bazel_spawn_proto:lib",
     ],
 )
 
@@ -110,9 +110,9 @@ hcp(
         "//code/programs/repo_tools/build_determinism/data:determinism_pairings",
         "//code/programs/repo_tools/build_determinism/data:determinism_problem",
         "//code/programs/repo_tools/build_determinism/data:spawn_pairings",
+        "//code/utilities/deps/external/bazel_spawn_proto:lib",
         "//code/utilities/output/printers:lib",
         "//code/utilities/types/map:lib",
-        "//code/utilities/deps/external/bazel_spawn_proto:lib",
     ],
 )
 
@@ -155,6 +155,7 @@ hcp(
         "//code/programs/repo_tools/build_determinism/data:determinism_problem",
         "//code/programs/repo_tools/build_determinism/data:spawn_pairings",
         "//code/programs/repo_tools/build_determinism/settings:report_settings",
+        "//code/utilities/deps/external/bazel_spawn_proto:lib",
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/output/printers:lib",
         "//code/utilities/program/call:lib",
@@ -163,7 +164,6 @@ hcp(
         "//code/utilities/types/strings/observers/path:lib",
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/types/vectors/observers:lib",
-        "//code/utilities/deps/external/bazel_spawn_proto:lib",
     ],
 )
 

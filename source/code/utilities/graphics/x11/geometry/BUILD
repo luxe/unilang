@@ -8,7 +8,7 @@ load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 hcp(
     name = "window_geometry_getter",
     deps = [
-        "//code/utilities/graphics/x11/main_state:x11_main_state_creator",
         "//code/utilities/deps/external/x11:lib",
+        "//code/utilities/graphics/x11/main_state:x11_main_state_creator",
     ],
 )

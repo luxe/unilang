@@ -7,6 +7,6 @@ cc_library(
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
     deps = [
-        "//code/utilities/deps/external/boost_graph:lib"
+        "//code/utilities/deps/external/boost_graph:lib",
     ],
 )

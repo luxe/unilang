@@ -9,8 +9,8 @@ hcp(
     name = "bazel_sync_logger",
     deps = [
         "//code/utilities/build/build_repo_establisher:build_repo_settings",
+        "//code/utilities/deps/external/bazel_workspace_log_proto:lib",
         "//code/utilities/program/wrappers/bazel:bazel_runner",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/deps/external/bazel_workspace_log_proto:lib",
     ],
 )

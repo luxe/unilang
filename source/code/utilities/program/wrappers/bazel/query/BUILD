@@ -8,6 +8,8 @@ load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 hcp(
     name = "bazel_query_runner",
     deps = [
+        "//code/utilities/deps/external/bazel_build_proto:lib",
+        "//code/utilities/deps/external/bazel_spawn_proto:lib",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/formats/serialization:protobuf",
         "//code/utilities/program/call:lib",
@@ -23,14 +25,14 @@ hcp(
         "//code/utilities/types/strings/transformers/removing:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/deps/external/bazel_build_proto:lib",
-        "//code/utilities/deps/external/bazel_spawn_proto:lib",
     ],
 )
 
 hcp(
     name = "bazel_aquery_runner",
     deps = [
+        "//code/utilities/deps/external/bazel_analysis_proto:lib",
+        "//code/utilities/deps/external/bazel_spawn_proto:lib",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/formats/serialization:protobuf",
         "//code/utilities/program/call:lib",
@@ -48,14 +50,14 @@ hcp(
         "//code/utilities/types/strings/transformers/removing:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/deps/external/bazel_analysis_proto:lib",
-        "//code/utilities/deps/external/bazel_spawn_proto:lib",
     ],
 )
 
 hcp(
     name = "bazel_cquery_runner",
     deps = [
+        "//code/utilities/deps/external/bazel_analysis_proto:lib",
+        "//code/utilities/deps/external/bazel_spawn_proto:lib",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/formats/serialization:protobuf",
         "//code/utilities/program/call:lib",
@@ -73,8 +75,6 @@ hcp(
         "//code/utilities/types/strings/transformers/removing:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/deps/external/bazel_analysis_proto:lib",
-        "//code/utilities/deps/external/bazel_spawn_proto:lib",
     ],
 )
 

@@ -8,10 +8,9 @@ load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/cpp:distributable_main.bzl", "distributable_cpp_main")
 
-
 hcp_hdrs_derive(
     name = "filler_game_state",
     interface_deps = [
-        "//code/utilities/language_basic/std_hackery:std_aliases"
-    ]
+        "//code/utilities/language_basic/std_hackery:std_aliases",
+    ],
 )

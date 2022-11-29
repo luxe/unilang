@@ -7,7 +7,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #see also:
 #https://www.hillelwayne.com/post/frink/
 
-
 hcp(
     name = "unit_suffix_lookuper",
     deps = [

@@ -14,6 +14,11 @@ hcp(
 hcp(
     name = "fetch_results",
     deps = [
+        "//code/utilities/deps/external/bazel_analysis_proto:lib",
+        "//code/utilities/deps/external/bazel_build_event_stream_proto:lib",
+        "//code/utilities/deps/external/bazel_build_proto:lib",
+        "//code/utilities/deps/external/bazel_spawn_proto:lib",
+        "//code/utilities/deps/external/bazel_workspace_log_proto:lib",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/formats/serialization:protobuf",
         "//code/utilities/program/call:lib",
@@ -22,17 +27,14 @@ hcp(
         "//code/utilities/program/inputs/flags/data:flags",
         "//code/utilities/program/wrappers/bazel:run_environment",
         "//code/utilities/program/wrappers/bazel/query:query_deps_flags",
-        "//code/utilities/deps/external/bazel_analysis_proto:lib",
-        "//code/utilities/deps/external/bazel_spawn_proto:lib",
-        "//code/utilities/deps/external/bazel_build_event_stream_proto:lib",
-        "//code/utilities/deps/external/bazel_build_proto:lib",
-        "//code/utilities/deps/external/bazel_workspace_log_proto:lib",
     ],
 )
 
 hcp(
     name = "bazel_fetch_runner",
     deps = [
+        "//code/utilities/deps/external/bazel_analysis_proto:lib",
+        "//code/utilities/deps/external/bazel_spawn_proto:lib",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/formats/serialization:protobuf",
         "//code/utilities/program/call:lib",
@@ -52,7 +54,5 @@ hcp(
         "//code/utilities/types/strings/transformers/removing:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/deps/external/bazel_analysis_proto:lib",
-        "//code/utilities/deps/external/bazel_spawn_proto:lib",
     ],
 )

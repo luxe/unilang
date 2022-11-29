@@ -9,17 +9,17 @@ cc_binary(
     ],
     deps = [
         "//code/programs/games/filler/gui/assets:assets_loader",
-        "//code/programs/games/filler/gui/state:game_state_getter",
         "//code/programs/games/filler/gui/core:frame_renderer",
         "//code/programs/games/filler/gui/core:state_updater",
+        "//code/programs/games/filler/gui/state:game_state_getter",
+        "//code/utilities/deps/external/gl:lib",
+        "//code/utilities/deps/external/sfml:lib",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/graphics/sfml:game_loop",
         "//code/utilities/graphics/sfml:standard_sfml_game_loop",
         "//code/utilities/peripheral/keyboard/joycons",
         "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",
         "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
-        "//code/utilities/deps/external/sfml:lib",
-        "//code/utilities/deps/external/gl:lib",
     ],
 )
 

@@ -14,8 +14,6 @@ enum_cpp(
     ],
 )
 
-
-
 hcp_hdrs_derive(
     name = "dependency_specifications",
     interface_deps = [
@@ -95,9 +93,6 @@ hcp_hdrs_derive(
     interface_deps = [
     ],
 )
-
-
-
 
 # Used for creating an HTML table:
 hcp_hdrs_derive(
