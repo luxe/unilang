@@ -192,7 +192,7 @@ void Reverse_Value_Numbers(std::map<T,U> & map){
   
   U max = Max_Value(map);
   for (auto & it: map){
-    it.second = std::abs(static_cast<long>(it.second - max));
+    it.second = static_cast<U>(std::abs(static_cast<long>(it.second - max)));
   }
   
 }

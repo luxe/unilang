@@ -23,7 +23,7 @@ class
     //therefore, we can group some of them together.  
     //this will allow us to do less builds overall, but will also increase the disk space used for each build invocation.
     //[[t1,t2],[t3,t4],[t5,t6]]
-    auto build_sets = Split_Every_N(targets,settings.split_amount);
+    auto build_sets = Split_Every_N(targets,static_cast<size_t>(settings.split_amount));
     
     //since bazel can accept multiple targets in a single invocation, we flatten our grouping down
     //so that these multiple grouped targets are a single element, and each element represents a bazel invocation.
@@ -70,8 +70,8 @@ class
     //get the folders that are under it
     auto nested_dirs = Get_Dirs_Of_Path(x.repo.path + "/" + target);
     
-    Remove_If(nested_dirs,[&](std::string const& x){
-        auto full_path = target + x;
+    Remove_If(nested_dirs,[&](std::string const& dir){
+        auto full_path = target + dir;
         return !Regular_File_Exists_Recursively(full_path,"BUILD");
         
     });
@@ -92,8 +92,8 @@ class
 ◀private: static▶ std::vector<std::string> ☀Decide_Which_Sets_To_Run_As_A_Job(std::vector<std::string> const& target_sets, Target_Augment_Settings const& settings) ❰
     
     //pick just a part of a fraction to run
-    auto new_parts = Split_Into_N_Parts(target_sets,settings.job_portion.denominator);
-    return new_parts[settings.job_portion.numerator-1];
+    auto new_parts = Split_Into_N_Parts(target_sets,static_cast<size_t>(settings.job_portion.denominator));
+    return new_parts[static_cast<size_t>(settings.job_portion.numerator-1)];
 ❱
 
 //utility
