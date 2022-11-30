@@ -1,0 +1,85 @@
+class
+⚯
+⚞⚟
+
+◀public: static▶ void ☀Change(int_grid & grid, Position start_index, int new_value) ❰
+
+  int initial_value = grid[start_index.x][start_index.y];
+  
+  std::cout << initial_value << std::endl;
+
+  // start the analyzes from the index given
+  std::queue<std::string> analyze;
+  analyze.push(Type_To_Json_String::As_Minified_JSON_String(start_index));
+  
+  Observe_Each_Item_In_Queue_Avoiding_Duplicates(analyze,[&](std::queue<std::string> & q, std::string str){
+    
+    //get element to analyze
+    auto pos = From_JSON_String<Position>(str);
+    
+    //change value of currently analyzed
+    grid[pos.x][pos.y] = new_value;
+    
+    //decide which neighbors to analyze next
+    auto neighbors = Valid_Neighbors(grid,pos);
+    
+    for (auto it: neighbors){
+      if (grid[it.x][it.y] == initial_value){
+        q.push(Type_To_Json_String::As_Minified_JSON_String(it));
+      }
+    }
+    
+  });
+❱
+
+
+
+
+
+
+//TODO: move to utility
+◀private: static▶ bool ☀Is_Valid_Grid_Space(int_grid const& grid, Position index) ❰
+
+  auto width = grid[0].size();
+  auto height = grid.size();
+  
+  if (index.x >= width){
+    return false;
+  }
+  
+  if (index.y >= height){
+    return false;
+  }
+  
+  return true;
+❱
+
+◀private: static▶ std::vector<Position> ☀Valid_Neighbors(int_grid const& grid, Position index) ❰
+
+  auto up = index;
+  auto down = index;
+  auto left = index;
+  auto right = index;
+  
+  up.y-=1;
+  down.y+=1;
+  left.x-=1;
+  right.x+=1;
+  
+  std::vector<Position> poses;
+  if (Is_Valid_Grid_Space(grid,up)){
+    poses.emplace_back(up);
+  }
+  if (Is_Valid_Grid_Space(grid,down)){
+    poses.emplace_back(down);
+  }
+  if (Is_Valid_Grid_Space(grid,left)){
+    poses.emplace_back(left);
+  }
+  if (Is_Valid_Grid_Space(grid,right)){
+    poses.emplace_back(right);
+  }
+  
+  return poses;
+
+❱

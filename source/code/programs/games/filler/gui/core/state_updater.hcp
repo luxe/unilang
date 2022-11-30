@@ -17,7 +17,7 @@ class
     }
     
     
-    //player selection
+    //player selection rotation
     if (!state.keyStatePrevious[sf::Keyboard::Q] && state.keyStateCurrent[sf::Keyboard::Q]){
         Set_Previous_Index_In_Round_Robin(state.p1.choices,state.p1.current_selection);
     }
@@ -32,12 +32,53 @@ class
         Set_Next_Index_In_Round_Robin(state.p2.choices,state.p2.current_selection);
     }
     
+    
+    //player click
+    if (!state.keyStatePrevious[sf::Keyboard::S] && state.keyStateCurrent[sf::Keyboard::S]){
+        if (state.game_state.player_turn == 1){
+            
+            Take_Player_Turn(state,assets);
+            
+            //next player's turn
+            state.game_state.player_turn = 2;
+        }
+    }
+    else if (!state.keyStatePrevious[sf::Keyboard::Enter] && state.keyStateCurrent[sf::Keyboard::Enter]){
+        if (state.game_state.player_turn == 2){
+            
+            Take_Player_Turn(state,assets);
+            
+            
+            //next player's turn
+            state.game_state.player_turn = 1;
+        }
+    }
+    
     Assets_Loader::Adjust_Player_Selection(assets,state);
+    Game_State_Getter::Colorize_Board(state);
     
     
     state.keyStatePrevious = state.keyStateCurrent;
     
 ❱
+
+
+◀private: static▶ void ☀Take_Player_Turn(Game_State & state, Assets & assets) ❰
+
+    if (state.game_state.player_turn == 1){
+        auto start_pos = Upper_Right::Get(state.game_state.grid);
+        std::cout << start_pos.x << " " << start_pos.y << std::endl;
+        Change_Connected_Values::Change(state.game_state.grid, start_pos, state.p1.current_selection);
+    }
+    
+    if (state.game_state.player_turn == 2){
+        auto start_pos = Lower_Left::Get(state.game_state.grid);
+        Change_Connected_Values::Change(state.game_state.grid, start_pos, state.p2.current_selection);
+    }
+
+❱
+
+
 
 
 ◀private: static▶ void ☀Set_Peripheral_State(sf::RenderWindow & window, sf::Time const& TimePerFrame, Game_State & state, Assets & assets) ❰
