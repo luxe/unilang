@@ -11,7 +11,7 @@ hcp(
         "//code/utilities/data_structures/shapes/rectangle:rectangle_settings",
         "//code/utilities/filesystem/paths:lib",
         "@GL",
-        "@imgui//:imgui_sdl_opengl3",
+        "//code/utilities/deps/external/imgui:lib",
     ],
 )
 

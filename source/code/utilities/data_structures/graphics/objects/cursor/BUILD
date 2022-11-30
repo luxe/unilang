@@ -48,7 +48,7 @@ hcp_hdrs_derive(
         "//code/utilities/graphics/imgui/window:window_renderer",
         "//code/utilities/peripheral/keyboard:key_detector",
         "//code/utilities/peripheral/pc:pc_input_state",
-        #"@imgui//:imgui_sdl_opengl3",
+        #"//code/utilities/deps/external/imgui:lib",
     ],
 )
 
@@ -67,7 +67,7 @@ hcp_hdrs_derive(
         "//code/utilities/peripheral/keyboard:key_detector",
         "//code/utilities/peripheral/pc:pc_input_state",
         "//code/utilities/types/strings/observers/regex:lib",
-        #"@imgui//:imgui_sdl_opengl3",
+        #"//code/utilities/deps/external/imgui:lib",
     ],
 )
 

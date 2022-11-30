@@ -22,7 +22,7 @@ hcp(
         "//code/utilities/types/general:lib",
         "//code/utilities/types/variant:lib",
         "@cairo",
-        "@imgui//:imgui_sdl_opengl3",
+        "//code/utilities/deps/external/imgui:lib",
     ],
 )
 

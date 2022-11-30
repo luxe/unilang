@@ -8,6 +8,6 @@ cpp_main(
     name = "main",
     deps = [
         "//code/utilities/graphics/opengl/loader:opengl_loader",
-        "@imgui//:imgui_sdl_opengl3",
+        "//code/utilities/deps/external/imgui:lib",
     ],
 )

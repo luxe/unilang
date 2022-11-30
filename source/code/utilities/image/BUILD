@@ -25,7 +25,7 @@ hcp(
         "//code/utilities/graphics/opengl/loader:opengl_loaders",
         "//code/utilities/image:stb_image",
         "//code/utilities/streams/filestreams:lib",
-        "@imgui//:imgui_sdl_opengl3",
+        "//code/utilities/deps/external/imgui:lib",
         "@system//:KHR_hdrs",
     ],
 )

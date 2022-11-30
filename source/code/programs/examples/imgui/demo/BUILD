@@ -9,6 +9,6 @@ cpp_main(
     deps = [
         "//code/utilities/graphics/imgui/loop:mechanics",
         "//code/utilities/graphics/sdl:sdl_init_settings",
-        "@imgui//:imgui_sdl_opengl3",
+        "//code/utilities/deps/external/imgui:lib",
     ],
 )

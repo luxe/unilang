@@ -11,6 +11,6 @@ hcp(
     name = "cycle_clock_checker",
     deps = [
         "//code/utilities/time/cycle_clock",
-        "@imgui//:imgui_sdl_opengl3",
+        "//code/utilities/deps/external/imgui:lib",
     ],
 )

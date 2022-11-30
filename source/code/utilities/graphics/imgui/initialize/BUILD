@@ -9,14 +9,14 @@ hcp(
     name = "opengl_initializer",
     deps = [
         "@GL",
-        "@imgui//:imgui_sdl_opengl3",
+        "//code/utilities/deps/external/imgui:lib",
     ],
 )
 
 hcp(
     name = "imgui_state",
     deps = [
-        "@imgui//:imgui_sdl_opengl3",
+        "//code/utilities/deps/external/imgui:lib",
     ],
 )
 
@@ -31,6 +31,6 @@ hcp(
         "//code/utilities/graphics/sdl:sdl_initializer",
         "//code/utilities/graphics/sdl:sdl_swap_interval_setter",
         "//code/utilities/graphics/sdl:sdl_window_creator",
-        "@imgui//:imgui_sdl_opengl3",
+        "//code/utilities/deps/external/imgui:lib",
     ],
 )

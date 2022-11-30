@@ -19,7 +19,7 @@ hcp(
         "//code/utilities/graphics/imgui/initialize:imgui_initializer",
         "//code/utilities/graphics/imgui/loop:event_poller",
         #"@GL",
-        "@imgui//:imgui_sdl_opengl3",
+        "//code/utilities/deps/external/imgui:lib",
     ],
 )
 
@@ -30,6 +30,6 @@ hcp(
         "//code/utilities/graphics/sdl:sdl_init_settings",
         "//code/utilities/graphics/sdl:sdl_window_creator",
         "@GL",
-        "@imgui//:imgui_sdl_opengl3",
+        "//code/utilities/deps/external/imgui:lib",
     ],
 )

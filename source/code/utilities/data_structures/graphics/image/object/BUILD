@@ -19,7 +19,7 @@ cpp_object(
     deps = [
         "//code/utilities/data_structures/position",
         "//code/utilities/image:stb_image",
-        "@imgui//:imgui_sdl_opengl3",
+        "//code/utilities/deps/external/imgui:lib",
         #"@system//:KHR_hdrs",
     ],
 )

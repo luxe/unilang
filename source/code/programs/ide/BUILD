@@ -20,7 +20,7 @@ hcp(
         "//code/utilities/graphics/imgui/loop:mechanics",
         "//code/utilities/graphics/imgui/render:frame_renderer",
         "//code/utilities/image:stb_image_setter",
-        "@imgui//:imgui_sdl_opengl3",
+        "//code/utilities/deps/external/imgui:lib",
     ],
 )
 

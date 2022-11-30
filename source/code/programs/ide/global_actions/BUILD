@@ -42,7 +42,7 @@ hcp(
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/graphics/sdl:sdl_fullscreener",
         "//code/utilities/program/wrappers/zenity/file_selector",
-        "@imgui//:imgui_sdl_opengl3",
+        "//code/utilities/deps/external/imgui:lib",
     ],
 )
 
@@ -61,7 +61,7 @@ hcp(
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/graphics/sdl:sdl_fullscreener",
         "//code/utilities/program/wrappers/zenity/file_selector",
-        "@imgui//:imgui_sdl_opengl3",
+        "//code/utilities/deps/external/imgui:lib",
     ],
 )
 
@@ -82,6 +82,6 @@ hcp(
         "//code/utilities/graphics/sdl:sdl_fullscreener",
         "//code/utilities/program/wrappers/zenity/file_selector",
         "//code/utilities/types/variant:lib",
-        "@imgui//:imgui_sdl_opengl3",
+        "//code/utilities/deps/external/imgui:lib",
     ],
 )

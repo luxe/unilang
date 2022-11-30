@@ -23,14 +23,14 @@ hcp(
 hcp(
     name = "window_position",
     deps = [
-        "@imgui//:imgui_sdl_opengl3",
+        "//code/utilities/deps/external/imgui:lib",
     ],
 )
 
 hcp(
     name = "window_size",
     deps = [
-        "@imgui//:imgui_sdl_opengl3",
+        "//code/utilities/deps/external/imgui:lib",
     ],
 )
 
@@ -38,7 +38,7 @@ hcp(
     name = "window_renderer",
     deps = [
         "//code/utilities/graphics/imgui/window:window_settings",
-        "@imgui//:imgui_sdl_opengl3",
+        "//code/utilities/deps/external/imgui:lib",
     ],
 )
 
@@ -46,6 +46,6 @@ hcp(
     name = "window_position_finder",
     deps = [
         "//code/utilities/data_structures/position",
-        "@imgui//:imgui_sdl_opengl3",
+        "//code/utilities/deps/external/imgui:lib",
     ],
 )

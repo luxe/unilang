@@ -11,6 +11,6 @@ hcp(
         "//code/programs/ide/settings/data:ide_settings",
         "//code/utilities/graphics/imgui/loop:mechanics",
         "//code/utilities/peripheral/keyboard/state:key_state",
-        "@imgui//:imgui_sdl_opengl3",
+        "//code/utilities/deps/external/imgui:lib",
     ],
 )
