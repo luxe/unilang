@@ -15,21 +15,23 @@ cc_library(
 cc_library(
     name = "imgui_sdl_opengl3",
     srcs = [
-        "examples/imgui_impl_opengl3.cpp",
-        "examples/imgui_impl_sdl.cpp",
-        "examples/libs/gl3w/GL/gl3w.c",
+        "backends/imgui_impl_opengl3.cpp",
+        "backends/imgui_impl_sdl.cpp",
+        #"examples/libs/gl3w/GL/gl3w.c",
     ],
     hdrs = [
-        "examples/imgui_impl_opengl3.h",
-        "examples/imgui_impl_sdl.h",
-        "examples/libs/gl3w/GL/gl3w.h",
-        "examples/libs/gl3w/GL/glcorearb.h",
+        "backends/imgui_impl_opengl3.h",
+        "backends/imgui_impl_sdl.h",
+        "backends/imgui_impl_opengl3_loader.h",
+        "examples/libs/glfw/include/GLFW/glfw3.h",
+        "examples/libs/glfw/include/GLFW/glfw3native.h",
     ],
     copts = [
         #"-DGL_VERSION_
     ],
     includes = [
         ".",
+        "backends",
         "examples",
         "examples/libs",
         "examples/libs/gl3w",

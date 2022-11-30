@@ -7,8 +7,8 @@ class
 ❪"imgui.h"❫
 ❪cstdlib❫
 ❪"imgui_internal.h"❫
-❪"examples/imgui_impl_sdl.h"❫
-❪"examples/imgui_impl_opengl3.h"❫
+❪"backends/imgui_impl_sdl.h"❫
+❪"backends/imgui_impl_opengl3.h"❫
 ❪"SDL.h"❫
 ❪iostream❫
 ❪"code/utilities/graphics/sdl/sdl_init_settings"❫
@@ -82,8 +82,17 @@ static void render_loop(Imgui_State & state, U logic, V render){
     //this implementation doesn't sample
     //it just runs the logic and rendering as fast as it can
     while (!Event_Poller::Poll(state.window)){
-        logic(state.window);
+        
+        
+        // You may be wondering "Where is the best place to run the logic hook?"
+        // To this, I do not know.  I originally ran it first before the render_frame calls,
+        // but when I updated the imgui library, my keyboard input no longer registered.
+        // Reason being, was the ImGui::GetIO().InputQueueCharacters was always empty.
+        // Perhaps the upgrade changed how the internal backend populates/clears this buffer between frames.
+        // I've since shuffled the logic hook ordering to restore keyboard inputs,
+        // and have not noticed any ill affects on GUI / interactive behavior.
         render_frame(state.window,render);
+        logic(state.window);
         ImGuiIO &io = ImGui::GetIO();
         render_frame(state.window, state.context, io, state.clear_color);
     }

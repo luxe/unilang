@@ -10,10 +10,10 @@ def imgui():
     http_archive(
         name="imgui" ,
         build_file="//bazel/deps/imgui:build.BUILD" ,
-        sha256="1514c3b9037137331f57abec14c6ba238f9c6a4d2c0c1f0bab3debe5afdf3854" ,
-        strip_prefix="imgui-ec945f44b5eff1d82129233be5643abbff2845da" ,
+        sha256="e6578a8a78fa2e75e7e02d388e20ad912326423cf1139e0c673afbf55cbc64b7" ,
+        strip_prefix="imgui-bf4c2e00c09384a56fa1a4df30443e56ebcb85fe" ,
         urls = [
-            main_mirror_url("imgui","ec945f44b5eff1d82129233be5643abbff2845da"),
+            main_mirror_url("imgui","bf4c2e00c09384a56fa1a4df30443e56ebcb85fe"),
         ],        patch_cmds = [
             "find . -type f -name '*.h' -exec sed -i 's/typedef unsigned short ImDrawIdx;/typedef unsigned int ImDrawIdx;/g' {} \\;",
             "sed -i '1s/^/#include <cfloat>\\n/' imgui_internal.h",

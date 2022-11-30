@@ -1,5 +1,5 @@
 class
-❪"examples/imgui_impl_opengl3.h"❫
+❪"backends/imgui_impl_opengl3.h"❫
 ❪"SDL.h"❫
 ⚯
 ⚞⚟
@@ -14,7 +14,15 @@ class
 ◀private: static▶ std::string ☀decide_sdl_glsl_version()❰
     std::string version;
 
-#if __APPLE__
+    // Decide GL+GLSL versions
+#if defined(IMGUI_IMPL_OPENGL_ES2)
+    // GL ES 2.0 + GLSL 100
+    version = "#version 100";
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+#elif defined(__APPLE__)
     // GL 3.2 Core + GLSL 150
     version = "#version 150";
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG); // Always required on Mac

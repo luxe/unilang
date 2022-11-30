@@ -9,6 +9,10 @@ cc_library(
     srcs = ["opengl_loaders.hpp"],
     deps = [
         "@imgui//:imgui_sdl_opengl3",
+        "@system//:GLFW_hdrs",
+        "@system//:glfw",
+                "@system//:GL_hdrs",
+                "@system//:KHR_hdrs",
     ],
 )
 
