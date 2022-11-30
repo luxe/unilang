@@ -41,6 +41,7 @@ hcp_hdrs_derive(
         "//code/utilities/types/vectors/transformers:lib",
         "//code/programs/games/filler/gui/state:game_state_getter",
         "//code/utilities/types/int_grid:change_connected_values",
+        "//code/utilities/types/int_grid:count_connected_values",
         "//code/utilities/types/int_grid:lower_left",
         "//code/utilities/types/int_grid:upper_right",
         "//code/utilities/deps/external/sfml:lib",

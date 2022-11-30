@@ -13,7 +13,7 @@ T Pop_Front(std::queue<T> & q){
 }
 
 template <typename T, typename Fun>
-void Observe_Each_Item_In_Queue_Avoiding_Duplicates(std::queue<T> & q, Fun fun){
+std::set<T> Observe_Each_Item_In_Queue_Avoiding_Duplicates(std::queue<T> & q, Fun fun){
     
     std::set<T> seen;
     while (!q.empty()){
@@ -23,7 +23,7 @@ void Observe_Each_Item_In_Queue_Avoiding_Duplicates(std::queue<T> & q, Fun fun){
             fun(q,next);
         }
     }
-    
+    return seen;
 }
 
 template <typename T>

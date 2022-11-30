@@ -2,8 +2,6 @@
 #include <iostream>
 #include <SFML/System/String.hpp>
 #include <SFML/Graphics.hpp>
-//#include <locale.h>
-//#include <locale>
 
 int main()
 {

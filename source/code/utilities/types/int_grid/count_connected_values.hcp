@@ -2,7 +2,7 @@ class
 ⚯
 ⚞⚟
 
-◀public: static▶ void ☀Change(int_grid & grid, Position start_index, int new_value) ❰
+◀public: static▶ size_t ☀Count(int_grid grid, Position start_index) ❰
 
   int initial_value = grid[start_index.x][start_index.y];
 
@@ -10,13 +10,10 @@ class
   std::queue<std::string> analyze;
   analyze.push(Type_To_Json_String::As_Minified_JSON_String(start_index));
   
-  Observe_Each_Item_In_Queue_Avoiding_Duplicates(analyze,[&](std::queue<std::string> & q, std::string str){
+  auto seen = Observe_Each_Item_In_Queue_Avoiding_Duplicates(analyze,[&](std::queue<std::string> & q, std::string str){
     
     //get element to analyze
     auto pos = From_JSON_String<Position>(str);
-    
-    //change value of currently analyzed
-    grid[pos.x][pos.y] = new_value;
     
     //decide which neighbors to analyze next
     auto neighbors = Get_Valid_Neighbors::Get(grid,pos);
@@ -28,4 +25,6 @@ class
     }
     
   });
+  
+  return seen.size();
 ❱

@@ -11,7 +11,8 @@ class
 
     state.keyStateCurrent = keyState;
                     
-                    
+    
+    //restart the game
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)){
         state = Game_State_Getter::Get();
     }
@@ -38,19 +39,12 @@ class
         if (state.game_state.player_turn == 1){
             
             Take_Player_Turn(state,assets);
-            
-            //next player's turn
-            state.game_state.player_turn = 2;
         }
     }
     else if (!state.keyStatePrevious[sf::Keyboard::Enter] && state.keyStateCurrent[sf::Keyboard::Enter]){
         if (state.game_state.player_turn == 2){
             
             Take_Player_Turn(state,assets);
-            
-            
-            //next player's turn
-            state.game_state.player_turn = 1;
         }
     }
     
@@ -69,11 +63,18 @@ class
         auto start_pos = Upper_Right::Get(state.game_state.grid);
         std::cout << start_pos.x << " " << start_pos.y << std::endl;
         Change_Connected_Values::Change(state.game_state.grid, start_pos, state.p1.current_selection);
+        assets.p1.score.setString(std::to_string(Count_Connected_Values::Count(state.game_state.grid, start_pos)));
+        
+            //next player's turn
+            state.game_state.player_turn = 2;
     }
-    
-    if (state.game_state.player_turn == 2){
+    else if (state.game_state.player_turn == 2){
         auto start_pos = Lower_Left::Get(state.game_state.grid);
         Change_Connected_Values::Change(state.game_state.grid, start_pos, state.p2.current_selection);
+        assets.p2.score.setString(std::to_string(Count_Connected_Values::Count(state.game_state.grid, start_pos)));
+        
+            //next player's turn
+            state.game_state.player_turn = 1;
     }
 
 ❱
