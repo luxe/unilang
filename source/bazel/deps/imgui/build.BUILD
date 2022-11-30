@@ -71,6 +71,14 @@ cc_binary(
         ":imgui_sdl_opengl3",
     ],
 )
+
+# cc_binary(
+#     name = "imgui_emscripten_opengl3_main",
+#     srcs = ["examples/example_emscripten_opengl3/main.cpp"],
+#     deps = [
+#         ":imgui_sdl_opengl3",
+#     ],
+# )
 ##############################################################################################
 
 cc_library(
@@ -158,3 +166,4 @@ cc_binary(
         "@GL",
     ],
 )
+##############################################################################################
