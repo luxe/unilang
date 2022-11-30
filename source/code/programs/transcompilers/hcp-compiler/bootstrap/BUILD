@@ -6,6 +6,6 @@ cc_binary(
     deps = [
         "//code/programs/transcompilers/hcp-compiler/bootstrap/core",
         "//code/programs/transcompilers/hcp-compiler/bootstrap/program_options:lib",
-        "//code/utilities/program/common_actions/locale:lib",
+        "//code/utilities/bootstrap/program/common_actions/locale:lib",
     ],
 )

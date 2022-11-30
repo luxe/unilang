@@ -7,6 +7,6 @@ cc_library(
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
     deps = [
-        "@boost//:program_options",
+        "//code/utilities/deps/external/boost_program_options:lib",
     ],
 )
