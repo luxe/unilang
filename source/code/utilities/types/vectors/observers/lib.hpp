@@ -18,7 +18,7 @@ size_t Longest_Element_Size(std::vector<std::string> strs);
 bool An_Element_Ends_With(std::vector<std::string> const& strs, std::string const& str);
 
 
-
+std::vector<std::vector<std::string>> Split_By_Empty_Vector(std::vector<std::string> const& vec);
 
 
 
@@ -548,6 +548,8 @@ std::vector<std::vector<T>> Split_Into_N_Parts(std::vector<T> const& v, size_t a
   return all;
   
 }
+
+
 
 
 

@@ -17,6 +17,26 @@ bool An_Element_Ends_With(std::vector<std::string> const& strs, std::string cons
     return false;
 }
 
+std::vector<std::vector<std::string>> Split_By_Empty_String(std::vector<std::string> const& vec){
+    
+    std::vector<std::vector<std::string>> result;
+    std::vector<std::string> temp;
+    for (auto it: vec){
+        if (it.empty()){
+            result.emplace_back(temp);
+            temp.clear();
+        }
+        else{
+            temp.emplace_back(it);
+        }
+    }
+    
+    if (!temp.empty()){
+        result.emplace_back(temp);
+    }
+    return result;
+}
+
 std::string Get_As_Comma_Seperated_String(std::vector<std::string> strs){
   std::string list;
   
