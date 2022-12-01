@@ -9,5 +9,6 @@ load("//bazel/rules/hcp:hcp_and_hcp_pos_hdrs_derive.bzl", "hcp_and_hcp_pos_hdrs_
 hcp_hdrs_derive(
     name = "tree_token",
     deps = [
+        "//code/utilities/deps/stl/string:lib",
     ],
 )

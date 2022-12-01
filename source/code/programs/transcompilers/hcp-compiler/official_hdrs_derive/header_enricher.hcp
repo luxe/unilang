@@ -14,9 +14,21 @@ class
 ❪"code/utilities/types/converters/lib"❫
 ❪"code/utilities/types/strings/transformers/search_replace/lib"❫
 ❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Enrich_Structure_With_Header_Data(Class_Structure & structure, Hcp_Settings const& settings)❰
+
+  if (settings.headers.disallow_explicit_header_usage_in_source_code){
+    auto explicit_headers = structure.data.header_includes + structure.data.source_includes;
+    
+    if (!explicit_headers.empty()){
+      std::cerr << "You should not explicitly include headers in the source code." << std::endl;
+      std::cerr << "They should be derived from the dependencies given" << std::endl;
+      exit(1);
+    }
+    
+  }
   
   
   for (auto const& it: settings.headers.interface_deps){

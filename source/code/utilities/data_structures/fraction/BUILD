@@ -12,6 +12,7 @@ hcp_hdrs_derive(
         "//code/utilities/data_structures/fraction",
         "//code/utilities/types/strings/observers/converting:lib",
         "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/deps/stl/string:lib",
     ],
 )
 

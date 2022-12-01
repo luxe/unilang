@@ -12,7 +12,7 @@ distributable_cpp_main(
     description = "visualize bazel build graph",
     deps = [
         "//code/programs/repo_tools/graph_visualize:task_executer",
-        "//code/programs/repo_tools/graph_visualize/program_options:lib",
+        "//code/programs/repo_tools/graph_visualize/program_options:program_options",
     ],
 )
 
@@ -41,8 +41,6 @@ hcp_hdrs_derive(
         "//code/utilities/formats/gexf:gexf_formatter",
         "//code/utilities/formats/json/converters:type_to_json_string",
         "//code/utilities/data_structures/graph/basic:timed_connection",
-    ],
-    deps = [
-        "//code/programs/repo_tools/graph_visualize/program_options:lib",
+        "//code/programs/repo_tools/graph_visualize/program_options:program_options",
     ],
 )
