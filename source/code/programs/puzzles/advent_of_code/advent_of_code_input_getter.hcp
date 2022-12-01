@@ -14,6 +14,8 @@ class
 ❪"code/utilities/streams/filestreams/write_all/lib"❫
 ❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
 ❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/program/wrappers/curl/curl_runner"❫
+❪"code/utilities/types/strings/observers/splitting/lib"❫
 ❪pybind11/embed.h❫
 ⚞⚟
 
@@ -36,6 +38,12 @@ class
 
 ◀private: static▶ std::vector<std::string> ☀Get_From_Website(std::string const& url) ❰
 
+    //return Get_Content_Through_Headless_Selenium_Browser(url);
+    return Get_Content_Through_Curl(url);
+❱
+
+◀private: static▶ std::vector<std::string> ☀Get_Content_Through_Headless_Selenium_Browser(std::string const& url) ❰
+
     //get the input (we have to use a browser driver because we need to be logged in)
     pybind11::scoped_interpreter py_guard{};
     auto settings = Default_Browser_Settings_Getter::Get();
@@ -49,6 +57,13 @@ class
     
     return lines;
 ❱
+
+◀private: static▶ std::vector<std::string> ☀Get_Content_Through_Curl(std::string const& url) ❰
+    std::string cookie = "_ga=GA1.2.1084420399.1669903674; _gid=GA1.2.1141345242.1669903674; session=53616c7465645f5f819fde3bc717bfb0ea434131b473684e8d0ea35e48fc0689c5ab5c1dd7500b5d21c29c185ec0aed05a538df64d02f0d7a066d6cb8a45bf3e";
+    auto result = Curl_Runner::Run(url,cookie);
+    return Split_Into_Parts_From_Newline(result);
+❱
+
 
 ◀private: static▶ std::vector<std::string> ☀Get_Input_From_Cache_Or_Website(std::string const& url, std::string const& file) ❰
 
