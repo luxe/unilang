@@ -38,6 +38,7 @@ bool Path_Contains_File_With_Same_Basename_As_File(std::string const& file, std:
     //recursively getting files from a path
     std::vector<std::string> Recursively_Get_All_Paths_To_Files_From_Path(std::string const& path = ".");
     std::vector<std::string> Recursively_Get_Specific_Files_From_Path(std::string const& path, std::string const& filename);
+    std::vector<std::string> Recursively_Get_BUILD_Files_From_Path(std::string const& path);
     std::vector<std::string> Recursively_Get_All_Paths_To_Files_Of_Given_File_Extension_From_Path(std::string file_extension, std::string const& path = ".");
     std::vector<std::string> Recursively_Get_All_Paths_To_cpp_Files_Of_Path(std::string const& path = ".");
     std::vector<std::string> Recursively_Get_All_Paths_To_hpp_Files_Of_Path(std::string const& path = ".");

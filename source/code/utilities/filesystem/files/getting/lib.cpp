@@ -600,7 +600,9 @@ std::vector<std::string> Recursively_Get_Specific_Files_From_Path(std::string co
     return vec;
 }
 
-find source/code/utilities -type f -name BUILD
+std::vector<std::string> Recursively_Get_BUILD_Files_From_Path(std::string const& path){
+    return Recursively_Get_Specific_Files_From_Path(path,"BUILD");
+}
  
  
 std::vector<std::string> Recursively_Get_All_Paths_To_cpp_Files_Of_Path(std::string const& path){

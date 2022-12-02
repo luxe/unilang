@@ -15,3 +15,17 @@ bool Matches_Any_Regex(std::string const& str, std::vector<std::regex> const& re
     }
     return false;
 }
+
+std::vector<std::smatch> Get_Regex_Matches(std::vector<std::string> lines, std::string const& regex){
+    std::vector<std::smatch> result;
+    
+    for (auto const& it: lines){
+        std::smatch sm;
+        std::regex_search(it, sm, std::regex(regex));
+        if (!sm.empty()){
+            result.emplace_back(sm);
+        }
+    }
+    
+    return result;
+}
