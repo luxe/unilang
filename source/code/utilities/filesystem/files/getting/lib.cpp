@@ -593,6 +593,14 @@ std::vector<std::string> Recursively_Get_All_Paths_To_Non_Symlink_Files_Of_Given
     auto vec = Put_Each_Line_Of_String_Into_A_Vector(str_1);
     return vec;
 }
+
+std::vector<std::string> Recursively_Get_Specific_Files_From_Path(std::string const& path, std::string const& filename){
+    auto str_1 = exec("find " + path + " -type f -name " + filename + " 2>/dev/null;");
+    auto vec = Put_Each_Line_Of_String_Into_A_Vector(str_1);
+    return vec;
+}
+
+find source/code/utilities -type f -name BUILD
  
  
 std::vector<std::string> Recursively_Get_All_Paths_To_cpp_Files_Of_Path(std::string const& path){
