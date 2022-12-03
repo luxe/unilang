@@ -204,3 +204,12 @@ enum_cpp(
         "not_persistent",
     ],
 )
+
+enum_cpp(
+    name = "rock_paper_scissors_move",
+    values = [
+        "rock",
+        "paper",
+        "scissors",
+    ],
+)

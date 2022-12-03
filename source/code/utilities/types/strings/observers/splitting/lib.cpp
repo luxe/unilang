@@ -137,6 +137,16 @@ std::vector<std::vector<std::string>> Split_By_Spaces(std::vector<std::string> c
     return results;
 }
 
+std::vector<std::vector<std::string>> Split_Each_Line_By_Space(std::vector<std::string> const& strs){
+    std::vector<std::vector<std::string>> results;
+    
+    for (auto line: strs){
+        results.emplace_back(Split_By_Spaces(line));
+    }
+    
+    return results;
+}
+
 std::vector<std::string> Split_By_Spaces(std::string const& str){
  	return Split_Into_Parts_From_Delimiter(str,' ');
 }

@@ -24,6 +24,7 @@ std::vector<std::string> Split_By_Whitespace(std::string const& str);
 
 std::vector<std::string> Split_By_Spaces(std::string const& str);
 std::vector<std::vector<std::string>> Split_By_Spaces(std::vector<std::string> const& strs);
+std::vector<std::vector<std::string>> Split_Each_Line_By_Space(std::vector<std::string> const& strs);
 std::vector<std::string> Get_Path_In_Parts(std::string const& str);
 std::string Get_Path_Basename(std::string const& str);
 std::string Get_Path_After_Desktop(std::string const& str);
