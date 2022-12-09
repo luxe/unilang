@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <cctype>
 
 std::vector<std::vector<std::string>> Split_Into_Parts(std::string const& str, int part1, int part2){
     std::vector<std::vector<std::string>> results;
@@ -294,4 +295,24 @@ std::pair<std::string,std::string> Split_In_Half(std::string const& s){
     return {half,otherHalf};
 }
 
+std::vector<std::string> Extract_Numbers(std::string const& str){
+    std::vector<std::string> result;
+    
+    std::string temp;
+    for (auto const& it: str){
+        if (isdigit(it)){
+            temp += it;
+        }
+        else{
+            result.emplace_back(temp);
+            temp.clear();
+        }
+    }
+    
+    if (!temp.empty()){
+        result.emplace_back(temp);
+    }
+    
+    return result;
+}
 

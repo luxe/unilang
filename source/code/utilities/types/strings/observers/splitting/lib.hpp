@@ -36,3 +36,5 @@ std::vector<int> Default_Boost_Tokenize_To_Ints(std::string const& str);
 std::vector<int> Get_Numbers_From_Comma_Seperated_List(std::string const& str);
 
 std::pair<std::string,std::string> Split_In_Half(std::string const& str);
+
+std::vector<std::string> Extract_Numbers(std::string const& str);
