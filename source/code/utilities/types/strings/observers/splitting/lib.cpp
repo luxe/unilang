@@ -287,4 +287,11 @@ std::vector<int> Get_Numbers_From_Comma_Seperated_List(std::string const& str){
 }
 
 
+std::pair<std::string,std::string> Split_In_Half(std::string const& s){
+    std::string half = s.substr(0, s.length()/2);
+    std::string otherHalf = s.substr(s.length()/2);
+    
+    return {half,otherHalf};
+}
+
 

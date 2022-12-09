@@ -55,6 +55,7 @@ hcp_hdrs_derive(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
         "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/types/unordered_set:lib",
         "//code/utilities/deps/stl/map:lib",
         "//code/utilities/data_structures:rock_paper_scissors_move",
     ],
