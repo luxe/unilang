@@ -15,6 +15,27 @@ class
     auto stacks = Create_Stacks(stack_lines);
     
     //run operations
+    auto actions = Get_Actions(parts[1]);
+    for (auto numbers: actions){
+        
+        
+        for (size_t i = 0; i < numbers[0]; ++i){
+            
+            // move element
+            auto top = stacks[numbers[1]-1].top();
+            stacks[numbers[1]-1].pop();
+            
+            stacks[numbers[2]-1].push(top);
+        }
+    }
+    
+    
+    std::string answer;
+    for (auto it: stacks){
+        answer += it.top();
+    }
+    
+    Exit_If_Not_Equal(answer,"GRTSWNJHH");
 
 ❱
 
@@ -28,20 +49,12 @@ class
         it = string_replace_all(it,"]","");
     }
     
-        for (auto it: stack_lines){
-        std::cout << it << std::endl;
-    }
-    
     auto longest = Get_Longest_String_Length_In_Vector(stack_lines);
     for (auto & it: stack_lines){
         Append_N_Times(it,"0",longest-it.size());
     }
     
     
-    for (auto it: stack_lines){
-        std::cout << it << std::endl;
-    }
-    std::cout << std::endl;
     
     stack_lines = rotate90(stack_lines);
     
@@ -66,10 +79,80 @@ class
     
     return results;
 ❱
+
+
+◀private: static▶ std::vector<std::vector<int>> ☀Get_Actions(std::vector<std::string> action_lines)❰
+
+    std::vector<std::vector<int>> results;
+
+    for (auto it: action_lines){
+        
+        
+        it = string_replace_all(it,"move ","");
+        it = string_replace_all(it,"from ","");
+        it = string_replace_all(it,"to ","");
+        auto numbers = Default_Boost_Tokenize(it);
+        
+        std::vector<int> temp;
+        temp.emplace_back(as_signed(numbers[0]));
+        temp.emplace_back(as_signed(numbers[1]));
+        temp.emplace_back(as_signed(numbers[2]));
+        
+        results.emplace_back(temp);
+    }
     
+    return results;
+    
+❱
 
 
 ◀public: static▶ void ☀Part_2(std::vector<std::string> lines) ❰
+
+
+    auto parts = Split_By_Spaces(lines);
+    
+    
+    
+    //convert the ascii drawing to an easier structure
+    auto stack_lines = parts[0];
+    stack_lines = Get_Better_Format_Stack_Lines(stack_lines);
+    
+    //create actual stacks
+    auto stacks = Create_Stacks(stack_lines);
+    
+    //run operations
+    auto actions = Get_Actions(parts[1]);
+    
+    for (auto numbers: actions){
+        
+        
+        std::vector<std::string> temp;
+        for (size_t i = 0; i < numbers[0]; ++i){
+            
+            // move element
+            auto top = stacks[numbers[1]-1].top();
+            stacks[numbers[1]-1].pop();
+            
+            temp.emplace_back(top);
+        }
+        
+        
+        //add them on
+        for (size_t i = temp.size(); i > 0; --i){
+            stacks[numbers[2]-1].push(temp[i-1]);
+        }
+        
+        
+    }
+    
+    
+    std::string answer;
+    for (auto it: stacks){
+        answer += it.top();
+    }
+    
+    Exit_If_Not_Equal(answer,"QLFQDBBHM");
+    
 
 ❱
 
