@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <stack>
 #include <map>
 
 //1d lists
@@ -8,6 +9,8 @@ using strings = std::vector<std::string>; using words = std::vector<std::string>
 using ints = std::vector<int>;
 using longs = std::vector<long>;
 using ulongs = std::vector<unsigned long>;
+
+using string_stacks = std::vector<std::stack<std::string>>;
 
 //2d lists
 using string_grid = std::vector<std::vector<std::string>>;

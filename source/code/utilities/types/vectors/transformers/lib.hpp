@@ -460,3 +460,12 @@ std::vector<std::vector<T>> transpose(const std::vector<std::vector<T>> matrix) 
     
     return result;
 }
+
+
+
+std::vector<std::string> rotate90(const std::vector<std::string>& v);
+
+
+
+
+

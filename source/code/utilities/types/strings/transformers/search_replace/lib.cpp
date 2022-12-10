@@ -19,6 +19,10 @@ std::string string_replace_first_instance( std::string src, std::string const& t
     size_t idx = 0;
 
         idx = src.find( target, idx);
+        
+        if (idx == std::string::npos){
+            return src;
+        }
 
         src.replace( idx, target.length(), repl);
         idx += repl.length();
@@ -48,6 +52,21 @@ std::string string_replace_all( std::string src, std::string const& target, std:
         idx += repl.length();
     }
 
+    return src;
+}
+
+
+std::string string_replace_first_instance_until_no_change( std::string src, std::string const& target, std::string const& repl)
+{
+    bool stop = false;
+    while (!stop){
+        std::string current_string = src;
+        src = string_replace_first_instance(src,target,repl);
+        
+        if (src == current_string){
+            stop = true;
+        }
+    }
     return src;
 }
 

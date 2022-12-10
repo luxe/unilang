@@ -219,3 +219,28 @@ void Alphabetize_And_Print(std::vector<std::string> results){
     std::sort(results.begin(),results.end());
     for (auto const& it: results){std::cout << it << '\n';}
 }
+
+
+
+std::vector<std::string> rotate90(const std::vector<std::string>& v) {
+    
+    std::vector<std::string> results;
+    for (size_t i = 0; i < v[0].size(); ++i){
+        results.emplace_back("");
+    }
+    
+    
+    for (size_t i = 0; i < v.size(); ++i){
+        for (size_t j = 0; j < v[i].size(); ++j){
+            results[j] += v[i][j];
+        }
+    }
+    
+    for (auto & it: results){
+        std::reverse(it.begin(), it.end());
+    }
+    
+    return results;
+}
+
+
