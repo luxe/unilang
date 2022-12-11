@@ -21,19 +21,43 @@ class
 
 ◀public: static▶ std::vector<std::string> ☀Get(std::string const& year, std::string const& day) ❰
 
-    std::string domain = "adventofcode.com";
-    std::cout << "day " << day << "..." << std::endl;
 
     //where to get the input from
     auto storage_folder = Full_Path_To_Desktop() + "aoc/";
     Create_Path_If_It_Doesnt_Already_Exist(storage_folder);
     
-    std::string url = "https://" + domain + "/" + year + "/day/" + day + "/input";
-    std::string file = storage_folder + "advent_" + year + "_" + day + ".txt";
+    std::string domain = "adventofcode.com";
     
-    return Get_Input_From_Cache_Or_Website(url,file);
+    std::cout << "day " << day << "..." << std::endl;
+    
+    
+    //download the problem statement in case we want to work on the problems offline.
+    std::string desc_url = "https://" + domain + "/" + year + "/day/" + day;
+    std::string desc_file = storage_folder + "advent_" + year + "_" + day + "_desc.txt";
+    Get_Input_From_Cache_Or_Website(desc_url,desc_file);
+    
+    //download the input file to make automation easier/faster/work offline.
+    std::string input_url = "https://" + domain + "/" + year + "/day/" + day + "/input";
+    std::string input_file = storage_folder + "advent_" + year + "_" + day + ".txt";
+    return Get_Input_From_Cache_Or_Website(input_url,input_file);
 ❱
 
+
+◀private: static▶ std::vector<std::string> ☀Get_Input_From_Cache_Or_Website(std::string const& url, std::string const& file) ❰
+
+    std::vector<std::string> lines;
+    if (File_Exists(file)){
+        lines = Read_Each_Line_Of_File_Into_Vector(file);
+    }
+    else{
+        lines = Get_From_Website(url);
+        
+        //cache the file locally so we don't have to keep querying the server.
+        Write_Each_Line_Of_Vector_Into_File(file,lines);
+    }
+    
+    return lines;
+❱
 
 
 ◀private: static▶ std::vector<std::string> ☀Get_From_Website(std::string const& url) ❰
@@ -64,19 +88,3 @@ class
     return Split_Into_Parts_From_Newline(result);
 ❱
 
-
-◀private: static▶ std::vector<std::string> ☀Get_Input_From_Cache_Or_Website(std::string const& url, std::string const& file) ❰
-
-    std::vector<std::string> lines;
-    if (File_Exists(file)){
-        lines = Read_Each_Line_Of_File_Into_Vector(file);
-    }
-    else{
-        lines = Get_From_Website(url);
-        
-        //cache the file locally so we don't have to keep querying the server.
-        Write_Each_Line_Of_Vector_Into_File(file,lines);
-    }
-    
-    return lines;
-❱

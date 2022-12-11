@@ -21,6 +21,13 @@ hcp_hdrs_derive(
 )
 
 hcp_hdrs_derive(
+    name = "string_int_tree",
+    interface_deps = [
+        "//code/utilities/deps/external/tree_hh:lib",
+    ],
+)
+
+hcp_hdrs_derive(
     name = "child_lookup_map",
     interface_deps = [
         "//code/utilities/deps/external/tree_hh:lib",

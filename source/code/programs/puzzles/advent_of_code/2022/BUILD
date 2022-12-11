@@ -20,6 +20,7 @@ hcp_hdrs_derive(
         "//code/programs/puzzles/advent_of_code/2022:day_4",
         "//code/programs/puzzles/advent_of_code/2022:day_5",
         "//code/programs/puzzles/advent_of_code/2022:day_6",
+        "//code/programs/puzzles/advent_of_code/2022:day_7",
     ],
 )
 
@@ -102,6 +103,28 @@ hcp_hdrs_derive(
 
 hcp_hdrs_derive(
     name = "day_6",
+    interface_deps = [
+        "//code/utilities/program/common_actions/exits:lib",
+        "//code/utilities/types/vectors/converters:lib",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/types/vectors/transformers:lib",
+        "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/types/strings/transformers/search_replace:lib",
+        "//code/utilities/types/strings/transformers/appending:lib",
+        "//code/utilities/types/strings/transformers/removing:lib",
+        "//code/utilities/types/unordered_set:lib",
+        "//code/utilities/deps/stl/map:lib",
+        "//code/utilities/deps/stl/deque:lib",
+        "//code/utilities/data_structures:rock_paper_scissors_move",
+        "//code/utilities/types/range:create_range_from_string",
+        "//code/utilities/types/range:interval_fully_contained_in_interval",
+        "//code/utilities/types/range:intervals_overlap",
+        "//code/utilities/formats/json/converters:type_to_json_string",
+    ],
+)
+
+hcp_hdrs_derive(
+    name = "day_7",
     interface_deps = [
         "//code/utilities/program/common_actions/exits:lib",
         "//code/utilities/types/vectors/converters:lib",
