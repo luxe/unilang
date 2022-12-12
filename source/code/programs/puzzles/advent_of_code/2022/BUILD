@@ -131,6 +131,7 @@ hcp_hdrs_derive(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
         "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/types/strings/transformers/search_replace:lib",
         "//code/utilities/types/strings/transformers/appending:lib",
         "//code/utilities/types/strings/transformers/removing:lib",
@@ -143,5 +144,6 @@ hcp_hdrs_derive(
         "//code/utilities/types/range:intervals_overlap",
         "//code/utilities/formats/json/converters:type_to_json_string",
         "//code/utilities/data_structures/tree/generic:string_int_tree",
+        "//code/utilities/types/tree/printers:print_tree_as_json_blob_tree",
     ],
 )
