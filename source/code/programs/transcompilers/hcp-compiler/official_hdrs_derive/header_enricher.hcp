@@ -19,16 +19,7 @@ class
 
 ◀public: static▶ void ☀Enrich_Structure_With_Header_Data(Class_Structure & structure, Hcp_Settings const& settings)❰
 
-  if (settings.headers.disallow_explicit_header_usage_in_source_code){
-    auto explicit_headers = structure.data.header_includes + structure.data.source_includes;
-    
-    if (!explicit_headers.empty()){
-      std::cerr << "You should not explicitly include headers in the source code." << std::endl;
-      std::cerr << "They should be derived from the dependencies given" << std::endl;
-      exit(1);
-    }
-    
-  }
+  Fail_On_Explicit_Header_Usage(structure,settings);
   
   
   for (auto const& it: settings.headers.interface_deps){
@@ -47,6 +38,23 @@ class
   
   for (auto const& it: settings.headers.implementation_hdrs){
     structure.data.source_includes.emplace_back(Quoted_Wstring(it),true);
+  }
+❱
+
+◀private: static▶ void ☀Fail_On_Explicit_Header_Usage(Class_Structure & structure, Hcp_Settings const& settings)❰
+
+  // This is a pattern we want developers to avoid. There is no need to ever include a header file explicitly
+  // All header files can be derived based on the bazel deps.
+  if (settings.headers.disallow_explicit_header_usage_in_source_code){
+    auto explicit_headers = structure.data.header_includes + structure.data.source_includes;
+    
+    if (!explicit_headers.empty()){
+      std::cerr << "You should not explicitly include headers in the source code." << std::endl;
+      std::cerr << "They should be derived from the dependencies given" << std::endl;
+      std::cerr << "This also means that your bazel dep should match your header include 1:1 in regards to pathing / filename" << std::endl;
+      exit(1);
+    }
+    
   }
 ❱
 

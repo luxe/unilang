@@ -10,6 +10,7 @@ bootstrap_hcp(
         "//code/programs/transcompilers/hcp-compiler/official:hcp_parser",
         "//code/programs/transcompilers/hcp-compiler/official/settings:hcp_settings",
         "//code/programs/transcompilers/hcp-compiler/official_hdrs_derive:header_enricher",
+        "//code/programs/transcompilers/hcp-compiler/official_hdrs_derive:source_code_count_functions_adder",
         "//code/programs/transcompilers/hcp-compiler/official_hdrs_derive/program_options:lib",
         "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
         "//code/utilities/types/converters:lib",
@@ -21,6 +22,20 @@ bootstrap_hcp(
 
 bootstrap_hcp(
     name = "header_enricher",
+    deps = [
+        "//code/programs/transcompilers/hcp-compiler/official/settings:hcp_settings",
+        "//code/programs/transcompilers/hcp-compiler/official/structure:class_structure",
+        "//code/utilities/types/converters:lib",
+        "//code/utilities/types/strings/observers/other:lib",
+        "//code/utilities/types/strings/observers/path:lib",
+        "//code/utilities/types/strings/transformers/search_replace:lib",
+        "//code/utilities/types/wstrings/transformers/other:lib",
+        "//code/utilities/types/vectors/operators:lib",
+    ],
+)
+
+bootstrap_hcp(
+    name = "source_code_count_functions_adder",
     deps = [
         "//code/programs/transcompilers/hcp-compiler/official/settings:hcp_settings",
         "//code/programs/transcompilers/hcp-compiler/official/structure:class_structure",

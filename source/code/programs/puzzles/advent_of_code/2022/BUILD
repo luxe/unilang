@@ -142,5 +142,6 @@ hcp_hdrs_derive(
         "//code/utilities/types/range:interval_fully_contained_in_interval",
         "//code/utilities/types/range:intervals_overlap",
         "//code/utilities/formats/json/converters:type_to_json_string",
+        "//code/utilities/data_structures/tree/generic:string_int_tree",
     ],
 )
