@@ -8,6 +8,7 @@
 #include <utility>
 #include <optional>
 #include "code/utilities/types/vectors/transformers/lib.hpp"
+#include "code/utilities/data_structures/position/position.hpp"
 
 std::string Get_As_Comma_Seperated_String(std::vector<std::string> strs);
 std::string Get_As_Comma_Seperated_Double_Quoted_String(std::vector<std::string> strs);
@@ -637,6 +638,80 @@ int minimumAbsoluteDifferenceBetweenAny2Elements(std::vector<T> arr) {
 
 }
 
+
+template <typename T>
+std::vector<std::vector<T>> Get_Paths_In_All_Cardinal_Directions(std::vector<std::vector<T>> vec, Position pos){
+
+  std::vector<std::vector<T>> all_dirs;
+  
+  
+  //get right
+  {
+    std::vector<T> temp;
+    for (size_t i = pos.x; i < vec[0].size(); ++i){
+      temp.emplace_back(vec[pos.y][i]);
+    }
+    all_dirs.emplace_back(temp);
+  }
+  
+  
+  //get left
+  {
+    std::vector<T> temp;
+    for (size_t i = pos.x+1; i > 0; --i){
+      temp.emplace_back(vec[pos.y][i-1]);
+    }
+    all_dirs.emplace_back(temp);
+  }
+  
+  
+  //get up
+  {
+    std::vector<T> temp;
+    for (size_t i = pos.y+1; i > 0; --i){
+      temp.emplace_back(vec[i-1][pos.x]);
+    }
+    all_dirs.emplace_back(temp);
+  }
+  
+  
+  //get down
+  {
+    std::vector<T> temp;
+    for (size_t i = pos.y; i < vec.size(); ++i){
+      temp.emplace_back(vec[i][pos.x]);
+    }
+    all_dirs.emplace_back(temp);
+  }
+  
+  
+  return all_dirs;
+}
+
+
+template <typename T, typename Fun>
+void Iterate(std::vector<std::vector<T>> grid, Fun fun){
+
+for (size_t i = 0; i < grid.size(); ++i){
+    for (size_t j = 0; j < grid[0].size(); ++j){
+        Position pos;
+        pos.x = j;
+        pos.y = i;
+        fun(pos);
+      }
+    }
+}
+
+template <typename T>
+bool First_Element_Higher_Than_All_Others(std::vector<T> v) {
+    int first = v[0];
+    for (size_t i = 1; i < v.size(); ++i){
+        if (v[i] >= first){
+            return false;
+        }
+    }
+    return true;
+}
 
 
 

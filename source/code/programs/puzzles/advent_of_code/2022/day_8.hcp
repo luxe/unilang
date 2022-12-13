@@ -4,7 +4,67 @@ class
 
 ◀public: static▶ void ☀Part_1(std::vector<std::string> lines) ❰
 
+
+auto grid = Create_Int_Grid::Create(lines);
+
+
+int total = 0;
+Iterate(grid,[&](Position pos){
+    auto paths = Get_Paths_In_All_Cardinal_Directions(grid,pos);
+    if (Can_See_To_Edge(paths)){
+        ++total;
+    }
+});
+
+Exit_If_Not_Equal(total,1679);
+
 ❱
+
 ◀public: static▶ void ☀Part_2(std::vector<std::string> const& lines) ❰
+
+
+auto grid = Create_Int_Grid::Create(lines);
+
+int answer = 0;
+Iterate(grid,[&](Position pos){
+        
+        auto paths = Get_Paths_In_All_Cardinal_Directions(grid,pos);
+        answer = std::max(answer,Scenic_Score(paths));
+});
+
+Exit_If_Not_Equal(answer,536625);
+❱
+
+◀public: static▶ bool ☀Can_See_To_Edge(std::vector<std::vector<int>> paths) ❰
+
+    for (auto path: paths){
+        if (First_Element_Higher_Than_All_Others(path)){
+            return true;
+        }
+    }
+    return false;
+
+❱
+
+◀public: static▶ int ☀Scenic_Score(std::vector<std::vector<int>> paths) ❰
+    int score = 1;
     
+    std::vector<int> scores;
+    
+    for (auto path: paths){
+        scores.emplace_back(How_Far_Until_Blocked(path));
+    }
+    return Multiply(scores);
+❱
+
+◀public: static▶ int ☀How_Far_Until_Blocked(std::vector<int> v) ❰
+    int amount = 0;
+    int first = v[0];
+    for (size_t i = 1; i < v.size(); ++i){
+        amount++;
+        if (v[i] >= first){
+            return amount;
+        }
+    }
+    return amount;
 ❱
