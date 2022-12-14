@@ -11,6 +11,7 @@
 #include "code/utilities/types/map/lib.hpp"
 #include "code/utilities/language_basic/std_hackery/std_aliases.hpp"
 #include "code/utilities/types/strings/observers/converting/lib.hpp"
+#include "code/utilities/formats/json/converters/type_to_json_string.hpp"
 
 //whoops.. pre-pre-jstd is really needed
 template <typename T>
@@ -280,6 +281,7 @@ std::vector<T>& Remove_Duplicates(std::vector<T>& vec){
     vec = solution;
     return vec;
 }
+
 
 template <typename T>
 std::vector<T>& Non_Case_Sensitive_Sort_And_Remove_Duplicates(std::vector<T>& vec){

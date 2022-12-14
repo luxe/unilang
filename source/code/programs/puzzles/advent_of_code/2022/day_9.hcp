@@ -4,14 +4,185 @@ class
 
 ◀public: static▶ void ☀Part_1(std::vector<std::string> lines) ❰
 
+    Example();
+
+    // Get all positions the head moves
     auto directions = Compass_Direction_Diagnonal_Movements_Creator::Create(lines);
     auto positions = All_Positions_Along_Movement::Get(directions);
-    
-    for (auto it: positions){
-        std::cout << it.x << " " << it.y << std::endl;
-    }
+
+    auto tails = Get_Tail_Positions(positions);
+    Remove_Duplicate_Json_Representations::Remove(tails);
+    Exit_If_Not_Equal(tails.size(),6181);
 
 ❱
+
 ◀public: static▶ void ☀Part_2(std::vector<std::string> const& lines) ❰
     
+    Example2();
+    Example3();
+    
+    // Get all positions the head moves
+    auto directions = Compass_Direction_Diagnonal_Movements_Creator::Create(lines);
+    auto positions = All_Positions_Along_Movement::Get(directions);
+
+    for (size_t i = 0; i < 9; ++i){
+        positions = Get_Tail_Positions(positions);
+    }
+    
+    Remove_Duplicate_Json_Representations::Remove(positions);
+    Exit_If_Not_Equal(positions.size(),0);
+❱
+
+◀public: static▶ void ☀Example() ❰
+
+    std::vector<std::string> lines;
+    lines.emplace_back("R 4");
+    lines.emplace_back("U 4");
+    lines.emplace_back("L 3");
+    lines.emplace_back("D 1");
+    lines.emplace_back("R 4");
+    lines.emplace_back("D 1");
+    lines.emplace_back("L 5");
+    lines.emplace_back("R 2");
+
+    // Get all positions the head moves
+    auto directions = Compass_Direction_Diagnonal_Movements_Creator::Create(lines);
+    auto positions = All_Positions_Along_Movement::Get(directions);
+
+    auto tails = Get_Tail_Positions(positions);
+    Remove_Duplicate_Json_Representations::Remove(tails);
+    Exit_If_Not_Equal(tails.size(),13);
+
+❱
+
+◀public: static▶ void ☀Example2() ❰
+
+    std::vector<std::string> lines;
+    lines.emplace_back("R 4");
+    lines.emplace_back("U 4");
+    lines.emplace_back("L 3");
+    lines.emplace_back("D 1");
+    lines.emplace_back("R 4");
+    lines.emplace_back("D 1");
+    lines.emplace_back("L 5");
+    lines.emplace_back("R 2");
+
+    // Get all positions the head moves
+    auto directions = Compass_Direction_Diagnonal_Movements_Creator::Create(lines);
+    auto positions = All_Positions_Along_Movement::Get(directions);
+
+    for (size_t i = 0; i < 9; ++i){
+        positions = Get_Tail_Positions(positions);
+    }
+    
+    
+    Remove_Duplicate_Json_Representations::Remove(positions);
+    Exit_If_Not_Equal(positions.size(),1);
+
+❱
+
+◀public: static▶ void ☀Example3() ❰
+
+    std::vector<std::string> lines;
+    lines.emplace_back("R 5");
+    lines.emplace_back("U 8");
+    lines.emplace_back("L 8");
+    lines.emplace_back("D 3");
+    lines.emplace_back("R 17");
+    lines.emplace_back("D 10");
+    lines.emplace_back("L 25");
+    lines.emplace_back("U 20");
+
+    // Get all positions the head moves
+    auto directions = Compass_Direction_Diagnonal_Movements_Creator::Create(lines);
+    auto positions = All_Positions_Along_Movement::Get(directions);
+
+    for (size_t i = 0; i < 9; ++i){
+        positions = Get_Tail_Positions(positions);
+    }
+    
+    Remove_Duplicate_Json_Representations::Remove(positions);
+    Exit_If_Not_Equal(positions.size(),36);
+
+❱
+
+◀private: static▶ std::vector<Position> ☀Get_Tail_Positions(std::vector<Position> const & positions) ❰
+
+    std::vector<Position> tails_pos;
+
+    //move the tail according to the head
+    Position tail;
+    tails_pos.emplace_back(tail);
+    for (auto it: positions){
+        
+        if (Does_Tail_Need_To_Move(it,tail)){
+            Move_Tail(it,tail);
+            tails_pos.emplace_back(tail);
+        }
+    }
+    
+    return tails_pos;
+❱
+
+◀private: static▶ bool ☀Does_Tail_Need_To_Move(Position head, Position tail) ❰
+
+    if (std::abs(head.x - tail.x) > 1){
+        return true;
+    }
+    if (std::abs(head.y - tail.y) > 1){
+        return true;
+    }
+    
+    return false;
+
+❱
+
+◀public: static▶ void ☀Move_Tail(Position head, Position & tail) ❰
+
+    
+    int total_distance = std::abs(head.x - tail.x) + std::abs(head.y - tail.y);
+    
+    bool x_adjusted = false;
+    bool y_adjusted = false;
+    
+    if (head.x - tail.x > 1){
+        tail.x++;
+        x_adjusted = true;
+    }
+    else if (head.x - tail.x < -1){
+        tail.x--;
+        x_adjusted = true;
+    }
+    
+    if (head.y - tail.y > 1){
+        tail.y++;
+        y_adjusted = true;
+    }
+    else if (head.y - tail.y < -1){
+        tail.y--;
+        y_adjusted = true;
+    }
+    
+    
+    
+    if (total_distance > 2 && !(x_adjusted && y_adjusted)){
+        
+        if (y_adjusted){
+            if (head.x - tail.x > 0){
+                tail.x++;
+            }
+            else if (head.x - tail.x < 0){
+                tail.x--;
+            }
+        }
+        
+        if (x_adjusted){
+            if (head.y - tail.y > 0){
+                tail.y++;
+            }
+            else if (head.y - tail.y < 0){
+                tail.y--;
+            }
+        }
+    }
 ❱
