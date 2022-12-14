@@ -9,7 +9,7 @@ enum_cpp(
     name = "operation_type",
     values = [
         "nop",
-        "acc",
+        "acc", #short for accumulate
         "jmp",
     ],
 )
