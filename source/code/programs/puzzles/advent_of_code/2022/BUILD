@@ -203,6 +203,8 @@ hcp_hdrs_derive(
         "//code/utilities/data_structures/tree/generic:string_int_tree",
         "//code/utilities/types/tree/printers:print_tree_as_json_blob_tree",
         "//code/utilities/data_structures/compass_directions/creators:compass_direction_diagnonal_movements_creator",
+        "//code/utilities/data_structures/position:position_mover",
+        "//code/utilities/data_structures/position:all_positions_along_movement",
     ],
 )
 
