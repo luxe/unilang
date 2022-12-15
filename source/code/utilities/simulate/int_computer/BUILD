@@ -22,11 +22,18 @@ hcp(
 )
 
 hcp(
-    name = "instructions_getter",
+    name = "instructions_getter_settings",
     deps = [
+    ],
+)
+
+hcp_hdrs_derive(
+    name = "instructions_getter",
+    interface_deps = [
         "//code/utilities/simulate/int_computer:instruction",
         "//code/utilities/types/strings/observers/converting:lib",
         "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/simulate/int_computer:instructions_getter_settings",
     ],
 )
 
