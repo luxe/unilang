@@ -5,15 +5,15 @@ load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
-hcp(
+hcp_hdrs_derive(
     name = "x11_to_opengl_bind_settings",
-    deps = [
+    interface_deps = [
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "x11_to_opengl_binder",
-    deps = [
+    interface_deps = [
         "//code/utilities/graphics/glx:glx_context_creator",
         "//code/utilities/graphics/glx:glx_data_getter",
         "//code/utilities/graphics/glx:glx_fb_config_creator",
@@ -22,13 +22,13 @@ hcp(
         "//code/utilities/graphics/glx/data:glx_data",
         "//code/utilities/graphics/x11/data:main_x11_state",
         "//code/utilities/deps/external/gl:lib",
-        "@system//:KHR_hdrs",
+        "//code/utilities/deps/external/khr:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "glx_data_getter",
-    deps = [
+    interface_deps = [
         "//code/utilities/graphics/glx:glx_context_creator",
         "//code/utilities/graphics/glx:glx_fb_config_creator",
         "//code/utilities/graphics/glx:glx_visual_creator",
@@ -36,36 +36,36 @@ hcp(
         "//code/utilities/graphics/glx/data:glx_data",
         "//code/utilities/graphics/x11/data:main_x11_state",
         "//code/utilities/deps/external/gl:lib",
-        "@system//:KHR_hdrs",
+        "//code/utilities/deps/external/khr:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "glx_fb_config_creator",
-    deps = [
+    interface_deps = [
         "//code/utilities/graphics/glx:x11_to_opengl_bind_settings",
         "//code/utilities/graphics/x11/data:main_x11_state",
         "//code/utilities/deps/external/gl:lib",
-        "@system//:KHR_hdrs",
+        "//code/utilities/deps/external/khr:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "glx_visual_creator",
-    deps = [
+    interface_deps = [
         "//code/utilities/graphics/glx:x11_to_opengl_bind_settings",
         "//code/utilities/graphics/x11/data:main_x11_state",
         "//code/utilities/deps/external/gl:lib",
-        "@system//:KHR_hdrs",
+        "//code/utilities/deps/external/khr:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "glx_context_creator",
-    deps = [
+    interface_deps = [
         "//code/utilities/graphics/glx:x11_to_opengl_bind_settings",
         "//code/utilities/graphics/x11/data:main_x11_state",
         "//code/utilities/deps/external/gl:lib",
-        "@system//:KHR_hdrs",
+        "//code/utilities/deps/external/khr:lib",
     ],
 )

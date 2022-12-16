@@ -3,7 +3,7 @@
 #include <SFML/Window/Joystick.hpp>
 #include "code/utilities/peripheral/keyboard/F310_gamepad/functions/f310_gamepads_state_getter.hpp"
 #include "code/utilities/formats/json/converters/lib.hpp"
-#include "code/utilities/formats/json/converters/type_to_json_string.hpp",
+#include "code/utilities/formats/json/converters/type_to_json_string.hpp"
 
 int main()
 {
