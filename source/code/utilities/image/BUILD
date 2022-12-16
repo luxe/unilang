@@ -13,26 +13,26 @@ cpp_object(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "stb_image_set_settings",
-    deps = [
+    interface_deps = [
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "texture_loader",
-    deps = [
+    interface_deps = [
         "//code/utilities/graphics/opengl/loader:opengl_loaders",
         "//code/utilities/image:stb_image",
         "//code/utilities/streams/filestreams:lib",
         "//code/utilities/deps/external/imgui:lib",
-        "@system//:KHR_hdrs",
+        "//code/utilities/deps/external/khr:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "stb_image_setter",
-    deps = [
+    interface_deps = [
         "//code/utilities/data_structures/graphics/image:positioned_image_data",
         "//code/utilities/image:stb_image",
         "//code/utilities/image:stb_image_set_settings",
@@ -41,9 +41,9 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "stb_animated_image_setter",
-    deps = [
+    interface_deps = [
         "//code/utilities/data_structures/graphics/image:positioned_animated_image_data",
         "//code/utilities/image:stb_image",
         "//code/utilities/image:stb_image_set_settings",
@@ -52,9 +52,9 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "data_uri_getter",
-    deps = [
+    interface_deps = [
         "//code/utilities/program/call:lib",
     ],
 )

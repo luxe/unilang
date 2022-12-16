@@ -13,7 +13,8 @@ def hcp(name, deps = [], data = []):
     # this will enforce a policy to prevent such usage.
     for dep in deps:
         if dep.find("@") != -1:
-            print(name + " SHOULD NOT be using external dep: " + dep)
+            #print(name + " SHOULD NOT be using external dep: " + dep)
+            fail(name + " SHOULD NOT be using external dep: " + dep);
             
 
     #compiling hpp/cpp
