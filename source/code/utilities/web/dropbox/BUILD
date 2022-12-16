@@ -12,7 +12,7 @@ hcp(
         "//code/utilities/streams/filestreams/read_all:lib",
         "//code/utilities/types/char:lib",
         "//code/utilities/web/dropbox:dropbox_upload_settings",
-        "@curl",
+        "//code/utilities/deps/external/curl:lib"
     ],
 )
 

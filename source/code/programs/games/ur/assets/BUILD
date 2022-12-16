@@ -10,7 +10,7 @@ hcp(
         "//code/utilities/graphics/sfml/data:named_rectangles",
         "//code/utilities/graphics/sfml/sprite:textured_sprite",
         "//code/utilities/peripheral/sound/sfml:sound",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -23,6 +23,6 @@ hcp(
         "//code/utilities/fonts/sfml:font_loader",
         "//code/utilities/graphics/sfml/sprite:textured_sprite_loader",
         "//code/utilities/peripheral/sound/sfml:sound_loader",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )

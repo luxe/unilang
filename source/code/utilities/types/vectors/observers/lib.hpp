@@ -648,7 +648,7 @@ std::vector<std::vector<T>> Get_Paths_In_All_Cardinal_Directions(std::vector<std
   //get right
   {
     std::vector<T> temp;
-    for (size_t i = pos.x; i < vec[0].size(); ++i){
+    for (size_t i = static_cast<size_t>(pos.x); i < vec[0].size(); ++i){
       temp.emplace_back(vec[pos.y][i]);
     }
     all_dirs.emplace_back(temp);
@@ -658,7 +658,7 @@ std::vector<std::vector<T>> Get_Paths_In_All_Cardinal_Directions(std::vector<std
   //get left
   {
     std::vector<T> temp;
-    for (size_t i = pos.x+1; i > 0; --i){
+    for (size_t i = static_cast<size_t>(pos.x+1); i > 0; --i){
       temp.emplace_back(vec[pos.y][i-1]);
     }
     all_dirs.emplace_back(temp);
@@ -668,7 +668,7 @@ std::vector<std::vector<T>> Get_Paths_In_All_Cardinal_Directions(std::vector<std
   //get up
   {
     std::vector<T> temp;
-    for (size_t i = pos.y+1; i > 0; --i){
+    for (size_t i = static_cast<size_t>(pos.y+1); i > 0; --i){
       temp.emplace_back(vec[i-1][pos.x]);
     }
     all_dirs.emplace_back(temp);
@@ -678,7 +678,7 @@ std::vector<std::vector<T>> Get_Paths_In_All_Cardinal_Directions(std::vector<std
   //get down
   {
     std::vector<T> temp;
-    for (size_t i = pos.y; i < vec.size(); ++i){
+    for (size_t i = static_cast<size_t>(pos.y); i < vec.size(); ++i){
       temp.emplace_back(vec[i][pos.x]);
     }
     all_dirs.emplace_back(temp);
@@ -695,8 +695,8 @@ void Iterate(std::vector<std::vector<T>> grid, Fun fun){
 for (size_t i = 0; i < grid.size(); ++i){
     for (size_t j = 0; j < grid[0].size(); ++j){
         Position pos;
-        pos.x = j;
-        pos.y = i;
+        pos.x = static_cast<int>(j);
+        pos.y = static_cast<int>(i);
         fun(pos);
       }
     }

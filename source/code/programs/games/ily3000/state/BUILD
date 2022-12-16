@@ -9,7 +9,7 @@ hcp(
     deps = [
         "//code/utilities/data_structures/color:rgb_color",
         "//code/utilities/peripheral/keyboard/joycons",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 

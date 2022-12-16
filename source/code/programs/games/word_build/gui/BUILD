@@ -20,7 +20,7 @@ cc_binary(
         "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",
         "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
         "@GL",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 

@@ -12,7 +12,7 @@ hcp(
         "//code/utilities/peripheral/keyboard/joycons",
         "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",
         "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -27,6 +27,6 @@ hcp(
         "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",
         "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
         "//code/utilities/peripheral/keyboard/joycons:joystick_rotating_checker",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )

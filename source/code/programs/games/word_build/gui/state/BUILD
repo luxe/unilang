@@ -16,7 +16,7 @@ hcp(
         "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_gamepads",
         "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_gamepads_phases",
         "//code/utilities/peripheral/keyboard/joycons",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -35,6 +35,6 @@ hcp(
     deps = [
         "//code/programs/games/word_build/gui/core/regular_actions:regular_action",
         "//code/utilities/data_structures/position",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )

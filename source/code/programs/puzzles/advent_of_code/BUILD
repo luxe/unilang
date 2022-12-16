@@ -23,6 +23,6 @@ hcp(
         "//code/utilities/web/automate/browser:browser_creator",
         "//code/utilities/web/automate/browser:default_browser_settings_getter",
         "//code/utilities/web/automate/navigation:browser_navigator",
-        "@pybind11",
+        "//code/utilities/deps/external/pybind11:lib",
     ],
 )

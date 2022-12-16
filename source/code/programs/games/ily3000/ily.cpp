@@ -2,10 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <memory>
-#include <SFML/Window/Joystick.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
-#include <SFML/Graphics/Transformable.hpp>
+#include "code/utilities/deps/external/sfml/lib.hpp"
 #include "code/utilities/peripheral/keyboard/joycons/joycon_state_getter.hpp"
 #include "code/utilities/formats/json/converters/lib.hpp"
 #include "code/programs/games/ily3000/assets/assets_loader.hpp"

@@ -12,7 +12,7 @@ hcp(
         "//code/utilities/peripheral/keyboard/joycons",
         "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",
         "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -43,7 +43,7 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/observers:size_frequency_counter",
         "//code/utilities/types/vectors/transformers:lib",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -58,7 +58,7 @@ hcp(
         "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_events",
         "//code/utilities/program/wrappers/graphviz:graphviz_image_maker",
         "//code/utilities/types/vectors/observers:lib",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -71,7 +71,7 @@ hcp(
         "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_events",
         "//code/utilities/types/strings/sfml:sfml_text",
         "//code/utilities/types/vectors/observers:lib",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -89,7 +89,7 @@ hcp(
         "//code/utilities/types/strings/sfml:sfml_text",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -116,6 +116,6 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/observers:size_frequency_counter",
         "//code/utilities/types/vectors/transformers:lib",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )

@@ -8,7 +8,7 @@ hcp(
     deps = [
         "//code/utilities/graphics/sfml/data:moving_text",
         "//code/utilities/peripheral/sound/sfml:sound",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -22,6 +22,6 @@ hcp(
         "//code/utilities/linguistics:scattergories_categories",
         "//code/utilities/peripheral/sound/sfml:sound_loader",
         "//code/utilities/random:lib",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )

@@ -21,7 +21,7 @@ hcp(
         "//code/programs/games/math_game/state:current_screen",
         "//code/programs/games/math_game/state:transition_clock",
         "//code/utilities/peripheral/keyboard/joycons",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -30,7 +30,7 @@ hcp(
     deps = [
         "//code/programs/games/math_game/state:current_screen",
         "//code/utilities/peripheral/keyboard/joycons",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 

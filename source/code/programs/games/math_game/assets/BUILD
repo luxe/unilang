@@ -7,7 +7,7 @@ hcp(
     name = "title_screen_assets",
     deps = [
         "//code/utilities/graphics/sfml/sprite:textured_sprite",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -15,7 +15,7 @@ hcp(
     name = "character_selection_assets",
     deps = [
         "//code/utilities/graphics/sfml/sprite:textured_sprite",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -23,7 +23,7 @@ hcp(
     name = "character",
     deps = [
         "//code/utilities/graphics/sfml/sprite:textured_sprite",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -35,7 +35,7 @@ hcp(
         "//code/programs/games/math_game/assets:title_screen_assets",
         "//code/utilities/graphics/sfml/sprite:textured_sprite",
         "//code/utilities/peripheral/sound/sfml:sound",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -47,6 +47,6 @@ hcp(
         "//code/utilities/graphics/sfml/sprite:textured_sprite_loader",
         "//code/utilities/peripheral/sound/sfml:music_loader",
         "//code/utilities/peripheral/sound/sfml:sound_loader",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )

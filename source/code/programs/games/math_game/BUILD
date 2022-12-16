@@ -22,6 +22,6 @@ cc_binary(
         "@GL",
         "@glfw",
         "@sdl2",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )

@@ -26,6 +26,9 @@ hcp_hdrs_derive(
         "//code/programs/puzzles/advent_of_code/2022:day_10",
         "//code/programs/puzzles/advent_of_code/2022:day_11",
         "//code/programs/puzzles/advent_of_code/2022:day_12",
+        "//code/programs/puzzles/advent_of_code/2022:day_13",
+        "//code/programs/puzzles/advent_of_code/2022:day_14",
+        "//code/programs/puzzles/advent_of_code/2022:day_15",
 
     ],
 )
@@ -263,6 +266,81 @@ hcp_hdrs_derive(
 
 hcp_hdrs_derive(
     name = "day_12",
+    interface_deps = [
+        "//code/utilities/program/common_actions/exits:lib",
+        "//code/utilities/types/vectors/converters:lib",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/types/vectors/transformers:lib",
+        "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/types/strings/observers/other:lib",
+        "//code/utilities/types/strings/transformers/search_replace:lib",
+        "//code/utilities/types/strings/transformers/appending:lib",
+        "//code/utilities/types/strings/transformers/removing:lib",
+        "//code/utilities/types/unordered_set:lib",
+        "//code/utilities/deps/stl/map:lib",
+        "//code/utilities/deps/stl/deque:lib",
+        "//code/utilities/data_structures:rock_paper_scissors_move",
+        "//code/utilities/types/range:create_range_from_string",
+        "//code/utilities/types/range:interval_fully_contained_in_interval",
+        "//code/utilities/types/range:intervals_overlap",
+        "//code/utilities/formats/json/converters:type_to_json_string",
+        "//code/utilities/data_structures/tree/generic:string_int_tree",
+        "//code/utilities/types/tree/printers:print_tree_as_json_blob_tree",
+    ],
+)
+
+hcp_hdrs_derive(
+    name = "day_13",
+    interface_deps = [
+        "//code/utilities/program/common_actions/exits:lib",
+        "//code/utilities/types/vectors/converters:lib",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/types/vectors/transformers:lib",
+        "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/types/strings/observers/other:lib",
+        "//code/utilities/types/strings/transformers/search_replace:lib",
+        "//code/utilities/types/strings/transformers/appending:lib",
+        "//code/utilities/types/strings/transformers/removing:lib",
+        "//code/utilities/types/unordered_set:lib",
+        "//code/utilities/deps/stl/map:lib",
+        "//code/utilities/deps/stl/deque:lib",
+        "//code/utilities/data_structures:rock_paper_scissors_move",
+        "//code/utilities/types/range:create_range_from_string",
+        "//code/utilities/types/range:interval_fully_contained_in_interval",
+        "//code/utilities/types/range:intervals_overlap",
+        "//code/utilities/formats/json/converters:type_to_json_string",
+        "//code/utilities/data_structures/tree/generic:string_int_tree",
+        "//code/utilities/types/tree/printers:print_tree_as_json_blob_tree",
+    ],
+)
+
+hcp_hdrs_derive(
+    name = "day_14",
+    interface_deps = [
+        "//code/utilities/program/common_actions/exits:lib",
+        "//code/utilities/types/vectors/converters:lib",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/types/vectors/transformers:lib",
+        "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/types/strings/observers/other:lib",
+        "//code/utilities/types/strings/transformers/search_replace:lib",
+        "//code/utilities/types/strings/transformers/appending:lib",
+        "//code/utilities/types/strings/transformers/removing:lib",
+        "//code/utilities/types/unordered_set:lib",
+        "//code/utilities/deps/stl/map:lib",
+        "//code/utilities/deps/stl/deque:lib",
+        "//code/utilities/data_structures:rock_paper_scissors_move",
+        "//code/utilities/types/range:create_range_from_string",
+        "//code/utilities/types/range:interval_fully_contained_in_interval",
+        "//code/utilities/types/range:intervals_overlap",
+        "//code/utilities/formats/json/converters:type_to_json_string",
+        "//code/utilities/data_structures/tree/generic:string_int_tree",
+        "//code/utilities/types/tree/printers:print_tree_as_json_blob_tree",
+    ],
+)
+
+hcp_hdrs_derive(
+    name = "day_15",
     interface_deps = [
         "//code/utilities/program/common_actions/exits:lib",
         "//code/utilities/types/vectors/converters:lib",

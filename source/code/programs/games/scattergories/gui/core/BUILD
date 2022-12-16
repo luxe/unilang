@@ -12,7 +12,7 @@ hcp(
         "//code/utilities/peripheral/keyboard/joycons",
         "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",
         "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -39,6 +39,6 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/observers:size_frequency_counter",
         "//code/utilities/types/vectors/transformers:lib",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )

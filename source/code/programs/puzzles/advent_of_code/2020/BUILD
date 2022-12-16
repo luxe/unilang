@@ -167,7 +167,7 @@ hcp(
         "//code/utilities/types/vectors/converters:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "@cpp_graph_library//:lib",
+        "//code/utilities/deps/external/cpp_graph:lib",
     ],
 )
 
@@ -205,7 +205,7 @@ hcp(
         "//code/utilities/types/vectors/converters:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "@cpp_graph_library//:lib",
+        "//code/utilities/deps/external/cpp_graph:lib",
     ],
 )
 
@@ -244,7 +244,7 @@ hcp(
         "//code/utilities/types/vectors/observers:index_range_algorithms",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "@cpp_graph_library//:lib",
+        "//code/utilities/deps/external/cpp_graph:lib",
     ],
 )
 
@@ -283,6 +283,6 @@ hcp(
         "//code/utilities/types/vectors/observers:index_range_algorithms",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "@cpp_graph_library//:lib",
+        "//code/utilities/deps/external/cpp_graph:lib",
     ],
 )

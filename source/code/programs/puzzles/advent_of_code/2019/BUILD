@@ -143,6 +143,7 @@ hcp(
     name = "day_3",
     deps = [
         "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
+        "//code/utilities/data_structures/compass_directions/creators:compass_direction_diagnonal_movements_creator",
         "//code/utilities/data_structures/point",
         "//code/utilities/data_structures/point:point_line",
         "//code/utilities/data_structures/point:point_line_intersections_getter",
@@ -238,7 +239,7 @@ hcp(
         "//code/utilities/web/automate/browser:browser_creator",
         "//code/utilities/web/automate/browser:default_browser_settings_getter",
         "//code/utilities/web/automate/navigation:browser_navigator",
-        "@cpp_graph_library//:lib",
+        "//code/utilities/deps/external/cpp_graph:lib",
     ],
 )
 

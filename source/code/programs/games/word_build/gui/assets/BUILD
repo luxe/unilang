@@ -9,7 +9,7 @@ hcp(
         "//code/programs/games/word_build/gui/assets:user_assets",
         "//code/utilities/graphics/sfml/data:moving_text",
         "//code/utilities/peripheral/sound/sfml:sound",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -22,7 +22,7 @@ hcp(
         "//code/utilities/fonts/font_files:droid_sans_mono",
         "//code/utilities/fonts/sfml:font_loader",
         "//code/utilities/peripheral/sound/sfml:sound_loader",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -30,6 +30,6 @@ hcp(
     name = "user_assets",
     deps = [
         "//code/utilities/peripheral/sound/sfml:sound",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )

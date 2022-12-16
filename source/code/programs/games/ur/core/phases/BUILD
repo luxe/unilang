@@ -26,7 +26,7 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/observers:size_frequency_counter",
         "//code/utilities/types/vectors/transformers:lib",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -50,7 +50,7 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/observers:size_frequency_counter",
         "//code/utilities/types/vectors/transformers:lib",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -74,7 +74,7 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/observers:size_frequency_counter",
         "//code/utilities/types/vectors/transformers:lib",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -98,6 +98,6 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/observers:size_frequency_counter",
         "//code/utilities/types/vectors/transformers:lib",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )

@@ -60,18 +60,41 @@ class
     Generate_Essays(settings);
     
     
-    
-    std::string path = Bazel_Workspace_Directory() + "/code/utilities/";
-    auto build_files = Recursively_Get_BUILD_Files_From_Path(path);
-    for (auto const& it: build_files){
-        std::cout << it << std::endl;
-    }
-    
-    
     //TODO: calculate macro usage within BUILD files.  For example, we want to make sure everything is on hcp_derive
     //1. calculate hcp usage in utilities/...
     //2. move code into bootstrap and make everything hcp_derive
-    //3. make hcp_derive fail if headers are manually added
+    std::string path = Bazel_Workspace_Directory() + "/code/utilities/";
+    auto build_files = Recursively_Get_BUILD_Files_From_Path(path);
+    
+    
+    std::vector<std::string> paths_to_fix;
+    for (auto const& it: build_files){
+        
+        
+        // Skip paths that are allowed to use other rulesetss
+        if (Begins_With(it,Bazel_Workspace_Directory() + "/code/utilities/deps/")){
+            break;
+        }
+        if (Begins_With(it,Bazel_Workspace_Directory() + "/code/utilities/bootstrap/")){
+            break;
+        }
+        
+        // the remaining paths SHOULD NOT use hcp.
+        // This is because we have a better rule now to derive parts of hcp
+        auto content = Read_Entire_File_Into_String(it);
+        if (countSubstring(content,"hcp(") > 0){
+            paths_to_fix.emplace_back(it);
+        }
+    }
+    
+    if (!paths_to_fix.empty()){
+        std::cerr << "The following BUILD files are using rulesets that are not allowed:" << std::endl;
+        for (auto it: paths_to_fix){
+            std::cerr << it << std::endl;
+        }
+    }
+    
+    
     
     //Other responsibilities for maintaining a mono-repo:
     //Outside resources can be fetched reliably (additional mirrors; solutions without Internet)

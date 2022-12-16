@@ -6,7 +6,7 @@ load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 hcp(
     name = "assets",
     deps = [
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib"
     ],
 )
 
@@ -14,6 +14,6 @@ hcp(
     name = "assets_loader",
     deps = [
         "//code/programs/games/ily3000/assets",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib"
     ],
 )

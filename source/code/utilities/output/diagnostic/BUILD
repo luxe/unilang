@@ -8,17 +8,17 @@ cpp_object("diagnostic_color")
 
 cpp_object("diagnostic_stream")
 
-hcp(
+hcp_hdrs_derive(
     name = "diagnostic_settings",
-    deps = [
+    interface_deps = [
         "//code/utilities/output/diagnostic:diagnostic_color",
         "//code/utilities/output/diagnostic:diagnostic_stream",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "diagnostic_printer",
-    deps = [
+    interface_deps = [
         "//code/utilities/output/diagnostic:diagnostic_settings",
         "//code/utilities/types/strings/transformers/colors:string_colorizer",
     ],
