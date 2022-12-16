@@ -4,21 +4,21 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "enums_adjuster",
-#     deps = [
+#     interface_deps = [
 #     ],
 # )
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "enum_standard_incrementer",
-#     deps = [
+#     interface_deps = [
 #
 #     ],
 # )
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "enum_value_inserter",
-#     deps = [
+#     interface_deps = [
 #     ],
 # )

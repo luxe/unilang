@@ -19,9 +19,9 @@ cc_library(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "path_getter",
-    deps = [
+    interface_deps = [
         "//code/utilities/filesystem/paths:lib",
     ],
 )

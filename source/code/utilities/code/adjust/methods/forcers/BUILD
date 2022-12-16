@@ -4,28 +4,28 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "method_chaining_enforcer",
 #     deps = [
 #         "//code/utilities/types/converters:lib",
 #     ],
 # )
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "method_overload_adjuster",
 #     deps = [
 #         "//code/utilities/types/converters:lib",
 #     ],
 # )
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "return_statement_enforcer",
 #     deps = [
 #         "//code/utilities/types/converters:lib",
 #     ],
 # )
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "immutable_value_to_immutable_ref_adjuster",
 #     deps = [
 #         "//code/utilities/linguistics/computer/types/generic:unilang_type_to_language_type_converter",
@@ -33,7 +33,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     ],
 # )
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "instantiate_and_return_injector_for_return_type",
 #     deps = [
 #         "//code/utilities/linguistics/computer/types/generic:unilang_type_to_language_type_converter",
@@ -45,14 +45,14 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     ],
 # )
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "function_unit_test_name_defaulter",
 #     deps = [
 #         "//code/utilities/types/converters:lib",
 #     ],
 # )
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "methods_sorter",
 #     deps = [
 #         "//code/utilities/types/converters:lib",

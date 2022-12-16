@@ -4,7 +4,7 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "json_print_method_getter",
 #     deps = [
 #         "//code/utilities/linguistics/computer/frontends/parts/data_member:data_member_options",
@@ -15,7 +15,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     ],
 # )
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "to_json_method_getter",
 #     deps = [
 #         "//code/utilities/linguistics/computer/frontends/parts/data_member:data_member_options",
@@ -26,7 +26,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     ],
 # )
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "serialize_json_method_getter",
 #     deps = [
 #         "//code/utilities/linguistics/computer/frontends/parts/data_member:data_member_options",

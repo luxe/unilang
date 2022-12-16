@@ -4,7 +4,7 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "comment_adjuster",
 #     deps = [
 #         "//code/utilities/types/strings/observers/splitting:words_deriver",
@@ -17,7 +17,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     ],
 # )
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "words_deriver",
 #     deps = [
 #         "//code/utilities/types/strings/observers/char:lib",
@@ -26,14 +26,14 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     ],
 # )
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "module_dependency_resolver",
 #     deps = [
 #         "//code/utilities/linguistics/computer/export_file_settings:file_type",
 #     ],
 # )
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "structure_adjuster",
 #     deps = [
 #         "module_dependency_resolver",
@@ -43,7 +43,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     ],
 # )
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "structure_normalizer",
 #     deps = [
 #         "//code/utilities/types/converters:lib",
@@ -51,7 +51,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     ],
 # )
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "casing_adjuster",
 #     deps = [
 #         "//code/utilities/filesystem/paths:lib",
@@ -63,7 +63,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     ],
 # )
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "greedy_reflower",
 #     deps = [
 #         "//code/utilities/types/strings/observers/splitting:words_deriver",
@@ -75,12 +75,12 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     ],
 # )
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "knuth_plass_entry",
 #     deps = [],
 # )
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "knuth_plass_reflower",
 #     deps = [
 #         "//code/utilities/types/strings/observers/splitting:words_deriver",

@@ -4,13 +4,13 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "all_comparison_impl_schemes",
 #     deps = [
 #     ],
 # )
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "comparison_function_getter",
 #     deps = [
 #         "//code/utilities/language_basic/relational-operator:relational_operator",
@@ -21,7 +21,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     ],
 # )
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "comparison_impl_scheme",
 #     deps = [
 #         "//code/utilities/language_basic/relational-operator:relational_operator",

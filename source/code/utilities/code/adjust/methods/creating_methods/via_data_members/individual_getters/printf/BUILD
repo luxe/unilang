@@ -6,7 +6,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
 cpp_object(name = "printf_statement_kind")
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "printf_code_generator",
 #     deps = [
 #         "//code/utilities/linguistics/computer/frontends/parts/data_member:data_member_options",

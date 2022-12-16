@@ -4,7 +4,7 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "existing_import_adjuster",
 #     deps = [
 #         "//code/utilities/types/strings/observers/other:lib",
@@ -13,7 +13,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     ],
 # )
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "import_adjuster",
 #     deps = [
 #         "//code/utilities/linguistics/computer/types/generic:unilang_type_to_language_type_converter",
