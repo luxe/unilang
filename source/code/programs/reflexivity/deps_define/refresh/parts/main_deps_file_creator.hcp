@@ -38,23 +38,29 @@ class
 
     //add load statements
     for (auto it: all_specs.specs){
-        auto folder_name = As_Removed_Dashes(it.lib_name);
-        Append(result,"load(\"//bazel/deps/");
-        Append(result,folder_name);
-        Append(result,":get.bzl");
-        Append(result,"\"");
-        Append(result,", \"");
-        Append(result,Fix_Casing_For_Bazel(it.lib_name));
-        Append(result,"\")\n");
+        
+        if (!it.lib_name.empty()){
+            auto folder_name = As_Removed_Dashes(it.lib_name);
+            Append(result,"load(\"//bazel/deps/");
+            Append(result,folder_name);
+            Append(result,":get.bzl");
+            Append(result,"\"");
+            Append(result,", \"");
+            Append(result,Fix_Casing_For_Bazel(it.lib_name));
+            Append(result,"\")\n");
+        }
     }
 ❱
 
 ◀private: static▶ void ☀Add_Function_To_Call_All_Loaded_Funcs(std::string & result, Dependency_Specifications const& all_specs)❰
     Append_With_Newline(result,"def third_party_libraries():");
     for (auto const& it: all_specs.specs){
-        Append(result,"    ");
-        Append(result,Fix_Casing_For_Bazel(it.lib_name));
-        Append_With_Newline(result,"()");
+        
+        if (!it.lib_name.empty()){
+            Append(result,"    ");
+            Append(result,Fix_Casing_For_Bazel(it.lib_name));
+            Append_With_Newline(result,"()");
+        }
     }
 ❱
 
