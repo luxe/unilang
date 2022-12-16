@@ -8,7 +8,7 @@ load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 hcp(
     name = "opengl_initializer",
     deps = [
-        "@GL",
+        "//code/utilities/deps/external/gl:lib",
         "//code/utilities/deps/external/imgui:lib",
     ],
 )

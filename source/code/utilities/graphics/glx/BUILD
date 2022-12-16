@@ -21,8 +21,7 @@ hcp(
         "//code/utilities/graphics/glx:x11_to_opengl_bind_settings",
         "//code/utilities/graphics/glx/data:glx_data",
         "//code/utilities/graphics/x11/data:main_x11_state",
-        "@system//:GL",
-        "@system//:GL_hdrs",
+        "//code/utilities/deps/external/gl:lib",
         "@system//:KHR_hdrs",
     ],
 )
@@ -36,8 +35,7 @@ hcp(
         "//code/utilities/graphics/glx:x11_to_opengl_bind_settings",
         "//code/utilities/graphics/glx/data:glx_data",
         "//code/utilities/graphics/x11/data:main_x11_state",
-        "@system//:GL",
-        "@system//:GL_hdrs",
+        "//code/utilities/deps/external/gl:lib",
         "@system//:KHR_hdrs",
     ],
 )
@@ -47,8 +45,7 @@ hcp(
     deps = [
         "//code/utilities/graphics/glx:x11_to_opengl_bind_settings",
         "//code/utilities/graphics/x11/data:main_x11_state",
-        "@system//:GL",
-        "@system//:GL_hdrs",
+        "//code/utilities/deps/external/gl:lib",
         "@system//:KHR_hdrs",
     ],
 )
@@ -58,8 +55,7 @@ hcp(
     deps = [
         "//code/utilities/graphics/glx:x11_to_opengl_bind_settings",
         "//code/utilities/graphics/x11/data:main_x11_state",
-        "@system//:GL",
-        "@system//:GL_hdrs",
+        "//code/utilities/deps/external/gl:lib",
         "@system//:KHR_hdrs",
     ],
 )
@@ -69,8 +65,7 @@ hcp(
     deps = [
         "//code/utilities/graphics/glx:x11_to_opengl_bind_settings",
         "//code/utilities/graphics/x11/data:main_x11_state",
-        "@system//:GL",
-        "@system//:GL_hdrs",
+        "//code/utilities/deps/external/gl:lib",
         "@system//:KHR_hdrs",
     ],
 )

@@ -29,7 +29,7 @@ hcp(
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/graphics/sdl:sdl_init_settings",
         "//code/utilities/graphics/sdl:sdl_window_creator",
-        "@GL",
+        "//code/utilities/deps/external/gl:lib",
         "//code/utilities/deps/external/imgui:lib",
     ],
 )

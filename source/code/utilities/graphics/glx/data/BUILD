@@ -9,8 +9,7 @@ hcp(
     name = "glx_data",
     deps = [
         "//code/utilities/graphics/x11/data:main_x11_state",
-        "@system//:GL",
-        "@system//:GL_hdrs",
+        "//code/utilities/deps/external/gl:lib",
         "@system//:KHR_hdrs",
     ],
 )

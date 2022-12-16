@@ -8,10 +8,9 @@ cc_binary(
     name = "main",
     srcs = ["main.cpp"],
     deps = [
-        "@system//:GL",
+        "//code/utilities/deps/external/gl:lib",
         "@system//:GLFW_hdrs",
         "@system//:glfw",
-        "@system//:GL_hdrs",
         "@system//:X11",
         "@system//:X11_hdrs",
         "@xscreensaver//:vroot",
