@@ -12,53 +12,51 @@ cc_library(
     deps = ["//code/utilities/types/char:lib"],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "english_number_to_integral_converter",
-    deps = [
+    interface_deps = [
         "//code/utilities/types/strings/transformers/casing:lib",
         "//code/utilities/types/vectors/observers:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "is_english_number_checker",
-    deps = [
+    interface_deps = [
         "//code/utilities/types/strings/transformers/casing:lib",
         "//code/utilities/types/vectors/observers:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "is_month_word_checker",
-    deps = [
+    interface_deps = [
         "//code/utilities/types/strings/transformers/casing:lib",
         "//code/utilities/types/vectors/observers:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "is_weekday_checker",
-    deps = [
+    interface_deps = [
         "//code/utilities/types/strings/transformers/casing:lib",
         "//code/utilities/types/vectors/observers:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "is_cpp_keyword_checker",
-    deps = [
+    interface_deps = [
         "//code/utilities/types/strings/transformers/casing:lib",
         "//code/utilities/types/vectors/observers:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "spirit_numeric_checker",
-    deps = [
-        "@boost//:foreach",
-        "@boost//:phoenix",
-        "@boost//:range",
-        "@boost//:spirit",
-        "@boost//:variant",
+    interface_deps = [
+        "//code/utilities/deps/external/boost_foreach:lib",
+        "//code/utilities/deps/external/boost_range:lib",
+        "//code/utilities/deps/external/boost_spirit:lib",
     ],
 )

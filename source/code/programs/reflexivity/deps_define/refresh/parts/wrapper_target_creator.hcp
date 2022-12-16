@@ -65,8 +65,29 @@ class
     std::string header;
     std::string source;
     
-    Append_With_Newline(header,"#pragma once");
+    Add_Pragma(header);
+    Supress_Header_Warnings_Start(header,target,settings);
+    Add_Extern_C_Start(header,target);
+    Add_Headers(header,target);
+    Add_Extern_C_End(header,target);
+    Supress_Header_Warnings_End(header,target, settings);
     
+    Append_With_Newline(source,"#include \"lib.hpp\"");
+    
+    Write_To_File_With_Auto_Gen_Comment(target.name + "/lib.hpp",Source_Language::CPP,header);
+    Write_To_File_With_Auto_Gen_Comment(target.name + "/lib.cpp",Source_Language::CPP,source);
+
+❱
+
+
+
+◀private: static▶ void ☀Add_Pragma(std::string & header)❰
+
+    Append_With_Newline(header,"#pragma once");
+❱
+
+◀private: static▶ void ☀Supress_Header_Warnings_Start(std::string & header, Wrapper_Target const& target, Pragma_Warning_Supression_Settings const& settings)❰
+
     if (target.supress_header_warnings){
         for (auto it: settings.headers){
             Append_With_Newline(header,"#include " + it);
@@ -74,8 +95,36 @@ class
         Append_With_Newline(header,"// Supress all compiler warnings");
         Append_With_Newline(header,settings.start_guard);
     }
-    
-    
+❱
+
+◀private: static▶ void ☀Supress_Header_Warnings_End(std::string & header, Wrapper_Target const& target, Pragma_Warning_Supression_Settings const& settings)❰
+
+    if (target.supress_header_warnings){
+        Append_With_Newline(header,settings.end_guard);
+    }
+
+❱
+
+◀private: static▶ void ☀Add_Extern_C_Start(std::string & header, Wrapper_Target const& target)❰
+    if (target.use_extern_c){
+        Append_With_Newline(header,"#ifdef __cplusplus");
+        Append_With_Newline(header,"extern \"C\" {");
+        Append_With_Newline(header,"#endif");
+
+    }
+❱
+
+◀private: static▶ void ☀Add_Extern_C_End(std::string & header, Wrapper_Target const& target)❰
+    if (target.use_extern_c){
+        Append_With_Newline(header,"#ifdef __cplusplus");
+        Append_With_Newline(header,"}");
+        Append_With_Newline(header,"#endif");
+
+    }
+❱
+
+◀private: static▶ void ☀Add_Headers(std::string & header, Wrapper_Target const& target)❰
+
     for (auto const& it: target.includes){
         Append(header,"#include ");
         
@@ -89,15 +138,6 @@ class
             Append_With_Newline(header, "\"" + it + "\"");
         }
     }
-    
-    if (target.supress_header_warnings){
-        Append_With_Newline(header,settings.end_guard);
-    }
-    
-    Append_With_Newline(source,"#include \"lib.hpp\"");
-    
-    Write_To_File_With_Auto_Gen_Comment(target.name + "/lib.hpp",Source_Language::CPP,header);
-    Write_To_File_With_Auto_Gen_Comment(target.name + "/lib.cpp",Source_Language::CPP,source);
 
 ❱
 

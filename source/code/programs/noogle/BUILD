@@ -7,44 +7,44 @@ load("//bazel/rules/cpp:distributable_main.bzl", "distributable_cpp_main")
 load("//bazel/rules/data:package_binaries.bzl", "package_binaries")
 load("//bazel/rules/data:distributable_data.bzl", "distributable_data")
 
-hcp(
+hcp_hdrs_derive(
     name = "meta_settings",
-    deps = [
+    interface_deps = [
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "noogle_result",
-    deps = [
+    interface_deps = [
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "queue_state",
-    deps = [
+    interface_deps = [
     ],
 )
 
-# hcp(
+# hcp_hdrs_derive(
 #     name = "noogle_documentation_getter",
-#     deps = [
-#         "//code/programs/noogle/program_options:lib",
+#     interface_deps = [
+#         "//code/programs/noogle/program_options:program_options",
 #         "//code/utilities/documentation:common_documentation_getter",
 #         "//code/utilities/formats/json/converters:lib",
 #         "//code/utilities/types/converters:lib",
 #     ],
 # )
 
-hcp(
+hcp_hdrs_derive(
     name = "query_extender",
-    deps = [
+    interface_deps = [
         "//code/programs/noogle/settings:noogle_settings",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "results_shower",
-    deps = [
+    interface_deps = [
         "//code/programs/noogle:noogle_result",
         "//code/programs/noogle/settings:noogle_settings",
         "//code/programs/noogle/state:noogle_running_stats",
@@ -63,9 +63,9 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "results_url_to_html_converter",
-    deps = [
+    interface_deps = [
         "//code/programs/noogle/settings:noogle_settings",
         "//code/programs/noogle/state:noogle_running_stats",
         "//code/utilities/data_structures/queue:finishable_safe_queue",
@@ -74,13 +74,13 @@ hcp(
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/web:lib",
         "//code/utilities/web/url:url_parser",
-        "@boost//:asio",
+        "//code/utilities/deps/external/boost_asio:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "noogle_results_extractor",
-    deps = [
+    interface_deps = [
         "//code/programs/noogle:noogle_result",
         "//code/programs/noogle:token_adder",
         "//code/programs/noogle/settings:noogle_settings",
@@ -90,9 +90,9 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "html_sanitizer",
-    deps = [
+    interface_deps = [
         "//code/programs/noogle/settings:noogle_settings",
         "//code/programs/noogle/state:noogle_running_stats",
         "//code/utilities/data_structures/queue:finishable_safe_queue",
@@ -105,9 +105,9 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "noogle_runner",
-    deps = [
+    interface_deps = [
         "//code/programs/noogle:meta_settings",
         "//code/utilities/web/chrome/driver:chrome_driver_selector",
         "//code/utilities/web/automate/browser:browser_creator",
@@ -116,9 +116,8 @@ hcp(
         "//code/programs/noogle/settings:default_settings_getter",
         "//code/utilities/types/strings/transformers/search_replace:lib",
         "//code/utilities/types/strings/transformers/squeeze:lib",
-        "@pybind11",
-        "@boost//:asio",
-        #"@boost//:stacktrace",
+        "//code/utilities/deps/external/pybind11:lib",
+        "//code/utilities/deps/external/boost_asio:lib",
         "//code/utilities/web/url:url_parser",
         "//code/programs/noogle/settings:noogle_settings",
         "//code/utilities/data_structures/queue:safe_queue",
@@ -133,7 +132,7 @@ hcp(
         "//code/programs/noogle:noogle_result",
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/types/strings/observers/characteristic:spirit_numeric_checker",
-        "//code/programs/noogle/program_options:lib",
+        "//code/programs/noogle/program_options:program_options",
         "//code/utilities/program/common_actions/exits:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/strings/observers/char:lib",
@@ -163,17 +162,17 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "input_poller",
-    deps = [
+    interface_deps = [
         "//code/programs/noogle/state:noogle_running_stats",
-        "@getch",
+        "//code/utilities/deps/external/getch:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "results_url_getter",
-    deps = [
+    interface_deps = [
         "//code/programs/noogle:results_shower",
         "//code/programs/noogle/settings:default_settings_getter",
         "//code/programs/noogle/settings:noogle_settings",
@@ -205,14 +204,14 @@ hcp(
         "//code/utilities/web/search_engines:search_engine_fetch_settings",
         "//code/utilities/web/search_engines:search_engine_url_deviser",
         "//code/utilities/web/url:url_parser",
-        "@fmt",
-        "@pybind11",
+        "//code/utilities/deps/external/fmt:lib",
+        "//code/utilities/deps/external/pybind11:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "token_adder",
-    deps = [
+    interface_deps = [
         "//code/programs/noogle/settings:noogle_settings",
         "//code/programs/noogle/state:noogle_running_stats",
         "//code/utilities/types/strings/observers/char:lib",
@@ -227,6 +226,7 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
         "//code/utilities/types/vectors/transformers:lib",
+        "//code/utilities/deps/stl/unordered_set:lib",
     ],
 )
 
@@ -245,9 +245,9 @@ hcp(
 #         "python3-bs4",
 #     ],
 #     description = "google but numbers",
-#     deps = [
+#     interface_deps = [
 #         "//code/programs/noogle:meta_settings",
 #         "//code/programs/noogle:noogle_runner",
-#         "//code/programs/noogle/program_options:lib",
+#         "//code/programs/noogle/program_options:program_options",
 #     ],
 # )

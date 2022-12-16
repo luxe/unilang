@@ -4,14 +4,14 @@ package(
 
 cc_library(
     name = "safe_queue",
-    hdrs = ["safe_queue.h"],
+    hdrs = ["safe_queue.hpp"],
     deps = [
     ],
 )
 
 cc_library(
     name = "finishable_safe_queue",
-    hdrs = ["finishable_safe_queue.h"],
+    hdrs = ["finishable_safe_queue.hpp"],
     deps = [
     ],
 )

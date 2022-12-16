@@ -5,7 +5,7 @@ load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
 cc_library(
-    name = "lib",
+    name = "program_options",
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
     deps = [

@@ -4,23 +4,16 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
-hcp(
+hcp_hdrs_derive(
     name = "system_sound_adjuster",
-    deps = [
+    interface_deps = [
         "//code/utilities/program/call:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "music_player",
-    deps = [
-        #"@system//:SDL2",
-        #"@system//:SDL2
-
-        #"@SDL_mixer",
-        #"@sdl2",
-        "@sdl2",
-        "@system//:SDL2_mixer",
-        "@system//:SDL2_hdrs",
+    interface_deps = [
+        "//code/utilities/deps/external/sdl2:lib"
     ],
 )

@@ -11,11 +11,12 @@ cc_library(
     hdrs = ["lib.hpp"],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "recurse",
-    deps = [
+    interface_deps = [
         "//code/utilities/execution:thread_pool_getter",
         "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
+        "//code/utilities/deps/stl/filesystem:lib",
     ],
 )
 
