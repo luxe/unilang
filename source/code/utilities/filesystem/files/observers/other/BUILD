@@ -5,29 +5,29 @@ package(
 load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 
-hcp(
+hcp_hdrs_derive(
     name = "ldd_results",
-    deps = [
+    interface_deps = [
         "//code/utilities/filesystem/files/observers/other:ldd_entry",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "ldd_entry",
-    deps = [
+    interface_deps = [
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "file_and_ldd_results",
-    deps = [
+    interface_deps = [
         "//code/utilities/filesystem/files/observers/other:ldd_results",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "ldd_results_getter",
-    deps = [
+    interface_deps = [
         "//code/utilities/filesystem/files/observers/other:file_and_ldd_results",
         "//code/utilities/program/call:lib",
         "//code/utilities/types/strings/observers/splitting:lib",
@@ -36,9 +36,9 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "recursive_ldd_results_getter",
-    deps = [
+    interface_deps = [
         "//code/utilities/filesystem/files/getting:lib",
         "//code/utilities/filesystem/files/observers/other:file_and_ldd_results",
         "//code/utilities/filesystem/files/observers/other:ldd_results_getter",
@@ -63,9 +63,9 @@ cc_library(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "recursive_ldd_scan_printer",
-    deps = [
+    interface_deps = [
         "//code/utilities/filesystem/files/getting:lib",
         "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
         "//code/utilities/filesystem/files/observers/other:recursive_ldd_results_getter",

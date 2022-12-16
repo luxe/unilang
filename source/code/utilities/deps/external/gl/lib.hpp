@@ -5,6 +5,6 @@
 #pragma once
 // Supress all compiler warnings
 #pragma GCC system_header
-
 #include <GL/gl.h>
 #include <GL/glx.h>
+

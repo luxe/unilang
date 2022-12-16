@@ -8,9 +8,7 @@ name = "lib",
 srcs = glob(["*.cpp"]),
 hdrs = glob(["*.hpp"]),
 deps = [
-"@GL",
-"//code/utilities/deps/external/khr:lib",
-"//code/utilities/deps/external/x11:lib",
+"@GL","//code/utilities/deps/external/khr:lib","//code/utilities/deps/external/x11:lib"
 ],
 data = [
 

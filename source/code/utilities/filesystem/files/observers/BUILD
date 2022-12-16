@@ -5,8 +5,9 @@ package(
 load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 
-hcp(
+hcp_hdrs_derive(
     name = "filename_size_printer",
-    deps = [
+    interface_deps = [
+        "//code/utilities/deps/stl/filesystem:lib"
     ],
 )
