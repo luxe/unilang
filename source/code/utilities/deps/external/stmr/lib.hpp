@@ -9,5 +9,7 @@
 extern "C" {
 #endif
 #include "stmr.h"
+#ifdef __cplusplus
 }
+#endif
 

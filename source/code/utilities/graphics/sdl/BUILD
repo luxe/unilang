@@ -5,7 +5,7 @@ load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
-hcp(name = "sdl_window_settings")
+hcp_hdrs_derive(name = "sdl_window_settings")
 
 enum_cpp(
     name = "sdl_swap_interval",
@@ -17,53 +17,49 @@ enum_cpp(
         ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "sdl_init_settings",
-    deps = [
+    interface_deps = [
         "//code/utilities/graphics/sdl:sdl_swap_interval",
         "//code/utilities/graphics/sdl:sdl_window_settings",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "standard_sdl_init_settings",
-    deps = [
+    interface_deps = [
         "//code/utilities/graphics/sdl:sdl_init_settings",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "sdl_window_creator",
-    deps = [
+    interface_deps = [
         "//code/utilities/graphics/sdl:sdl_init_settings",
-        "@system//:SDL2",
-        "@system//:SDL2_hdrs",
+        "//code/utilities/deps/external/sdl2:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "sdl_initializer",
-    deps = [
+    interface_deps = [
         "//code/utilities/graphics/sdl:sdl_init_settings",
-        "@system//:SDL2",
-        "@system//:SDL2_hdrs",
+        "//code/utilities/deps/external/sdl2:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "sdl_swap_interval_setter",
-    deps = [
+    interface_deps = [
         "//code/utilities/graphics/sdl:sdl_swap_interval",
-        "@system//:SDL2",
-        "@system//:SDL2_hdrs",
+        "//code/utilities/deps/external/sdl2:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "sdl_fullscreener",
-    deps = [
+    interface_deps = [
         "//code/utilities/graphics/sdl:sdl_window_settings",
-        "@system//:SDL2",
-        "@system//:SDL2_hdrs",
+        "//code/utilities/deps/external/sdl2:lib",
     ],
 )

@@ -5,12 +5,21 @@ load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/cpp:main.bzl", "cpp_main")
 
-hcp(
+hcp_hdrs_derive(
     name = "opendir_wrap",
-    deps = [
+    interface_deps = [
         "//code/utilities/types/strings/observers/other:lib",
+        "//code/utilities/deps/c/dirent:lib",
+        "//code/utilities/deps/c/errno:lib",
+        "//code/utilities/deps/c/fcntl:lib",
+        "//code/utilities/deps/c/stdio:lib",
+        "//code/utilities/deps/c/stdlib:lib",
+        "//code/utilities/deps/c/sys_types:lib",
     ],
 )
+
+
+
 
 cpp_main(
     name = "is_dir",

@@ -11,6 +11,7 @@ cc_library(
     name = "GL",
     deps = [
         "@debian_stretch_amd64_sysroot//:GL",
+        "@system//:GL_hdrs",
         #"@system//:GL",
     ],
 )

@@ -5,14 +5,6 @@ load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
-hcp(
-    name = "f310_gamepads_state_getter",
-    deps = [
-        "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_gamepads",
-        "@sfml",
-    ],
-)
-
 enum_cpp(
     name = "f310_event",
     values = [
@@ -53,13 +45,21 @@ enum_cpp(
 )
 #etc...
 
-hcp(
+hcp_hdrs_derive(
+    name = "f310_gamepads_state_getter",
+    interface_deps = [
+        "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_gamepads",
+        "//code/utilities/deps/external/sfml:lib",
+    ],
+)
+
+hcp_hdrs_derive(
     name = "f310_event_synthesizer",
-    deps = [
+    interface_deps = [
         "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_events",
         "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_gamepad_phases",
         "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_gamepads_phases",
         "//code/utilities/peripheral/keyboard/F310_gamepad/functions:f310_event",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )

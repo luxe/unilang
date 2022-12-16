@@ -18,35 +18,35 @@ cc_library(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "git_setuper",
-    deps = [
+    interface_deps = [
         "//code/utilities/filesystem/files/getting:lib",
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/program/call:lib",
         "//code/utilities/streams/filestreams/read_all:lib",
         "//code/utilities/types/char:lib",
-        "@curl",
+        "//code/utilities/deps/external/curl:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "branch_switcher",
-    deps = [
+    interface_deps = [
         "//code/utilities/program/call:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "git_upstream_pusher",
-    deps = [
+    interface_deps = [
         "//code/utilities/program/call:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "latest_commit_getter",
-    deps = [
+    interface_deps = [
         "//code/utilities/program/call:lib",
     ],
 )

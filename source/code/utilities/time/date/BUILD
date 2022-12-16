@@ -14,23 +14,23 @@ cc_library(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "rfc333_datetime_to_epoch_converter",
-    deps = [
-        "@date",
+    interface_deps = [
+        "//code/utilities/deps/external/date:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "rfc333_datetime_range",
-    deps = [
+    interface_deps = [
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "rfc333_datetime_within_range_checker",
-    deps = [
-        ":rfc333_datetime_range",
-        ":rfc333_datetime_to_epoch_converter",
+    interface_deps = [
+        "//code/utilities/time/date:rfc333_datetime_range",
+        "//code/utilities/time/date:rfc333_datetime_to_epoch_converter",
     ],
 )

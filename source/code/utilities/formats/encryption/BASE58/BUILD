@@ -4,12 +4,12 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
-hcp(
+hcp_hdrs_derive(
     name = "base58_hasher",
-    deps = [
+    interface_deps = [
         "//code/utilities/types/strings/observers/hex:lib",
-        "@libbase58//:lib",
-        "@openssl//:crypto",
-        "@secp256k1//:lib",
+        "//code/utilities/deps/external/libbase58:lib",
+        "//code/utilities/deps/external/openssl:lib",
+        "//code/utilities/deps/external/secp256k1:lib",
     ],
 )

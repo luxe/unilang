@@ -4,9 +4,9 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
-hcp(
+hcp_hdrs_derive(
     name = "grammar_adjuster",
-    deps = [
+    interface_deps = [
         "//code/utilities/linguistics/dictionary:dictionary_getter",
         "//code/utilities/linguistics/dictionary:dictionary_spellcheck",
         "//code/utilities/linguistics/grammar/settings:comment_grammar_settings",
@@ -20,6 +20,6 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
         "//code/utilities/web/url:url_identifier",
-        "@nuspell",
+        "//code/utilities/deps/external/nuspell:lib",
     ],
 )

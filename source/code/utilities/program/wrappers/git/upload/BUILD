@@ -4,9 +4,9 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
-hcp(
+hcp_hdrs_derive(
     name = "github_uploader",
-    deps = [
+    interface_deps = [
         "//code/utilities/filesystem/files/getting:lib",
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/personal/hosting:hosting_repo",
@@ -15,13 +15,13 @@ hcp(
         "//code/utilities/program/wrappers/git/upload:github_upload_settings",
         "//code/utilities/streams/filestreams/read_all:lib",
         "//code/utilities/types/char:lib",
-        "@curl",
+        "//code/utilities/deps/external/curl:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "github_upload_settings",
-    deps = [
+    interface_deps = [
         "//code/utilities/program/wrappers/git/update:git_update_settings",
     ],
 )

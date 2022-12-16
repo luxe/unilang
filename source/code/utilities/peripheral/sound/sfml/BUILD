@@ -4,24 +4,24 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
-hcp(
+hcp_hdrs_derive(
     name = "sound",
-    deps = [
-        "@sfml",
+    interface_deps = [
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "sound_loader",
-    deps = [
+    interface_deps = [
         "//code/utilities/peripheral/sound/sfml:sound",
-        "@sfml",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "music_loader",
-    deps = [
-        "@sfml",
+    interface_deps = [
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )

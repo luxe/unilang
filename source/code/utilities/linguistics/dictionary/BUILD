@@ -8,49 +8,49 @@ load("//bazel/rules/data:package_binaries.bzl", "package_binaries")
 load("//bazel/rules/data:distributable_data.bzl", "distributable_data")
 load("//bazel/rules/cpp:main.bzl", "cpp_main")
 
-hcp(
+hcp_hdrs_derive(
     name = "scrabble_2019",
     data = ["@scrabble_words//:all"],
-    deps = [
+    interface_deps = [
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/streams/filestreams/read_all:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "dictionary_getter",
-    deps = [
-        "@nuspell",
+    interface_deps = [
+        "//code/utilities/deps/external/nuspell:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "dictionary_spellcheck_results",
-    deps = [
+    interface_deps = [
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "dictionary_spellcheck",
-    deps = [
+    interface_deps = [
         "//code/utilities/linguistics/dictionary:dictionary_spellcheck_results",
-        "@nuspell",
+        "//code/utilities/deps/external/nuspell:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "three_letter_words",
     data = ["@scrabble_words//:all"],
-    deps = [
+    interface_deps = [
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/streams/filestreams/read_all:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "wordle",
     data = ["@scrabble_words//:all"],
-    deps = [
+    interface_deps = [
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/streams/filestreams/read_all:lib",
     ],
