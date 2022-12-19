@@ -5,15 +5,15 @@ load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
-hcp(
+hcp_hdrs_derive(
     name = "bing_json_url_devise_settings",
-    deps = [
+    interface_deps = [
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "bing_json_url_deviser",
-    deps = [
+    interface_deps = [
         "//code/utilities/types/strings/transformers/search_replace:lib",
         "//code/utilities/types/strings/transformers/squeeze:lib",
         "//code/utilities/web/bing:bing_json_url_devise_settings",

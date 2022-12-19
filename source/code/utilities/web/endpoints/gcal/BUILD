@@ -4,9 +4,9 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
-hcp(
+hcp_hdrs_derive(
     name = "gcal_getter",
-    deps = [
+    interface_deps = [
         "//code/utilities/program/call:lib",
         "//code/utilities/program/common_actions/exits:lib",
         "//code/utilities/types/strings/observers/other:lib",
@@ -18,9 +18,9 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "gcal_query",
-    deps = [
+    interface_deps = [
         "//code/utilities/program/call:lib",
         "//code/utilities/program/common_actions/exits:lib",
         "//code/utilities/types/strings/observers/other:lib",
@@ -29,8 +29,8 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "gcal_credentials",
-    deps = [
+    interface_deps = [
     ],
 )
