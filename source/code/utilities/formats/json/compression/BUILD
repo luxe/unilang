@@ -5,24 +5,24 @@ load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
-hcp(
+hcp_hdrs_derive(
     name = "bson_converter",
-    deps = [],
+    interface_deps = [],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "cbor_converter",
-    deps = [],
+    interface_deps = [],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "msgpack_converter",
-    deps = [],
+    interface_deps = [],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "ubjson_converter",
-    deps = [],
+    interface_deps = [],
 )
 
 enum_cpp(
@@ -35,9 +35,9 @@ enum_cpp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "json_compressor",
-    deps = [
+    interface_deps = [
         "//code/utilities/formats/json/compression:bson_converter",
         "//code/utilities/formats/json/compression:cbor_converter",
         "//code/utilities/formats/json/compression:json_compression_format",

@@ -4,9 +4,9 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
-hcp(
+hcp_hdrs_derive(
     name = "list_of_links",
-    deps = [
+    interface_deps = [
         "//code/utilities/formats/html:basic_html_template_getter",
         "//code/utilities/formats/html/body:html_list_maker",
         "//code/utilities/formats/html/style:link_list_styling",
@@ -14,9 +14,9 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "centered_image",
-    deps = [
+    interface_deps = [
         "//code/utilities/formats/html:basic_html_template_getter",
         "//code/utilities/formats/html/body:html_list_maker",
         "//code/utilities/formats/html/style:center_image_styling",
@@ -24,9 +24,9 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "blog_essay",
-    deps = [
+    interface_deps = [
         "//code/utilities/formats/html:basic_html_template_getter",
         "//code/utilities/formats/html/body:html_list_maker",
         "//code/utilities/formats/html/style:normalize",

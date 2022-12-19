@@ -5,15 +5,15 @@ load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
-hcp(
+hcp_hdrs_derive(
     name = "json_attribute_check_settings",
-    deps = [
+    interface_deps = [
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "json_attribute_checker",
-    deps = [
+    interface_deps = [
         "//code/utilities/formats/json/attribute_check:json_attribute_check_settings",
     ],
 )
