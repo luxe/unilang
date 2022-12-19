@@ -4,17 +4,17 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
-hcp(
+hcp_hdrs_derive(
     name = "pdf_settings",
-    deps = [
+    interface_deps = [
         "//code/utilities/linguistics/computer/frontends/markdown/settings:markdown_settings",
         "//code/utilities/program/wrappers/pandoc/settings:pandoc_pdf_settings",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "pdf_creator",
-    deps = [
+    interface_deps = [
         "//code/utilities/code:concept_static_tree_structs",
         "//code/utilities/contributor",
         "//code/utilities/filesystem/files/creating:lib",
@@ -33,14 +33,14 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "latex_template_getter",
-    deps = [
+    interface_deps = [
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "csl_template_getter",
-    deps = [
+    interface_deps = [
     ],
 )

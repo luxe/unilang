@@ -4,18 +4,18 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
-hcp(
+hcp_hdrs_derive(
     name = "file_upload_settings",
-    deps = [
+    interface_deps = [
         "//code/utilities/program/wrappers/git/upload:github_upload_settings",
         "//code/utilities/web/dropbox:upload_to_dropbox_strategy",
         "//code/utilities/web/gdrive:gdrive_upload_settings",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "file_uploader",
-    deps = [
+    interface_deps = [
         "//code/utilities/output/upload:file_upload_settings",
         "//code/utilities/personal/secret:secret_getter",
         "//code/utilities/program/wrappers/git/upload:github_uploader",

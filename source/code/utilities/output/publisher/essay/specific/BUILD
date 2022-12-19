@@ -4,9 +4,9 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
-hcp(
+hcp_hdrs_derive(
     name = "latex_essay_publisher",
-    deps = [
+    interface_deps = [
         "//code/utilities/code:concept_static_tree_structs",
         "//code/utilities/data_structures/graph/unique_str_vertex_graph:lib",
         "//code/utilities/filesystem/files/creating:lib",
@@ -34,9 +34,9 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "clean_site_essay_publisher",
-    deps = [
+    interface_deps = [
         "//code/utilities/code:concept_static_tree_structs",
         "//code/utilities/data_structures/graph/unique_str_vertex_graph:lib",
         "//code/utilities/filesystem/files/creating:lib",

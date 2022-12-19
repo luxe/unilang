@@ -78,9 +78,9 @@ enum_cpp(
         ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "to_source_language",
-    deps = [
+    interface_deps = [
         "//code/utilities/formats/artifact:artifact_type",
         "//code/utilities/linguistics/computer:source_language",
         "//code/utilities/types/vectors/operators:lib",

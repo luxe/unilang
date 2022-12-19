@@ -5,9 +5,9 @@ load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
-hcp(
+hcp_hdrs_derive(
     name = "essay_publisher",
-    deps = [
+    interface_deps = [
         "//code/utilities/code:concept_static_tree_structs",
         "//code/utilities/formats/json/converters:json_file_io",
         "//code/utilities/output/publisher/essay",
@@ -17,9 +17,9 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "essay",
-    deps = [
+    interface_deps = [
         "//code/utilities/output/publisher/essay:essay_style",
     ],
 )

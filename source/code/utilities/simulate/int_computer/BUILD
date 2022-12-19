@@ -14,16 +14,18 @@ enum_cpp(
     ],
 )
 
-hcp(
+
+hcp_hdrs_derive(
     name = "instruction",
-    deps = [
+    interface_deps = [
         "//code/utilities/simulate/int_computer:operation_type",
     ],
 )
 
-hcp(
+
+hcp_hdrs_derive(
     name = "instructions_getter_settings",
-    deps = [
+    interface_deps = [
     ],
 )
 
@@ -37,16 +39,19 @@ hcp_hdrs_derive(
     ],
 )
 
-hcp(
+
+hcp_hdrs_derive(
     name = "int_computer",
-    deps = [
+    interface_deps = [
         "//code/utilities/simulate/int_computer:instruction",
+        "//code/utilities/deps/stl/unordered_set:lib",
     ],
 )
 
-hcp(
+
+hcp_hdrs_derive(
     name = "int_computer_runner",
-    deps = [
+    interface_deps = [
         "//code/utilities/data_structures:halting_problem_result",
         "//code/utilities/simulate/int_computer",
     ],
