@@ -4,9 +4,9 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
-hcp(
+hcp_hdrs_derive(
     name = "game_state",
-    deps = [
+    interface_deps = [
         "//code/programs/games/ur:game_phase",
         "//code/utilities/data_structures/color:rgb_color",
         "//code/utilities/games/ur/state:ur_game_state",
@@ -19,9 +19,9 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "game_state_getter",
-    deps = [
+    interface_deps = [
         "//code/programs/games/ur/state:game_state",
         "//code/utilities/games/ur:ur_state_getter",
         "//code/utilities/linguistics/build_word/game:puzzle_builder",

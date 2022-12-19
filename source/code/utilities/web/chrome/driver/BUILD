@@ -6,9 +6,9 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 load("//bazel/rules/cpp:main.bzl", "cpp_main")
 
-hcp(
+hcp_hdrs_derive(
     name = "chrome_driver_selector",
-    deps = [
+    interface_deps = [
         "//code/utilities/assets:chrome_drivers",
         "//code/utilities/filesystem/files/getting:lib",
         "//code/utilities/filesystem/paths:lib",
@@ -24,8 +24,8 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "chrome_driver_selection_settings",
-    deps = [
+    interface_deps = [
     ],
 )

@@ -6,9 +6,9 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 load("//bazel/rules/cpp:main.bzl", "cpp_main")
 
-hcp(
+hcp_hdrs_derive(
     name = "chrome_version_getter",
-    deps = [
+    interface_deps = [
         "//code/utilities/program/call:lib",
         "//code/utilities/system:lib",
         "//code/utilities/types/strings/observers/columns:lib",

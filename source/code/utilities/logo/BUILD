@@ -4,9 +4,9 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
-hcp(
+hcp_hdrs_derive(
     name = "unilang_logo_creator",
-    deps = [
+    interface_deps = [
         "//code/utilities/filesystem/files/temp:existing_temp_file",
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/fonts/font_files:nasalization_rg",
