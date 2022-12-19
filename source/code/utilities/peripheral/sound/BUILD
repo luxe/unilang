@@ -14,6 +14,6 @@ hcp_hdrs_derive(
 hcp_hdrs_derive(
     name = "music_player",
     interface_deps = [
-        "//code/utilities/deps/external/sdl2:lib"
+        "//code/utilities/deps/external/sdl2:lib",
     ],
 )

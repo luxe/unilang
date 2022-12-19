@@ -148,6 +148,7 @@ hcp(
         "//code/utilities/data_structures/point",
         "//code/utilities/data_structures/point:point_mover",
         "//code/utilities/data_structures/range",
+        "//code/utilities/deps/external/cpp_graph:lib",
         "//code/utilities/formats/json/converters:type_to_json_string",
         "//code/utilities/linguistics/counted_object:counted_object_parser",
         "//code/utilities/output/printers:lib",
@@ -167,7 +168,6 @@ hcp(
         "//code/utilities/types/vectors/converters:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/deps/external/cpp_graph:lib",
     ],
 )
 
@@ -183,6 +183,7 @@ hcp(
         "//code/utilities/data_structures/point",
         "//code/utilities/data_structures/point:point_mover",
         "//code/utilities/data_structures/range",
+        "//code/utilities/deps/external/cpp_graph:lib",
         "//code/utilities/formats/json/converters:type_to_json_string",
         "//code/utilities/linguistics/counted_object:counted_object_parser",
         "//code/utilities/output/printers:lib",
@@ -205,7 +206,6 @@ hcp(
         "//code/utilities/types/vectors/converters:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/deps/external/cpp_graph:lib",
     ],
 )
 
@@ -221,6 +221,7 @@ hcp(
         "//code/utilities/data_structures/point",
         "//code/utilities/data_structures/point:point_mover",
         "//code/utilities/data_structures/range",
+        "//code/utilities/deps/external/cpp_graph:lib",
         "//code/utilities/formats/json/converters:type_to_json_string",
         "//code/utilities/linguistics/counted_object:counted_object_parser",
         "//code/utilities/output/printers:lib",
@@ -244,7 +245,6 @@ hcp(
         "//code/utilities/types/vectors/observers:index_range_algorithms",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/deps/external/cpp_graph:lib",
     ],
 )
 
@@ -260,6 +260,7 @@ hcp(
         "//code/utilities/data_structures/point",
         "//code/utilities/data_structures/point:point_mover",
         "//code/utilities/data_structures/range",
+        "//code/utilities/deps/external/cpp_graph:lib",
         "//code/utilities/formats/json/converters:type_to_json_string",
         "//code/utilities/linguistics/counted_object:counted_object_parser",
         "//code/utilities/output/printers:lib",
@@ -283,6 +284,5 @@ hcp(
         "//code/utilities/types/vectors/observers:index_range_algorithms",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/deps/external/cpp_graph:lib",
     ],
 )

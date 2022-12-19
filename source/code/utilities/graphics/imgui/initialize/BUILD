@@ -23,6 +23,7 @@ hcp(
 hcp(
     name = "imgui_initializer",
     deps = [
+        "//code/utilities/deps/external/imgui:lib",
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/graphics/imgui/initialize:imgui_state",
         "//code/utilities/graphics/imgui/initialize:opengl_initializer",
@@ -31,6 +32,5 @@ hcp(
         "//code/utilities/graphics/sdl:sdl_initializer",
         "//code/utilities/graphics/sdl:sdl_swap_interval_setter",
         "//code/utilities/graphics/sdl:sdl_window_creator",
-        "//code/utilities/deps/external/imgui:lib",
     ],
 )

@@ -12,10 +12,8 @@ def hcp_hdrs_derive_specific(
         implementation_deps,  #deps & hdrs
         deps = [],  #deps
         data = []):  #deps
-
     #the file names to use
     hcp_target_name = name + "_hcp"
-
 
     interface_deps_cmd = ""
     if len(interface_deps) != 0:

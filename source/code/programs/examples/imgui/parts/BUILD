@@ -7,7 +7,7 @@ package(
 cpp_main(
     name = "main",
     deps = [
-        "//code/utilities/graphics/opengl/loader:opengl_loader",
         "//code/utilities/deps/external/imgui:lib",
+        "//code/utilities/graphics/opengl/loader:opengl_loader",
     ],
 )

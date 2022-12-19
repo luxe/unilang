@@ -13,6 +13,7 @@ hcp(
         "//code/programs/games/ur/state:game_state",
         "//code/utilities/colors/converters",
         "//code/utilities/colors/transformers:color_transitioner",
+        "//code/utilities/deps/external/sfml:lib",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/games/ur:ur_logic",
         "//code/utilities/linguistics/speak:word_speaker",
@@ -26,7 +27,6 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/observers:size_frequency_counter",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -37,6 +37,7 @@ hcp(
         "//code/programs/games/ur/state:game_state",
         "//code/utilities/colors/converters",
         "//code/utilities/colors/transformers:color_transitioner",
+        "//code/utilities/deps/external/sfml:lib",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/games/ur:ur_logic",
         "//code/utilities/linguistics/speak:word_speaker",
@@ -50,7 +51,6 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/observers:size_frequency_counter",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -62,6 +62,7 @@ hcp(
         "//code/programs/games/ur/state:game_state",
         "//code/utilities/colors/converters",
         "//code/utilities/colors/transformers:color_transitioner",
+        "//code/utilities/deps/external/sfml:lib",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/games/ur:ur_logic",
         "//code/utilities/linguistics/speak:word_speaker",
@@ -74,7 +75,6 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/observers:size_frequency_counter",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -85,6 +85,7 @@ hcp(
         "//code/programs/games/ur/state:game_state",
         "//code/utilities/colors/converters",
         "//code/utilities/colors/transformers:color_transitioner",
+        "//code/utilities/deps/external/sfml:lib",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/games/ur:ur_logic",
         "//code/utilities/linguistics/speak:word_speaker",
@@ -98,6 +99,5 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/observers:size_frequency_counter",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/deps/external/sfml:lib",
     ],
 )

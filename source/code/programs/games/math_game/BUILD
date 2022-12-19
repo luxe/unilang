@@ -13,6 +13,7 @@ cc_binary(
         "//code/programs/games/math_game/core:state_updater",
         "//code/programs/games/math_game/state:game_state",
         "//code/programs/games/math_game/state:game_state_getter",
+        "//code/utilities/deps/external/sfml:lib",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/graphics/sfml:game_loop",
         "//code/utilities/graphics/sfml:standard_sfml_game_loop",
@@ -22,6 +23,5 @@ cc_binary(
         "@GL",
         "@glfw",
         "@sdl2",
-        "//code/utilities/deps/external/sfml:lib",
     ],
 )

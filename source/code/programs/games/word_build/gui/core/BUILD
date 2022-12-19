@@ -8,11 +8,11 @@ hcp(
     deps = [
         "//code/programs/games/word_build/gui/assets:assets_loader",
         "//code/programs/games/word_build/gui/state:game_state",
+        "//code/utilities/deps/external/sfml:lib",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/peripheral/keyboard/joycons",
         "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",
         "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
-        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -27,6 +27,7 @@ hcp(
         "//code/programs/games/word_build/gui/state:game_state",
         "//code/utilities/colors/converters",
         "//code/utilities/colors/transformers:color_transitioner",
+        "//code/utilities/deps/external/sfml:lib",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/linguistics/build_word/game:puzzle_builder",
         "//code/utilities/linguistics/speak:word_speaker",
@@ -43,7 +44,6 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/observers:size_frequency_counter",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -53,12 +53,12 @@ hcp(
         "//code/programs/games/word_build/gui/assets",
         "//code/programs/games/word_build/gui/state:game_state",
         "//code/utilities/data_structures/graph/unique_str_vertex_graph:lib",
+        "//code/utilities/deps/external/sfml:lib",
         "//code/utilities/linguistics/build_word/game:puzzle_builder",
         "//code/utilities/math",
         "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_events",
         "//code/utilities/program/wrappers/graphviz:graphviz_image_maker",
         "//code/utilities/types/vectors/observers:lib",
-        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -67,11 +67,11 @@ hcp(
     deps = [
         "//code/programs/games/word_build/gui/assets",
         "//code/programs/games/word_build/gui/state:game_state",
+        "//code/utilities/deps/external/sfml:lib",
         "//code/utilities/math",
         "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_events",
         "//code/utilities/types/strings/sfml:sfml_text",
         "//code/utilities/types/vectors/observers:lib",
-        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -82,6 +82,7 @@ hcp(
         "//code/programs/games/word_build/gui/state:game_state",
         "//code/utilities/colors/converters",
         "//code/utilities/colors/transformers:screen_position_to_rgb",
+        "//code/utilities/deps/external/sfml:lib",
         "//code/utilities/math",
         "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_events",
         "//code/utilities/random:lib",
@@ -89,7 +90,6 @@ hcp(
         "//code/utilities/types/strings/sfml:sfml_text",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -103,6 +103,7 @@ hcp(
         "//code/programs/games/word_build/gui/state:game_state",
         "//code/utilities/colors/converters",
         "//code/utilities/colors/transformers:color_transitioner",
+        "//code/utilities/deps/external/sfml:lib",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/linguistics/build_word/game:puzzle_builder",
         "//code/utilities/linguistics/speak:word_speaker",
@@ -116,6 +117,5 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/observers:size_frequency_counter",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/deps/external/sfml:lib",
     ],
 )

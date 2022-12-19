@@ -16,11 +16,11 @@ hcp(
         "//code/programs/ide/settings/data:ide_settings",
         "//code/utilities/data_structures/graphics/image:positioned_image_data",
         "//code/utilities/data_structures/graphics/objects:frame_elements",
+        "//code/utilities/deps/external/imgui:lib",
         "//code/utilities/graphics/imgui:ui_renders",
         "//code/utilities/graphics/imgui/loop:mechanics",
         "//code/utilities/graphics/imgui/render:frame_renderer",
         "//code/utilities/image:stb_image_setter",
-        "//code/utilities/deps/external/imgui:lib",
     ],
 )
 

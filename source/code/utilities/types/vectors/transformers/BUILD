@@ -11,6 +11,7 @@ cc_library(
     deps = [
         "//code/utilities/data_structures:index_mode",
         "//code/utilities/data_structures/index:moded_index",
+        "//code/utilities/formats/json/converters:type_to_json_string",
         "//code/utilities/language_basic/std_hackery:std_aliases",
         "//code/utilities/types/map:lib",
         "//code/utilities/types/strings/observers/char:lib",
@@ -21,13 +22,9 @@ cc_library(
         "//code/utilities/types/strings/transformers/removing:lib",
         "//code/utilities/types/strings/transformers/squeeze:lib",
         "//code/utilities/types/strings/transformers/trimming:lib",
-        "//code/utilities/formats/json/converters:type_to_json_string",
         "@boost//:range",
     ],
 )
-
-
-
 
 hcp_hdrs_derive(
     name = "remove_duplicate_json_representations",

@@ -16,6 +16,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/cursor:label_cursor_action_doer",
         "//code/utilities/data_structures/graphics/objects/label:label_drawer",
         "//code/utilities/data_structures/graphics/objects/mouse/draw:mouse_selection_drawer",
+        "//code/utilities/deps/external/imgui:lib",
         "//code/utilities/graphics/imgui:imgui_type_utility",
         "//code/utilities/graphics/imgui:ui_renders",
         "//code/utilities/graphics/imgui/loop:mechanics",
@@ -28,6 +29,5 @@ hcp(
         "//code/utilities/peripheral/mouse/state:mouse_position_getter",
         "//code/utilities/peripheral/pc:pc_input_state_getter",
         "//code/utilities/types/variant:lib",
-        "//code/utilities/deps/external/imgui:lib",
     ],
 )

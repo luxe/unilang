@@ -9,9 +9,9 @@ hcp(
     name = "ui_renders",
     deps = [
         "//code/utilities/data_structures/shapes/rectangle:rectangle_settings",
-        "//code/utilities/filesystem/paths:lib",
         "//code/utilities/deps/external/gl:lib",
         "//code/utilities/deps/external/imgui:lib",
+        "//code/utilities/filesystem/paths:lib",
     ],
 )
 
@@ -20,7 +20,7 @@ hcp(
     deps = [
         "//code/utilities/data_structures/color:transparent_rgb_color",
         "//code/utilities/data_structures/position",
-        "//code/utilities/graphics/imgui/loop:mechanics",
         "//code/utilities/deps/external/gl:lib",
+        "//code/utilities/graphics/imgui/loop:mechanics",
     ],
 )

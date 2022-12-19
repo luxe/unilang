@@ -18,9 +18,6 @@ hcp_hdrs_derive(
     ],
 )
 
-
-
-
 cpp_main(
     name = "is_dir",
     deps = [":opendir_wrap"],

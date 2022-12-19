@@ -9,11 +9,11 @@ cc_library(
     srcs = ["lib.cpp"],
     hdrs = ["lib.hpp"],
     deps = [
+        "//code/utilities/data_structures/position",
         "//code/utilities/types/general:lib",
         "//code/utilities/types/strings/observers/char:lib",
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/data_structures/position:position",
     ],
 )
 

@@ -8,11 +8,11 @@ hcp(
     deps = [
         "//code/programs/games/scattergories/gui/assets:assets_loader",
         "//code/programs/games/scattergories/gui/state:game_state",
+        "//code/utilities/deps/external/sfml:lib",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/peripheral/keyboard/joycons",
         "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",
         "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
-        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
@@ -23,6 +23,7 @@ hcp(
         "//code/programs/games/scattergories/gui/state:game_state",
         "//code/utilities/colors/converters",
         "//code/utilities/colors/transformers:color_transitioner",
+        "//code/utilities/deps/external/sfml:lib",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/linguistics/build_word/game:puzzle_builder",
         "//code/utilities/linguistics/speak:word_speaker",
@@ -39,6 +40,5 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/observers:size_frequency_counter",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/deps/external/sfml:lib",
     ],
 )

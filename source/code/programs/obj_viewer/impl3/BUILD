@@ -41,10 +41,10 @@ cc_library(
         # "-lglut",
     ],
     deps = [
+        "//code/utilities/deps/external/gl:lib",
         "//code/utilities/graphics/glx:x11_to_opengl_binder",
         "//code/utilities/graphics/x11/main_state:setup_display_settings",
         "//code/utilities/graphics/x11/main_state:x11_main_state_creator",
-        "//code/utilities/deps/external/gl:lib",
         "@system//:EGL",
         "@system//:GLEW",
         "@system//:GLU",

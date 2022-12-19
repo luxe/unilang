@@ -15,7 +15,9 @@ enum_cpp(
     ],
 )
 
-hcp_hdrs_derive(name = "tri_string",
-interface_deps = [
-    "//code/utilities/deps/stl/string:lib",
-])
+hcp_hdrs_derive(
+    name = "tri_string",
+    interface_deps = [
+        "//code/utilities/deps/stl/string:lib",
+    ],
+)

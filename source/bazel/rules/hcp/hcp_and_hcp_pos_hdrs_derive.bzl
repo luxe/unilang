@@ -10,14 +10,18 @@ def hcp_and_hcp_pos_hdrs_derive(
         implementation_deps = [],  #deps & hdrs
         deps = [],
         data = []):
-    hcp_hdrs_derive(name, 
-                    interface_deps, 
-                    implementation_deps, 
-                    deps, 
-                    data)
-    
-    hcp_pos_hdrs_derive(name, 
-                        interface_deps, 
-                        implementation_deps, 
-                        deps, 
-                        data)
+    hcp_hdrs_derive(
+        name,
+        interface_deps,
+        implementation_deps,
+        deps,
+        data,
+    )
+
+    hcp_pos_hdrs_derive(
+        name,
+        interface_deps,
+        implementation_deps,
+        deps,
+        data,
+    )

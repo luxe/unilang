@@ -7,8 +7,8 @@ package(
 cpp_main(
     name = "main",
     deps = [
+        "//code/utilities/deps/external/imgui:lib",
         "//code/utilities/graphics/imgui/loop:mechanics",
         "//code/utilities/graphics/sdl:sdl_init_settings",
-        "//code/utilities/deps/external/imgui:lib",
     ],
 )

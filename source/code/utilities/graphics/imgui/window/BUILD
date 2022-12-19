@@ -37,8 +37,8 @@ hcp(
 hcp(
     name = "window_renderer",
     deps = [
-        "//code/utilities/graphics/imgui/window:window_settings",
         "//code/utilities/deps/external/imgui:lib",
+        "//code/utilities/graphics/imgui/window:window_settings",
     ],
 )
 

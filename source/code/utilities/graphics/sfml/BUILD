@@ -8,16 +8,16 @@ load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 hcp(
     name = "game_loop",
     deps = [
-        "//code/utilities/deps/external/sfml:lib",
         "//code/utilities/deps/external/kairos:lib",
+        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
 hcp(
     name = "standard_sfml_game_loop",
     deps = [
+        "//code/utilities/deps/external/sfml:lib",
         "//code/utilities/graphics/sfml:game_loop",
         "//code/utilities/peripheral/display:all_video_modes_printer",
-        "//code/utilities/deps/external/sfml:lib",
     ],
 )

@@ -8,8 +8,8 @@ hcp(
     name = "game_state",
     deps = [
         "//code/utilities/data_structures/color:rgb_color",
-        "//code/utilities/peripheral/keyboard/joycons",
         "//code/utilities/deps/external/sfml:lib",
+        "//code/utilities/peripheral/keyboard/joycons",
     ],
 )
 

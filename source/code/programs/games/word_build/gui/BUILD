@@ -13,6 +13,7 @@ cc_binary(
         "//code/programs/games/word_build/gui/core:state_updater",
         "//code/programs/games/word_build/gui/state:game_state",
         "//code/programs/games/word_build/gui/state:game_state_getter",
+        "//code/utilities/deps/external/sfml:lib",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/graphics/sfml:game_loop",
         "//code/utilities/graphics/sfml:standard_sfml_game_loop",
@@ -20,7 +21,6 @@ cc_binary(
         "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",
         "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
         "@GL",
-        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 

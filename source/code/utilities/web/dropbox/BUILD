@@ -8,11 +8,11 @@ load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 hcp(
     name = "dropbox_uploader",
     deps = [
+        "//code/utilities/deps/external/curl:lib",
         "//code/utilities/program/call:lib",
         "//code/utilities/streams/filestreams/read_all:lib",
         "//code/utilities/types/char:lib",
         "//code/utilities/web/dropbox:dropbox_upload_settings",
-        "//code/utilities/deps/external/curl:lib"
     ],
 )
 

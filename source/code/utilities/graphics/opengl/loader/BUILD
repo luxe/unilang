@@ -10,9 +10,9 @@ cc_library(
     deps = [
         "//code/utilities/deps/external/imgui:lib",
         "@system//:GLFW_hdrs",
+        "@system//:GL_hdrs",
+        "@system//:KHR_hdrs",
         "@system//:glfw",
-                "@system//:GL_hdrs",
-                "@system//:KHR_hdrs",
     ],
 )
 

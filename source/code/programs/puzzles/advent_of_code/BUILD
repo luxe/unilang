@@ -7,6 +7,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "advent_of_code_input_getter",
     deps = [
+        "//code/utilities/deps/external/pybind11:lib",
         "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/output/printers:lib",
@@ -23,6 +24,5 @@ hcp(
         "//code/utilities/web/automate/browser:browser_creator",
         "//code/utilities/web/automate/browser:default_browser_settings_getter",
         "//code/utilities/web/automate/navigation:browser_navigator",
-        "//code/utilities/deps/external/pybind11:lib",
     ],
 )

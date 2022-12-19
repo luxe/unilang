@@ -226,6 +226,7 @@ hcp(
         "//code/utilities/data_structures/point:point_line_intersections_getter",
         "//code/utilities/data_structures/point:point_line_to_points",
         "//code/utilities/data_structures/point:point_mover",
+        "//code/utilities/deps/external/cpp_graph:lib",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/output/printers:lib",
         "//code/utilities/program/common_actions/exits:lib",
@@ -239,7 +240,6 @@ hcp(
         "//code/utilities/web/automate/browser:browser_creator",
         "//code/utilities/web/automate/browser:default_browser_settings_getter",
         "//code/utilities/web/automate/navigation:browser_navigator",
-        "//code/utilities/deps/external/cpp_graph:lib",
     ],
 )
 

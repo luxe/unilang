@@ -10,7 +10,7 @@ hcp(name = "cycle_clock")
 hcp(
     name = "cycle_clock_checker",
     deps = [
-        "//code/utilities/time/cycle_clock",
         "//code/utilities/deps/external/imgui:lib",
+        "//code/utilities/time/cycle_clock",
     ],
 )

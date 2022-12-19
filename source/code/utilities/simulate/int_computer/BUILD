@@ -9,11 +9,10 @@ enum_cpp(
     name = "operation_type",
     values = [
         "nop",
-        "acc", #short for accumulate
+        "acc",  #short for accumulate
         "jmp",
     ],
 )
-
 
 hcp_hdrs_derive(
     name = "instruction",
@@ -21,7 +20,6 @@ hcp_hdrs_derive(
         "//code/utilities/simulate/int_computer:operation_type",
     ],
 )
-
 
 hcp_hdrs_derive(
     name = "instructions_getter_settings",
@@ -39,7 +37,6 @@ hcp_hdrs_derive(
     ],
 )
 
-
 hcp_hdrs_derive(
     name = "int_computer",
     interface_deps = [
@@ -47,7 +44,6 @@ hcp_hdrs_derive(
         "//code/utilities/deps/stl/unordered_set:lib",
     ],
 )
-
 
 hcp_hdrs_derive(
     name = "int_computer_runner",

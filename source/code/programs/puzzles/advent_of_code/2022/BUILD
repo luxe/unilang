@@ -29,7 +29,6 @@ hcp_hdrs_derive(
         "//code/programs/puzzles/advent_of_code/2022:day_13",
         "//code/programs/puzzles/advent_of_code/2022:day_14",
         "//code/programs/puzzles/advent_of_code/2022:day_15",
-
     ],
 )
 

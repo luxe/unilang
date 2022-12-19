@@ -38,11 +38,11 @@ hcp(
         "//code/utilities/code/save:state_to_code_converter",
         "//code/utilities/data_structures/graphics/objects:frame_elements",
         "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:buildable_schema_faced_tree_tokenizer",
+        "//code/utilities/deps/external/imgui:lib",
         "//code/utilities/formats/json/converters:json_file_io",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/graphics/sdl:sdl_fullscreener",
         "//code/utilities/program/wrappers/zenity/file_selector",
-        "//code/utilities/deps/external/imgui:lib",
     ],
 )
 
@@ -57,11 +57,11 @@ hcp(
         "//code/utilities/code/save:save_state_loader",
         "//code/utilities/code/save:save_state_saver",
         "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:buildable_schema_faced_tree_tokenizer",
+        "//code/utilities/deps/external/imgui:lib",
         "//code/utilities/formats/json/converters:json_file_io",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/graphics/sdl:sdl_fullscreener",
         "//code/utilities/program/wrappers/zenity/file_selector",
-        "//code/utilities/deps/external/imgui:lib",
     ],
 )
 
@@ -77,11 +77,11 @@ hcp(
         "//code/utilities/code/save:save_state_saver",
         "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:buildable_schema_faced_tree_tokenizer",
         "//code/utilities/data_structures/graphics/objects/faced_tree:tree_label_active_finder",
+        "//code/utilities/deps/external/imgui:lib",
         "//code/utilities/formats/json/converters:json_file_io",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/graphics/sdl:sdl_fullscreener",
         "//code/utilities/program/wrappers/zenity/file_selector",
         "//code/utilities/types/variant:lib",
-        "//code/utilities/deps/external/imgui:lib",
     ],
 )

@@ -7,15 +7,14 @@ def hcp(name, deps = [], data = []):
     explicit_hcp_file = name + ".hcp"
     explicit_hpp_file = name + ".hpp"
     explicit_cpp_file = name + ".cpp"
-    
+
     # hcp should not reference third party deps directly.
     # mainly because we don't have easy control over the warnings they emit.
     # this will enforce a policy to prevent such usage.
     for dep in deps:
         if dep.find("@") != -1:
             #print(name + " SHOULD NOT be using external dep: " + dep)
-            fail(name + " SHOULD NOT be using external dep: " + dep);
-            
+            fail(name + " SHOULD NOT be using external dep: " + dep)
 
     #compiling hpp/cpp
     real_deps = list(deps)

@@ -12,7 +12,7 @@ distributable_cpp_main(
     description = "visualize bazel build graph",
     deps = [
         "//code/programs/repo_tools/graph_visualize:task_executer",
-        "//code/programs/repo_tools/graph_visualize/program_options:program_options",
+        "//code/programs/repo_tools/graph_visualize/program_options",
     ],
 )
 

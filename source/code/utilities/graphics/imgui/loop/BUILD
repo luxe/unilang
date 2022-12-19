@@ -26,10 +26,10 @@ hcp(
 hcp(
     name = "event_poller",
     deps = [
+        "//code/utilities/deps/external/gl:lib",
+        "//code/utilities/deps/external/imgui:lib",
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/graphics/sdl:sdl_init_settings",
         "//code/utilities/graphics/sdl:sdl_window_creator",
-        "//code/utilities/deps/external/gl:lib",
-        "//code/utilities/deps/external/imgui:lib",
     ],
 )

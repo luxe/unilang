@@ -8,12 +8,12 @@ hcp(
     name = "game_state",
     deps = [
         "//code/utilities/data_structures/color:rgb_color",
+        "//code/utilities/deps/external/sfml:lib",
         "//code/utilities/linguistics/build_word/game:build_word_puzzle",
         "//code/utilities/linguistics/build_word/game/settings:build_word_game_settings",
         "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_gamepads",
         "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_gamepads_phases",
         "//code/utilities/peripheral/keyboard/joycons",
-        "//code/utilities/deps/external/sfml:lib",
     ],
 )
 
