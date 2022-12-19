@@ -17,14 +17,14 @@ cc_library(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "type_to_json_string",
-    deps = [],
+    interface_deps = [],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "json_file_io",
-    deps = [
+    interface_deps = [
         "//code/utilities/formats/json/compression:json_compression_format",
         "//code/utilities/formats/json/compression:json_compressor",
         "//code/utilities/formats/json/converters:type_to_json_string",

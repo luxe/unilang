@@ -4,15 +4,15 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
-hcp(
+hcp_hdrs_derive(
     name = "arch_prune_settings",
-    deps = [
+    interface_deps = [
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "cuda_arch_prune_analyzer",
-    deps = [
+    interface_deps = [
         "//code/utilities/filesystem/files/getting:lib",
         "//code/utilities/filesystem/files/observers:filename_size_printer",
         "//code/utilities/formats/compression:lib",
@@ -26,9 +26,9 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "cuda_arch_symbol_counter",
-    deps = [
+    interface_deps = [
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/program/call:lib",
         "//code/utilities/program/wrappers/cuobjdump:cuobjdump_finder",
@@ -41,9 +41,9 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "cuda_arch_pruner",
-    deps = [
+    interface_deps = [
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/program/call:lib",
         "//code/utilities/program/call/process_spawn:process_spawner",
@@ -59,9 +59,9 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "tgz_cuda_arch_pruner",
-    deps = [
+    interface_deps = [
         "//code/utilities/filesystem/files/getting:lib",
         "//code/utilities/filesystem/files/observers:filename_size_printer",
         "//code/utilities/formats/compression:lib",
