@@ -28,16 +28,16 @@ enum_cpp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "html_fetch_settings",
-    deps = [
+    interface_deps = [
         "//code/utilities/web:html_fetch_strategy",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "web_json_extraction_settings",
-    deps = [
+    interface_deps = [
         "//code/utilities/formats/json/extraction:json_extraction_settings",
         "//code/utilities/web:html_fetch_settings",
     ],

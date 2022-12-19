@@ -5,17 +5,17 @@ load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
-hcp(
+hcp_hdrs_derive(
     name = "ur_state_getter",
-    deps = [
+    interface_deps = [
         "//code/utilities/games/ur/state:ur_game_state",
         "//code/utilities/types/vectors/transformers:lib",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "ur_logic",
-    deps = [
+    interface_deps = [
         "//code/utilities/games/ur/state:ur_game_state",
         "//code/utilities/random/dice:n_sided_dice",
         "//code/utilities/types/map:lib",
