@@ -5,6 +5,8 @@
 #pragma once
 // Supress all compiler warnings
 #pragma GCC system_header
+#include <cstdlib>
+#include <cstdarg>
 #include <SDL.h>
 #include <SDL_mixer.h>
 
