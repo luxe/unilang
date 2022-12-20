@@ -8,6 +8,12 @@ buildifier(
     name = "buildifier",
 )
 
+filegroup(
+       name = "clang_tidy_config",
+       srcs = [".clang-tidy"],
+       visibility = ["//visibility:public"],
+)
+
 load("@bazel_toolchains//rules/exec_properties:exec_properties.bzl", "create_rbe_exec_properties_dict")
 
 rbe_default_properties = {}
