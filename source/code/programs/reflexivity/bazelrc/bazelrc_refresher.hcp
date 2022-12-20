@@ -10,8 +10,11 @@ class
     //sub-files
     Write_To_File(Get_General_Bazelrc_File_Path(),Create_General_Bazelrc_Contents());
     Write_To_File(Get_Sanitizer_Bazelrc_File_Path(),Create_Sanitizer_Bazelrc_Contents());
+    Write_To_File(Get_Clang_Tidy_Bazelrc_File_Path(),Create_Clang_Tidy_Bazelrc_Contents());
     Write_To_File(Get_Remote_Bazelrc_File_Path(),Create_Remote_Bazelrc_Contents());
     Write_To_File(Get_Wasm_Bazelrc_File_Path(),Create_Wasm_Bazelrc_Contents());
+    
+
 
 ❱
 
@@ -216,6 +219,23 @@ class
     return str;
 ❱
 
+
+◀private: static▶ std::string ☀Create_Clang_Tidy_Bazelrc_Contents()❰
+    std::string str;
+    Append_With_Newline(str,Generated_Comment_Getter::Get());
+    
+    Append_With_Newline(str,"# Required for bazel_clang_tidy to operate as expected");
+    Append_With_Newline(str,"build:clang-tidy --aspects @bazel_clang_tidy//clang_tidy:clang_tidy.bzl%clang_tidy_aspect");
+    Append_With_Newline(str,"build:clang-tidy --output_groups=report");
+    Append_With_Newline(str,"");
+    Append_With_Newline(str,"# Optionally override the .clang-tidy config file target");
+    Append_With_Newline(str,"build:clang-tidy --@bazel_clang_tidy//:clang_tidy_config=//:clang_tidy_config");
+    
+    return str;
+
+
+❱
+
 ◀private: static▶ std::string ☀Create_Remote_Bazelrc_Contents()❰
     std::string str;
     Append_With_Newline(str,Generated_Comment_Getter::Get());
@@ -301,6 +321,11 @@ class
 ◀private: static▶ std::string ☀Get_Sanitizer_Bazelrc_File_Path()❰
     std::string f = Bazel_Derived_Root_Of_Repo();
     f += "source/bazel/config/bazelrc.sanitizers";
+    return f;
+❱
+◀private: static▶ std::string ☀Get_Clang_Tidy_Bazelrc_File_Path()❰
+    std::string f = Bazel_Derived_Root_Of_Repo();
+    f += "source/bazel/config/bazelrc.clang_tidy";
     return f;
 ❱
 ◀private: static▶ std::string ☀Get_Remote_Bazelrc_File_Path()❰
