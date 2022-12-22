@@ -63,7 +63,10 @@ class
     //instead we allow cc_toolchain resolution to choose the correct toolchain that was registered through bazel rules
     //one day this flag will be the default and we can remove it here as well
     //TODO(thickey): remove flag
+    
+    Append_With_Newline(str,"# compatibility flags");
     Append_With_Newline(str,"build --incompatible_enable_cc_toolchain_resolution");
+    Append_With_Newline(str,"");
     //Append_With_Newline(str,"build --incompatible_restrict_string_escapes=false");
     
     
@@ -86,23 +89,28 @@ class
     
     Append_With_Newline(str,"# performance and resources");
     Append_With_Newline(str,"build --jobs=HOST_CPUS*2");
+    Append_With_Newline(str,"build --sandbox_base=/dev/shm");
+    Append_With_Newline(str,"");
     
-    
+    Append_With_Newline(str,"# Unilang exporting");
     Append_With_Newline(str,"build:unilang --sandbox_writable_path=" + Full_Path_To_Desktop() + "repos");
+    Append_With_Newline(str,"");
     
     Append_With_Newline(str,"# repository cache related");
     Append_With_Newline(str,"common --repository_cache=/home/luxe/Desktop/unilang_repo_cache");
+    Append_With_Newline(str,"");
     
     // Breaks repository cache a lot when regenerating build files (even when regenerated files haven't actually changed)
     //Append_With_Newline(str,"common --experimental_repository_cache_urls_as_default_canonical_id");
     
     
+    Append_With_Newline(str,"# Java Stuff");
     std::vector<std::string> verbs {"fetch", "sync", "build", "test"}; //can't do common because it breaks "query".
-    
     for (auto const& it: verbs){
         Append_With_Newline(str,it + " --java_language_version=11");
         Append_With_Newline(str,it + " --java_runtime_version=remotejdk_11");
     }
+    Append_With_Newline(str,"");
     
     return str;
 ❱
@@ -246,6 +254,7 @@ class
     std::string str;
     Append_With_Newline(str,Generated_Comment_Getter::Get());
     
+    Append_With_Newline(str,"# Allow running the aspect to find C/C++ header corrections");
     Append_With_Newline(str,"build:iwyu --aspects @com_github_storypku_bazel_iwyu//bazel/iwyu:iwyu.bzl%iwyu_aspect");
     Append_With_Newline(str,"build:iwyu --output_groups=report");
 
