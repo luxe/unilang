@@ -11,6 +11,7 @@ class
     Write_To_File(Get_General_Bazelrc_File_Path(),Create_General_Bazelrc_Contents());
     Write_To_File(Get_Sanitizer_Bazelrc_File_Path(),Create_Sanitizer_Bazelrc_Contents());
     Write_To_File(Get_Clang_Tidy_Bazelrc_File_Path(),Create_Clang_Tidy_Bazelrc_Contents());
+    Write_To_File(Get_IWYU_Bazelrc_File_Path(),Create_IWYU_Bazelrc_Contents());
     Write_To_File(Get_Remote_Bazelrc_File_Path(),Create_Remote_Bazelrc_Contents());
     Write_To_File(Get_Wasm_Bazelrc_File_Path(),Create_Wasm_Bazelrc_Contents());
     
@@ -24,6 +25,7 @@ class
     Append_With_Newline(str,"import %workspace%/bazel/config/bazelrc.general");
     Append_With_Newline(str,"import %workspace%/bazel/config/bazelrc.sanitizers");
     Append_With_Newline(str,"import %workspace%/bazel/config/bazelrc.clang_tidy");
+    Append_With_Newline(str,"import %workspace%/bazel/config/bazelrc.iwyu");
     Append_With_Newline(str,"import %workspace%/bazel/config/bazelrc.remote");
     //Append_With_Newline(str,"import %workspace%/bazel/config/bazelrc.wasm");
     
@@ -238,8 +240,21 @@ class
     
     return str;
 
+❱
+
+◀private: static▶ std::string ☀Create_IWYU_Bazelrc_Contents()❰
+    std::string str;
+    Append_With_Newline(str,Generated_Comment_Getter::Get());
+    
+    Append_With_Newline(str,"build:iwyu --aspects @com_github_storypku_bazel_iwyu//bazel/iwyu:iwyu.bzl%iwyu_aspect");
+    Append_With_Newline(str,"build:iwyu --output_groups=report");
+
+    
+    return str;
 
 ❱
+
+
 
 ◀private: static▶ std::string ☀Create_Remote_Bazelrc_Contents()❰
     std::string str;
@@ -331,6 +346,11 @@ class
 ◀private: static▶ std::string ☀Get_Clang_Tidy_Bazelrc_File_Path()❰
     std::string f = Bazel_Derived_Root_Of_Repo();
     f += "source/bazel/config/bazelrc.clang_tidy";
+    return f;
+❱
+◀private: static▶ std::string ☀Get_IWYU_Bazelrc_File_Path()❰
+    std::string f = Bazel_Derived_Root_Of_Repo();
+    f += "source/bazel/config/bazelrc.iwyu";
     return f;
 ❱
 ◀private: static▶ std::string ☀Get_Remote_Bazelrc_File_Path()❰
