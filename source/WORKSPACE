@@ -90,15 +90,15 @@ gazelle_dependencies()
 
 #############################################
 
-load("@rules_java//java:repositories.bzl", "rules_java_dependencies", "rules_java_toolchains")
-rules_java_dependencies()
-rules_java_toolchains()
+load("@build_bazel_rules_swift//swift:repositories.bzl","swift_rules_dependencies")
+swift_rules_dependencies()
 
 
 #############################################
 
-load("@build_bazel_rules_swift//swift:repositories.bzl","swift_rules_dependencies")
-swift_rules_dependencies()
+load("@rules_java//java:repositories.bzl", "rules_java_dependencies", "rules_java_toolchains")
+rules_java_dependencies()
+rules_java_toolchains()
 
 
 #############################################
@@ -134,6 +134,15 @@ grpc_deps()
 #############################################
 
 
+#############################################
+
+
+#############################################
+
+
+#############################################
+
+
 
 
 #############################################
@@ -146,15 +155,6 @@ bazel_iwyu_dependencies()
 load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
 bazel_skylib_workspace()
 
-
-
-#############################################
-
-
-#############################################
-
-
-#############################################
 
 
 #############################################
@@ -191,18 +191,37 @@ switched_rules_by_language(
 
 #############################################
 
-load("@com_github_nelhage_rules_boost//:boost/boost.bzl", "boost_deps")
-boost_deps()
-
-
-#############################################
-
 load("@remote_apis//:repository_rules.bzl", remote_apis_switched_rules_by_language = "switched_rules_by_language")
 remote_apis_switched_rules_by_language(
     name = "bazel_remote_apis_imports",
     cc = True,
     go = False,
     java = True,
+)
+
+
+#############################################
+
+load("@com_github_nelhage_rules_boost//:boost/boost.bzl", "boost_deps")
+boost_deps()
+
+
+#############################################
+
+load("@bazel_diff//:repositories.bzl", "bazel_diff_dependencies")
+
+bazel_diff_dependencies()
+
+load("@rules_jvm_external//:defs.bzl", "maven_install")
+load("@bazel_diff//:artifacts.bzl", "BAZEL_DIFF_MAVEN_ARTIFACTS")
+
+maven_install(
+    name = "bazel_diff_maven",
+    artifacts = BAZEL_DIFF_MAVEN_ARTIFACTS,
+    repositories = [
+        "http://uk.maven.org/maven2",
+        "https://jcenter.bintray.com/",
+    ],
 )
 
 

@@ -1,25 +1,38 @@
-package(
-    default_visibility = ["//visibility:public"],
-)
+package(default_visibility = ["//visibility:public"])
 
+
+#=========================================================================
+# Bazel-diff is a workflow and CI tool for calculating the affecting targets of a code changes.
+# It's used to make sure only a minimal amount of work is done when rebuilding / running tests to verify changes.
+# Without it, we'd have to rebuild the world which is untennable.
+#load("@rules_java//java:defs.bzl", "java_binary")
+
+#java_binary(
+#    name = "bazel-diff",
+#    main_class = "com.bazel_diff.Main",
+#    runtime_deps = ["@bazel_diff//:bazel-diff"],
+#)
+
+#=========================================================================
+# Buildifier is a bazel tool for linting and formatting BUILD files.
 load("@buildtools//buildifier:def.bzl", "buildifier")
-
 buildifier(
     name = "buildifier",
 )
-
+#=========================================================================
+# Clang-tidy is an llvm tool for linting c++ source code.
 filegroup(
        name = "clang_tidy_config",
        srcs = [".clang-tidy"],
        visibility = ["//visibility:public"],
 )
+#=========================================================================
 
+# RBE (Remote Code Execution) has a repository for shared platforms.
+# Platforms contain additional information to guide the RBE system on how to execute actions.
 load("@bazel_toolchains//rules/exec_properties:exec_properties.bzl", "create_rbe_exec_properties_dict")
-
 rbe_default_properties = {}
-
 rbe_default_properties.update(create_rbe_exec_properties_dict(gce_machine_type = "e2-standard-2"))
-
 platform(
     name = "rbe_default",
     # Example custom execution property instructing RBE to use e2-standard-2 GCE VMs.
@@ -30,3 +43,4 @@ platform(
     # to the 'platform' target in the generated configs.
     parents = ["@rbe_default//config:platform"],
 )
+#=========================================================================

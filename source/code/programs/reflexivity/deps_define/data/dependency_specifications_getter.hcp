@@ -91,18 +91,18 @@ class
     
     //Build Systems (Pretty Bazel specific)
     x.specs.emplace_back(Bazel());
+    
+    //bazel target selection
+    x.specs.emplace_back(Bazel_Diff());
+    x.specs.emplace_back(target_determinator_driver());
+    x.specs.emplace_back(target_determinator());
+    
+    
     x.specs.emplace_back(Bazel_Skylib());
     x.specs.emplace_back(BazelBuildTools());
     x.specs.emplace_back(Buildfarm());
     x.specs.emplace_back(Remote_APIs());
     x.specs.emplace_back(rbe_default()); //bazel's way of making "toolchain containers" for remote execution
-    
-    //Google protobuf stuff
-    x.specs.emplace_back(Protobuf());
-    x.specs.emplace_back(Protobuf_Rules());
-    x.specs.emplace_back(utf8_range());
-    x.specs.emplace_back(Google_Apis());
-    x.specs.emplace_back(Google_Apis_Common_Protos());
     
     //Toolchains
     x.specs.emplace_back(Bazel_Toolchains());
@@ -148,6 +148,14 @@ class
     
     //shared objects to link with
     x.specs.emplace_back(GL());
+    
+    
+    //Google protobuf stuff
+    x.specs.emplace_back(Protobuf());
+    x.specs.emplace_back(Protobuf_Rules());
+    x.specs.emplace_back(utf8_range());
+    x.specs.emplace_back(Google_Apis());
+    x.specs.emplace_back(Google_Apis_Common_Protos());
     
     
     
@@ -555,7 +563,7 @@ class
 
 ◀private: static▶ Dependency_Specification ☀trunk()❰
 
-    //you'll need to use ./user_run @trunk//file:downloaded
+    //you'll need to use ./user_run @trunk//    
     //but that doesn't work either.  just run it on the root
     //tool is not really needed since we don't write raw c++
     
@@ -564,6 +572,26 @@ class
     spec.download_rule = "http_file";
     spec.build_content_in_dependency = true;
     Add_Direct_Url(spec,"https://trunk.io/releases/trunk");
+    return spec;
+❱
+◀private: static▶ Dependency_Specification ☀target_determinator_driver()❰
+
+    //https://github.com/bazel-contrib/target-determinator/issues/36
+    Dependency_Specification spec;
+    spec.lib_name = "target_determinator_driver";
+    spec.download_rule = "http_file";
+    spec.build_content_in_dependency = true;
+    Add_Direct_Url(spec,"https://github.com/bazel-contrib/target-determinator/releases/download/v0.13.0/driver.linux.amd64");
+    return spec;
+❱
+◀private: static▶ Dependency_Specification ☀target_determinator()❰
+
+    //https://github.com/bazel-contrib/target-determinator/issues/36
+    Dependency_Specification spec;
+    spec.lib_name = "target_determinator";
+    spec.download_rule = "http_file";
+    spec.build_content_in_dependency = true;
+    Add_Direct_Url(spec,"https://github.com/bazel-contrib/target-determinator/releases/download/v0.13.0/target-determinator.linux.amd64");
     return spec;
 ❱
 
@@ -1096,6 +1124,36 @@ cc_grpc_library(
     
     return spec;
 ❱
+◀private: static▶ Dependency_Specification ☀Bazel_Diff()❰
+    Dependency_Specification spec;
+    spec.lib_name = "bazel_diff";
+    Add_Unilang_Github_Mirror(spec,"bazel-diff","f6014ee4681af397d581a35d48bc71a15f9aac69","0af0db5d143f50a8bd26cb21e81f1f5d98f8cbaa6ae3919130211759834d9c67");
+    spec.build_content_in_dependency=true;
+
+    spec.workspace.priority = 11;
+    spec.workspace.raw_starlark = 
+R"RAW_STRING(
+load("@bazel_diff//:repositories.bzl", "bazel_diff_dependencies")
+
+bazel_diff_dependencies()
+
+load("@rules_jvm_external//:defs.bzl", "maven_install")
+load("@bazel_diff//:artifacts.bzl", "BAZEL_DIFF_MAVEN_ARTIFACTS")
+
+maven_install(
+    name = "bazel_diff_maven",
+    artifacts = BAZEL_DIFF_MAVEN_ARTIFACTS,
+    repositories = [
+        "http://uk.maven.org/maven2",
+        "https://jcenter.bintray.com/",
+    ],
+)
+)RAW_STRING";
+    
+        
+    return spec;
+❱
+
 ◀private: static▶ Dependency_Specification ☀nuspell()❰
     Dependency_Specification spec;
     spec.lib_name = "nuspell";
