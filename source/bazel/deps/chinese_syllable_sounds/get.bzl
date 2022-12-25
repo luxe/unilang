@@ -10,10 +10,10 @@ def chineseSyllableSounds():
     http_archive(
         name="chinese_syllable_sounds" ,
         build_file="//bazel/deps/chinese_syllable_sounds:build.BUILD" ,
-        sha256="52849b2317e897ba333a9ae0dd55f7187a7198619fab74e555e9919c750942a0" ,
-        strip_prefix="chinese_syllable_sounds-042305a69752a5beef8e6e0f66942edc370f7dcc" ,
+        sha256="5a663110db6a5607470131180869e5070c00080aba1dbaa41ee5b31afd0584cc" ,
+        strip_prefix="chinese_syllable_sounds-5f2e25f3defd4c4aa99e0ee59705c4dd6b5a3ef4" ,
         urls = [
-            main_mirror_url("chinese_syllable_sounds","042305a69752a5beef8e6e0f66942edc370f7dcc"),
+            main_mirror_url("chinese_syllable_sounds","5f2e25f3defd4c4aa99e0ee59705c4dd6b5a3ef4"),
         ],
     )
 
