@@ -10,10 +10,10 @@ def buildtools():
     http_archive(
         name="buildtools" ,
         build_file="//bazel/deps/buildtools:build.BUILD" ,
-        sha256="bacae31ebfa1dbed55b9db531038d1e2c5fae9c7d056f9ff9947ae9bcfe0c6ae" ,
-        strip_prefix="buildtools-c98e381e8651e97d6da52122b288ec2ba6c392ec" ,
+        sha256="65cb3d0800066bf457149824e4723c2621d8e897398fdde55c624c6690b84784" ,
+        strip_prefix="buildtools-762712d8ce3ff3aa361b36d50688eb4ab7884637" ,
         urls = [
-            main_mirror_url("buildtools","c98e381e8651e97d6da52122b288ec2ba6c392ec"),
+            main_mirror_url("buildtools","762712d8ce3ff3aa361b36d50688eb4ab7884637"),
         ],
     )
 

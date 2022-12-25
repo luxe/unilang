@@ -9,10 +9,10 @@ load("//bazel/deps:deps_config.bzl", "main_mirror_url")
 def bazelToolchains():
     http_archive(
         name="bazel_toolchains" ,
-        sha256="8b344cef978d2079a797496b5e92142ce80f7d19ead64ca947b9adfd245812f3" ,
-        strip_prefix="bazel-toolchains-1-463914fa8f1359e51458d11de8112815f6a035c5" ,
+        sha256="ebcef57f8c1bc00a43f99ae6ea4c4040da8f945e5216c35c9b3a629d30fe4855" ,
+        strip_prefix="bazel-toolchains-1-03bb68c854a9268bcf68d1138dc00b09cd928cff" ,
         urls = [
-            main_mirror_url("bazel-toolchains-1","463914fa8f1359e51458d11de8112815f6a035c5"),
+            main_mirror_url("bazel-toolchains-1","03bb68c854a9268bcf68d1138dc00b09cd928cff"),
         ],
     )
 
