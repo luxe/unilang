@@ -41,6 +41,6 @@ platform(
     # were imported as a Bazel external repository named 'rbe_default'. If you extracted the
     # generated configs elsewhere in your source repository, replace the following with the label
     # to the 'platform' target in the generated configs.
-    parents = ["@rbe_default//config:platform"],
+    # parents = ["@rbe_default//config:platform"],
 )
 #=========================================================================
