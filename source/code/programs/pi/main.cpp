@@ -26,7 +26,6 @@ int main(){
         }
     }
     
-    syntax error on purpose
     
     
     
