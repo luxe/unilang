@@ -4,9 +4,8 @@
 
 
 cc_library(
-    name = "fmt",
-    srcs = glob(["src/*.cc"]),
-    hdrs = glob(["include/fmt/*.h"]),
-    includes = ["include"],
+    name = "lss",
+    hdrs = ["linux_syscall_support.h"],
+    include_prefix = "third_party/lss",
     visibility = ["//visibility:public"],
 )

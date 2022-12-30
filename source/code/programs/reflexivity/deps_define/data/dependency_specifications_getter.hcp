@@ -168,6 +168,7 @@ class
     
     
     //C++
+    x.specs.emplace_back(GSL());
     x.specs.emplace_back(Boost());
     x.specs.emplace_back(Abseil());
     x.specs.emplace_back(NameOf());
@@ -179,6 +180,7 @@ class
     x.specs.emplace_back(tuple());
     x.specs.emplace_back(include_what_you_use());
     x.specs.emplace_back(indicators());
+    
 
     //adding PHP core for its rand impl
     x.specs.emplace_back(php_src());
@@ -203,9 +205,10 @@ class
     x.specs.emplace_back(Backward_Cpp());
     x.specs.emplace_back(DeathHandler());
     x.specs.emplace_back(Poppy());
+    x.specs.emplace_back(lss());
+    x.specs.emplace_back(breakpad());
     //https://github.com/ianlancetaylor/libbacktrace
     //https://github.com/certik/stacktrace
-    //https://github.com/google/breakpad
     
     //https://github.com/threatstack/elfutils
     //https://github.com/abseil/abseil-cpp/blob/master/absl/debugging/stacktrace.h
@@ -316,6 +319,7 @@ class
     x.specs.emplace_back(bsa());
     x.specs.emplace_back(matplotplusplus());
     x.specs.emplace_back(octree());
+    x.specs.emplace_back(earcut());
     
     //Metrics
     x.specs.emplace_back(statsd_cpp());
@@ -381,6 +385,7 @@ class
     x.specs.emplace_back(Kairos()); //sfml utility
     x.specs.emplace_back(Glfw());
     x.specs.emplace_back(Imgui());
+    x.specs.emplace_back(Implot());
     x.specs.emplace_back(Cairo());
     x.specs.emplace_back(Plutovg());
     x.specs.emplace_back(Lib_Png());
@@ -772,7 +777,25 @@ cc_library(
 ❱
 
 
+◀private: static▶ Dependency_Specification ☀GSL()❰
+    Dependency_Specification spec;
+    spec.lib_name = "gsl";
+    Add_Unilang_Github_Mirror(spec,"GSL","f94c1f6f2b5e141d5f6eb3d284cd4a8cf9a81aac","01bc0debd848de81a602933d96b08cada1a2117f11cc0e3ebf1ec14026b52beb");
+    spec.build_defs.raw_starlark = 
+R"RAW_STRING(
+load("@rules_cc//cc:defs.bzl", "cc_library")
 
+cc_library(
+    name = "gsl",
+    hdrs = glob(["include/gsl/*"]),
+    includes = ["include"],
+    visibility = ["//visibility:public"],
+)
+
+
+)RAW_STRING";
+    return spec;
+❱
 
 ◀private: static▶ Dependency_Specification ☀Boost()❰
     Dependency_Specification spec;
@@ -1500,6 +1523,89 @@ cc_library(
     
     return spec;
 ❱
+◀private: static▶ Dependency_Specification ☀lss()❰
+    Dependency_Specification spec;
+    spec.lib_name = "lss";
+    Add_Unilang_Github_Mirror(spec,"linux-syscall-support","be2d5a80df9a9519cab306508ce902d774da76a9","e21da675cf713219daa39e18ee66056f9e01655e87fe6e35740c5b5c0564ae53");
+    
+    
+    spec.build_defs.raw_starlark = 
+R"RAW_STRING(
+cc_library(
+    name = "lss",
+    hdrs = ["linux_syscall_support.h"],
+    include_prefix = "third_party/lss",
+    visibility = ["//visibility:public"],
+)
+)RAW_STRING";
+    
+    
+    return spec;
+❱
+
+◀private: static▶ Dependency_Specification ☀breakpad()❰
+    Dependency_Specification spec;
+    spec.lib_name = "breakpad";
+    Add_Unilang_Github_Mirror(spec,"breakpad","79326ebe9446add03e76b4422ff8036e812224d2","4abbcd665631218a436fe809ea31e8f0a807b9ab829a87acf9af9c47fe5c345b");
+    
+    
+    spec.build_defs.raw_starlark = 
+R"RAW_STRING(
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+LIB_POSIX = [
+    "src/client/minidump_file_writer.cc",
+    "src/common/convert_UTF.cc",
+    "src/common/convert_UTF.h",  # needs to be here, because of an unqualified import
+    "src/common/md5.cc",
+    "src/common/simple_string_dictionary.cc",
+    "src/common/string_conversion.cc",
+]
+
+LIB_LINUX = LIB_POSIX + [
+    "src/client/linux/crash_generation/crash_generation_client.cc",
+    "src/client/linux/dump_writer_common/thread_info.cc",
+    "src/client/linux/dump_writer_common/ucontext_reader.cc",
+    "src/client/linux/handler/exception_handler.cc",
+    "src/client/linux/handler/minidump_descriptor.cc",
+    "src/client/linux/log/log.cc",
+    "src/client/linux/microdump_writer/microdump_writer.cc",
+    "src/client/linux/minidump_writer/linux_dumper.cc",
+    "src/client/linux/minidump_writer/linux_ptrace_dumper.cc",
+    "src/client/linux/minidump_writer/minidump_writer.cc",
+    "src/client/linux/minidump_writer/pe_file.cc",
+    "src/common/linux/http_upload.cc",
+    "src/common/linux/elfutils.cc",
+    "src/common/linux/file_id.cc",
+    "src/common/linux/guid_creator.cc",
+    "src/common/linux/linux_libc_support.cc",
+    "src/common/linux/memory_mapped_file.cc",
+    "src/common/linux/safe_readlink.cc",
+    "src/common/linux/breakpad_getcontext.S",
+]
+
+cc_library(
+    name = "breakpad",
+    srcs = LIB_LINUX,
+    hdrs = glob(["src/**/*.h"]),
+    linkopts = [
+        "-lpthread",
+        "-ldl",
+    ],
+    strip_include_prefix = "src",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@curl",
+        "@lss",
+    ],
+)
+)
+)RAW_STRING";
+    
+    
+    return spec;
+❱
+
 ◀private: static▶ Dependency_Specification ☀warning_guards()❰
     Dependency_Specification spec;
     spec.lib_name = "warning_guards";
@@ -2032,6 +2138,24 @@ cc_library(
     Dependency_Specification spec;
     spec.lib_name = "fp16";
     Add_Unilang_Github_Mirror(spec,"FP16","febbb1c163726b5db24bed55cc9dc42529068997","3e71681e0a67cd28552aa0bbb78ec6a6bd238216df15336dc1326280f7958de2");
+    
+    spec.build_defs.raw_starlark = 
+R"RAW_STRING(
+package(
+    default_visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "fp16",
+    hdrs = glob([
+        "include/**/*.h",
+    ]),
+    includes = [
+        "include/",
+    ],
+)
+)RAW_STRING";
+
     return spec;
 ❱
 ◀private: static▶ Dependency_Specification ☀Glm()❰
@@ -2102,6 +2226,35 @@ cc_library(
     visibility = [
         "//visibility:public",
     ],
+)
+
+    
+)RAW_STRING";
+
+    Wrapper_Target target;
+    target.deps.emplace_back("@octree");
+    target.includes.emplace_back("Octree.hpp");
+    spec.dep_integration.wrapper_targets.emplace_back(target);
+
+    return spec;
+❱
+◀private: static▶ Dependency_Specification ☀earcut()❰
+    Dependency_Specification spec;
+    spec.lib_name = "earcut";
+    Add_Unilang_Github_Mirror(spec,"earcut","afb5797dbf9272661ca4d49ee2e08bd0cd96e1ed","68d98f5f996073440567c521b4630cf3617879d5e4432b0482a2f68e0318e7f8");
+    
+    spec.build_defs.raw_starlark = 
+R"RAW_STRING(
+cc_library(
+    name = "earcut",
+    hdrs = [
+        "include/mapbox/earcut.hpp",
+    ],
+    includes = [
+        "include/mapbox",
+    ],
+    strip_include_prefix = "include",
+    visibility = ["//visibility:public"],
 )
 
     
@@ -3235,6 +3388,42 @@ cc_binary(
 
     return spec;
 ❱
+
+◀private: static▶ Dependency_Specification ☀Implot()❰
+    Dependency_Specification spec;
+    spec.lib_name = "implot";
+    Add_Unilang_Github_Mirror(spec,"implot","d87512353495e7760e7fda7566a05beef7627d8f","b85b27cde80816c6ecbd63390e5cb9d3ea56211a63564372b7a7f89fe5b76a9b");
+    
+
+    
+    spec.build_defs.raw_starlark = 
+R"RAW_STRING(
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "implot",
+    srcs = [
+        "implot.cpp",
+        "implot.h",
+        "implot_demo.cpp",
+        "implot_internal.h",
+        "implot_items.cpp",
+    ],
+    hdrs = [
+        "implot.h",
+        "implot_internal.h",
+    ],
+    include_prefix = "implot",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@imgui",
+    ],
+)
+)RAW_STRING";
+
+    return spec;
+❱
+
 ◀private: static▶ Dependency_Specification ☀Cairo()❰
     Dependency_Specification spec;
     spec.lib_name = "cairo";
@@ -3575,6 +3764,21 @@ grpc_deps()
     Dependency_Specification spec;
     spec.lib_name = "fmt";
     Add_Unilang_Github_Mirror(spec,"fmt","187bd1b8b2392d565d573c0984d0edd57e20ac8d","f80e9325155478455260d8ebfc803ba1685302cd0303e9c706bd657330ab070a");
+    
+    
+    
+    
+    spec.build_defs.raw_starlark = 
+R"RAW_STRING(
+cc_library(
+    name = "fmt",
+    srcs = glob(["src/*.cc"]),
+    hdrs = glob(["include/fmt/*.h"]),
+    includes = ["include"],
+    visibility = ["//visibility:public"],
+)
+)RAW_STRING";
+
     return spec;
 ❱
 ◀private: static▶ Dependency_Specification ☀Xdo()❰
