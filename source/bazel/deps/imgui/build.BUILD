@@ -174,3 +174,28 @@ cc_binary(
     ],
 )
 ##############################################################################################
+
+# I think this is needed for wasm / emscripten builds
+cc_library(
+    name = "imgui_glew",
+    srcs = [
+        "backends/imgui_impl_opengl3.cpp",
+        "backends/imgui_impl_opengl3.h",
+        "backends/imgui_impl_opengl3_loader.h",
+    ],
+    hdrs = [
+        "backends/imgui_impl_opengl3.h",
+        "backends/imgui_impl_sdl.h",
+    ],
+    defines = [
+        # Force the use of GLEW
+        "IMGUI_IMPL_OPENGL_LOADER_GLEW",
+    ],
+    include_prefix = "imgui",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":main",
+    ]
+)
+
+

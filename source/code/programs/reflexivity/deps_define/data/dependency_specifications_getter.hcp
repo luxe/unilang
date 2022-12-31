@@ -292,6 +292,9 @@ class
     x.specs.emplace_back(bloomfilter());
     x.specs.emplace_back(btl_bloomfilter());
     
+    //memory / allocation
+    x.specs.emplace_back(mimalloc());
+    
     
     //different hashmaps:
     //https://tessil.github.io/2016/08/29/benchmark-hopscotch-map.html
@@ -3375,6 +3378,31 @@ cc_binary(
     ],
 )
 ##############################################################################################
+
+# I think this is needed for wasm / emscripten builds
+cc_library(
+    name = "imgui_glew",
+    srcs = [
+        "backends/imgui_impl_opengl3.cpp",
+        "backends/imgui_impl_opengl3.h",
+        "backends/imgui_impl_opengl3_loader.h",
+    ],
+    hdrs = [
+        "backends/imgui_impl_opengl3.h",
+        "backends/imgui_impl_sdl.h",
+    ],
+    defines = [
+        # Force the use of GLEW
+        "IMGUI_IMPL_OPENGL_LOADER_GLEW",
+    ],
+    include_prefix = "imgui",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":main",
+    ]
+)
+
+
 )RAW_STRING";
 
     Wrapper_Target target;
@@ -4389,6 +4417,55 @@ cc_library(
     target.includes.emplace_back("BloomFilter.hpp");
     target.deps.emplace_back("@btl_bloomfilter//:lib");
     spec.dep_integration.wrapper_targets.emplace_back(target);
+    
+    return spec;
+❱
+
+◀private: static▶ Dependency_Specification ☀mimalloc()❰
+    Dependency_Specification spec;
+    spec.lib_name = "mimalloc";
+    Add_Unilang_Github_Mirror(spec,"mimalloc","dd7348066fe40e8bf372fa4e9538910a5e24a75f","2ca84b107a61071b5b604a67882d258e74ea35e4ba40e6c271d0917613792ddc");
+    spec.build_defs.raw_starlark = 
+R"RAW_STRING(
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "mimalloc",
+    srcs = [
+        "include/mimalloc-atomic.h",
+        "include/mimalloc-internal.h",
+        "include/mimalloc-new-delete.h",
+        "include/mimalloc-override.h",
+        "include/mimalloc-types.h",
+        "src/alloc.c",
+        "src/alloc-aligned.c",
+        "src/alloc-posix.c",
+        "src/heap.c",
+        "src/init.c",
+        "src/memory.c",
+        "src/options.c",
+        "src/os.c",
+        "src/page.c",
+        "src/segment.c",
+        "src/stats.c",
+    ],
+    hdrs = [
+        "include/mimalloc.h",
+    ],
+    includes = [
+        "include",
+        "src",
+    ],
+    # These files have pragmas preventing them from being normal hdrs.
+    textual_hdrs = [
+        "src/page-queue.c",
+        "src/alloc-override.c",
+    ],
+    # Override the standard malloc interfaces according to https://github.com/microsoft/mimalloc/blob/13a4030619edada133e1a3c06c6287ad5a9c74c1/CMakeLists.txt#L10
+    local_defines = ["MI_MALLOC_OVERRIDE=1"],
+    visibility = ["//visibility:public"],
+)
+)RAW_STRING";
     
     return spec;
 ❱
