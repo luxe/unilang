@@ -348,6 +348,8 @@ class
     
     x.specs.emplace_back(khr()); //Khronos group
     
+    //https://github.com/floooh/sokol
+    
     
     x.specs.emplace_back(X11());
     x.specs.emplace_back(Xtrans());
@@ -1668,6 +1670,26 @@ cc_library(
     Dependency_Specification spec;
     spec.lib_name = "emscripten";
     Add_Unilang_Github_Mirror(spec,"emscripten","913505e3bbbeacf7dae0ceb62559f10d9e6be693","d265533ae9914ec13ee2d82f0714ccfa585c02a145b6c268c22792940838b54b");
+    
+    
+    spec.build_defs.raw_starlark = 
+R"RAW_STRING(
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "all",
+    srcs = glob(["**/*"]),
+)
+
+
+cc_library(
+    name = "hdrs",
+    hdrs = glob(["system/include/**/*.h"]),
+    includes = ["usr/include"],
+)
+)RAW_STRING";
+    
+    
     return spec;
 ❱
 ◀private: static▶ Dependency_Specification ☀Emscripten_Clang()❰
@@ -3310,6 +3332,7 @@ cc_library(
         "examples",
         "examples/libs",
         "examples/libs/gl3w",
+        "backends",
     ],
     deps = [
         ":main",
@@ -3335,15 +3358,16 @@ cc_binary(
 cc_library(
     name = "imgui_glfw_opengl3",
     srcs = [
-        "examples/imgui_impl_glfw.cpp",
-        "examples/imgui_impl_opengl3.cpp",
-        "examples/libs/gl3w/GL/gl3w.c",
+        "backends/imgui_impl_glfw.cpp",
+        "backends/imgui_impl_opengl3.cpp",
+        #"examples/libs/gl3w/GL/gl3w.c",
     ],
     hdrs = [
-        "examples/imgui_impl_glfw.h",
-        "examples/imgui_impl_opengl3.h",
-        "examples/libs/gl3w/GL/gl3w.h",
-        "examples/libs/gl3w/GL/glcorearb.h",
+        "backends/imgui_impl_glfw.h",
+        "backends/imgui_impl_opengl3.h",
+        "examples/libs/glfw/include/GLFW/glfw3.h",
+        "examples/libs/glfw/include/GLFW/glfw3native.h",
+        "backends/imgui_impl_opengl3_loader.h",
     ],
     copts = [
         "-DIMGUI_IMPL_OPENGL_LOADER_GL3W",
@@ -3353,6 +3377,7 @@ cc_library(
         "examples",
         "examples/libs",
         "examples/libs/gl3w",
+        "backends",
     ],
     deps = [
         ":main",
@@ -3391,11 +3416,21 @@ cc_library(
         "backends/imgui_impl_opengl3.h",
         "backends/imgui_impl_sdl.h",
     ],
+    includes = [
+        ".",
+        "examples",
+        "examples/libs",
+        "examples/libs/gl3w",
+        "backends",
+        "imgui/examples",
+        "imgui/examples/libs",
+        "imgui/examples/libs/gl3w",
+        "imgui/backends",
+    ],
     defines = [
         # Force the use of GLEW
         "IMGUI_IMPL_OPENGL_LOADER_GLEW",
     ],
-    include_prefix = "imgui",
     visibility = ["//visibility:public"],
     deps = [
         ":main",

@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #ifdef __EMSCRIPTEN__
-#include <emscripten.h>
+#include "emscripten.h"
 #endif
 
 #define GLFW_INCLUDE_ES3
@@ -40,10 +40,19 @@ void on_size_changed()
   ImGui::SetCurrentContext(ImGui::GetCurrentContext());
 }
 
+int get_width(){
+  //return canvas_get_width();
+  return 800;
+}
+int get_height(){
+  //return canvas_get_height();
+  return 800;
+}
+
 void loop()
 {
-  int width = canvas_get_width();
-  int height = canvas_get_height();
+  int width = get_width();
+  int height = get_height();
 
   if (width != g_width || height != g_height)
   {
@@ -149,10 +158,11 @@ int init_imgui()
   // Setup style
   ImGui::StyleColorsDark();
 
-  ImGuiIO& io = ImGui::GetIO();
+  //ImGuiIO& io = ImGui::GetIO();
 
 
-  resizeCanvas();
+  //TODO: fix missing symbol
+  //resizeCanvas();
 
   return 0;
 }

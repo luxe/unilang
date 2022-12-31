@@ -106,6 +106,7 @@ cc_library(
         "examples",
         "examples/libs",
         "examples/libs/gl3w",
+        "backends",
     ],
     deps = [
         ":main",
@@ -113,8 +114,8 @@ cc_library(
         "@sdl2//:sdl2_hdrs",
         "@system//:SDL2",
         "@system//:GL_hdrs",
-        "@system//:X11_hdrs",
-        "@system//:KHR_hdrs",
+        #"@system//:X11_hdrs",
+        #"@system//:KHR_hdrs",
     ],
 )
 
@@ -131,15 +132,16 @@ cc_binary(
 cc_library(
     name = "imgui_glfw_opengl3",
     srcs = [
-        "examples/imgui_impl_glfw.cpp",
-        "examples/imgui_impl_opengl3.cpp",
-        "examples/libs/gl3w/GL/gl3w.c",
+        "backends/imgui_impl_glfw.cpp",
+        "backends/imgui_impl_opengl3.cpp",
+        #"examples/libs/gl3w/GL/gl3w.c",
     ],
     hdrs = [
-        "examples/imgui_impl_glfw.h",
-        "examples/imgui_impl_opengl3.h",
-        "examples/libs/gl3w/GL/gl3w.h",
-        "examples/libs/gl3w/GL/glcorearb.h",
+        "backends/imgui_impl_glfw.h",
+        "backends/imgui_impl_opengl3.h",
+        "examples/libs/glfw/include/GLFW/glfw3.h",
+        "examples/libs/glfw/include/GLFW/glfw3native.h",
+        "backends/imgui_impl_opengl3_loader.h",
     ],
     copts = [
         "-DIMGUI_IMPL_OPENGL_LOADER_GL3W",
@@ -149,15 +151,16 @@ cc_library(
         "examples",
         "examples/libs",
         "examples/libs/gl3w",
+        "backends",
     ],
     deps = [
         ":main",
         "@system//:glfw",
-        "@glfw//:hdrs",
+        #"@glfw//:hdrs",
         "@system//:GL_hdrs",
         #"@x11",
-        "@system//:X11_hdrs",
-        "@system//:KHR_hdrs",
+        #"@system//:X11_hdrs",
+        #"@system//:KHR_hdrs",
         #"@mesa//:mesa_hdrs",
     ],
 )
@@ -187,11 +190,21 @@ cc_library(
         "backends/imgui_impl_opengl3.h",
         "backends/imgui_impl_sdl.h",
     ],
+    includes = [
+        ".",
+        "examples",
+        "examples/libs",
+        "examples/libs/gl3w",
+        "backends",
+        "imgui/examples",
+        "imgui/examples/libs",
+        "imgui/examples/libs/gl3w",
+        "imgui/backends",
+    ],
     defines = [
         # Force the use of GLEW
         "IMGUI_IMPL_OPENGL_LOADER_GLEW",
     ],
-    include_prefix = "imgui",
     visibility = ["//visibility:public"],
     deps = [
         ":main",
