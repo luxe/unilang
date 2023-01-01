@@ -373,3 +373,11 @@ cc_library(
     ]),
     includes = ["usr/include"],
 )
+
+cc_library(
+    name = "emscription_hdrs",
+    hdrs = glob([
+        "home/luxe/Desktop/emscription/system/include/**/*.hpp",
+    ]),
+    includes = ["home/luxe/Desktop/emscription/system/include"],
+)

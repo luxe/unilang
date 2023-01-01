@@ -21,6 +21,10 @@ bool show_another_window = false;
 int g_width;
 int g_height;
 
+
+
+// Javascript functionality converted to C++ functions.
+// This allows us to call js specific browser functions from our C++ code.
 EM_JS(int, canvas_get_width, (), {
   return Module.canvas.width;
 });
@@ -32,6 +36,8 @@ EM_JS(int, canvas_get_height, (), {
 EM_JS(void, resizeCanvas, (), {
   js_resizeCanvas();
 });
+
+
 
 void on_size_changed()
 {
