@@ -17,7 +17,7 @@ cc_binary(
         "@system//:GLES3_hdrs",
         "@system//:KHR_hdrs",
         "@system//:GLFW_hdrs",
-        "@emscripten//:hdrs", #DONT INCLUDE THIS.  EMSDK TOOLCHAIN RESOLVES THIS ITSELF
+        #"@emscripten//:hdrs", #DONT INCLUDE THIS.  EMSDK TOOLCHAIN RESOLVES THIS ITSELF
     ],
     linkopts = [
         "-s USE_GLFW=3",
@@ -36,11 +36,12 @@ cc_binary(
         "-s FULL_ES3=1",
         
          # Other
-        "--bind", # Enable embind
-        "-s ENVIRONMENT=web,worker",
-        "-s MODULARIZE=1",
-        "-s EXPORT_NAME=whoCares",
-        "-s ASYNCIFY",
+        #"--bind", # Enable embind
+        #"-s ENVIRONMENT=web,worker",
+        #"-s MODULARIZE=1",
+        #"-s EXPORT_NAME=whoCares",
+        #"-s ASYNCIFY",
+        
         #"-s EXPORT_ALL=1",
         #"-s LINKABLE=1",
         #"-s DEFAULT_LIBRARY_FUNCS_TO_INCLUDE",
