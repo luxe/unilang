@@ -8,7 +8,7 @@ cc_binary(
     name = "main",
     srcs = ["main.cpp"],
     copts = [
-        #"-D__EMSCRIPTEN__",
+        "-D__EMSCRIPTEN__",
         "-Wno-error=unused-but-set-variable",
     ],
     deps = [
@@ -17,7 +17,7 @@ cc_binary(
         "@system//:GLES3_hdrs",
         "@system//:KHR_hdrs",
         "@system//:GLFW_hdrs",
-        #"@emscripten//:hdrs", #DONT INCLUDE THIS.  EMSDK TOOLCHAIN RESOLVES THIS ITSELF
+        "@emscripten//:hdrs", #DONT INCLUDE THIS.  EMSDK TOOLCHAIN RESOLVES THIS ITSELF
     ],
     linkopts = [
         "-s USE_GLFW=3",
@@ -27,7 +27,7 @@ cc_binary(
         "-s NO_EXIT_RUNTIME=0",
         "-s ASSERTIONS=1",
         "-s EXCEPTION_CATCHING_ALLOWED=[..]",
-        "-sERROR_ON_UNDEFINED_SYMBOLS=1",
+        "-s ERROR_ON_UNDEFINED_SYMBOLS=0",
         "-s LLD_REPORT_UNDEFINED",
          
          # WebGL version
@@ -41,7 +41,7 @@ cc_binary(
         "-s MODULARIZE=1",
         "-s EXPORT_NAME=whoCares",
         "-s ASYNCIFY",
-        "-s EXPORT_ALL=1",
+        #"-s EXPORT_ALL=1",
         #"-s LINKABLE=1",
         #"-s DEFAULT_LIBRARY_FUNCS_TO_INCLUDE",
     ],

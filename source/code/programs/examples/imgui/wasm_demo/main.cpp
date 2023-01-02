@@ -47,12 +47,12 @@ void on_size_changed()
 }
 
 int get_width(){
-  return canvas_get_width();
-  //return 800;
+  //return canvas_get_width();
+  return 800;
 }
 int get_height(){
-  return canvas_get_height();
-  //return 800;
+  //return canvas_get_height();
+  return 800;
 }
 
 void loop()
@@ -168,7 +168,7 @@ int init_imgui()
   (void)io;
 
 
-  resizeCanvas();
+  //resizeCanvas();
 
   return 0;
 }
@@ -197,6 +197,10 @@ extern "C" int main(int argc, char** argv)
   #endif
 
   quit();
+  
+  
+  
+  
 
   return 0;
 }
