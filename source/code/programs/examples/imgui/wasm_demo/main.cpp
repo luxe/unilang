@@ -164,10 +164,10 @@ int init_imgui()
   // Setup style
   ImGui::StyleColorsDark();
 
-  //ImGuiIO& io = ImGui::GetIO();
+  ImGuiIO& io = ImGui::GetIO();
+  (void)io;
 
 
-  //TODO: fix missing symbol
   resizeCanvas();
 
   return 0;
