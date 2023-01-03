@@ -181,6 +181,7 @@ cc_binary(
 # I think this is needed for wasm / emscripten builds
 cc_library(
     name = "imgui_glew",
+    target_compatible_with = ["@platforms//cpu:wasm32"],
     srcs = [
         "backends/imgui_impl_opengl3.cpp",
         "backends/imgui_impl_opengl3.h",

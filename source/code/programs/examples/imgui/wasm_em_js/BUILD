@@ -6,9 +6,7 @@ package(default_visibility = ["//visibility:public"])
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
-    deps = [
-        "@emscripten//:hdrs",
-    ],
+    target_compatible_with = ["@platforms//cpu:wasm32"],
     linkopts = [
         "-s WASM=1",
         "-s LLD_REPORT_UNDEFINED",

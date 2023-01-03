@@ -7,6 +7,7 @@ package(default_visibility = ["//visibility:public"])
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
+    target_compatible_with = ["@platforms//cpu:wasm32"],
     copts = [
         "-D__EMSCRIPTEN__",
         "-Wno-error=unused-but-set-variable",

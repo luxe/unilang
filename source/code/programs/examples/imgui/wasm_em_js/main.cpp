@@ -1,5 +1,5 @@
 #include <iostream>
-#include    
+#include <emscripten.h>
 
 
 EM_JS(int, canvas_get_width, (), {
