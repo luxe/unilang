@@ -18,5 +18,4 @@ int main(int, char* [])
         std::cout << "Log initialization failed: " << ex.what() << std::endl;
     }
     
-    break on purpose
 }
