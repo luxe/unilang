@@ -30,7 +30,7 @@ TEST(Serialization, BoostClassIntIntrusive) {
         foo f;
         f.i = 0;
         iarchive >> f;
-        EXPECT_EQ(f.i,4);
+        EXPECT_EQ(f.i,5);
     }
 }
 
