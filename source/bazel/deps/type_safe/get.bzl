@@ -10,10 +10,10 @@ def typeSafe():
     http_archive(
         name="type_safe" ,
         build_file="//bazel/deps/type_safe:build.BUILD" ,
-        sha256="b89ed1578880ccd17f1cd30486a75454ebe33e6c75f9166ecd9531efc63dec8a" ,
-        strip_prefix="type_safe-4143cea00f9ac2c8f2dc71f20cc52cc3370286c9" ,
+        sha256="b1286d2b8598cdf6641887fa866c56abad47c464469cbe8002486db3eb8f051c" ,
+        strip_prefix="type_safe-3612e2828b4b4e0d1cc689373e63a6d59d4bfd79" ,
         urls = [
-            main_mirror_url("type_safe","4143cea00f9ac2c8f2dc71f20cc52cc3370286c9"),
+            main_mirror_url("type_safe","3612e2828b4b4e0d1cc689373e63a6d59d4bfd79"),
         ],
     )
 

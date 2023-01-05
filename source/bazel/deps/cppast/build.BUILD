@@ -7,8 +7,11 @@ package(default_visibility = ["//visibility:public"])
 
 cc_library(
     name = "cppast",
-    hdrs = glob(["include/**/*.hpp"]),
+    hdrs = glob(["include/**/*.hpp"]) + glob(["src/**/*.hpp"]),
     srcs = glob(["src/**/*.cpp"]),
-    includes = [".","include","src"],
+    includes = [".","include","src","src/libclang"],
+    deps = [
+        "@type_safe"
+    ]
 )
 
