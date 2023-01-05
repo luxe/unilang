@@ -139,6 +139,7 @@ class
     //Aspects
     x.specs.emplace_back(bazel_clang_tidy());
     x.specs.emplace_back(bazel_iwyu());
+    x.specs.emplace_back(kythe());
 
 
     
@@ -168,6 +169,7 @@ class
     
     
     //C++
+    x.specs.emplace_back(cppast());
     x.specs.emplace_back(GSL());
     x.specs.emplace_back(Boost());
     x.specs.emplace_back(Abseil());
@@ -782,6 +784,19 @@ cc_library(
     return spec;
 ❱
 
+◀private: static▶ Dependency_Specification ☀cppast()❰
+    Dependency_Specification spec;
+    spec.lib_name = "cppast";
+    Add_Unilang_Github_Mirror(spec,"cppast","4143cea00f9ac2c8f2dc71f20cc52cc3370286c9","b89ed1578880ccd17f1cd30486a75454ebe33e6c75f9166ecd9531efc63dec8a");
+    
+    
+    spec.build_defs.raw_starlark = 
+R"RAW_STRING(
+package(default_visibility = ["//visibility:public"])
+
+)RAW_STRING";
+    return spec;
+❱
 
 ◀private: static▶ Dependency_Specification ☀GSL()❰
     Dependency_Specification spec;
@@ -3407,6 +3422,7 @@ cc_binary(
 # I think this is needed for wasm / emscripten builds
 cc_library(
     name = "imgui_glew",
+    target_compatible_with = ["@platforms//cpu:wasm32"],
     srcs = [
         "backends/imgui_impl_opengl3.cpp",
         "backends/imgui_impl_opengl3.h",
@@ -5786,6 +5802,15 @@ bazel_skylib_workspace()
 
 )RAW_STRING";
 spec.workspace.enable = true;
+    return spec;
+❱
+
+◀private: static▶ Dependency_Specification ☀kythe()❰
+
+    Dependency_Specification spec;
+    spec.lib_name = "kythe";
+    Add_Unilang_Github_Mirror(spec,"kythe","34a4932e42b7cc853eff38a43ee009a8d101f488","f9aba3761315bf5f4c69b27428c0ef1fa2cd021cf6e1673bc25601ca2b4fe513");
+    
     return spec;
 ❱
 
