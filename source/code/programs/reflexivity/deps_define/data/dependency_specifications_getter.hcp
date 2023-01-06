@@ -171,6 +171,7 @@ class
     //C++
     x.specs.emplace_back(cppast());
     x.specs.emplace_back(type_safe());
+    x.specs.emplace_back(libclang());
     x.specs.emplace_back(GSL());
     x.specs.emplace_back(Boost());
     x.specs.emplace_back(Abseil());
@@ -795,11 +796,24 @@ cc_library(
 R"RAW_STRING(
 package(default_visibility = ["//visibility:public"])
 
+
+# cc_library(name = "third_party_deps",
+#            hdrs = ["@llvm_toolchain//:include", "@llvm_toolchain//:include_clang_c"],
+#            srcs = ["@llvm_toolchain//:lib"],
+#            includes = ["external/llvm_toolchain/include"],
+#            deps = [
+#             "@type_safe"
+#            ]
+# )
+
 cc_library(
     name = "cppast",
-    hdrs = glob(["include/**/*.hpp"]),
+    hdrs = glob(["include/**/*.hpp"]) + glob(["src/**/*.hpp"]),
     srcs = glob(["src/**/*.cpp"]),
-    includes = [".","include","src"],
+    includes = [".","include","src","src/libclang"],
+    deps = [
+        ":third_party_deps"
+    ]
 )
 
 )RAW_STRING";
@@ -818,13 +832,25 @@ load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
     name = "type_safe",
-    hdrs = glob(["include/type_safe/*"]),
-    includes = ["include"],
+    hdrs = glob(["include/**/*.hpp"]) + glob(["external/**/*.hpp"]),
+    includes = ["include","external/debug_assert"],
     visibility = ["//visibility:public"],
 )
 
 
 )RAW_STRING";
+    return spec;
+
+❱
+
+◀private: static▶ Dependency_Specification ☀libclang()❰
+
+    Dependency_Specification spec;
+    spec.lib_name = "libclang";
+    Add_Unilang_Github_Mirror(spec,"bazel-toolchain","800a769d09302e9d4e0ee7c120926a24508bce24","898e393f7bdf2f8e1f549eca6ec61fda534f24d66115b9473983ed511ce65119");
+    spec.patch.patch_files.emplace_back("p1");
+    spec.patch.patch_args.emplace_back("-p1");
+
     return spec;
 
 ❱

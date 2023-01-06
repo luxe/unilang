@@ -6,17 +6,14 @@
 package(default_visibility = ["//visibility:public"])
 
 
-#cc_import(name = "llvm_lib",
-          
-
-cc_library(name = "third_party_deps",
-           hdrs = ["@llvm_toolchain//:include", "@llvm_toolchain//:include_clang_c"],
-           srcs = ["@llvm_toolchain//:lib"],
-           includes = ["external/llvm_toolchain/include"],
-           deps = [
-            "@type_safe"
-           ]
-)
+# cc_library(name = "third_party_deps",
+#            hdrs = ["@llvm_toolchain//:include", "@llvm_toolchain//:include_clang_c"],
+#            srcs = ["@llvm_toolchain//:lib"],
+#            includes = ["external/llvm_toolchain/include"],
+#            deps = [
+#             "@type_safe"
+#            ]
+# )
 
 cc_library(
     name = "cppast",
