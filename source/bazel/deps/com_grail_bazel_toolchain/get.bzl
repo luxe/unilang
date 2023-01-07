@@ -14,5 +14,11 @@ def comGrailBazelToolchain():
         urls = [
             main_mirror_url("bazel-toolchain","f2d1ba2c9d713b2aa6e7063f6d11dd3d64aa402a"),
         ],
+        patches = [
+            "//bazel/deps/libclang/patches:p1.patch",
+        ],
+        patch_args = [
+            "-p1",
+        ],
     )
 
