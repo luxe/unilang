@@ -49,7 +49,6 @@ copy_file(name = "clang_c7",
 
 
 cc_library(name = "third_party_deps",
-           #hdrs = ["clang-c/Index.h"],
            hdrs = ["Index.h","BuildSystem.h","CXErrorCode.h","ExternC.h","Platform.h", "CXString.h", "CXCompilationDatabase.h"],
            srcs = ["@llvm_toolchain//:lib"],
            includes = ["."],
