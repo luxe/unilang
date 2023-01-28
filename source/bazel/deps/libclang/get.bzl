@@ -9,17 +9,17 @@ load("//bazel/deps:deps_config.bzl", "main_mirror_url")
 def libclang():
     http_archive(
         name="libclang" ,
-        sha256="6bf2b30c8ab190eee44e1843f0cff457a5379250ad8239155dcf5bd38e4cc70f" ,
-        strip_prefix="bazel-toolchain-f2d1ba2c9d713b2aa6e7063f6d11dd3d64aa402a" ,
+        build_file="//bazel/deps/libclang:build.BUILD" ,
+        sha256="898e393f7bdf2f8e1f549eca6ec61fda534f24d66115b9473983ed511ce65119" ,
+        strip_prefix="bazel-toolchain-800a769d09302e9d4e0ee7c120926a24508bce24" ,
         urls = [
-            main_mirror_url("bazel-toolchain","f2d1ba2c9d713b2aa6e7063f6d11dd3d64aa402a"),
+            main_mirror_url("bazel-toolchain","800a769d09302e9d4e0ee7c120926a24508bce24"),
+        ],        patches = [
+            "//bazel/deps/libclang/patches:p1.patch",
         ],
-        # patches = [
-        #     "//bazel/deps/libclang/patches:p1.patch",
-        # ],
-        # patch_args = [
-        #     "-p1",
-        # ],
+        patch_args = [
+            "-p1",
+        ],
 
     )
 

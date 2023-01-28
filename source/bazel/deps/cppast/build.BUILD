@@ -5,8 +5,9 @@
 
 package(default_visibility = ["//visibility:public"])
 
-load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
 
+load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
+ 
 # Copy the LLVM clang-c files needed by cppast out of the llvm_toolchain and into this BUILD.
 copy_file(name = "clang_Index",
           src = "@llvm_toolchain//:include/clang-c/Index.h",

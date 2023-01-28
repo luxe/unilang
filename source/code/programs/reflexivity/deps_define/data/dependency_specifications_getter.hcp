@@ -797,20 +797,59 @@ R"RAW_STRING(
 package(default_visibility = ["//visibility:public"])
 
 
-# cc_library(name = "third_party_deps",
-#            hdrs = ["@llvm_toolchain//:include", "@llvm_toolchain//:include_clang_c"],
-#            srcs = ["@llvm_toolchain//:lib"],
-#            includes = ["external/llvm_toolchain/include"],
-#            deps = [
-#             "@type_safe"
-#            ]
-# )
+load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
+ 
+# Copy the LLVM clang-c files needed by cppast out of the llvm_toolchain and into this BUILD.
+copy_file(name = "clang_Index",
+          src = "@llvm_toolchain//:include/clang-c/Index.h",
+          out = "Index.h"
+)
+copy_file(name = "clang_BuildSystem",
+          src = "@llvm_toolchain//:include/clang-c/BuildSystem.h",
+          out = "BuildSystem.h"
+)
+copy_file(name = "clang_CXErrorCode",
+          src = "@llvm_toolchain//:include/clang-c/CXErrorCode.h",
+          out = "CXErrorCode.h"
+)
+copy_file(name = "clang_ExternC",
+          src = "@llvm_toolchain//:include/clang-c/ExternC.h",
+          out = "ExternC.h"
+)
+copy_file(name = "clang_Platform",
+          src = "@llvm_toolchain//:include/clang-c/Platform.h",
+          out = "Platform.h"
+)
+copy_file(name = "clang_CXString",
+          src = "@llvm_toolchain//:include/clang-c/CXString.h",
+          out = "CXString.h"
+)
+copy_file(name = "clang_CXCompilationDatabase",
+          src = "@llvm_toolchain//:include/clang-c/CXCompilationDatabase.h",
+          out = "CXCompilationDatabase.h"
+)
+
+# Build all the of third party code needed by cppast.
+cc_library(name = "third_party_deps",
+           hdrs = ["Index.h","BuildSystem.h","CXErrorCode.h","ExternC.h","Platform.h", "CXString.h", "CXCompilationDatabase.h"],
+           srcs = ["@llvm_toolchain//:lib"],
+           includes = ["."],
+           include_prefix = "clang-c",
+           deps = [
+            "@type_safe",
+           ]
+)
 
 cc_library(
     name = "cppast",
-    hdrs = glob(["include/**/*.hpp"]) + glob(["src/**/*.hpp"]),
-    srcs = glob(["src/**/*.cpp"]),
-    includes = [".","include","src","src/libclang"],
+    hdrs = glob(["include/**/*.hpp"]) + glob(["src/**/*.hpp"]) + glob(["external/**/*.hpp"]),
+    srcs = glob(["src/**/*.cpp"]) + glob(["external/**/*.cpp"], exclude = ["external/tpl/process_win.cpp"]),
+    includes = [".","include","src","src/libclang", "external/tpl"],
+    copts = [
+        "-DCPPAST_CLANG_BINARY='\"/bin/clang\"'",
+        "-DCPPAST_VERSION_MAJOR='\"\"'",
+        "-DCPPAST_VERSION_MINOR='\"\"'"
+    ],
     deps = [
         ":third_party_deps"
     ]
@@ -5437,6 +5476,8 @@ bazel_toolchains_repositories()
     Add_Unilang_Github_Mirror(spec,"bazel-toolchain","f2d1ba2c9d713b2aa6e7063f6d11dd3d64aa402a","6bf2b30c8ab190eee44e1843f0cff457a5379250ad8239155dcf5bd38e4cc70f");
     //Add_Unilang_Github_Mirror(spec,"bazel-toolchain","056aeaa01900f5050a9fed9b11e2d365a684831a","93aa940bcaa2bfdd8153d4d029bad1ccc6c0601e29ffff3a23e1d89aba5f61fa");
     spec.build_content_in_dependency=true;
+    spec.patch.patch_files.emplace_back("p1");
+    spec.patch.patch_args.emplace_back("-p1");
     
     spec.workspace.priority = 2;
     spec.workspace.raw_starlark = 
