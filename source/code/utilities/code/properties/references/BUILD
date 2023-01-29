@@ -17,6 +17,8 @@ hcp_hdrs_derive(
         "//code/utilities/output/printers:lib",
         "//code/utilities/code/properties:schema_name_validator",
         "//code/utilities/types/map:lib",
+        "//code/utilities/code/properties/references:reference_is_primary_key",
+        "//code/utilities/code/properties/references:reference_is_foreign_key",
     ],
 )
 
