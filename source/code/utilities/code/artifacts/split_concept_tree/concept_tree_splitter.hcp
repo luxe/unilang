@@ -4,22 +4,18 @@ class
 
 ◀public: static▶ Split_String_Trees ☀Get(String_Tree tree, Reference_Depth_Map const& depth_map)❰
 
-    //create empty trees for each of the depth slots
-    auto number_of_trees = Max_Value(depth_map.map) +1;
-    Split_String_Trees trees;
-    for (size_t i = 0; i < number_of_trees; ++i){
-        String_Tree tmp;
-        trees.trees.emplace_back(tmp);
-    }
+    // Given the reference depth map, we already know the total number of trees we need to make
+    // Start with empty trees for each of the depth slots
+    Split_String_Trees trees = Empty_Trees_Based_On_Reference_Depth_Amount(depth_map);
     
     //start with the entire tree in the last column
     Str_Tree_To_Unique_Id_Tree::Convert(tree);
-    trees.trees[number_of_trees-1] = tree;
+    trees.trees[trees.trees.size()-1] = tree;
     
     //we will extract subtrees from each column and put them into the previous.  
     //that is how we will distribute the tree across multiple columns.
     //I might do this in a weird inefficient way because I'm worried about iterator invalidation of the tree API.
-    for (size_t i = number_of_trees-1; i > 0; --i){
+    for (size_t i = trees.trees.size()-1; i > 0; --i){
         Handle_Column_Transfer(trees.trees[i],trees,depth_map,i);
     }
     
@@ -28,6 +24,16 @@ class
         Unique_Id_Tree_To_Str_Tree::Convert(it);
     }
     
+    return trees;
+❱
+
+◀private: static▶ Split_String_Trees ☀Empty_Trees_Based_On_Reference_Depth_Amount(Reference_Depth_Map const& depth_map)❰
+    auto number_of_trees = Max_Value(depth_map.map) +1;
+    Split_String_Trees trees;
+    for (size_t i = 0; i < number_of_trees; ++i){
+        String_Tree tmp;
+        trees.trees.emplace_back(tmp);
+    }
     return trees;
 ❱
 

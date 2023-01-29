@@ -19,3 +19,16 @@ hcp_hdrs_derive(
         "//code/utilities/types/map:lib",
     ],
 )
+
+hcp_hdrs_derive(
+    name = "reference_is_primary_key",
+    interface_deps = [
+        "//code/utilities/types/strings/observers/other:lib",
+    ],
+)
+hcp_hdrs_derive(
+    name = "reference_is_foreign_key",
+    interface_deps = [
+        "//code/utilities/types/strings/observers/other:lib",
+    ],
+)
