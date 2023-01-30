@@ -80,6 +80,15 @@ hcp_hdrs_derive(
 )
 
 hcp_hdrs_derive(
+    name = "faced_label_set_first_name",
+    interface_deps = [
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:faced_label",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:positioned_faced_label",
+        "//code/utilities/data_structures/graphics/objects/label/style:label_style_chooser",
+    ],
+)
+
+hcp_hdrs_derive(
     name = "faced_label_drawer",
     interface_deps = [
         "//code/utilities/data_structures/graphics/objects:frame_elements",

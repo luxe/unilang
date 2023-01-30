@@ -28,5 +28,6 @@ hcp_hdrs_derive(
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/program/wrappers/zenity/file_selector",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_full_path_name",
+        "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_set_first_name",
     ],
 )
