@@ -6,27 +6,43 @@ class
 ◀public: static▶ void ☀Create()❰
 
     
-    //get the default split-tree version
+    //get the default split-tree string version
     auto split_trees = Default_Split_Concept_Trees_Getter::Get_Full_Path_Version();
+    
+    //convert them to visual trees
+    auto visual_trees = Create_Visual_Split_Trees(split_trees);
+    
+    //TODO find / draw connection paths
     
     
     //draw the trees
-    Position moving_pos;
     Frame_Elements frames;
-    for (auto it: split_trees.trees){
-        frames.types += Render_As_Schema_Tree(it,moving_pos).types;
-        moving_pos.x += 150;
+    for (auto it: visual_trees){
+        frames.types += Render_As_Schema_Tree(it).types;
     }
     
     Convert_To_Image(frames);
     
 ❱
 
-◀private: static▶ Frame_Elements ☀Render_As_Schema_Tree(String_Tree const& str_tree, Position const& moving_pos)❰
 
-    //and convert it into a label tree
-    auto label_tree = String_Tree_To_Buildable_Schema_Faced_Tree::Convert(str_tree);
-    label_tree.pos = moving_pos;
+◀private: static▶ std::vector<Positioned_Buildable_Schema_Faced_Tree> ☀Create_Visual_Split_Trees(Split_String_Trees const& split_trees)❰
+    std::vector<Positioned_Buildable_Schema_Faced_Tree> result;
+    
+    Position moving_pos;
+    for (auto it: split_trees.trees){
+        auto label_tree = String_Tree_To_Buildable_Schema_Faced_Tree::Convert(it);
+        label_tree.pos = moving_pos;
+        result.emplace_back(label_tree);
+        moving_pos.x += 150;
+    }
+    
+    return result;
+❱
+
+◀private: static▶ Frame_Elements ☀Render_As_Schema_Tree(Positioned_Buildable_Schema_Faced_Tree label_tree)❰
+
+
     
     //convert the label tree to drawable frame elements
     Frame_Elements elements;
@@ -60,6 +76,7 @@ class
 
 
 //TODO: Attempting to draw lines from PKs to FKs
+//TODO REMOVE THIS
 ◀private: static▶ Frame_Elements ☀Draw_Fk_Pk_Connections(Split_String_Trees trees)❰
 
 
@@ -96,16 +113,16 @@ class
     return extracted;
 ❱
 
-◀private: static▶ std::vector<std::pair<std::pair<tree<std::string>::pre_order_iterator,int>,std::pair<tree<std::string>::pre_order_iterator,int>>>
+◀private: static▶ vec_of_same_pairs<std::pair<tree<std::string>::pre_order_iterator,int>>
 ☀Create_Pk_Fk_Pairings(std::map<std::string,std::pair<tree<std::string>::pre_order_iterator,int>> const& mapped_elements)❰
 
-    std::vector<std::pair<std::pair<tree<std::string>::pre_order_iterator,int>,std::pair<tree<std::string>::pre_order_iterator,int>>> results;
+    vec_of_same_pairs<std::pair<tree<std::string>::pre_order_iterator,int>> results;
 
     auto references = Reference_Lookup_Map_Getter::Get_Default_References();
     for (auto ref_pair: references.map){
         auto fk = mapped_elements.find(ref_pair.first)->second;
         auto pk = mapped_elements.find(ref_pair.second)->second;
-        std::pair<std::pair<tree<std::string>::pre_order_iterator,int>,std::pair<tree<std::string>::pre_order_iterator,int>> p;
+        same_pair<std::pair<tree<std::string>::pre_order_iterator,int>> p;
         p.first = fk;
         p.second = pk;
         results.emplace_back(p);

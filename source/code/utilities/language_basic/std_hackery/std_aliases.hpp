@@ -24,3 +24,9 @@ using int_grids = std::vector<std::vector<std::vector<int>>>;
 using string_map = std::map<std::string,std::string>;
 using long_map = std::map<long,long>;
 using ulong_map = std::map<unsigned long,unsigned long>;
+
+template<typename T>
+using same_pair = std::pair<T,T>;
+
+template<typename T>
+using vec_of_same_pairs = std::vector<same_pair<T>>;
