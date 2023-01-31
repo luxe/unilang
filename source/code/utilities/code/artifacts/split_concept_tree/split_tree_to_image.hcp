@@ -7,10 +7,10 @@ class
 
     
     //get the default split-tree version
-    auto split_trees = Default_Split_Concept_Trees_Getter::Get();
-    std::cout << split_trees.trees.size() << std::endl;
+    auto split_trees = Default_Split_Concept_Trees_Getter::Get_Full_Path_Version();
     
     
+    //draw the trees
     Position moving_pos;
     Frame_Elements frames;
     for (auto it: split_trees.trees){
@@ -51,4 +51,66 @@ class
     
     //additional cleanuo
     Image_Transparent::Convert(settings.file_name);
+❱
+
+
+
+
+
+
+
+//TODO: Attempting to draw lines from PKs to FKs
+◀private: static▶ Frame_Elements ☀Draw_Fk_Pk_Connections(Split_String_Trees trees)❰
+
+
+    Frame_Elements elements;
+    
+    
+    // path -> {iterator, which tree}
+    auto mapped_elements = Extract_Elements_To_Map(trees);
+    
+    // {iterator, which tree} / {iterator, which tree}
+    auto pairings = Create_Pk_Fk_Pairings(mapped_elements);
+    
+    
+    
+    //convert trees back
+    for (auto & it: trees.trees){
+        Unique_Id_Tree_To_Str_Tree::Convert(it);
+    }
+    
+    
+    return elements;
+
+❱
+
+
+◀private: static▶ std::map<std::string,std::pair<tree<std::string>::pre_order_iterator,int>> ☀Extract_Elements_To_Map(Split_String_Trees const& trees)❰
+
+    std::map<std::string,std::pair<tree<std::string>::pre_order_iterator,int>> extracted;
+    for (size_t i = 0; i < trees.trees.size(); ++i){
+        for (auto it = trees.trees[i].nodes.begin(); it != trees.trees[i].nodes.end(); ++it){
+            extracted.insert({*it,std::pair<tree<std::string>::pre_order_iterator,int>{it,static_cast<int>(i)}});
+        }
+    }
+    return extracted;
+❱
+
+◀private: static▶ std::vector<std::pair<std::pair<tree<std::string>::pre_order_iterator,int>,std::pair<tree<std::string>::pre_order_iterator,int>>>
+☀Create_Pk_Fk_Pairings(std::map<std::string,std::pair<tree<std::string>::pre_order_iterator,int>> const& mapped_elements)❰
+
+    std::vector<std::pair<std::pair<tree<std::string>::pre_order_iterator,int>,std::pair<tree<std::string>::pre_order_iterator,int>>> results;
+
+    auto references = Reference_Lookup_Map_Getter::Get_Default_References();
+    for (auto ref_pair: references.map){
+        auto fk = mapped_elements.find(ref_pair.first)->second;
+        auto pk = mapped_elements.find(ref_pair.second)->second;
+        std::pair<std::pair<tree<std::string>::pre_order_iterator,int>,std::pair<tree<std::string>::pre_order_iterator,int>> p;
+        p.first = fk;
+        p.second = pk;
+        results.emplace_back(p);
+    }
+    
+    return results;
+
 ❱
