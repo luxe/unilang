@@ -1,0 +1,68 @@
+class
+⚯
+⚞⚟
+
+
+
+◀public: static▶ Positioned_Faced_Label  ☀Draw(Position const& pos, tree<Buttoned_Faced_Label> const& tr, Button_Face_Tree_Range const& range, std::string const& search_name)❰
+    
+    auto start_pos = pos;
+    auto current_pos = pos;
+    
+    Positioned_Faced_Label result;
+    
+    
+    For_Each_Noncollapsed::Iterate_With_Previous_And_Tree_Id(tr,range.begin,range.end,[&](tree<Buttoned_Faced_Label>::pre_order_iterator prev, tree<Buttoned_Faced_Label>::pre_order_iterator it, int tree_id, int prev_depth, int depth){
+        
+        
+        //adjust position for label. perform event update.
+        Adjust_Positions_For_Next_Cell_Before_Draw(it->label,start_pos,current_pos,depth);
+        
+        
+        
+        
+        if (Faced_Label_First_Name::Get(it->label) == search_name){
+            Positioned_Faced_Label temp;
+            temp.state = it->label.state;
+            temp.pos = current_pos;
+            result = temp;
+            return Should_Break::YES;
+            
+        }
+        
+        
+        Adjust_Positions_For_Next_Cell_After_Draw(it->label,start_pos,current_pos,depth);
+        
+        
+        return Should_Break::NO;
+    },
+    
+    [&](tree<Buttoned_Faced_Label>::pre_order_iterator prev, tree<Buttoned_Faced_Label>::pre_order_iterator it, int tree_id, int prev_depth, int depth){
+        //skip
+    }
+    
+    
+    );
+    
+    return result;
+    
+❱
+
+ 
+
+
+◀private: static▶ void  ☀Adjust_Positions_For_Next_Cell_Before_Draw(Faced_Label const& label, Position const& start_pos, Position & current_pos, int const& depth)❰
+        Move_Down_And_Indent(label,start_pos,current_pos,depth);
+        //Indent(label,start_pos,current_pos,depth);
+❱
+◀private: static▶ void  ☀Adjust_Positions_For_Next_Cell_After_Draw(Faced_Label const& label, Position const& start_pos, Position & current_pos, int const& depth)❰
+        //Move_Down_And_Indent(label,start_pos,current_pos,depth);
+        //Indent(label,start_pos,current_pos,depth);
+❱
+
+◀private: static▶ void  ☀Move_Down_And_Indent(Faced_Label const& label, Position const& start_pos, Position & current_pos, int const& depth)❰
+
+        auto dim = Faced_Label_Drawer::Get_Dimensions(label);
+        current_pos.x = start_pos.x + 10 * depth;
+        current_pos.y += dim.y-1;
+❱
