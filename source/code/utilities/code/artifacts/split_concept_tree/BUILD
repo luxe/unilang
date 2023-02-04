@@ -69,5 +69,6 @@ hcp_hdrs_derive(
         "//code/utilities/types/tree/converters:tree_full_paths_getter",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/deps/external/tree_hh:lib",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_find_label_first_name",
     ],
 )

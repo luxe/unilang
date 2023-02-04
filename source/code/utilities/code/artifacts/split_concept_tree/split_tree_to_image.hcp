@@ -14,6 +14,7 @@ class
     
     //TODO find / draw connection paths
     auto label_pairs = Get_Fk_Pk_Pairs(visual_trees);
+    std::cout << label_pairs.size() << std::endl;
     
     
     //draw the trees
@@ -76,12 +77,55 @@ class
 
 ◀private: static▶ vec_of_same_pairs<Positioned_Faced_Label> ☀Get_Fk_Pk_Pairs(std::vector<Positioned_Buildable_Schema_Faced_Tree> visual_trees)❰
     vec_of_same_pairs<Positioned_Faced_Label> result;
-    //TODO
+    
+    auto references = Reference_Lookup_Map_Getter::Get_Default_References();
+    
+    for (auto ref_pair: references.map){
+        Add_Pair(result,ref_pair.first,ref_pair.second,visual_trees);
+    }
+    
+    
     return result;
 ❱
 
 
 
+
+
+◀private: static▶ void ☀Add_Pair(vec_of_same_pairs<Positioned_Faced_Label> & result, std::string fk, std::string pk, std::vector<Positioned_Buildable_Schema_Faced_Tree> const& visual_trees)❰
+
+
+    auto fk_found = Find_Path(fk,visual_trees);
+    auto pk_found = Find_Path(pk,visual_trees);
+    
+    same_pair<Positioned_Faced_Label> pair;
+    pair.first = fk_found;
+    pair.second = pk_found;
+    result.emplace_back(pair);
+
+
+❱
+
+◀private: static▶ Positioned_Faced_Label ☀Find_Path(std::string path, std::vector<Positioned_Buildable_Schema_Faced_Tree> const& visual_trees)❰
+
+
+    Position moving_pos;
+    for (auto label_tree: visual_trees){
+        //auto label_tree = String_Tree_To_Buildable_Schema_Faced_Tree::Convert(it);
+        auto range = Button_Face_Tree_Range_Getter::Full_Range(label_tree.state.tree.state.structure);
+        auto found = Button_Face_Tree_Find_Label_First_Name::Search(moving_pos,label_tree.state.tree.state.structure.nodes, range, path);
+        if (found){
+            return *found;
+        }
+        moving_pos.x += 150;
+    }
+    
+    std::cerr << path << " not found in the trees, but it should have been!" << std::endl;
+    exit(-1);
+
+
+
+❱
 
 
 
