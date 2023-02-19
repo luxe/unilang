@@ -4,12 +4,10 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-sh_test(
+load("//bazel/rules/duplicate:duplicate.bzl", "sh_test_duplicate")
+
+sh_test_duplicate(
     name = "main",
     srcs = ["main.sh"],
-)
-
-sh_test(
-    name = "main2",
-    srcs = ["main.sh"],
+    amount = 65537, #(2^16)+1 aka the ext4 hardlinking limit
 )
