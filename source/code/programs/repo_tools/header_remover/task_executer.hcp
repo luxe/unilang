@@ -130,6 +130,8 @@ class
 
 ◀private: static▶ bool ☀Test_Header_Removal(Program_Options const& options) ❰
 
+    bool show_stderr = true;
+
     //precondition check
     if (options.Commands().empty() && options.Target().empty()){
         std::cerr << "Need to pass commands or target." << std::endl;
@@ -145,6 +147,9 @@ class
     for (auto command: options.Commands()){
         auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
         if (results.return_code != 0){
+            if (show_stderr){
+                std::cerr << "ERROR: " << results.stderr << std::endl;
+            }
             return false;
         }
     }
