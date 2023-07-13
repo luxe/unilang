@@ -1,6 +1,7 @@
 
 #include "program_options.hpp"
 #include <string>
+#include <vector>
 #include <iostream>
 #include <sstream>
 
@@ -38,7 +39,9 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	//program_options_maker flag interface
         ("run_dir",value<std::string>(),"where to run the analysis")
         ("file",value<std::string>(),"the file to remove headers from")
+		("dir",value<std::string>(),"the dir to remove headers from")
         ("target",value<std::string>(),"target to check with")
+		("commands",value<std::vector<std::string>>(),"commands to check with")
 
 	//+----------------------------------------------------------+
 	//| Obligatory                                               |
@@ -120,6 +123,23 @@ std::string Program_Options::Target() const{
 	std::string data;
 	if (vm.count("target")){
 		data = vm["target"].as<std::string>();
+	}
+
+	return data;
+}
+std::string Program_Options::Dir() const{
+	std::string data;
+	if (vm.count("dir")){
+		data = vm["dir"].as<std::string>();
+	}
+
+	return data;
+}
+
+std::vector<std::string> Program_Options::Commands() const{
+	std::vector<std::string> data;
+	if (vm.count("commands")){
+		data = vm["commands"].as<std::vector<std::string>>();
 	}
 
 	return data;

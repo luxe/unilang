@@ -6,6 +6,7 @@ class
 ❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/utilities/streams/filestreams/read_all/lib"❫
 ❪"code/utilities/streams/filestreams/write_all/lib"❫
+❪"code/utilities/filesystem/files/getting/lib"❫
 
 ❪"code/utilities/program/call/process_spawn/process_spawner"❫
 ❪"code/utilities/types/strings/observers/other/lib"❫
@@ -22,15 +23,27 @@ class
     
     //step into the repo
     Set_Path(options.Run_Dir());
+
+    //get all the files to prune
+    auto files = Get_All_Files_To_Prune(options);
+    std::cout << "Files to prune: " << files.size();
+    for (size_t i = 0; i < files.size(); ++i){
+        std::cout << "[ " << i+1 << " / " << files.size() << " ]" << std::endl;
+        Prune_File(files[i],options);
+    }
     
+❱
+
+◀private: static▶ void ☀Prune_File(std::string file, Program_Options const& options) ❰
+
     //open the file
-    auto file_lines = Read_Each_Line_Of_File_Into_Vector(options.File());
+    auto file_lines = Read_Each_Line_Of_File_Into_Vector(file);
     
     //get all the header lines
     auto header_indexes = Cpp_Header_Detector::Get_All_Indexes_Of_Lines_That_Are_Header_Includes(file_lines);
     
     std::cout << header_indexes.size() << " headers detected ";
-    std::cout << Profile_Compilation_Timer::Profile(options.File()) << std::endl;
+    //std::cout << Profile_Compilation_Timer::Profile(file) << std::endl;
     
     //try to remove each header
     for (auto index: header_indexes){
@@ -38,24 +51,25 @@ class
         auto include_statement = file_lines[index];
         
         //check its not the self header
-        if (Is_Self_Header(include_statement,options.File())){
+        if (Is_Self_Header(include_statement,file)){
             std::cout << "skipping self header: " << include_statement << std::endl;
             continue;
         }
 
         //get rid of the include statement
         file_lines[index] = "";
-        Write_Each_Line_Of_Vector_Into_File(options.File(),file_lines);
+        Write_Each_Line_Of_Vector_Into_File(file,file_lines);
         
         std::cout << "removing " << include_statement << " ";
         
         //test the removal
-        auto profile_time = Profile_Compilation_Timer::Profile(options.File());
+        //auto profile_time = Profile_Compilation_Timer::Profile(file);
+        auto successfully_removed = Test_Header_Removal(options);
         
         
         //the header can stay removed
-        if (profile_time != ""){
-            std::cout << "REMOVED " << profile_time << std::endl;
+        if (successfully_removed){
+            std::cout << "REMOVED " << std::endl;
         }
         
         
@@ -65,7 +79,7 @@ class
             
             //restore header
             file_lines[index] = include_statement;
-            Write_Each_Line_Of_Vector_Into_File(options.File(),file_lines);
+            Write_Each_Line_Of_Vector_Into_File(file,file_lines);
         }
     }
     
@@ -74,20 +88,32 @@ class
     auto header_indexes_after = Cpp_Header_Detector::Get_All_Indexes_Of_Lines_That_Are_Header_Includes(file_lines);
     auto headers_removed = header_indexes.size() - header_indexes_after.size();
     std::cout << headers_removed << " headers removed." << std::endl;
-    
-    
 
 ❱
 
-◀public: static▶ bool ☀Is_Self_Header(std::string const& include, std::string file) ❰
+◀private: static▶ std::vector<std::string> ☀Get_All_Files_To_Prune(Program_Options const& options) ❰
+    std::vector<std::string> files;
+
+    // Do a single file
+    if (!options.File().empty()){
+        files.emplace_back(options.File());
+        return files;
+    }
+
+    //Do many files
+    files = Recursively_Get_All_Paths_To_Files_From_Path(options.Dir());
+
+    return files;
+
+❱
+
+◀private: static▶ bool ☀Is_Self_Header(std::string const& include, std::string file) ❰
 
     Replace_File_Extension(file,"hh");
     return Contains_Substring(include,file);
-    
-    
 ❱
 
-◀public: static▶ bool ☀Test_Via_Compilation_Target(Program_Options const& options) ❰
+◀private: static▶ bool ☀Test_Via_Compilation_Target(Program_Options const& options) ❰
 
     std::string command;
     command += "./bazel build ";
@@ -99,5 +125,29 @@ class
         return false;
     }
     
+    return true;
+❱
+
+◀private: static▶ bool ☀Test_Header_Removal(Program_Options const& options) ❰
+
+    //precondition check
+    if (options.Commands().empty() && options.Target().empty()){
+        std::cerr << "Need to pass commands or target." << std::endl;
+        exit(0);
+    }
+
+    //strategy 1
+    if (!options.Target().empty()){
+        return Test_Via_Compilation_Target(options);
+    }
+
+    //strategy 2
+    for (auto command: options.Commands()){
+        auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
+        if (results.return_code != 0){
+            return false;
+        }
+    }
+
     return true;
 ❱

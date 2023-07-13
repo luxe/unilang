@@ -19,7 +19,9 @@ class Program_Options {
 	//+----------------------------------------------------------+
 	  std::string Run_Dir() const;
       std::string File() const;
+	  std::string Dir() const;
       std::string Target() const;
+	  std::vector<std::string> Commands() const;
 
         
         std::string Get_Help_Message();

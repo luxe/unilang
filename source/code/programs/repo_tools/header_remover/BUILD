@@ -18,6 +18,7 @@ hcp(
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/types/strings/transformers/other:lib",
         "//code/utilities/types/strings/transformers/trimming:lib",
+        "//code/utilities/filesystem/files/getting:lib",
     ],
 )
 
