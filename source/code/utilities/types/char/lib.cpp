@@ -70,6 +70,18 @@ char Get_Hex_Char_From_Index(size_t index){
     char hex_characters[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
     return hex_characters[index];
 }
+char Get_Reverse_Hex_Char_From_Index(size_t index){
+    char hex_characters[]={'F','E','D','C','B','A','9','8','7','6','5','4','3','2','1','0'};
+    return hex_characters[index];
+}
+char Get_Hex_Char_Letter_Reverse_From_Index(size_t index){
+    char hex_characters[]={'0','1','2','3','4','5','6','7','8','9','F','E','D','C','B','A'};
+    return hex_characters[index];
+}
+char Get_Hex_Char_Each_Reverse_From_Index(size_t index){
+    char hex_characters[]={'9','8','7','6','5','4','3','2','1','0','F','E','D','C','B','A'};
+    return hex_characters[index];
+}
 
 std::vector<char> Get_Lowercase_Letters(){
   std::vector<char> x;
