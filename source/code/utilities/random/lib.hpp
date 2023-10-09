@@ -36,6 +36,7 @@ char Hex_Char_Via_Num(uint32_t num);
 
 std::string Random_64Char_Hex_Via_Rand();
 std::string Random_64Char_Hex_Via_Gen(std::mt19937 & gen);
+std::string Random_64Char_Hex_Via_Bin_Gen(std::mt19937 & gen);
 std::string Random_64Char_Hex_Via_Gen(std::mt19937_64 & gen);
 std::string Random_64Char_Hex_Via_Gen(std::minstd_rand & gen);
 std::string Random_64Char_Hex_Via_PHP();

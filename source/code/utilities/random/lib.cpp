@@ -85,6 +85,25 @@ std::string Random_64Char_Hex_Via_Gen(std::mt19937 & gen){
 	}
 	return x;
 }
+std::string Random_64Char_Hex_Via_Bin_Gen(std::mt19937 & gen)
+{
+	std::string bin256;
+	for (size_t i = 0; i < 256; ++i){
+		if (gen()%1){
+			bin256 += "1";
+		}
+		else
+		{
+			bin256 += "0";
+		}
+	}
+	
+	auto hex = bintohex(bin256);
+	std::cout << bin256 << std::endl;
+	std::cout << hex << std::endl;
+	exit(0);
+	return hex;
+}
 std::string Random_64Char_Hex_Via_Gen(std::mt19937_64 & gen){
 	std::string x;
 	for (size_t i = 0; i < 64; ++i){

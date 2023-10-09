@@ -19,6 +19,18 @@ enum_cpp(
     ],
 )
 
+# arranged by (N)umber (L)etter
+# followed by (F)orward (B)ackward
+enum_cpp(
+    name = "hex_ordering",
+    values = [
+        "NF_LF", # most common
+        "LB_NB",
+        "NF_LB",
+        "NB_LB",
+    ],
+)
+
 cc_library(
     name = "lib",
     srcs = ["lib.cpp"],
@@ -26,5 +38,6 @@ cc_library(
     deps = [
         "//code/utilities/language_basic/control_structures/looping:lib",
         "//code/utilities/types/vectors/operators:lib",
+        "//code/utilities/types/char:hex_ordering",
     ],
 )
