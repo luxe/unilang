@@ -25,29 +25,6 @@ std::string Random_256Bits_Via_Rand_Mod_2();
 void Shift_On_Another_Bit_Via_Rand_LSB(std::string & str);
 void Shift_On_Another_Bit_Via_Rand_Mod_2(std::string & str);
 
-//different ways to get a hex character
-char Hex_Char_Via_Rand_Mod_16();
-char Hex_Char_Via_Gen_Mod_16(std::mt19937 & gen);
-char Hex_Char_Via_Gen_Mod_16(std::mt19937_64 & gen);
-char Hex_Char_Via_Gen_Mod_16(std::minstd_rand & gen);
-char Hex_Char_Via_Gen_Mod_16_PHP();
-char Hex_Char_Via_Num(uint64_t num);
-char Hex_Char_Via_Num(uint32_t num);
-
-std::string Random_64Char_Hex_Via_Rand();
-std::string Random_64Char_Hex_Via_Gen(std::mt19937 & gen);
-std::string Random_64Char_Hex_Via_Bin_Gen(std::mt19937 & gen);
-std::string Random_64Char_Hex_Via_Gen(std::mt19937_64 & gen);
-std::string Random_64Char_Hex_Via_Gen(std::minstd_rand & gen);
-std::string Random_64Char_Hex_Via_PHP();
-std::string Random_64Char_Hex_Via_Nums(std::vector<uint64_t> nums);
-std::string Random_64Char_Hex_Via_Nums(std::vector<uint32_t> nums);
-
-void Shift_On_Another_Hex_Via_Rand(std::string & str);
-void Shift_On_Another_Hex_Via_Gen(std::string & str, std::mt19937 & gen);
-void Shift_On_Another_Hex_Via_Gen(std::string & str, std::mt19937_64 & gen);
-void Shift_On_Another_Hex_Via_Gen(std::string & str, std::minstd_rand & gen);
-void Shift_On_Another_Hex_Via_PHP(std::string & str);
 
 template <typename Engine>
 std::vector<uint32_t> Run_Generator_To_Get_64_Values(Engine & engine){

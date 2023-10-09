@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 #include <map>
-#include "code/utilities/types/char/hex_ordering.hpp"
 
 //observers
 bool Is_A_Control_Character(char const& c);
@@ -28,14 +27,6 @@ char Get_Double_Quote();
 char Get_Single_Quote();
 char Get_Forward_Slash();
 char Get_Back_Slash();
-
-// Selecting hex char from index
-
-char Get_Hex_Char_From_Index(Hex_Ordering order, size_t index);
-    char Get_Hex_Char_From_Index(size_t index);
-    char Get_Reverse_Hex_Char_From_Index(size_t index);
-    char Get_Hex_Char_Letter_Reverse_From_Index(size_t index);
-    char Get_Hex_Char_Each_Reverse_From_Index(size_t index);
 
 std::vector<char> Get_Lowercase_Letters();
 std::vector<char> Get_Uppercase_Letters();

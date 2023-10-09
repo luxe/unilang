@@ -67,49 +67,6 @@ char Get_Back_Slash()
 	return '\\';
 }
 
-        
-char Get_Hex_Char_From_Index(Hex_Ordering order, size_t index)
-{
-  if (order == Hex_Ordering::NF_LF)
-  {
-    return Get_Hex_Char_From_Index(index);
-  }
-  if (order == Hex_Ordering::LB_NB)
-  {
-    return Get_Reverse_Hex_Char_From_Index(index);
-  }
-  if (order == Hex_Ordering::NF_LB)
-  {
-    return Get_Hex_Char_Letter_Reverse_From_Index(index);
-  }
-  if (order == Hex_Ordering::NB_LB)
-  {
-    return Get_Hex_Char_Each_Reverse_From_Index(index);
-  }
-
-  return Get_Hex_Char_From_Index(index);
-}
-
-//"NF_LF"
-char Get_Hex_Char_From_Index(size_t index){
-    char hex_characters[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
-    return hex_characters[index];
-}
-//"LB_NB"
-char Get_Reverse_Hex_Char_From_Index(size_t index){
-    char hex_characters[]={'F','E','D','C','B','A','9','8','7','6','5','4','3','2','1','0'};
-    return hex_characters[index];
-}
-//"NF_LB"
-char Get_Hex_Char_Letter_Reverse_From_Index(size_t index){
-    char hex_characters[]={'0','1','2','3','4','5','6','7','8','9','F','E','D','C','B','A'};
-    return hex_characters[index];
-}
-//"NB_LB"
-char Get_Hex_Char_Each_Reverse_From_Index(size_t index){
-    char hex_characters[]={'9','8','7','6','5','4','3','2','1','0','F','E','D','C','B','A'};
-    return hex_characters[index];
-}
 
 std::vector<char> Get_Lowercase_Letters(){
   std::vector<char> x;
@@ -370,7 +327,8 @@ int as_number(char const& c){
     if (c == '5'){ return 5;}
     if (c == '6'){ return 6;}
     if (c == '7'){ return 7;}
-    if (c == '8'){ return 8;}   if (c == '9'){ return 9;}
+    if (c == '8'){ return 8;}
+    if (c == '9'){ return 9;}
     return 0;
 }
 

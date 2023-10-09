@@ -1,6 +1,9 @@
 package(default_visibility = ["//visibility:public"])
 
 load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
+load("//bazel/rules/hcp:hcp.bzl", "hcp")
+load("//bazel/rules/hcp:hcp_hdrs_derive.bzl", "hcp_hdrs_derive")
+load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
 enum_cpp(
     name = "letter_case",
@@ -38,6 +41,12 @@ cc_library(
     deps = [
         "//code/utilities/language_basic/control_structures/looping:lib",
         "//code/utilities/types/vectors/operators:lib",
+    ],
+)
+
+hcp_hdrs_derive(
+    name = "hex_char_index",
+    interface_deps = [
         "//code/utilities/types/char:hex_ordering",
     ],
 )
