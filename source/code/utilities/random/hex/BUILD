@@ -11,5 +11,6 @@ hcp_hdrs_derive(
         "//code/utilities/types/char:hex_char_index",
         "//code/utilities/deps/stl/random:lib",
         "//code/utilities/types/strings/observers/hex:lib",
+        "//code/utilities/types/char:hex_ordering",
     ],
 )
