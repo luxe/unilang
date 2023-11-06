@@ -9,10 +9,10 @@ load("//bazel/deps:deps_config.bzl", "main_mirror_url")
 def buildBazelRulesApple():
     http_archive(
         name="build_bazel_rules_apple" ,
-        sha256="57c51d04282753458dc0066f187c4b5226c5e396a396e2279dfdc3d4362b3546" ,
-        strip_prefix="rules_apple-d37fa4fb115632866ee9ec7416cdd2dbf6a7ef18" ,
+        sha256="43244f679a331ac2a50d251ca7935b6422390ab872233025e709211dcaeecee7" ,
+        strip_prefix="rules_apple-d9c767adfeb5b6934ed707d5179692343f124d97" ,
         urls = [
-            main_mirror_url("rules_apple","d37fa4fb115632866ee9ec7416cdd2dbf6a7ef18"),
+            main_mirror_url("rules_apple","d9c767adfeb5b6934ed707d5179692343f124d97"),
         ],
     )
 

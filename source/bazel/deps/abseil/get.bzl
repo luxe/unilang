@@ -9,10 +9,10 @@ load("//bazel/deps:deps_config.bzl", "main_mirror_url")
 def abseil():
     http_archive(
         name="abseil" ,
-        sha256="8deb6cb2b38c407b57afc64cc1b7e6e97f4b6af31fd9094c20d3b5e627d4d30c" ,
-        strip_prefix="abseil-cpp-2b403ec754ec342311720467277c346e413e3438" ,
+        sha256="0e3226cddc03bad567d37ee141860d553cf9690c7ddd4153a9198d4b84533567" ,
+        strip_prefix="abseil-cpp-1cb3345dac55cdc5c2961d60de4d1e2e636773e9" ,
         urls = [
-            main_mirror_url("abseil-cpp","2b403ec754ec342311720467277c346e413e3438"),
+            main_mirror_url("abseil-cpp","1cb3345dac55cdc5c2961d60de4d1e2e636773e9"),
         ],
     )
 
