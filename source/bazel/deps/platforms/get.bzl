@@ -9,10 +9,10 @@ load("//bazel/deps:deps_config.bzl", "main_mirror_url")
 def platforms():
     http_archive(
         name="platforms" ,
-        sha256="4ff3cd591c8c940004f69d91e683a9a02882dbc7a3a5da1444242ca91bc87b57" ,
-        strip_prefix="platforms-f0f4da70368b2342a00443f230bb66d9093bb58b" ,
+        sha256="0c1cc86a842c4a8390a4119a456dc927032a79029ed79fd4e2e8c67c04957776" ,
+        strip_prefix="platforms-33a3b209f94856193266871b1545054afb90bb28" ,
         urls = [
-            main_mirror_url("platforms","f0f4da70368b2342a00443f230bb66d9093bb58b"),
+            main_mirror_url("platforms","33a3b209f94856193266871b1545054afb90bb28"),
         ],
     )
 
