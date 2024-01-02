@@ -10,6 +10,11 @@ class
     //this way we can draw the references by looking up the path instead of re-traversing the tree
     auto path_positions = Get_Path_Positions(font_chars,pc_input,pos,tr,range);
 
+    // for (auto it: path_positions)
+    // {
+    //     std::cout << it.first << std::endl;
+    // }
+
     
     //use the reference map and path positions to get the pos-to-pos positioning
     auto connections = Get_Position_Connections(path_positions,ref_map);
@@ -26,7 +31,7 @@ class
         auto from_horiz_start = it.first.pos;
         auto to_horiz_start = it.second.pos;
 
-        std::cout << from_horiz_start.y << " " << to_horiz_start.y << std::endl;
+        //std::cout << from_horiz_start.y << " " << to_horiz_start.y << std::endl;
         
         //adjust to middle of label
         from_horiz_start.y += 7;
@@ -125,26 +130,35 @@ class
 ❱
 
 
-◀private: static▶ std::vector<std::pair<Positioned_Button_Tree_Iterator,Positioned_Button_Tree_Iterator>> ☀Get_Position_Connections(std::unordered_map<std::string,Positioned_Button_Tree_Iterator> const& path_positions, Reference_Lookup_Map const& ref_map)❰
+◀private: static▶ std::vector<std::pair<Positioned_Button_Tree_Iterator,Positioned_Button_Tree_Iterator>> ☀Get_Position_Connections(std::vector<std::pair<std::string,Positioned_Button_Tree_Iterator>> const& path_positions, Reference_Lookup_Map const& ref_map)❰
 
     std::vector<std::pair<Positioned_Button_Tree_Iterator,Positioned_Button_Tree_Iterator>> result;
     for (auto const& it: path_positions){
-        auto found = ref_map.map.find(it.first);
+        auto pk_found = ref_map.map.find(it.first);
         
         //we need to create a reference
-        if (found != ref_map.map.end()){
+        if (pk_found != ref_map.map.end()){
             
             
             auto FROM = it.second;
-            auto fk_found = ref_map.map.find(found->first);
+            auto fk_found = ref_map.map.find(pk_found->first);
             if (fk_found != ref_map.map.end()){
                 
-                auto found_to_pos = path_positions.find(fk_found->second);
-                if (found_to_pos != path_positions.end()){
-                    auto TO = found_to_pos->second;
-                    result.emplace_back(FROM,TO);
-                    //std::cout << fk_found->second << std::endl;
+
+                auto fk_finds = Take_If_First_Pair_Elem_Is_Equal(path_positions,fk_found->second);
+                for (auto const& fk: fk_finds){
+                    auto TO = fk.second;
+                    if (TO.it->label.state.faces[1].label.message == FROM.it->label.state.faces[1].label.message){
+                        result.emplace_back(FROM,TO);
+                    }
                 }
+
+                // auto found_to_pos = path_positions.find(fk_found->second);
+                // if (found_to_pos != path_positions.end()){
+                //     auto TO = found_to_pos->second;
+                //     result.emplace_back(FROM,TO);
+                //     //std::cout << fk_found->second << std::endl;
+                // }
             }
             
         }
@@ -153,12 +167,12 @@ class
     return result;
     
 ❱
-◀private: static▶ std::unordered_map<std::string,Positioned_Button_Tree_Iterator> ☀Get_Path_Positions(Character_Maps const& font_chars, Pc_Input_State const& pc_input, Position const& pos, const tree<Buttoned_Faced_Label>& tr, Button_Face_Tree_Range const& range)❰
+◀private: static▶ std::vector<std::pair<std::string,Positioned_Button_Tree_Iterator>> ☀Get_Path_Positions(Character_Maps const& font_chars, Pc_Input_State const& pc_input, Position const& pos, const tree<Buttoned_Faced_Label>& tr, Button_Face_Tree_Range const& range)❰
     
     (void)font_chars;
     (void)pc_input;
     
-    std::unordered_map<std::string,Positioned_Button_Tree_Iterator> path_positions;
+    std::vector<std::pair<std::string,Positioned_Button_Tree_Iterator>> path_positions;
     
     
     auto start_pos = pos;
@@ -174,7 +188,7 @@ class
         result.first = Button_Face_Tree_Full_Path_Name::Get(tr,it);
         result.second.it = it;
         result.second.pos = current_pos;
-        path_positions.insert(result);
+        path_positions.emplace_back(result);
         
         return Should_Break::NO;
     });

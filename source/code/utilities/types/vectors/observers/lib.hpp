@@ -200,6 +200,34 @@ size_t Largest_Element_Size_Of_Pair_Second(std::vector<std::pair<T,int>> const& 
 }
 
 template <typename T, typename U>
+std::vector<std::pair<T,U>> Take_If_First_Pair_Elem_Is_Equal(std::vector<std::pair<T,U>> const& v, T const& elem){
+  std::vector<std::pair<T,U>> x;
+  for (auto const& it: v){
+    if (it.first == elem)
+    x.emplace_back(it);
+  }
+  return x;
+}
+
+template <typename T, typename U>
+std::vector<T> Take_Firsts_If_Equal(std::vector<std::pair<T,U>> const& v, T const& elem){
+  std::vector<T> x;
+  for (auto const& it: v){
+    if (it.first == elem)
+    x.emplace_back(it.first);
+  }
+  return x;
+}
+template <typename T, typename U>
+std::vector<U> Take_Seconds_If_Equal(std::vector<std::pair<T,U>> const& v, U const& elem){
+  std::vector<U> x;
+  for (auto const& it: v){
+    if (it.second == elem)
+    x.emplace_back(it.second);
+  }
+  return x;
+}
+template <typename T, typename U>
 std::vector<T> Take_Firsts(std::vector<std::pair<T,U>> const& v){
   std::vector<T> x;
   for (auto const& it: v){
