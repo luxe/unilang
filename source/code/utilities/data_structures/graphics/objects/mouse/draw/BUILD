@@ -16,6 +16,7 @@ hcp_hdrs_derive(
         "//code/utilities/peripheral/mouse/state:mouse_position_getter",
         "//code/utilities/peripheral/mouse/state:mouse_state",
         "//code/utilities/types/vectors/operators:lib",
+        "//code/utilities/data_structures/graphics/text:text_to_bitmap",
     ],
 )
 
