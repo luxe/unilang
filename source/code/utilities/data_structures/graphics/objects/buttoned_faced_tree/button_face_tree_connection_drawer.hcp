@@ -134,33 +134,27 @@ class
 
     std::vector<std::pair<Positioned_Button_Tree_Iterator,Positioned_Button_Tree_Iterator>> result;
     for (auto const& it: path_positions){
-        auto pk_found = ref_map.map.find(it.first);
         
-        //we need to create a reference
-        if (pk_found != ref_map.map.end()){
+        // continue if the tree element is a primary key according to its path name.
+        auto pk_found = ref_map.map.find(it.first);
+        if (pk_found == ref_map.map.end()){
+            continue;
+        }
             
             
-            auto FROM = it.second;
-            auto fk_found = ref_map.map.find(pk_found->first);
-            if (fk_found != ref_map.map.end()){
-                
+        auto FROM = it.second;
+        auto fk_found = ref_map.map.find(pk_found->first);
+        if (fk_found == ref_map.map.end()){
+            continue;
+        }
+            
 
-                auto fk_finds = Take_If_First_Pair_Elem_Is_Equal(path_positions,fk_found->second);
-                for (auto const& fk: fk_finds){
-                    auto TO = fk.second;
-                    if (TO.it->label.state.faces[1].label.message == FROM.it->label.state.faces[1].label.message){
-                        result.emplace_back(FROM,TO);
-                    }
-                }
-
-                // auto found_to_pos = path_positions.find(fk_found->second);
-                // if (found_to_pos != path_positions.end()){
-                //     auto TO = found_to_pos->second;
-                //     result.emplace_back(FROM,TO);
-                //     //std::cout << fk_found->second << std::endl;
-                // }
+        auto fk_finds = Take_If_First_Pair_Elem_Is_Equal(path_positions,fk_found->second);
+        for (auto const& fk: fk_finds){
+            auto TO = fk.second;
+            if (TO.it->label.state.faces[1].label.message == FROM.it->label.state.faces[1].label.message){
+                result.emplace_back(FROM,TO);
             }
-            
         }
     }
     
