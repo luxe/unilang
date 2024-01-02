@@ -140,17 +140,13 @@ class
         if (pk_found == ref_map.map.end()){
             continue;
         }
-            
-            
-        auto FROM = it.second;
-        auto fk_found = ref_map.map.find(pk_found->first);
-        if (fk_found == ref_map.map.end()){
-            continue;
-        }
-            
 
-        auto fk_finds = Take_If_First_Pair_Elem_Is_Equal(path_positions,fk_found->second);
+        // lookup all the forien key elements based on the primary key.
+        auto fk_finds = Take_If_First_Pair_Elem_Is_Equal(path_positions,pk_found->second);
+
+        // solidify the connection if the fk and pk match.
         for (auto const& fk: fk_finds){
+            auto FROM = it.second;
             auto TO = fk.second;
             if (TO.it->label.state.faces[1].label.message == FROM.it->label.state.faces[1].label.message){
                 result.emplace_back(FROM,TO);
