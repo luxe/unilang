@@ -9,16 +9,16 @@ load("//bazel/deps:deps_config.bzl", "main_mirror_url")
 def comGithubGrpcGrpc():
     http_archive(
         name="com_github_grpc_grpc" ,
-        sha256="79e0ca3253a5cbbf43ef5e32ac60c421d701a2b4fda49a417576e0df4c042ab9" ,
-        strip_prefix="grpc-987f7840fb99ae9c060e299f98839f14c7ca78cb" ,
+        sha256="44212520675cd3f7a6b296cf9ca8b987c4ec133940323f84d61e4d91070e88a9" ,
+        strip_prefix="grpc-fcb8b2c92f1404884ad6ed681a80da6315259540" ,
         urls = [
-            main_mirror_url("grpc","987f7840fb99ae9c060e299f98839f14c7ca78cb"),
+            main_mirror_url("grpc","fcb8b2c92f1404884ad6ed681a80da6315259540"),
         ],        patch_cmds = [
-            "sed -i 's/csharp_names.h/names.h/' src/compiler/config_protobuf.h",
-            "sed -i 's/objectivec_helpers.h/helpers.h/' src/compiler/objective_c_generator.cc",
-            "sed -i 's/objectivec_helpers.h/helpers.h/' src/compiler/objective_c_generator_helpers.h",
-            "sed -i 's/helpers.h>/helpers.h>\\n#include <google\\/protobuf\\/compiler\\/objectivec\\/names.h>\\n/' src/compiler/objective_c_generator_helpers.h",
-            "sed -i 's/::google::protobuf::util::Status/absl::Status/' include/grpcpp/impl/codegen/config_protobuf.h",
+            # "sed -i 's/csharp_names.h/names.h/' src/compiler/config_protobuf.h",
+            # "sed -i 's/objectivec_helpers.h/helpers.h/' src/compiler/objective_c_generator.cc",
+            # "sed -i 's/objectivec_helpers.h/helpers.h/' src/compiler/objective_c_generator_helpers.h",
+            # "sed -i 's/helpers.h>/helpers.h>\\n#include <google\\/protobuf\\/compiler\\/objectivec\\/names.h>\\n/' src/compiler/objective_c_generator_helpers.h",
+            # "sed -i 's/::google::protobuf::util::Status/absl::Status/' include/grpcpp/impl/codegen/config_protobuf.h",
         ],
 
     )
