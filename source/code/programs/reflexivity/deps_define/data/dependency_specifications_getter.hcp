@@ -1404,7 +1404,7 @@ remote_apis_switched_rules_by_language(
     spec.lib_name = "com_google_protobuf";
     //Add_Unilang_Github_Mirror(spec,"protobuf","66e3562aafce093d30473555248f22b3fdc88aad","ea97ff1804cb8508b78fc672c27f57e60087979ce7dbb3f66a1586a3dbf57cf2");
     // Add_Unilang_Github_Mirror(spec,"protobuf","bddf35da5afb2f27e30febfb72a75295a1b7bc04","4245a2b7e5efc52a78ac7ca5f5da4f3f174f9c252d9b4f4423ff03119149abb0");
-    Add_Unilang_Github_Mirror(spec,"protobuf","0a2fe573a292325600d1d99619a1a711a349d314","1570973982a344c6013c7cd14cccc518eb89f74d02414781e0c084cd702e3307");
+    Add_Unilang_Github_Mirror(spec,"protobuf","a4f9ddd8fc2ff1afa6697059d494a9bf0c09c680","5c3ae7ba8e94f4e05504a3ec6f99d5aa73fe492251070607e51ff86bf871c77d");
     spec.build_content_in_dependency=true;
     //spec.repo_mapping.push_back({"zlib","zlib_internal"});
     spec.repo_mapping.emplace_back("com_google_absl","abseil");
@@ -1467,14 +1467,25 @@ switched_rules_by_language(
     Dependency_Specification spec;
     spec.lib_name = "build_stack_rules_proto";
     //Add_Unilang_Github_Mirror(spec,"rules_proto","d86ca6bc56b1589677ec59abfa0bed784d6b7767","36f11f56f6eb48a81eb6850f4fb6c3b4680e3fc2d3ceb9240430e28d32c47009");
-    Add_Unilang_Github_Mirror(spec,"rules_proto","a5ee3d29b564ba27ce0aca9c73c9d62fcc2931dc","d585b85a096421e510784632a4460949f414af417bc928dd13dc0fc8681c9343");
+    Add_Unilang_Github_Mirror(spec,"rules_proto","5428336c51f18ad628d9c8d7e052a48ec5379590","39c1783c205d16f6a765f3b6817c07a83e20b5c25b3374a4c950040676b06b30");
 
     spec.build_content_in_dependency=true;
     spec.workspace.priority = 7;
     spec.workspace.raw_starlark = 
+// R"RAW_STRING(
+// load("@build_stack_rules_proto//cpp:deps.bzl", "cpp_proto_compile")
+// cpp_proto_compile()
+// )RAW_STRING";
 R"RAW_STRING(
-load("@build_stack_rules_proto//cpp:deps.bzl", "cpp_proto_compile")
-cpp_proto_compile()
+# load("@build_stack_rules_proto//cpp:deps.bzl", "cpp_proto_compile")
+# cpp_proto_compile()
+register_toolchains("@build_stack_rules_proto//toolchain:standard")
+
+load("@build_stack_rules_proto//deps:core_deps.bzl", "core_deps")
+core_deps()
+
+load("@build_stack_rules_proto//deps:protobuf_core_deps.bzl", "protobuf_core_deps")
+protobuf_core_deps()
 )RAW_STRING";
     return spec;
 ❱
