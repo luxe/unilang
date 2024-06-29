@@ -9,10 +9,10 @@ load("//bazel/deps:deps_config.bzl", "main_mirror_url")
 def buildStackRulesProto():
     http_archive(
         name="build_stack_rules_proto" ,
-        sha256="d585b85a096421e510784632a4460949f414af417bc928dd13dc0fc8681c9343" ,
-        strip_prefix="rules_proto-a5ee3d29b564ba27ce0aca9c73c9d62fcc2931dc" ,
+        sha256="39c1783c205d16f6a765f3b6817c07a83e20b5c25b3374a4c950040676b06b30" ,
+        strip_prefix="rules_proto-5428336c51f18ad628d9c8d7e052a48ec5379590" ,
         urls = [
-            main_mirror_url("rules_proto","a5ee3d29b564ba27ce0aca9c73c9d62fcc2931dc"),
+            main_mirror_url("rules_proto","5428336c51f18ad628d9c8d7e052a48ec5379590"),
         ],
     )
 

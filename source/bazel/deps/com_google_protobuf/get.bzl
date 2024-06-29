@@ -9,10 +9,10 @@ load("//bazel/deps:deps_config.bzl", "main_mirror_url")
 def comGoogleProtobuf():
     http_archive(
         name="com_google_protobuf" ,
-        sha256="1570973982a344c6013c7cd14cccc518eb89f74d02414781e0c084cd702e3307" ,
-        strip_prefix="protobuf-0a2fe573a292325600d1d99619a1a711a349d314" ,
+        sha256="5c3ae7ba8e94f4e05504a3ec6f99d5aa73fe492251070607e51ff86bf871c77d" ,
+        strip_prefix="protobuf-a4f9ddd8fc2ff1afa6697059d494a9bf0c09c680" ,
         urls = [
-            main_mirror_url("protobuf","0a2fe573a292325600d1d99619a1a711a349d314"),
+            main_mirror_url("protobuf","a4f9ddd8fc2ff1afa6697059d494a9bf0c09c680"),
         ],        repo_mapping = {
             "@com_google_absl" : "@abseil",
         },

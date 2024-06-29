@@ -9,10 +9,10 @@ load("//bazel/deps:deps_config.bzl", "main_mirror_url")
 def rulesJava():
     http_archive(
         name="rules_java" ,
-        sha256="d5fc6e46edbe50c329f29fc1adb5358dd7d6760b7be84991e8cf2698665cb036" ,
-        strip_prefix="rules_java-b9301df0ed11aa05913efb6bbdeb374171a4b88d" ,
+        sha256="f8448c50d2a96cd986b8216c27ac4ce73346e0e2dc18ddb523f87c2764b37718" ,
+        strip_prefix="rules_java-628fc4a0f376a6066f8bcb3221f1044764f270e1" ,
         urls = [
-            main_mirror_url("rules_java","b9301df0ed11aa05913efb6bbdeb374171a4b88d"),
+            main_mirror_url("rules_java","628fc4a0f376a6066f8bcb3221f1044764f270e1"),
         ],
     )
 
