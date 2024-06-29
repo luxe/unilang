@@ -9,7 +9,7 @@ load("//bazel/deps:deps_config.bzl", "main_mirror_url")
 def rulesProto():
     http_archive(
         name="rules_proto" ,
-        sha256="xxxxxx" ,
+        sha256="c664412a5c7294d3d2b719ac68b46688a98ed12fb955a590e92388a7ae361fcc" ,
         strip_prefix="rules_proto-b38f0e67618ebe9ba8e23aee3d5f7e2779f1bc9f" ,
         urls = [
             main_mirror_url("rules_proto","b38f0e67618ebe9ba8e23aee3d5f7e2779f1bc9f"),
