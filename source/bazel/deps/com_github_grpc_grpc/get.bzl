@@ -13,13 +13,6 @@ def comGithubGrpcGrpc():
         strip_prefix="grpc-fcb8b2c92f1404884ad6ed681a80da6315259540" ,
         urls = [
             main_mirror_url("grpc","fcb8b2c92f1404884ad6ed681a80da6315259540"),
-        ],        patch_cmds = [
-            # "sed -i 's/csharp_names.h/names.h/' src/compiler/config_protobuf.h",
-            # "sed -i 's/objectivec_helpers.h/helpers.h/' src/compiler/objective_c_generator.cc",
-            # "sed -i 's/objectivec_helpers.h/helpers.h/' src/compiler/objective_c_generator_helpers.h",
-            # "sed -i 's/helpers.h>/helpers.h>\\n#include <google\\/protobuf\\/compiler\\/objectivec\\/names.h>\\n/' src/compiler/objective_c_generator_helpers.h",
-            # "sed -i 's/::google::protobuf::util::Status/absl::Status/' include/grpcpp/impl/codegen/config_protobuf.h",
         ],
-
     )
 
