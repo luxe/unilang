@@ -6,13 +6,13 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 load("//bazel/deps:deps_config.bzl", "main_mirror_url")
 
-def buildStackRulesProto():
+def rulesProto():
     http_archive(
-        name="build_stack_rules_proto" ,
-        sha256="fbc00bcd85defc432bf28292161b209654d2c96938937bf8cc61f01e0674dbc4" ,
-        strip_prefix="stackb_rules_proto-5428336c51f18ad628d9c8d7e052a48ec5379590" ,
+        name="rules_proto" ,
+        sha256="xxxxxx" ,
+        strip_prefix="rules_proto-b38f0e67618ebe9ba8e23aee3d5f7e2779f1bc9f" ,
         urls = [
-            main_mirror_url("stackb_rules_proto","5428336c51f18ad628d9c8d7e052a48ec5379590"),
+            main_mirror_url("rules_proto","b38f0e67618ebe9ba8e23aee3d5f7e2779f1bc9f"),
         ],
     )
 
