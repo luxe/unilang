@@ -15,7 +15,7 @@ proto_library(
     srcs = ["google/api/annotations.proto"],
     deps = [
         ":google_api_http_proto",
-        "@com_google_protobuf//:descriptor_proto",
+        "@protobuf//:descriptor_proto",
     ],
 )
 
@@ -30,6 +30,7 @@ cc_grpc_library(
     ],
 )
 
+#-----------------------------------------
 proto_library(
     name = "google_api_http_proto",
     srcs = ["google/api/http.proto"],
@@ -43,6 +44,23 @@ cc_grpc_library(
     well_known_protos = True,
     deps = [],
 )
+#-----------------------------------------
+proto_library(
+    name = "google_api_launch_stage",
+    srcs = ["google/api/launch_stage.proto"],
+)
+
+cc_grpc_library(
+    name = "google_api_launch_stage_cc_proto",
+    srcs = ["google/api/launch_stage.proto"],
+    proto_only = False,
+    use_external = False,
+    well_known_protos = True,
+    deps = [],
+)
+
+#-----------------------------------------
+
 
 proto_library(
     name = "google_longrunning_operations_proto",
@@ -52,10 +70,11 @@ proto_library(
         ":google_api_client_proto",
         ":google_api_http_proto",
         ":google_rpc_status_proto",
-        "@com_google_protobuf//:any_proto",
-        "@com_google_protobuf//:descriptor_proto",
-        "@com_google_protobuf//:duration_proto",
-        "@com_google_protobuf//:empty_proto",
+        ":google_api_launch_stage",
+        "@protobuf//:any_proto",
+        "@protobuf//:descriptor_proto",
+        "@protobuf//:duration_proto",
+        "@protobuf//:empty_proto",
     ],
 )
 
@@ -70,13 +89,14 @@ cc_grpc_library(
         ":google_api_client_cc_proto",
         ":google_api_http_cc_proto",
         ":google_rpc_status_cc_proto",
+        "google_api_launch_stage_cc_proto",
     ],
 )
 
 proto_library(
     name = "google_rpc_status_proto",
     srcs = ["google/rpc/status.proto"],
-    deps = ["@com_google_protobuf//:any_proto"],
+    deps = ["@protobuf//:any_proto"],
 )
 
 cc_grpc_library(
@@ -92,7 +112,9 @@ proto_library(
     name = "google_api_client_proto",
     srcs = ["google/api/client.proto"],
     deps = [
-        "@com_google_protobuf//:descriptor_proto",
+        "@protobuf//:descriptor_proto",
+        "@protobuf//:duration_proto",
+        ":google_api_launch_stage",
     ],
 )
 
@@ -102,7 +124,9 @@ cc_grpc_library(
     proto_only = False,
     use_external = False,
     well_known_protos = True,
-    deps = [],
+    deps = [
+        ":google_api_launch_stage_cc_proto",
+    ],
 )
 
 proto_library(
@@ -110,7 +134,7 @@ proto_library(
     srcs = ["google/bytestream/bytestream.proto"],
     deps = [
         ":google_api_annotations_proto",
-        "@com_google_protobuf//:wrappers_proto",
+        "@protobuf//:wrappers_proto",
     ],
 )
 

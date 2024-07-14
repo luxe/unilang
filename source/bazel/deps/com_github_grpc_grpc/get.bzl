@@ -14,5 +14,8 @@ def comGithubGrpcGrpc():
         urls = [
             main_mirror_url("grpc","fcb8b2c92f1404884ad6ed681a80da6315259540"),
         ],
+        repo_mapping = {
+            "@com_google_protobuf" : "@protobuf",
+        },
     )
 
