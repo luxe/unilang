@@ -8,6 +8,7 @@
 //If you are maintaining a fork of a repository,
 //this tool will automatically catch that fork up to latest master of the upstream repository.
 //this is useful for all of the third party dependencies that are forked to ensure we have control over them.
+//Github has a button for this.
 int main(int const argc, char** const argv){
     
     //update the fork
