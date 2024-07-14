@@ -14,7 +14,7 @@ def googleOrTools():
         urls = [
             main_mirror_url("or-tools","45770b833997f827d322e929b1ed4781c4e60d44"),
         ],        repo_mapping = {
-            "@com_google_absl" : "@abseil",
+            "@com_google_absl" : "@abseil-cpp",
             "@com_github_glog_glog" : "@glog",
             "@com_github_gflags_gflags" : "@gflags",
         },

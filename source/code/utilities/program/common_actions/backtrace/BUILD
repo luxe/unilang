@@ -10,9 +10,9 @@ cc_library(
     hdrs = ["backtrace.hpp"],
     linkopts = ["-Wl,--wrap,__cxa_throw"],
     deps = [
-        "@abseil//absl/base:core_headers",
-        "@abseil//absl/debugging:stacktrace",
-        "@abseil//absl/debugging:symbolize",
+        "@abseil-cpp//absl/base:core_headers",
+        "@abseil-cpp//absl/debugging:stacktrace",
+        "@abseil-cpp//absl/debugging:symbolize",
         "@fmt",
     ],
 )
@@ -23,9 +23,9 @@ cc_library(
     hdrs = ["exceptions.hpp"],
     deps = [
         "//code/utilities/program/common_actions/backtrace",
-        "@abseil//absl/base:core_headers",
-        "@abseil//absl/debugging:stacktrace",
-        "@abseil//absl/debugging:symbolize",
+        "@abseil-cpp//absl/base:core_headers",
+        "@abseil-cpp//absl/debugging:stacktrace",
+        "@abseil-cpp//absl/debugging:symbolize",
         "@boost//:algorithm",
         "@fmt",
     ],

@@ -14,7 +14,7 @@ def comGoogleProtobuf():
         urls = [
             main_mirror_url("protobuf","63def39e881afa496502d9c410f4ea948e59490d"),
         ],        repo_mapping = {
-            "@com_google_absl" : "@abseil",
+            "@com_google_absl" : "@abseil-cpp",
         },
 
     )

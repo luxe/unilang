@@ -6,5 +6,5 @@ package(
 
 cpp_main(
     name = "main",
-    deps = ["@abseil//absl/strings"],
+    deps = ["@abseil-cpp//absl/strings"],
 )

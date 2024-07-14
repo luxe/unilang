@@ -8,7 +8,7 @@ name = "lib",
 srcs = glob(["*.cpp"]),
 hdrs = glob(["*.hpp"]),
 deps = [
-"@com_google_protobuf//:protobuf"
+"@protobuf//:protobuf"
 ],
 data = [
 

@@ -41,9 +41,9 @@ proto_library(
     srcs = ["build/bazel/remote/execution/v2/remote_execution.proto"],
     deps = [
         ":semver_proto",
-        "@com_google_protobuf//:duration_proto",
-        "@com_google_protobuf//:timestamp_proto",
-        "@com_google_protobuf//:wrappers_proto",
+        "@protobuf//:duration_proto",
+        "@protobuf//:timestamp_proto",
+        "@protobuf//:wrappers_proto",
         "@googleapis//:google_api_annotations_proto",
         "@googleapis//:google_api_http_proto",
         "@googleapis//:google_longrunning_operations_proto",
@@ -71,8 +71,8 @@ proto_library(
     srcs = ["build/bazel/remote/asset/v1/remote_asset.proto"],
     deps = [
         ":remote_execution_proto",
-        "@com_google_protobuf//:duration_proto",
-        "@com_google_protobuf//:timestamp_proto",
+        "@protobuf//:duration_proto",
+        "@protobuf//:timestamp_proto",
         "@googleapis//:google_api_annotations_proto",
         "@googleapis//:google_api_http_proto",
         "@googleapis//:google_rpc_status_proto",

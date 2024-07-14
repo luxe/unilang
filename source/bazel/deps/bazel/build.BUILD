@@ -21,7 +21,7 @@ proto_library(
     name = "spawn_proto",
     srcs = ["src/main/protobuf/spawn.proto"],
     deps = [
-        "@com_google_protobuf//:duration_proto",
+        "@protobuf//:duration_proto",
     ]
 )
 
@@ -55,10 +55,10 @@ proto_library(
     name = "build_event_stream",
     srcs = ["src/main/java/com/google/devtools/build/lib/buildeventstream/proto/build_event_stream.proto"],
     deps = [
-        "@com_google_protobuf//:any_proto",
-        "@com_google_protobuf//:duration_proto",
-        "@com_google_protobuf//:empty_proto",
-        "@com_google_protobuf//:timestamp_proto",
+        "@protobuf//:any_proto",
+        "@protobuf//:duration_proto",
+        "@protobuf//:empty_proto",
+        "@protobuf//:timestamp_proto",
         ":failure_details",
         ":command_line",
         ":invocation_policy",
@@ -105,7 +105,7 @@ cc_proto_library(
 proto_library(
     name = "failure_details",
     srcs = ["src/main/protobuf/failure_details.proto"],
-    deps = ["@com_google_protobuf//:descriptor_proto"]
+    deps = ["@protobuf//:descriptor_proto"]
 )
 
 cc_proto_library(
@@ -118,7 +118,7 @@ proto_library(
     name = "remote_execution_log",
     srcs = ["src/main/protobuf/remote_execution_log.proto"],
     deps = [
-        "@com_google_protobuf//:timestamp_proto",
+        "@protobuf//:timestamp_proto",
         "@googleapis//:google_bytestream_bytestream_proto",
         "@remote_apis//:remote_execution_proto",
         "@googleapis//:google_rpc_status_proto",
