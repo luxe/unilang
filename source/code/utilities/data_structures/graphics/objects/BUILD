@@ -14,6 +14,7 @@ hcp_hdrs_derive(
         "//code/utilities/data_structures/graphics/image:positioned_image_data",
         "//code/utilities/data_structures/graphics/image:positioned_texture",
         "//code/utilities/data_structures/shapes/rectangle:positioned_rectangle_settings",
+        "//code/utilities/data_structures/shapes/circle:positioned_circle_settings",
         "//code/utilities/deps/stl/variant:lib",
     ],
 )
