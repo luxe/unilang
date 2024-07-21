@@ -64,6 +64,7 @@ hcp(
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/graphics/sdl:sdl_fullscreener",
         "//code/utilities/program/wrappers/zenity/file_selector",
+        "//code/utilities/data_structures/graphics/objects/label/style:default_label_styles",
     ],
 )
 

@@ -189,6 +189,7 @@ hcp_hdrs_derive(
         "//code/utilities/data_structures/graphics/objects/faced_grid:grid_label_drawer",
         "//code/utilities/data_structures/graphics/objects/faced_tree:tree_label_drawer",
         "//code/utilities/data_structures/graphics/objects/label:label_drawer",
+        "//code/utilities/data_structures/graphics/objects/label:label_is_mouse_over",
         "//code/utilities/data_structures/graphics/objects/mouse/draw:mouse_frame_getter",
         "//code/utilities/data_structures/graphics/objects/mouse/draw:mouse_selection_drawer",
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
