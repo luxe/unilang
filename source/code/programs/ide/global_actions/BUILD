@@ -18,17 +18,17 @@ enum_cpp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "global_action_decider",
-    deps = [
+    interface_deps = [
         "//code/programs/ide/global_actions:global_action",
         "//code/utilities/peripheral/pc:pc_input_state",
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "global_action_handler",
-    deps = [
+    interface_deps = [
         "//code/programs/ide/global_actions:global_action",
         "//code/programs/ide/global_actions:global_action_decider",
         "//code/programs/ide/global_actions:main_menu_selector",
@@ -47,15 +47,16 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "global_element_builder",
-    deps = [
+    interface_deps = [
         "//code/programs/ide/global_actions:global_action",
         "//code/programs/ide/global_actions:global_action_decider",
         "//code/programs/ide/global_actions:main_menu_selector",
         "//code/programs/ide/global_actions:save_state_serializer",
         "//code/programs/ide/settings/data:ide_settings",
         "//code/utilities/code:concept_string_tree_parser",
+        "//code/utilities/data_structures/graphics/objects/faced_label/premade:faced_label_premades",
         "//code/utilities/code/save:state_to_code_converter",
         "//code/utilities/data_structures/graphics/objects:frame_elements",
         "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:buildable_schema_faced_tree_tokenizer",
@@ -68,9 +69,9 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "save_state_serializer",
-    deps = [
+    interface_deps = [
         "//code/programs/ide/frame:apply_schema_to_elements",
         "//code/programs/ide/global_actions:global_action",
         "//code/programs/ide/global_actions:global_action_decider",
@@ -87,9 +88,9 @@ hcp(
     ],
 )
 
-hcp(
+hcp_hdrs_derive(
     name = "main_menu_selector",
-    deps = [
+   interface_deps = [
         "//code/programs/ide/frame:apply_schema_to_elements",
         "//code/programs/ide/global_actions:global_action",
         "//code/programs/ide/global_actions:global_action_decider",
