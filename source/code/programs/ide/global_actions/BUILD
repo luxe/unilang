@@ -14,6 +14,8 @@ enum_cpp(
         "save",
         "load",
         "build",
+        "delete",
+        "undo",
         "none",
     ],
 )
