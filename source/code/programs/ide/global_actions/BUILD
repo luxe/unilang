@@ -33,6 +33,7 @@ hcp_hdrs_derive(
     interface_deps = [
         "//code/programs/ide/global_actions:global_action",
         "//code/programs/ide/global_actions:global_action_decider",
+        "//code/programs/ide/global_actions:global_element_deleter",
         "//code/programs/ide/global_actions:main_menu_selector",
         "//code/programs/ide/global_actions:save_state_serializer",
         "//code/programs/ide/settings/data:ide_settings",
@@ -108,5 +109,15 @@ hcp_hdrs_derive(
         "//code/utilities/graphics/sdl:sdl_fullscreener",
         "//code/utilities/program/wrappers/zenity/file_selector",
         "//code/utilities/types/variant:lib",
+    ],
+)
+
+hcp_hdrs_derive(
+    name = "global_element_deleter",
+   interface_deps = [
+        "//code/utilities/graphics/sdl:sdl_fullscreener",
+        "//code/programs/ide/settings/data:ide_settings",
+        "//code/programs/ide/frame:find_mouse_over_index",
+        "//code/utilities/types/vectors/transformers:lib",
     ],
 )
