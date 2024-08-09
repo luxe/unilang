@@ -29,7 +29,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	using namespace boost::program_options;
 
 	//Program Description
-	options_description desc("find build tools used on a particular target");
+	options_description desc("adjust bazel visibility across a codebase.");
 
 	//Program Flags
 	desc.add_options()
@@ -43,6 +43,8 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
         ("target",value<std::string>(),"target to check with")
 		("commands",value<std::vector<std::string>>(),"commands to check with")
 		("start-at",value<int>(),"where to start in the file iteration")
+		("find",value<std::string>(),"regex to match on")
+		("replace",value<std::string>(),"what to replace the regex match with")
 
 	//+----------------------------------------------------------+
 	//| Obligatory                                               |
@@ -143,6 +145,21 @@ int Program_Options::Start_At() const{
 		data = vm["start-at"].as<int>();
 	}
 
+	return data;
+}
+
+std::string Program_Options::Find() const{
+	std::string data;
+	if (vm.count("find")){
+		data = vm["find"].as<std::string>();
+	}
+	return data;
+}
+std::string Program_Options::Replace() const{
+	std::string data;
+	if (vm.count("replace")){
+		data = vm["replace"].as<std::string>();
+	}
 	return data;
 }
 

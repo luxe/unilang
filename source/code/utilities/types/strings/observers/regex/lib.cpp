@@ -29,3 +29,15 @@ std::vector<std::smatch> Get_Regex_Matches(std::vector<std::string> lines, std::
     
     return result;
 }
+
+std::vector<size_t> Get_Indexes_Where_Regex_Matches(std::vector<std::string> lines, std::string const& regex)
+{
+    std::vector<size_t> results;
+    for (size_t i = 0; i < lines.size(); ++i)
+    {
+        if (Matches_Regex(lines[i],regex)){
+            results.emplace_back(i);
+        }
+    }
+    return results;
+}

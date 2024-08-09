@@ -3,7 +3,7 @@ class
 ❪string❫
 ❪utility❫
 ❪regex❫
-❪"code/programs/repo_tools/header_remover/program_options/program_options"❫
+❪"code/programs/repo_tools/visibility_adjuster/program_options/program_options"❫
 ❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/utilities/streams/filestreams/read_all/lib"❫
 ❪"code/utilities/streams/filestreams/write_all/lib"❫
@@ -15,8 +15,8 @@ class
 ❪"code/utilities/build/profiler/profile_compilation_timer"❫
 ❪"code/utilities/types/strings/transformers/other/lib"❫
 ❪"code/utilities/linguistics/computer/header_detection/cpp_header_detector"❫
+❪"code/utilities/types/strings/observers/regex/lib"❫
 ⚯
-❪regex❫
 ⚞⚟
 
 
@@ -26,7 +26,7 @@ class
     //step into the repo
     Set_Path(options.Run_Dir());
 
-    bool passes = Test_Header_Removal(options);
+    bool passes = Test_That_Code_Builds(options);
     if (!passes){
         std::cerr << "Doesn't pass to begin with." << std::endl;
         std::cerr << "We won't be able to evaluate pruning if the build is already failing." << std::endl;
@@ -43,37 +43,34 @@ class
     
 ❱
 
+◀private: static▶ std::string ☀Search_And_Replace(const std::string& input, const std::regex& pattern, const std::string& replacement) ❰
+    return std::regex_replace(input, pattern, replacement);
+❱
+
 ◀private: static▶ void ☀Prune_File(std::string file, Program_Options const& options) ❰
 
     //open the file
     auto file_lines = Read_Each_Line_Of_File_Into_Vector(file);
-    
-    //get all the header lines
-    auto header_indexes = Cpp_Header_Detector::Get_All_Indexes_Of_Lines_That_Are_Header_Includes(file_lines);
-    
-    std::cout << header_indexes.size() << " headers detected ";
+
+    auto file_indexes = Get_Indexes_Where_Regex_Matches(file_lines,options.Find());
+
+   std::cout << file_indexes.size() << " visibilities detected." << std::endl;
     //std::cout << Profile_Compilation_Timer::Profile(file) << std::endl;
     
     //try to remove each header
-    for (auto index: header_indexes){
+    for (auto index: file_indexes){
         
-        auto include_statement = file_lines[index];
-        
-        //check its not the self header
-        if (Is_Self_Header(include_statement,file)){
-            std::cout << "skipping self header: " << include_statement << std::endl;
-            continue;
-        }
+        auto visibility_line = file_lines[index];
 
         //get rid of the include statement
-        file_lines[index] = "";
+        file_lines[index] = Search_And_Replace(file_lines[index],std::regex(options.Find()),options.Replace());
         Write_Each_Line_Of_Vector_Into_File(file,file_lines);
         
-        std::cout << "removing " << include_statement << " ";
+        std::cout << "removing " << visibility_line << " ";
         
         //test the removal
         //auto profile_time = Profile_Compilation_Timer::Profile(file);
-        auto successfully_removed = Test_Header_Removal(options);
+        auto successfully_removed = Test_That_Code_Builds(options);
         
         
         //the header can stay removed
@@ -87,16 +84,16 @@ class
             std::cout << "REQUIRED" << std::endl;
             
             //restore header
-            file_lines[index] = include_statement;
+            file_lines[index] = visibility_line;
             Write_Each_Line_Of_Vector_Into_File(file,file_lines);
         }
     }
     
     
-    //print how many headers were removed
-    auto header_indexes_after = Cpp_Header_Detector::Get_All_Indexes_Of_Lines_That_Are_Header_Includes(file_lines);
-    auto headers_removed = header_indexes.size() - header_indexes_after.size();
-    std::cout << headers_removed << " headers removed." << std::endl;
+    //print how many visibilities were fixed
+    auto file_indexes_after = Get_Indexes_Where_Regex_Matches(file_lines,options.Find());
+    auto visibilities_fixed = file_indexes.size() - file_indexes_after.size();
+    std::cout << visibilities_fixed << " visibilities fixed." << std::endl;
 
 ❱
 
@@ -116,12 +113,6 @@ class
 
 ❱
 
-◀private: static▶ bool ☀Is_Self_Header(std::string const& include, std::string file) ❰
-
-    Replace_File_Extension(file,"hh");
-    return Contains_Substring(include,file);
-❱
-
 ◀private: static▶ bool ☀Test_Via_Compilation_Target(Program_Options const& options) ❰
 
     std::string command;
@@ -137,7 +128,7 @@ class
     return true;
 ❱
 
-◀private: static▶ bool ☀Test_Header_Removal(Program_Options const& options) ❰
+◀private: static▶ bool ☀Test_That_Code_Builds(Program_Options const& options) ❰
 
     bool show_stderr = false;
 
