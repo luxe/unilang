@@ -44,6 +44,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 		("commands",value<std::vector<std::string>>(),"commands to check with")
 		("start-at",value<int>(),"where to start in the file iteration")
 		("find",value<std::string>(),"regex to match on")
+		("literal-find",value<std::string>(),"literal substring to match on")
 		("replace",value<std::string>(),"what to replace the regex match with")
 
 	//+----------------------------------------------------------+
@@ -152,6 +153,13 @@ std::string Program_Options::Find() const{
 	std::string data;
 	if (vm.count("find")){
 		data = vm["find"].as<std::string>();
+	}
+	return data;
+}
+std::string Program_Options::Literal_Find() const{
+	std::string data;
+	if (vm.count("literal-find")){
+		data = vm["literal-find"].as<std::string>();
 	}
 	return data;
 }

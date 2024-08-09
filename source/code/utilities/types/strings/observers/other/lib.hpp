@@ -19,6 +19,8 @@ bool Ends_With(std::string const& str, char const& end_part);
 bool Begins_And_Ends_With(std::string const& str, char const& part);
 bool Contains_Substring(std::string const& str, std::string const& part);
 bool Contains_Substring(std::string const& str, char const& part);
+std::vector<size_t> Get_Index_Of_All_Lines_That_Contain_Substring(std::vector<std::string> const& lines, std::string const& substring);
+
 std::string Get_Substring_Found_Between_First_Instance_Of_Two_Characters(std::string str, char first, char last);
 std::string Get_Substring_Found_Between_Two_Strings(std::string const& str, std::string const& before, std::string const& after);
 

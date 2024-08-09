@@ -16,6 +16,8 @@ class
 ❪"code/utilities/types/strings/transformers/other/lib"❫
 ❪"code/utilities/linguistics/computer/header_detection/cpp_header_detector"❫
 ❪"code/utilities/types/strings/observers/regex/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/strings/transformers/search_replace/lib"❫
 ⚯
 ⚞⚟
 
@@ -46,13 +48,29 @@ class
 ◀private: static▶ std::string ☀Search_And_Replace(const std::string& input, const std::regex& pattern, const std::string& replacement) ❰
     return std::regex_replace(input, pattern, replacement);
 ❱
+◀private: static▶ std::vector<size_t> ☀Get_Indexes(const std::vector<std::string> & lines, Program_Options const& options) ❰
+    if (!options.Find().empty())
+    {
+        return Get_Indexes_Where_Regex_Matches(lines,options.Find());
+    }
+    return Get_Index_Of_All_Lines_That_Contain_Substring(lines,options.Literal_Find());
+❱
+◀private: static▶ std::string ☀Perform_Search_And_Replace(std::string str, Program_Options const& options)
+❰
+    if (!options.Find().empty())
+    {
+        return Search_And_Replace(str,std::regex(options.Find()),options.Replace());
+    }
+    return string_replace_all(str,options.Literal_Find(),options.Replace());
+❱
+
 
 ◀private: static▶ void ☀Prune_File(std::string file, Program_Options const& options) ❰
 
     //open the file
     auto file_lines = Read_Each_Line_Of_File_Into_Vector(file);
 
-    auto file_indexes = Get_Indexes_Where_Regex_Matches(file_lines,options.Find());
+    auto file_indexes = Get_Indexes(file_lines,options);
 
    std::cout << file_indexes.size() << " visibilities detected." << std::endl;
     //std::cout << Profile_Compilation_Timer::Profile(file) << std::endl;
@@ -63,7 +81,7 @@ class
         auto visibility_line = file_lines[index];
 
         //get rid of the include statement
-        file_lines[index] = Search_And_Replace(file_lines[index],std::regex(options.Find()),options.Replace());
+        file_lines[index] = Perform_Search_And_Replace(file_lines[index],options);
         Write_Each_Line_Of_Vector_Into_File(file,file_lines);
         
         std::cout << "removing " << visibility_line << " ";
@@ -91,7 +109,7 @@ class
     
     
     //print how many visibilities were fixed
-    auto file_indexes_after = Get_Indexes_Where_Regex_Matches(file_lines,options.Find());
+    auto file_indexes_after = Get_Indexes(file_lines,options);
     auto visibilities_fixed = file_indexes.size() - file_indexes_after.size();
     std::cout << visibilities_fixed << " visibilities fixed." << std::endl;
 

@@ -69,6 +69,18 @@ bool Contains_Substring(std::string const& str, char const& part){
     }
     return false;
 }
+std::vector<size_t> Get_Index_Of_All_Lines_That_Contain_Substring(std::vector<std::string> const& lines, std::string const& substring)
+{
+    std::vector<size_t> indexes;
+    for (size_t i = 0; i < lines.size(); ++i)
+    {
+        if (Contains_Substring(lines[i],substring))
+        {
+            indexes.emplace_back(i);
+        }
+    }
+    return indexes;
+}
 bool Contains_Only_Whitespace_Characters(std::string const& str){
   
     for (auto const& it: str){

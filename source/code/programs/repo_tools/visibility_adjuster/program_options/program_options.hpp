@@ -24,6 +24,7 @@ class Program_Options {
 	  std::vector<std::string> Commands() const;
 	  int Start_At() const;
 	  std::string Find() const;
+	  std::string Literal_Find() const;
 	  std::string Replace() const;
 
         

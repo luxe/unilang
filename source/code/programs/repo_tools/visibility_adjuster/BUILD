@@ -20,6 +20,7 @@ hcp(
         "//code/utilities/types/strings/transformers/trimming:lib",
         "//code/utilities/filesystem/files/getting:lib",
         "//code/utilities/types/strings/observers/regex:lib",
+        "//code/utilities/types/strings/transformers/search_replace:lib",
     ],
 )
 
