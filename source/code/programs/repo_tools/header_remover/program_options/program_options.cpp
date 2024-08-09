@@ -42,6 +42,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 		("dir",value<std::string>(),"the dir to remove headers from")
         ("target",value<std::string>(),"target to check with")
 		("commands",value<std::vector<std::string>>(),"commands to check with")
+		("start-at",value<int>(),"where to start in the file iteration")
 
 	//+----------------------------------------------------------+
 	//| Obligatory                                               |
@@ -131,6 +132,15 @@ std::string Program_Options::Dir() const{
 	std::string data;
 	if (vm.count("dir")){
 		data = vm["dir"].as<std::string>();
+	}
+
+	return data;
+}
+
+int Program_Options::Start_At() const{
+	int data = 0;
+	if (vm.count("start-at")){
+		data = vm["start-at"].as<std::string>();
 	}
 
 	return data;
